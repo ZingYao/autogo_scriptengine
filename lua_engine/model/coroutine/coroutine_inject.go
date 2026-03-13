@@ -1,12 +1,13 @@
 package coroutine
 
 import (
-	"app/lua_engine/model"
 	"context"
 	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	lua "github.com/yuin/gopher-lua"
 )

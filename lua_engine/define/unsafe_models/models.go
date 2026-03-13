@@ -1,11 +1,11 @@
 package unsafe_models
 
 import (
-	"app/lua_engine/model"
-	"app/lua_engine/model/console"
-	"app/lua_engine/model/hud"
-	"app/lua_engine/model/imgui"
-	"app/lua_engine/model/vdisplay"
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model/console"
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model/hud"
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model/imgui"
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model/vdisplay"
 )
 
 // UnsafeModules 包含不安全的模块（console、hud、vdisplay、imgui）

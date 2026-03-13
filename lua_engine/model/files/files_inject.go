@@ -1,8 +1,9 @@
 package files
 
 import (
-	"app/lua_engine/model"
 	"strconv"
+
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/files"
 	lua "github.com/yuin/gopher-lua"

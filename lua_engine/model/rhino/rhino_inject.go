@@ -1,7 +1,7 @@
 package rhino
 
 import (
-	"app/lua_engine/model"
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/rhino"
 	lua "github.com/yuin/gopher-lua"

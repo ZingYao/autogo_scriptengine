@@ -1,8 +1,9 @@
 package json
 
 import (
-	"app/lua_engine/model"
 	"encoding/json"
+
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	lua "github.com/yuin/gopher-lua"
 )

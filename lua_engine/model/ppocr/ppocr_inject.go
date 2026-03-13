@@ -1,8 +1,9 @@
 package ppocr
 
 import (
-	"app/lua_engine/model"
 	"image"
+
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/ppocr"
 	lua "github.com/yuin/gopher-lua"

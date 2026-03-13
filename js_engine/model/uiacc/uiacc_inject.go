@@ -1,7 +1,7 @@
 package uiacc
 
 import (
-	"app/js_engine/model"
+	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/uiacc"
 	"github.com/dop251/goja"

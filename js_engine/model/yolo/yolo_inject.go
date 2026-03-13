@@ -1,9 +1,10 @@
 package yolo
 
 import (
-	"app/js_engine/model"
 	"image"
 	"strconv"
+
+	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/yolo"
 	"github.com/dop251/goja"

@@ -1,7 +1,7 @@
 package motion
 
 import (
-	"app/lua_engine/model"
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/motion"
 	lua "github.com/yuin/gopher-lua"

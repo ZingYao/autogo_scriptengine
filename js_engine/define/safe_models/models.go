@@ -1,7 +1,7 @@
 package safe_models
 
 import (
-	"app/js_engine/model"
+	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 )
 
 // SafeModules 包含安全的模块（排除 console、hud、imgui、vdisplay）

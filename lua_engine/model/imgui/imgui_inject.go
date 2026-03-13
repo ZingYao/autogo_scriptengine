@@ -1,9 +1,10 @@
 package imgui
 
 import (
-	"app/lua_engine/model"
 	"runtime"
 	"strconv"
+
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/imgui"
 	"github.com/Dasongzi1366/AutoGo/utils"

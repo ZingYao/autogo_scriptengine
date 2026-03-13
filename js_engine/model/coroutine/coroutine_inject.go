@@ -1,12 +1,13 @@
 package coroutine
 
 import (
-	"app/js_engine/model"
 	"context"
 	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	"github.com/dop251/goja"
 )

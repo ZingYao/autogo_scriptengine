@@ -1,10 +1,11 @@
 package lua_engine
 
 import (
-	"app/lua_engine/model"
 	"fmt"
 	"sync"
 	"time"
+
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	lua "github.com/yuin/gopher-lua"
 )

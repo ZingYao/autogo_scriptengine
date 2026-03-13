@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"app/js_engine/model"
+	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	"github.com/dop251/goja"
 )
