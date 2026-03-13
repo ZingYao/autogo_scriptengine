@@ -11,91 +11,29 @@ func injectDeviceMethods(engine *JSEngine) {
 	deviceObj := vm.NewObject()
 	vm.Set("device", deviceObj)
 
-	deviceObj.Set("width", func(call goja.FunctionCall) goja.Value {
-		displayId := 0
-		if len(call.Arguments) > 0 {
-			displayId = int(call.Argument(0).ToInteger())
-		}
-		width, _, _, _ := device.GetDisplayInfo(displayId)
-		return vm.ToValue(width)
-	})
+	// 设备分辨率 - 计算默认 displayId (0) 的值
+	width, height, _, _ := device.GetDisplayInfo(0)
+	deviceObj.Set("width", width)
+	deviceObj.Set("height", height)
 
-	deviceObj.Set("height", func(call goja.FunctionCall) goja.Value {
-		displayId := 0
-		if len(call.Arguments) > 0 {
-			displayId = int(call.Argument(0).ToInteger())
-		}
-		_, height, _, _ := device.GetDisplayInfo(displayId)
-		return vm.ToValue(height)
-	})
-
-	deviceObj.Set("sdkInt", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.SdkInt)
-	})
-
-	deviceObj.Set("cpuAbi", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.CpuAbi)
-	})
-
-	deviceObj.Set("buildId", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.BuildId)
-	})
-
-	deviceObj.Set("broad", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Broad)
-	})
-
-	deviceObj.Set("brand", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Brand)
-	})
-
-	deviceObj.Set("device", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Device)
-	})
-
-	deviceObj.Set("model", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Model)
-	})
-
-	deviceObj.Set("product", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Product)
-	})
-
-	deviceObj.Set("bootloader", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Bootloader)
-	})
-
-	deviceObj.Set("hardware", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Hardware)
-	})
-
-	deviceObj.Set("fingerprint", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Fingerprint)
-	})
-
-	deviceObj.Set("serial", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Serial)
-	})
-
-	deviceObj.Set("incremental", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Incremental)
-	})
-
-	deviceObj.Set("release", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Release)
-	})
-
-	deviceObj.Set("baseOS", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.BaseOS)
-	})
-
-	deviceObj.Set("securityPatch", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.SecurityPatch)
-	})
-
-	deviceObj.Set("codename", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(device.Codename)
-	})
+	// 设备静态属性
+	deviceObj.Set("sdkInt", device.SdkInt)
+	deviceObj.Set("cpuAbi", device.CpuAbi)
+	deviceObj.Set("buildId", device.BuildId)
+	deviceObj.Set("broad", device.Broad)
+	deviceObj.Set("brand", device.Brand)
+	deviceObj.Set("deviceName", device.Device) // 避免与对象名冲突
+	deviceObj.Set("model", device.Model)
+	deviceObj.Set("product", device.Product)
+	deviceObj.Set("bootloader", device.Bootloader)
+	deviceObj.Set("hardware", device.Hardware)
+	deviceObj.Set("fingerprint", device.Fingerprint)
+	deviceObj.Set("serial", device.Serial)
+	deviceObj.Set("incremental", device.Incremental)
+	deviceObj.Set("release", device.Release)
+	deviceObj.Set("baseOS", device.BaseOS)
+	deviceObj.Set("securityPatch", device.SecurityPatch)
+	deviceObj.Set("codename", device.Codename)
 
 	deviceObj.Set("getImei", func(call goja.FunctionCall) goja.Value {
 		result := device.GetImei()

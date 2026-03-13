@@ -67,168 +67,213 @@ func injectDeviceMethods(engine *LuaEngine) {
 func registerDeviceLuaFunctions(engine *LuaEngine) {
 	state := engine.GetState()
 
-	state.Register("device_getImei", func(L *lua.LState) int {
+	// 创建 device 表
+	deviceTable := state.NewTable()
+	state.SetGlobal("device", deviceTable)
+
+	// 设备属性 - 函数形式
+	state.SetField(deviceTable, "width", state.NewFunction(func(L *lua.LState) int {
+		displayId := 0
+		if L.GetTop() >= 1 {
+			displayId = L.CheckInt(1)
+		}
+		width, _, _, _ := device.GetDisplayInfo(displayId)
+		L.Push(lua.LNumber(width))
+		return 1
+	}))
+
+	state.SetField(deviceTable, "height", state.NewFunction(func(L *lua.LState) int {
+		displayId := 0
+		if L.GetTop() >= 1 {
+			displayId = L.CheckInt(1)
+		}
+		_, height, _, _ := device.GetDisplayInfo(displayId)
+		L.Push(lua.LNumber(height))
+		return 1
+	}))
+
+	// 设备属性 - 静态值
+	state.SetField(deviceTable, "sdkInt", lua.LNumber(device.SdkInt))
+	state.SetField(deviceTable, "cpuAbi", lua.LString(device.CpuAbi))
+	state.SetField(deviceTable, "buildId", lua.LString(device.BuildId))
+	state.SetField(deviceTable, "broad", lua.LString(device.Broad))
+	state.SetField(deviceTable, "brand", lua.LString(device.Brand))
+	state.SetField(deviceTable, "device_", lua.LString(device.Device)) // 避免与表名冲突
+	state.SetField(deviceTable, "model", lua.LString(device.Model))
+	state.SetField(deviceTable, "product", lua.LString(device.Product))
+	state.SetField(deviceTable, "bootloader", lua.LString(device.Bootloader))
+	state.SetField(deviceTable, "hardware", lua.LString(device.Hardware))
+	state.SetField(deviceTable, "fingerprint", lua.LString(device.Fingerprint))
+	state.SetField(deviceTable, "serial", lua.LString(device.Serial))
+	state.SetField(deviceTable, "incremental", lua.LString(device.Incremental))
+	state.SetField(deviceTable, "release", lua.LString(device.Release))
+	state.SetField(deviceTable, "baseOS", lua.LString(device.BaseOS))
+	state.SetField(deviceTable, "securityPatch", lua.LString(device.SecurityPatch))
+	state.SetField(deviceTable, "codename", lua.LString(device.Codename))
+
+	// 设备方法
+	state.SetField(deviceTable, "getImei", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetImei()
 		L.Push(lua.LString(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getAndroidId", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getAndroidId", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetAndroidId()
 		L.Push(lua.LString(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getWifiMac", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getWifiMac", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetWifiMac()
 		L.Push(lua.LString(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getWlanMac", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getWlanMac", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetWlanMac()
 		L.Push(lua.LString(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getIp", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getIp", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetIp()
 		L.Push(lua.LString(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getBrightness", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getBrightness", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetBrightness()
 		L.Push(lua.LString(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getBrightnessMode", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getBrightnessMode", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetBrightnessMode()
 		L.Push(lua.LString(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getMusicVolume", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getMusicVolume", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetMusicVolume()
 		L.Push(lua.LNumber(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getNotificationVolume", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getNotificationVolume", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetNotificationVolume()
 		L.Push(lua.LNumber(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getAlarmVolume", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getAlarmVolume", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetAlarmVolume()
 		L.Push(lua.LNumber(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getMusicMaxVolume", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getMusicMaxVolume", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetMusicMaxVolume()
 		L.Push(lua.LNumber(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getNotificationMaxVolume", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getNotificationMaxVolume", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetNotificationMaxVolume()
 		L.Push(lua.LNumber(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getAlarmMaxVolume", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getAlarmMaxVolume", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetAlarmMaxVolume()
 		L.Push(lua.LNumber(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_setMusicVolume", func(L *lua.LState) int {
+	state.SetField(deviceTable, "setMusicVolume", state.NewFunction(func(L *lua.LState) int {
 		volume := L.CheckInt(1)
 		device.SetMusicVolume(volume)
 		return 0
-	})
+	}))
 
-	state.Register("device_setNotificationVolume", func(L *lua.LState) int {
+	state.SetField(deviceTable, "setNotificationVolume", state.NewFunction(func(L *lua.LState) int {
 		volume := L.CheckInt(1)
 		device.SetNotificationVolume(volume)
 		return 0
-	})
+	}))
 
-	state.Register("device_setAlarmVolume", func(L *lua.LState) int {
+	state.SetField(deviceTable, "setAlarmVolume", state.NewFunction(func(L *lua.LState) int {
 		volume := L.CheckInt(1)
 		device.SetAlarmVolume(volume)
 		return 0
-	})
+	}))
 
-	state.Register("device_getBattery", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getBattery", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetBattery()
 		L.Push(lua.LNumber(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getBatteryStatus", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getBatteryStatus", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetBatteryStatus()
 		L.Push(lua.LNumber(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_setBatteryStatus", func(L *lua.LState) int {
+	state.SetField(deviceTable, "setBatteryStatus", state.NewFunction(func(L *lua.LState) int {
 		value := L.CheckInt(1)
 		device.SetBatteryStatus(value)
 		return 0
-	})
+	}))
 
-	state.Register("device_setBatteryLevel", func(L *lua.LState) int {
+	state.SetField(deviceTable, "setBatteryLevel", state.NewFunction(func(L *lua.LState) int {
 		value := L.CheckInt(1)
 		device.SetBatteryLevel(value)
 		return 0
-	})
+	}))
 
-	state.Register("device_getTotalMem", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getTotalMem", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetTotalMem()
 		L.Push(lua.LNumber(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_getAvailMem", func(L *lua.LState) int {
+	state.SetField(deviceTable, "getAvailMem", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetAvailMem()
 		L.Push(lua.LNumber(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_isScreenOn", func(L *lua.LState) int {
+	state.SetField(deviceTable, "isScreenOn", state.NewFunction(func(L *lua.LState) int {
 		result := device.IsScreenOn()
 		L.Push(lua.LBool(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_isScreenUnlock", func(L *lua.LState) int {
+	state.SetField(deviceTable, "isScreenUnlock", state.NewFunction(func(L *lua.LState) int {
 		result := device.IsScreenUnlock()
 		L.Push(lua.LBool(result))
 		return 1
-	})
+	}))
 
-	state.Register("device_wakeUp", func(L *lua.LState) int {
+	state.SetField(deviceTable, "wakeUp", state.NewFunction(func(L *lua.LState) int {
 		device.WakeUp()
 		return 0
-	})
+	}))
 
-	state.Register("device_keepScreenOn", func(L *lua.LState) int {
+	state.SetField(deviceTable, "keepScreenOn", state.NewFunction(func(L *lua.LState) int {
 		device.KeepScreenOn()
 		return 0
-	})
+	}))
 
-	state.Register("device_vibrate", func(L *lua.LState) int {
+	state.SetField(deviceTable, "vibrate", state.NewFunction(func(L *lua.LState) int {
 		ms := L.CheckInt(1)
 		device.Vibrate(ms)
 		return 0
-	})
+	}))
 
-	state.Register("device_cancelVibration", func(L *lua.LState) int {
+	state.SetField(deviceTable, "cancelVibration", state.NewFunction(func(L *lua.LState) int {
 		device.CancelVibration()
 		return 0
-	})
+	}))
 }

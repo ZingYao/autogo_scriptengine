@@ -15,14 +15,14 @@ func injectHttpsMethods(engine *JSEngine) {
 		url := call.Argument(0).String()
 		timeout := int(call.Argument(1).ToInteger())
 		code, data := https.Get(url, timeout)
-		arr := vm.NewArray()
-		arr.Set("0", code)
+		result := vm.NewObject()
+		result.Set("code", code)
 		if data != nil {
-			arr.Set("1", string(data))
+			result.Set("data", string(data))
 		} else {
-			arr.Set("1", goja.Null())
+			result.Set("data", goja.Null())
 		}
-		return arr
+		return result
 	})
 
 	httpObj.Set("postMultipart", func(call goja.FunctionCall) goja.Value {
@@ -31,14 +31,14 @@ func injectHttpsMethods(engine *JSEngine) {
 		fileData := call.Argument(2).Export().([]byte)
 		timeout := int(call.Argument(3).ToInteger())
 		code, responseData := https.PostMultipart(url, fileName, fileData, timeout)
-		arr := vm.NewArray()
-		arr.Set("0", code)
+		result := vm.NewObject()
+		result.Set("code", code)
 		if responseData != nil {
-			arr.Set("1", string(responseData))
+			result.Set("data", string(responseData))
 		} else {
-			arr.Set("1", goja.Null())
+			result.Set("data", goja.Null())
 		}
-		return arr
+		return result
 	})
 
 	engine.RegisterMethod("http.get", "发送GET请求", func(url string, timeout int) (int, []byte) { return https.Get(url, timeout) }, true)

@@ -46,14 +46,16 @@ func injectYoloMethods(engine *JSEngine) {
 	yoloObj.Set("detectFromBase64", func(call goja.FunctionCall) goja.Value {
 		y := call.Argument(0).Export().(*yolo.Yolo)
 		b64 := call.Argument(1).String()
-		results := y.DetectFromBase64(b64)
+		colorStr := call.Argument(2).String()
+		results := y.DetectFromBase64(b64, colorStr)
 		return vm.ToValue(results)
 	})
 
 	yoloObj.Set("detectFromPath", func(call goja.FunctionCall) goja.Value {
 		y := call.Argument(0).Export().(*yolo.Yolo)
 		path := call.Argument(1).String()
-		results := y.DetectFromPath(path)
+		colorStr := call.Argument(2).String()
+		results := y.DetectFromPath(path, colorStr)
 		return vm.ToValue(results)
 	})
 

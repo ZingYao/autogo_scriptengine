@@ -64,7 +64,8 @@ func registerYoloLuaFunctions(engine *LuaEngine) {
 		ud := L.CheckUserData(1)
 		y := ud.Value.(*yolo.Yolo)
 		b64 := L.CheckString(2)
-		results := y.DetectFromBase64(b64)
+		colorStr := L.CheckString(3)
+		results := y.DetectFromBase64(b64, colorStr)
 		tbl := L.NewTable()
 		for i, r := range results {
 			item := L.NewTable()
@@ -84,7 +85,8 @@ func registerYoloLuaFunctions(engine *LuaEngine) {
 		ud := L.CheckUserData(1)
 		y := ud.Value.(*yolo.Yolo)
 		path := L.CheckString(2)
-		results := y.DetectFromPath(path)
+		colorStr := L.CheckString(3)
+		results := y.DetectFromPath(path, colorStr)
 		tbl := L.NewTable()
 		for i, r := range results {
 			item := L.NewTable()
