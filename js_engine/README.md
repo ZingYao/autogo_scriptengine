@@ -63,30 +63,31 @@ func main() {
 
 ### 模块列表
 
-| 模块 | 说明 |
-|------|------|
-| `app` | 应用管理 |
-| `device` | 设备信息 |
-| `motion` | 触摸操作 |
-| `files` | 文件操作 |
-| `images` | 图像处理 |
-| `storages` | 数据存储 |
-| `system` | 系统功能 |
-| `http` | 网络请求 |
-| `media` | 媒体控制 |
-| `opencv` | 计算机视觉 |
-| `ppocr` | OCR 文字识别 |
-| `console` | 控制台窗口 |
-| `dotocr` | 点字 OCR |
-| `hud` | HUD 悬浮显示 |
-| `ime` | 输入法控制 |
-| `plugin` | 插件加载 |
-| `rhino` | JavaScript 执行引擎 |
-| `uiacc` | 无障碍 UI 操作 |
-| `utils` | 工具方法 |
-| `vdisplay` | 虚拟显示 |
-| `yolo` | YOLO 目标检测 |
-| `imgui` | Dear ImGui GUI 库 |
+| 模块 | 说明 | 详细文档 |
+|------|------|----------|
+| `app` | 应用管理 | [README](model/app/README.md) |
+| `device` | 设备信息 | [README](model/device/README.md) |
+| `motion` | 触摸操作 | [README](model/motion/README.md) |
+| `files` | 文件操作 | [README](model/files/README.md) |
+| `images` | 图像处理 | [README](model/images/README.md) |
+| `storages` | 数据存储 | [README](model/storages/README.md) |
+| `system` | 系统功能 | [README](model/system/README.md) |
+| `http` | 网络请求 | [README](model/http/README.md) |
+| `media` | 媒体控制 | [README](model/media/README.md) |
+| `opencv` | 计算机视觉 | [README](model/opencv/README.md) |
+| `ppocr` | OCR 文字识别 | [README](model/ppocr/README.md) |
+| `console` | 控制台窗口 | [README](model/console/README.md) |
+| `dotocr` | 点字 OCR | [README](model/dotocr/README.md) |
+| `hud` | HUD 悬浮显示 | [README](model/hud/README.md) |
+| `ime` | 输入法控制 | [README](model/ime/README.md) |
+| `plugin` | 插件加载 | [README](model/plugin/README.md) |
+| `rhino` | JavaScript 执行引擎 | [README](model/rhino/README.md) |
+| `uiacc` | 无障碍 UI 操作 | [README](model/uiacc/README.md) |
+| `utils` | 工具方法 | [README](model/utils/README.md) |
+| `vdisplay` | 虚拟显示 | [README](model/vdisplay/README.md) |
+| `yolo` | YOLO 目标检测 | [README](model/yolo/README.md) |
+| `coroutine` | 协程管理 | [README](model/coroutine/README.md) |
+| `imgui` | Dear ImGui GUI 库 | [README](model/imgui/README.md) |
 
 ### 执行 JavaScript 代码
 
@@ -439,6 +440,241 @@ const results = ppocr.ocrFromBase64(base64Str, "");
 
 // 识别文件图片
 const results = ppocr.ocrFromPath("/sdcard/image.png", "");
+```
+
+### 协程管理 (coroutine)
+
+```javascript
+// ========== 基础协程方法 ==========
+
+// 启动一个新的协程
+const coroutineId = coroutine.launch(function() {
+    console.log("协程开始执行");
+    sleep(1000);
+    console.log("协程执行完成");
+}, "myCoroutine", 0);
+
+// 延迟执行函数
+const delayId = coroutine.delay(2000, function() {
+    console.log("2秒后执行");
+});
+
+// 异步执行函数并返回结果（同步等待）
+const asyncResult = coroutine.async(function() {
+    return "异步结果";
+});
+console.log("异步结果: " + asyncResult);
+
+// 在协程中睡眠
+coroutine.sleep(1000);
+
+// 等待普通值（简化版本，直接返回）
+const value = coroutine.await("普通值");
+console.log("等待结果: " + value);
+
+// 注意：当前 await 实现为简化版本，直接返回传入的值
+// 不进行真正的异步等待
+
+// ========== 协程管理方法 ==========
+
+// 取消指定的协程
+const success = coroutine.cancel(coroutineId);
+
+// 获取活跃的协程数量
+const activeCount = coroutine.getActiveCoroutines();
+console.log("活跃协程数量: " + activeCount);
+
+// 获取协程列表
+const coroutineList = coroutine.getCoroutineList();
+for (let i = 0; i < coroutineList.length; i++) {
+    console.log("协程ID: " + coroutineList[i].id);
+    console.log("协程名称: " + coroutineList[i].name);
+    console.log("协程状态: " + coroutineList[i].state);
+    console.log("优先级: " + coroutineList[i].priority);
+    console.log("运行时长: " + coroutineList[i].duration + "ms");
+}
+
+// 获取指定协程的详细信息
+const info = coroutine.getCoroutineInfo(coroutineId);
+console.log("协程ID: " + info.id);
+console.log("协程名称: " + info.name);
+console.log("协程状态: " + info.state);
+console.log("开始时间: " + info.startedAt);
+console.log("完成时间: " + info.completedAt);
+console.log("运行时长: " + info.duration + "ms");
+
+// 取消所有协程
+const cancelledCount = coroutine.cancelAll();
+console.log("已取消协程数量: " + cancelledCount);
+
+// 获取全局统计信息
+const stats = coroutine.getStats();
+console.log("总任务数: " + stats.totalTasks);
+console.log("已完成: " + stats.completed);
+console.log("失败: " + stats.failed);
+console.log("已取消: " + stats.cancelled);
+console.log("活跃协程: " + stats.active);
+console.log("协程池数量: " + stats.pools);
+
+// ========== 协程池方法 ==========
+
+// 创建协程池
+const poolName = coroutine.createPool("myPool", 5, 100);
+console.log("创建协程池: " + poolName);
+
+// 提交任务到协程池
+const submitSuccess = coroutine.submitToPool("myPool", function() {
+    console.log("协程池任务执行");
+    return "任务完成";
+}, 0);
+
+// 获取协程池统计信息
+const poolStats = coroutine.getPoolStats("myPool");
+console.log("协程池名称: " + poolStats.name);
+console.log("最大工作协程数: " + poolStats.maxWorkers);
+console.log("最大任务数: " + poolStats.maxTasks);
+console.log("活跃工作协程数: " + poolStats.active);
+console.log("队列中任务数: " + poolStats.queued);
+console.log("工作协程总数: " + poolStats.workers);
+console.log("是否已关闭: " + poolStats.closed);
+
+// 关闭协程池
+const closeSuccess = coroutine.closePool("myPool");
+console.log("关闭协程池: " + closeSuccess);
+
+// 列出所有协程池
+const poolList = coroutine.listPools();
+for (let i = 0; i < poolList.length; i++) {
+    console.log("协程池: " + poolList[i]);
+}
+
+// ========== 调度器方法 ==========
+
+// 设置调度策略 (fifo 或 priority)
+coroutine.setScheduleStrategy("fifo");
+
+// 获取当前调度策略
+const strategy = coroutine.getScheduleStrategy();
+console.log("当前调度策略: " + strategy);
+
+// 设置协程优先级
+coroutine.setPriority("myCoroutine", 10);
+
+// 获取协程优先级
+const priority = coroutine.getPriority("myCoroutine");
+console.log("协程优先级: " + priority);
+
+// ========== 协程使用示例 ==========
+
+// 示例1: 并发执行多个任务
+function concurrentTasks() {
+    console.log("开始并发执行任务");
+    
+    const task1 = coroutine.launch(function() {
+        console.log("任务1开始");
+        coroutine.sleep(1000);
+        console.log("任务1完成");
+        return "任务1结果";
+    }, "task1", 1);
+    
+    const task2 = coroutine.launch(function() {
+        console.log("任务2开始");
+        coroutine.sleep(1500);
+        console.log("任务2完成");
+        return "任务2结果";
+    }, "task2", 2);
+    
+    const task3 = coroutine.launch(function() {
+        console.log("任务3开始");
+        coroutine.sleep(2000);
+        console.log("任务3完成");
+        return "任务3结果";
+    }, "task3", 3);
+    
+    console.log("所有任务已启动");
+}
+
+// 示例2: 使用协程池处理批量任务
+function batchProcessingWithPool() {
+    console.log("创建协程池处理批量任务");
+    
+    const poolName = coroutine.createPool("batchPool", 3, 10);
+    
+    for (let i = 0; i < 10; i++) {
+        const taskNum = i + 1;
+        coroutine.submitToPool("batchPool", function() {
+            console.log("处理任务 " + taskNum);
+            coroutine.sleep(500);
+            console.log("任务 " + taskNum + " 完成");
+        }, taskNum);
+    }
+    
+    console.log("所有任务已提交到协程池");
+    
+    // 等待任务完成
+    coroutine.sleep(5000);
+    
+    // 查看协程池状态
+    const poolStats = coroutine.getPoolStats("batchPool");
+    console.log("协程池状态: " + JSON.stringify(poolStats));
+    
+    // 关闭协程池
+    coroutine.closePool("batchPool");
+}
+
+// 示例3: 延迟执行和定时任务
+function delayedAndScheduledTasks() {
+    console.log("设置延迟任务");
+    
+    // 延迟1秒执行
+    coroutine.delay(1000, function() {
+        console.log("1秒后执行的任务");
+    });
+    
+    // 延迟2秒执行
+    coroutine.delay(2000, function() {
+        console.log("2秒后执行的任务");
+    });
+    
+    // 延迟3秒执行
+    coroutine.delay(3000, function() {
+        console.log("3秒后执行的任务");
+    });
+    
+    console.log("所有延迟任务已设置");
+}
+
+// 示例4: 协程状态监控
+function monitorCoroutines() {
+    console.log("启动协程监控");
+    
+    // 启动多个协程
+    for (let i = 0; i < 5; i++) {
+        const taskNum = i + 1;
+        coroutine.launch(function() {
+            console.log("协程 " + taskNum + " 开始执行");
+            coroutine.sleep(1000 * taskNum);
+            console.log("协程 " + taskNum + " 执行完成");
+        }, "monitorTask" + taskNum, taskNum);
+    }
+    
+    // 定期检查协程状态
+    setInterval(function() {
+        const activeCount = coroutine.getActiveCoroutines();
+        const stats = coroutine.getStats();
+        
+        console.log("=== 协程状态 ===");
+        console.log("活跃协程数: " + activeCount);
+        console.log("总任务数: " + stats.totalTasks);
+        console.log("已完成: " + stats.completed);
+        console.log("失败: " + stats.failed);
+        console.log("已取消: " + stats.cancelled);
+        
+        if (activeCount === 0) {
+            console.log("所有协程已完成");
+        }
+    }, 500);
+}
 ```
 
 ## 方法管理

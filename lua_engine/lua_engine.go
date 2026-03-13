@@ -1,6 +1,7 @@
 package lua_engine
 
 import (
+	"app/lua_engine/model"
 	"fmt"
 	"sync"
 	"time"
@@ -9,9 +10,26 @@ import (
 )
 
 var (
-	engine *LuaEngine
-	once   sync.Once
+	engine         *LuaEngine
+	once           sync.Once
+	moduleRegistry *model.ModuleRegistry
 )
+
+func initModuleRegistry() {
+	if moduleRegistry == nil {
+		moduleRegistry = model.NewModuleRegistry()
+	}
+}
+
+// RegisterModule 注册一个或多个模块到引擎
+// 用户可以在自己的代码中调用此方法来注册需要的模块
+// 支持可变长参数，可以一次注册多个模块
+func RegisterModule(modules ...model.Module) {
+	initModuleRegistry()
+	for _, module := range modules {
+		moduleRegistry.RegisterModule(module)
+	}
+}
 
 // GetLuaEngine 获取默认引擎实例（使用默认配置，自动注入所有方法）
 func GetLuaEngine() *LuaEngine {
@@ -19,7 +37,7 @@ func GetLuaEngine() *LuaEngine {
 		engine = &LuaEngine{
 			config: DefaultConfig(),
 		}
-		initRegistry()
+		initModuleRegistry()
 		engine.init()
 	})
 	return engine
@@ -41,7 +59,7 @@ func NewLuaEngine(config *EngineConfig) *LuaEngine {
 	e := &LuaEngine{
 		config: cfg,
 	}
-	initRegistry()
+	initModuleRegistry()
 	e.init()
 	return e
 }
@@ -78,94 +96,115 @@ func (e *LuaEngine) registerCoreFunctions() {
 	state.Register("listMethods", e.listMethodsLua)
 	state.Register("overrideMethod", e.overrideMethodLua)
 	state.Register("restoreMethod", e.restoreMethodLua)
-	state.Register("createCoroutine", e.createCoroutineLua)
-	state.Register("resumeCoroutine", e.resumeCoroutineLua)
-	state.Register("yieldCoroutine", e.yieldCoroutineLua)
-	state.Register("listCoroutines", e.listCoroutinesLua)
-	state.Register("removeCoroutine", e.removeCoroutineLua)
 	state.Register("sleep", e.sleepLua)
+	state.Register("console.log", e.consoleLogLua)
+	state.Register("console.error", e.consoleErrorLua)
+}
+
+func (e *LuaEngine) consoleLogLua(L *lua.LState) int {
+	n := L.GetTop()
+	for i := 1; i <= n; i++ {
+		fmt.Print(L.ToString(i), " ")
+	}
+	fmt.Println()
+	return 0
+}
+
+func (e *LuaEngine) consoleErrorLua(L *lua.LState) int {
+	n := L.GetTop()
+	fmt.Print("[ERROR] ")
+	for i := 1; i <= n; i++ {
+		fmt.Print(L.ToString(i), " ")
+	}
+	fmt.Println()
+	return 0
 }
 
 func (e *LuaEngine) injectAllMethods() {
-	injectAppMethods(e)
-	injectDeviceMethods(e)
-	injectMotionMethods(e)
-	injectFilesMethods(e)
-	injectImagesMethods(e)
-	injectStoragesMethods(e)
-	injectSystemMethods(e)
-	injectHttpsMethods(e)
-	injectMediaMethods(e)
-	injectOpenCVMethods(e)
-	injectPpocrMethods(e)
-	// 新增模块
-	injectConsoleMethods(e)
-	injectDotocrMethods(e)
-	injectHudMethods(e)
-	injectImeMethods(e)
-	injectPluginMethods(e)
-	injectRhinoMethods(e)
-	injectUiaccMethods(e)
-	injectUtilsMethods(e)
-	injectVdisplayMethods(e)
-	injectYoloMethods(e)
-	injectImguiMethods(e)
+	whiteList := e.config.WhiteList
+	blackList := e.config.BlackList
+	failFast := e.config.FailFast
+
+	modules := moduleRegistry.ListModules()
+
+	for _, name := range modules {
+		module, ok := moduleRegistry.GetModule(name)
+		if !ok {
+			continue
+		}
+
+		// 检查白名单
+		if len(whiteList) > 0 {
+			found := false
+			for _, w := range whiteList {
+				if w == name {
+					found = true
+					break
+				}
+			}
+			if !found {
+				continue
+			}
+		}
+
+		// 检查黑名单
+		blacklisted := false
+		for _, b := range blackList {
+			if b == name {
+				blacklisted = true
+				break
+			}
+		}
+		if blacklisted {
+			continue
+		}
+
+		// 检查模块是否可用
+		if !module.IsAvailable() {
+			if failFast {
+				panic(fmt.Sprintf("module %s is not available", name))
+			} else {
+				fmt.Printf("[WARN] module %s is not available, skipping\n", name)
+				continue
+			}
+		}
+
+		// 注册模块
+		err := module.Register(e)
+		if err != nil {
+			if failFast {
+				panic(fmt.Sprintf("failed to register module %s: %v", name, err))
+			} else {
+				fmt.Printf("[WARN] failed to register module %s: %v, skipping\n", name, err)
+				continue
+			}
+		}
+
+		fmt.Printf("[INFO] module %s registered successfully\n", name)
+	}
 }
 
 // InjectModule 注入指定模块的方法
 // module: 模块名称，支持: app, device, motion, files, images, storages, system, http, media, opencv, ppocr, console, dotocr, hud, ime, plugin, rhino, uiacc, utils, vdisplay, yolo, imgui
-func (e *LuaEngine) InjectModule(module string) {
+func (e *LuaEngine) InjectModule(moduleName string) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	switch module {
-	case "app":
-		injectAppMethods(e)
-	case "device":
-		injectDeviceMethods(e)
-	case "motion":
-		injectMotionMethods(e)
-	case "files":
-		injectFilesMethods(e)
-	case "images":
-		injectImagesMethods(e)
-	case "storages":
-		injectStoragesMethods(e)
-	case "system":
-		injectSystemMethods(e)
-	case "http":
-		injectHttpsMethods(e)
-	case "media":
-		injectMediaMethods(e)
-	case "opencv":
-		injectOpenCVMethods(e)
-	case "ppocr":
-		injectPpocrMethods(e)
-	case "console":
-		injectConsoleMethods(e)
-	case "dotocr":
-		injectDotocrMethods(e)
-	case "hud":
-		injectHudMethods(e)
-	case "ime":
-		injectImeMethods(e)
-	case "plugin":
-		injectPluginMethods(e)
-	case "rhino":
-		injectRhinoMethods(e)
-	case "uiacc":
-		injectUiaccMethods(e)
-	case "utils":
-		injectUtilsMethods(e)
-	case "vdisplay":
-		injectVdisplayMethods(e)
-	case "yolo":
-		injectYoloMethods(e)
-	case "imgui":
-		injectImguiMethods(e)
-	default:
-		panic(fmt.Sprintf("unknown module: %s", module))
+	module, ok := moduleRegistry.GetModule(moduleName)
+	if !ok {
+		panic(fmt.Sprintf("unknown module: %s", moduleName))
 	}
+
+	if !module.IsAvailable() {
+		panic(fmt.Sprintf("module %s is not available", moduleName))
+	}
+
+	err := module.Register(e)
+	if err != nil {
+		panic(fmt.Sprintf("failed to register module %s: %v", moduleName, err))
+	}
+
+	fmt.Printf("[INFO] module %s registered successfully\n", moduleName)
 }
 
 // InjectModules 注入多个模块的方法
@@ -177,12 +216,7 @@ func (e *LuaEngine) InjectModules(modules []string) {
 
 // GetAvailableModules 获取所有可用模块列表
 func (e *LuaEngine) GetAvailableModules() []string {
-	return []string{
-		"app", "device", "motion", "files", "images", "storages",
-		"system", "http", "media", "opencv", "ppocr",
-		"console", "dotocr", "hud", "ime", "plugin",
-		"rhino", "uiacc", "utils", "vdisplay", "yolo", "imgui",
-	}
+	return moduleRegistry.ListModules()
 }
 
 // InjectAllMethods 注入所有方法（公开方法，允许手动调用）
@@ -295,90 +329,6 @@ func (e *LuaEngine) overrideMethodLua(L *lua.LState) int {
 func (e *LuaEngine) restoreMethodLua(L *lua.LState) int {
 	name := L.CheckString(1)
 	result := registry.RestoreMethod(name)
-	L.Push(lua.LBool(result))
-	return 1
-}
-
-func (e *LuaEngine) createCoroutineLua(L *lua.LState) int {
-	script := L.CheckString(1)
-	coroutine, err := e.CreateCoroutine(script)
-	if err != nil {
-		L.RaiseError(err.Error())
-		return 0
-	}
-	L.Push(lua.LNumber(coroutine.ID()))
-	return 1
-}
-
-func (e *LuaEngine) resumeCoroutineLua(L *lua.LState) int {
-	id := L.CheckInt(1)
-	coroutine, exists := e.GetCoroutine(id)
-	if !exists {
-		L.RaiseError("Coroutine not found")
-		return 0
-	}
-
-	results, err := coroutine.Resume()
-	if err != nil {
-		L.RaiseError(err.Error())
-		return 0
-	}
-
-	tbl := L.NewTable()
-	for i, result := range results {
-		switch v := result.(type) {
-		case string:
-			L.SetTable(tbl, lua.LNumber(i+1), lua.LString(v))
-		case int:
-			L.SetTable(tbl, lua.LNumber(i+1), lua.LNumber(v))
-		case float64:
-			L.SetTable(tbl, lua.LNumber(i+1), lua.LNumber(v))
-		case bool:
-			L.SetTable(tbl, lua.LNumber(i+1), lua.LBool(v))
-		default:
-			L.SetTable(tbl, lua.LNumber(i+1), lua.LNil)
-		}
-	}
-
-	L.Push(tbl)
-	L.Push(lua.LString(coroutine.Status()))
-	return 2
-}
-
-func (e *LuaEngine) yieldCoroutineLua(L *lua.LState) int {
-	id := L.CheckInt(1)
-	coroutine, exists := e.GetCoroutine(id)
-	if !exists {
-		L.RaiseError("Coroutine not found")
-		return 0
-	}
-
-	err := coroutine.Yield()
-	if err != nil {
-		L.RaiseError(err.Error())
-		return 0
-	}
-
-	L.Push(lua.LBool(true))
-	return 1
-}
-
-func (e *LuaEngine) listCoroutinesLua(L *lua.LState) int {
-	coroutines := e.ListCoroutines()
-	tbl := L.NewTable()
-	for i, coro := range coroutines {
-		item := L.NewTable()
-		L.SetField(item, "id", lua.LNumber(coro.ID()))
-		L.SetField(item, "status", lua.LString(coro.Status()))
-		L.SetTable(tbl, lua.LNumber(i+1), item)
-	}
-	L.Push(tbl)
-	return 1
-}
-
-func (e *LuaEngine) removeCoroutineLua(L *lua.LState) int {
-	id := L.CheckInt(1)
-	result := e.RemoveCoroutine(id)
 	L.Push(lua.LBool(result))
 	return 1
 }

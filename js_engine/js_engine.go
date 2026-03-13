@@ -6,13 +6,32 @@ import (
 	"sync"
 	"time"
 
+	"app/js_engine/model"
+
 	"github.com/dop251/goja"
 )
 
 var (
-	engine *JSEngine
-	once   sync.Once
+	engine         *JSEngine
+	once           sync.Once
+	moduleRegistry *model.ModuleRegistry
 )
+
+func initModuleRegistry() {
+	if moduleRegistry == nil {
+		moduleRegistry = model.NewModuleRegistry()
+	}
+}
+
+// RegisterModule 注册一个或多个模块到引擎
+// 用户可以在自己的代码中调用此方法来注册需要的模块
+// 支持可变长参数，可以一次注册多个模块
+func RegisterModule(modules ...model.Module) {
+	initModuleRegistry()
+	for _, module := range modules {
+		moduleRegistry.RegisterModule(module)
+	}
+}
 
 // GetJSEngine 获取默认引擎实例（使用默认配置，自动注入所有方法）
 func GetJSEngine() *JSEngine {
@@ -20,7 +39,7 @@ func GetJSEngine() *JSEngine {
 		engine = &JSEngine{
 			config: DefaultConfig(),
 		}
-		initRegistry()
+		initModuleRegistry()
 		engine.init()
 	})
 	return engine
@@ -42,7 +61,7 @@ func NewJSEngine(config *EngineConfig) *JSEngine {
 	e := &JSEngine{
 		config: cfg,
 	}
-	initRegistry()
+	initModuleRegistry()
 	e.init()
 	return e
 }
@@ -80,6 +99,7 @@ func (e *JSEngine) registerCoreFunctions() {
 
 	consoleObj := vm.NewObject()
 	consoleObj.Set("log", e.consoleLogJS)
+	consoleObj.Set("error", e.consoleErrorJS)
 	vm.Set("console", consoleObj)
 }
 
@@ -92,86 +112,101 @@ func (e *JSEngine) consoleLogJS(call goja.FunctionCall) goja.Value {
 	return goja.Undefined()
 }
 
+func (e *JSEngine) consoleErrorJS(call goja.FunctionCall) goja.Value {
+	args := call.Arguments
+	fmt.Print("[ERROR] ")
+	for _, arg := range args {
+		fmt.Print(arg.Export(), " ")
+	}
+	fmt.Println()
+	return goja.Undefined()
+}
+
 func (e *JSEngine) injectAllMethods() {
-	injectAppMethods(e)
-	injectDeviceMethods(e)
-	injectMotionMethods(e)
-	injectFilesMethods(e)
-	injectImagesMethods(e)
-	injectStoragesMethods(e)
-	injectSystemMethods(e)
-	injectHttpsMethods(e)
-	injectMediaMethods(e)
-	injectOpenCVMethods(e)
-	injectPpocrMethods(e)
-	// 新增模块
-	injectConsoleMethods(e)
-	injectDotocrMethods(e)
-	injectHudMethods(e)
-	injectImeMethods(e)
-	injectPluginMethods(e)
-	injectRhinoMethods(e)
-	injectUiaccMethods(e)
-	injectUtilsMethods(e)
-	injectVdisplayMethods(e)
-	injectYoloMethods(e)
-	injectImguiMethods(e)
+	whiteList := e.config.WhiteList
+	blackList := e.config.BlackList
+	failFast := e.config.FailFast
+
+	modules := moduleRegistry.ListModules()
+
+	for _, name := range modules {
+		module, ok := moduleRegistry.GetModule(name)
+		if !ok {
+			continue
+		}
+
+		// 检查白名单
+		if len(whiteList) > 0 {
+			found := false
+			for _, w := range whiteList {
+				if w == name {
+					found = true
+					break
+				}
+			}
+			if !found {
+				continue
+			}
+		}
+
+		// 检查黑名单
+		blacklisted := false
+		for _, b := range blackList {
+			if b == name {
+				blacklisted = true
+				break
+			}
+		}
+		if blacklisted {
+			continue
+		}
+
+		// 检查模块是否可用
+		if !module.IsAvailable() {
+			if failFast {
+				panic(fmt.Sprintf("module %s is not available", name))
+			} else {
+				fmt.Printf("[WARN] module %s is not available, skipping\n", name)
+				continue
+			}
+		}
+
+		// 注册模块
+		err := module.Register(e)
+		if err != nil {
+			if failFast {
+				panic(fmt.Sprintf("failed to register module %s: %v", name, err))
+			} else {
+				fmt.Printf("[WARN] failed to register module %s: %v, skipping\n", name, err)
+				continue
+			}
+		}
+
+		fmt.Printf("[INFO] module %s registered successfully\n", name)
+	}
 }
 
 // InjectModule 注入指定模块的方法
 // module: 模块名称，支持: app, device, motion, files, images, storages, system, http, media, opencv, ppocr, console, dotocr, hud, ime, plugin, rhino, uiacc, utils, vdisplay, yolo, imgui
-func (e *JSEngine) InjectModule(module string) {
+func (e *JSEngine) InjectModule(moduleName string) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	switch module {
-	case "app":
-		injectAppMethods(e)
-	case "device":
-		injectDeviceMethods(e)
-	case "motion":
-		injectMotionMethods(e)
-	case "files":
-		injectFilesMethods(e)
-	case "images":
-		injectImagesMethods(e)
-	case "storages":
-		injectStoragesMethods(e)
-	case "system":
-		injectSystemMethods(e)
-	case "http":
-		injectHttpsMethods(e)
-	case "media":
-		injectMediaMethods(e)
-	case "opencv":
-		injectOpenCVMethods(e)
-	case "ppocr":
-		injectPpocrMethods(e)
-	case "console":
-		injectConsoleMethods(e)
-	case "dotocr":
-		injectDotocrMethods(e)
-	case "hud":
-		injectHudMethods(e)
-	case "ime":
-		injectImeMethods(e)
-	case "plugin":
-		injectPluginMethods(e)
-	case "rhino":
-		injectRhinoMethods(e)
-	case "uiacc":
-		injectUiaccMethods(e)
-	case "utils":
-		injectUtilsMethods(e)
-	case "vdisplay":
-		injectVdisplayMethods(e)
-	case "yolo":
-		injectYoloMethods(e)
-	case "imgui":
-		injectImguiMethods(e)
-	default:
-		panic(fmt.Sprintf("unknown module: %s", module))
+	module, ok := moduleRegistry.GetModule(moduleName)
+	if !ok {
+		panic(fmt.Sprintf("unknown module: %s", moduleName))
 	}
+
+	if !module.IsAvailable() {
+		panic(fmt.Sprintf("module %s is not available", moduleName))
+	}
+
+	err := module.Register(e)
+	if err != nil {
+		panic(fmt.Sprintf("failed to register module %s: %v", moduleName, err))
+	}
+
+	fmt.Printf("[INFO] module %s registered successfully\n", moduleName)
 }
 
 // InjectModules 注入多个模块的方法
@@ -183,12 +218,7 @@ func (e *JSEngine) InjectModules(modules []string) {
 
 // GetAvailableModules 获取所有可用模块列表
 func (e *JSEngine) GetAvailableModules() []string {
-	return []string{
-		"app", "device", "motion", "files", "images", "storages",
-		"system", "http", "media", "opencv", "ppocr",
-		"console", "dotocr", "hud", "ime", "plugin",
-		"rhino", "uiacc", "utils", "vdisplay", "yolo", "imgui",
-	}
+	return moduleRegistry.ListModules()
 }
 
 // InjectAllMethods 注入所有方法（公开方法，允许手动调用）

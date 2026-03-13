@@ -10,7 +10,10 @@ import (
 
 // EngineConfig 引擎配置选项
 type EngineConfig struct {
-	AutoInjectMethods bool // 是否自动注入所有方法，默认为 true
+	AutoInjectMethods bool     // 是否自动注入所有方法，默认为 true
+	WhiteList         []string // 白名单：只加载这些模块，空列表 = 加载所有
+	BlackList         []string // 黑名单：跳过这些模块，空列表 = 不跳过任何
+	FailFast          bool     // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
 }
 
 // LuaEngine Lua 引擎
@@ -24,6 +27,9 @@ type LuaEngine struct {
 func DefaultConfig() EngineConfig {
 	return EngineConfig{
 		AutoInjectMethods: true,
+		WhiteList:         []string{}, // 默认为空，加载所有模块
+		BlackList:         []string{}, // 默认为空，不跳过任何模块
+		FailFast:          false,      // 默认为 false，模块加载失败时跳过继续
 	}
 }
 
