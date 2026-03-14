@@ -1,6 +1,6 @@
 module github.com/ZingYao/autogo_scriptengine
 
-go 1.25.4
+go 1.25.0
 
 require (
 	github.com/Dasongzi1366/AutoGo v0.0.0-20250701130936-d7d8087a0f89
