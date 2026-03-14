@@ -155,6 +155,57 @@
             opacity: 0.7;
         }
         
+        .sidebar-menu-item .toggle-icon {
+            float: right;
+            transition: transform 0.3s ease;
+            opacity: 0.7;
+        }
+        
+        .sidebar-menu-item.expanded .toggle-icon {
+            transform: rotate(90deg);
+        }
+        
+        .sidebar-submenu {
+            display: none;
+            padding-left: 20px;
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-submenu.show {
+            display: block;
+        }
+        
+        .sidebar-submenu-item {
+            padding: 8px 20px 8px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            border-left: 2px solid transparent;
+        }
+        
+        .sidebar-submenu-item:hover {
+            background: rgba(255,255,255,0.05);
+            border-left-color: rgba(255,255,255,0.3);
+        }
+        
+        .sidebar-submenu-item.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: white;
+            font-weight: 500;
+        }
+        
+        .sidebar-submenu-item.level-2 {
+            padding-left: 40px;
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+        
+        .sidebar-submenu-item.level-3 {
+            padding-left: 50px;
+            font-size: 0.75em;
+            opacity: 0.8;
+        }
+        
         /* 右侧内容区 */
         .main-content {
             flex: 1;
@@ -380,7 +431,7 @@
 <div class="sidebar-section-title">📄 </div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="README" onclick="loadDocument('README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>AutoGo ScriptEngine
   </li>
 </ul>
 </div>
@@ -388,7 +439,7 @@
 <div class="sidebar-section-title">⚡ js_engine</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_README" onclick="loadDocument('js_engine_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>AutoGo JavaScript Engine
   </li>
 </ul>
 </div>
@@ -396,7 +447,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/app</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_app_README" onclick="loadDocument('js_engine_model_app_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>App 模块
   </li>
 </ul>
 </div>
@@ -404,7 +455,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/console</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_console_README" onclick="loadDocument('js_engine_model_console_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Console 模块
   </li>
 </ul>
 </div>
@@ -412,7 +463,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/coroutine</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_coroutine_README" onclick="loadDocument('js_engine_model_coroutine_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Coroutine 模块
   </li>
 </ul>
 </div>
@@ -420,7 +471,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/device</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_device_README" onclick="loadDocument('js_engine_model_device_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Device 模块
   </li>
 </ul>
 </div>
@@ -428,7 +479,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/dotocr</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_dotocr_README" onclick="loadDocument('js_engine_model_dotocr_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>DotOCR 模块
   </li>
 </ul>
 </div>
@@ -436,7 +487,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/files</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_files_README" onclick="loadDocument('js_engine_model_files_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Files 模块
   </li>
 </ul>
 </div>
@@ -444,7 +495,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/http</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_http_README" onclick="loadDocument('js_engine_model_http_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>HTTP 模块
   </li>
 </ul>
 </div>
@@ -452,7 +503,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/hud</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_hud_README" onclick="loadDocument('js_engine_model_hud_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>HUD 模块
   </li>
 </ul>
 </div>
@@ -460,7 +511,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/images</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_images_README" onclick="loadDocument('js_engine_model_images_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Images 模块
   </li>
 </ul>
 </div>
@@ -468,7 +519,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/ime</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_ime_README" onclick="loadDocument('js_engine_model_ime_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>IME 模块
   </li>
 </ul>
 </div>
@@ -476,7 +527,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/imgui</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_imgui_README" onclick="loadDocument('js_engine_model_imgui_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>ImGui 模块
   </li>
 </ul>
 </div>
@@ -484,7 +535,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/media</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_media_README" onclick="loadDocument('js_engine_model_media_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Media 模块
   </li>
 </ul>
 </div>
@@ -492,7 +543,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/motion</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_motion_README" onclick="loadDocument('js_engine_model_motion_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Motion 模块
   </li>
 </ul>
 </div>
@@ -500,7 +551,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/opencv</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_opencv_README" onclick="loadDocument('js_engine_model_opencv_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>OpenCV 模块
   </li>
 </ul>
 </div>
@@ -508,7 +559,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/plugin</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_plugin_README" onclick="loadDocument('js_engine_model_plugin_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Plugin 模块
   </li>
 </ul>
 </div>
@@ -516,7 +567,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/ppocr</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_ppocr_README" onclick="loadDocument('js_engine_model_ppocr_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>PPOCR 模块
   </li>
 </ul>
 </div>
@@ -524,7 +575,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/rhino</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_rhino_README" onclick="loadDocument('js_engine_model_rhino_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Rhino 模块
   </li>
 </ul>
 </div>
@@ -532,7 +583,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/storages</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_storages_README" onclick="loadDocument('js_engine_model_storages_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Storages 模块
   </li>
 </ul>
 </div>
@@ -540,7 +591,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/system</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_system_README" onclick="loadDocument('js_engine_model_system_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>System 模块
   </li>
 </ul>
 </div>
@@ -548,7 +599,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/uiacc</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_uiacc_README" onclick="loadDocument('js_engine_model_uiacc_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Uiacc 模块
   </li>
 </ul>
 </div>
@@ -556,7 +607,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/utils</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_utils_README" onclick="loadDocument('js_engine_model_utils_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Utils 模块
   </li>
 </ul>
 </div>
@@ -564,7 +615,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/vdisplay</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_vdisplay_README" onclick="loadDocument('js_engine_model_vdisplay_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Vdisplay 模块
   </li>
 </ul>
 </div>
@@ -572,7 +623,7 @@
 <div class="sidebar-section-title">📄 js_engine/model/yolo</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="js_engine_model_yolo_README" onclick="loadDocument('js_engine_model_yolo_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Yolo 模块
   </li>
 </ul>
 </div>
@@ -580,7 +631,7 @@
 <div class="sidebar-section-title">🌙 lua_engine</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_README" onclick="loadDocument('lua_engine_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>AutoGo Lua Engine
   </li>
 </ul>
 </div>
@@ -588,7 +639,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/app</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_app_README" onclick="loadDocument('lua_engine_model_app_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>App 模块
   </li>
 </ul>
 </div>
@@ -596,7 +647,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/console</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_console_README" onclick="loadDocument('lua_engine_model_console_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Console 模块
   </li>
 </ul>
 </div>
@@ -604,7 +655,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/coroutine</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_coroutine_README" onclick="loadDocument('lua_engine_model_coroutine_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Coroutine 模块
   </li>
 </ul>
 </div>
@@ -612,7 +663,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/device</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_device_README" onclick="loadDocument('lua_engine_model_device_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Device 模块
   </li>
 </ul>
 </div>
@@ -620,7 +671,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/dotocr</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_dotocr_README" onclick="loadDocument('lua_engine_model_dotocr_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>DotOCR 模块
   </li>
 </ul>
 </div>
@@ -628,7 +679,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/files</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_files_README" onclick="loadDocument('lua_engine_model_files_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Files 模块
   </li>
 </ul>
 </div>
@@ -636,7 +687,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/http</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_http_README" onclick="loadDocument('lua_engine_model_http_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>HTTP 模块
   </li>
 </ul>
 </div>
@@ -644,7 +695,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/hud</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_hud_README" onclick="loadDocument('lua_engine_model_hud_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>HUD 模块
   </li>
 </ul>
 </div>
@@ -652,7 +703,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/images</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_images_README" onclick="loadDocument('lua_engine_model_images_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Images 模块
   </li>
 </ul>
 </div>
@@ -660,7 +711,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/ime</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_ime_README" onclick="loadDocument('lua_engine_model_ime_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>IME 模块
   </li>
 </ul>
 </div>
@@ -668,7 +719,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/imgui</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_imgui_README" onclick="loadDocument('lua_engine_model_imgui_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>ImGui 模块
   </li>
 </ul>
 </div>
@@ -676,7 +727,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/media</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_media_README" onclick="loadDocument('lua_engine_model_media_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Media 模块
   </li>
 </ul>
 </div>
@@ -684,7 +735,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/motion</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_motion_README" onclick="loadDocument('lua_engine_model_motion_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Motion 模块
   </li>
 </ul>
 </div>
@@ -692,7 +743,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/opencv</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_opencv_README" onclick="loadDocument('lua_engine_model_opencv_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>OpenCV 模块
   </li>
 </ul>
 </div>
@@ -700,7 +751,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/plugin</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_plugin_README" onclick="loadDocument('lua_engine_model_plugin_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Plugin 模块
   </li>
 </ul>
 </div>
@@ -708,7 +759,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/ppocr</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_ppocr_README" onclick="loadDocument('lua_engine_model_ppocr_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>PPOCR 模块
   </li>
 </ul>
 </div>
@@ -716,7 +767,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/rhino</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_rhino_README" onclick="loadDocument('lua_engine_model_rhino_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Rhino 模块
   </li>
 </ul>
 </div>
@@ -724,7 +775,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/storages</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_storages_README" onclick="loadDocument('lua_engine_model_storages_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Storages 模块
   </li>
 </ul>
 </div>
@@ -732,7 +783,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/system</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_system_README" onclick="loadDocument('lua_engine_model_system_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>System 模块
   </li>
 </ul>
 </div>
@@ -740,7 +791,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/uiacc</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_uiacc_README" onclick="loadDocument('lua_engine_model_uiacc_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Uiacc 模块
   </li>
 </ul>
 </div>
@@ -748,7 +799,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/utils</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_utils_README" onclick="loadDocument('lua_engine_model_utils_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Utils 模块
   </li>
 </ul>
 </div>
@@ -756,7 +807,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/vdisplay</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_vdisplay_README" onclick="loadDocument('lua_engine_model_vdisplay_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Vdisplay 模块
   </li>
 </ul>
 </div>
@@ -764,7 +815,7 @@
 <div class="sidebar-section-title">📄 lua_engine/model/yolo</div>
 <ul class="sidebar-menu">
   <li class="sidebar-menu-item" data-doc-id="lua_engine_model_yolo_README" onclick="loadDocument('lua_engine_model_yolo_README')">
-    <span class="icon">📄</span>README
+    <span class="icon">📄</span>Yolo 模块
   </li>
 </ul>
 </div>
@@ -799,17 +850,30 @@
         });
         
         // 加载文档
-        function loadDocument(docId) {
+        function loadDocument(docId, headingId = null) {
             const doc = documents[docId];
             if (!doc) return;
             
             // 更新侧边栏选中状态
-            document.querySelectorAll('.sidebar-menu-item').forEach(item => {
+            document.querySelectorAll('.sidebar-menu-item, .sidebar-submenu-item').forEach(item => {
                 item.classList.remove('active');
             });
+            
             const activeItem = document.querySelector(`[data-doc-id="${docId}"]`);
             if (activeItem) {
                 activeItem.classList.add('active');
+            }
+            
+            // 如果指定了标题 ID，滚动到该位置
+            let content = doc.content;
+            if (headingId) {
+                // 等待内容加载后滚动
+                setTimeout(() => {
+                    const headingElement = document.getElementById(headingId);
+                    if (headingElement) {
+                        headingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
             }
             
             // 更新内容区
@@ -819,13 +883,39 @@
                     <h1>${doc.title}</h1>
                     <div class="breadcrumb">${doc.breadcrumb}</div>
                 </div>
-                ${doc.content}
+                ${content}
             `;
             
+            // 为所有标题添加 ID，方便跳转
+            addHeadingIds();
+            
             // 滚动到顶部
-            document.querySelector('.main-content').scrollTop = 0;
+            if (!headingId) {
+                document.querySelector('.main-content').scrollTop = 0;
+            }
             
             currentDoc = docId;
+        }
+        
+        // 为标题添加 ID
+        function addHeadingIds() {
+            const headings = document.querySelectorAll('#content-area h1, #content-area h2, #content-area h3, #content-area h4');
+            headings.forEach((heading, index) => {
+                const text = heading.textContent.trim();
+                const id = 'heading-' + index;
+                heading.id = id;
+            });
+        }
+        
+        // 展开/折叠子菜单
+        function toggleSubmenu(menuId) {
+            const submenu = document.getElementById('submenu-' + menuId);
+            const toggleIcon = document.getElementById('toggle-' + menuId);
+            
+            if (submenu) {
+                submenu.classList.toggle('show');
+                toggleIcon.classList.toggle('expanded');
+            }
         }
         
         // 搜索功能

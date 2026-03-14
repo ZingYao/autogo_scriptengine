@@ -178,6 +178,57 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             opacity: 0.7;
         }}
         
+        .sidebar-menu-item .toggle-icon {{
+            float: right;
+            transition: transform 0.3s ease;
+            opacity: 0.7;
+        }}
+        
+        .sidebar-menu-item.expanded .toggle-icon {{
+            transform: rotate(90deg);
+        }}
+        
+        .sidebar-submenu {{
+            display: none;
+            padding-left: 20px;
+            background: rgba(0,0,0,0.1);
+        }}
+        
+        .sidebar-submenu.show {{
+            display: block;
+        }}
+        
+        .sidebar-submenu-item {{
+            padding: 8px 20px 8px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            border-left: 2px solid transparent;
+        }}
+        
+        .sidebar-submenu-item:hover {{
+            background: rgba(255,255,255,0.05);
+            border-left-color: rgba(255,255,255,0.3);
+        }}
+        
+        .sidebar-submenu-item.active {{
+            background: rgba(255,255,255,0.1);
+            border-left-color: white;
+            font-weight: 500;
+        }}
+        
+        .sidebar-submenu-item.level-2 {{
+            padding-left: 40px;
+            font-size: 0.8em;
+            opacity: 0.9;
+        }}
+        
+        .sidebar-submenu-item.level-3 {{
+            padding-left: 50px;
+            font-size: 0.75em;
+            opacity: 0.8;
+        }}
+        
         /* 右侧内容区 */
         .main-content {{
             flex: 1;
@@ -430,17 +481,30 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         }});
         
         // 加载文档
-        function loadDocument(docId) {{
+        function loadDocument(docId, headingId = null) {{
             const doc = documents[docId];
             if (!doc) return;
             
             // 更新侧边栏选中状态
-            document.querySelectorAll('.sidebar-menu-item').forEach(item => {{
+            document.querySelectorAll('.sidebar-menu-item, .sidebar-submenu-item').forEach(item => {{
                 item.classList.remove('active');
             }});
+            
             const activeItem = document.querySelector(`[data-doc-id="${{docId}}"]`);
             if (activeItem) {{
                 activeItem.classList.add('active');
+            }}
+            
+            // 如果指定了标题 ID，滚动到该位置
+            let content = doc.content;
+            if (headingId) {{
+                // 等待内容加载后滚动
+                setTimeout(() => {{
+                    const headingElement = document.getElementById(headingId);
+                    if (headingElement) {{
+                        headingElement.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+                    }}
+                }}, 100);
             }}
             
             // 更新内容区
@@ -450,13 +514,39 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                     <h1>${{doc.title}}</h1>
                     <div class="breadcrumb">${{doc.breadcrumb}}</div>
                 </div>
-                ${{doc.content}}
+                ${{content}}
             `;
             
+            // 为所有标题添加 ID，方便跳转
+            addHeadingIds();
+            
             // 滚动到顶部
-            document.querySelector('.main-content').scrollTop = 0;
+            if (!headingId) {{
+                document.querySelector('.main-content').scrollTop = 0;
+            }}
             
             currentDoc = docId;
+        }}
+        
+        // 为标题添加 ID
+        function addHeadingIds() {{
+            const headings = document.querySelectorAll('#content-area h1, #content-area h2, #content-area h3, #content-area h4');
+            headings.forEach((heading, index) => {{
+                const text = heading.textContent.trim();
+                const id = 'heading-' + index;
+                heading.id = id;
+            }});
+        }}
+        
+        // 展开/折叠子菜单
+        function toggleSubmenu(menuId) {{
+            const submenu = document.getElementById('submenu-' + menuId);
+            const toggleIcon = document.getElementById('toggle-' + menuId);
+            
+            if (submenu) {{
+                submenu.classList.toggle('show');
+                toggleIcon.classList.toggle('expanded');
+            }}
         }}
         
         // 搜索功能
@@ -519,6 +609,22 @@ def convert_markdown_to_html(md_path):
         with open(md_path, 'r', encoding='utf-8') as f:
             md_content = f.read()
         
+        # 提取标题
+        title_match = re.search(r'^#\s+(.+)$', md_content, re.MULTILINE)
+        title = title_match.group(1) if title_match else '文档'
+        
+        # 提取所有标题（一级、二级、三级等）
+        headings = []
+        heading_pattern = r'^(#{1,4})\s+(.+)$'
+        for match in re.finditer(heading_pattern, md_content, re.MULTILINE):
+            level = len(match.group(1))
+            text = match.group(2).strip()
+            headings.append({
+                'level': level,
+                'text': text,
+                'id': f"heading-{len(headings)}"
+            })
+        
         # 转换 Markdown 到 HTML
         html_content = markdown.markdown(
             md_content,
@@ -531,13 +637,10 @@ def convert_markdown_to_html(md_path):
             ]
         )
         
-        # 提取标题
-        title_match = re.search(r'^#\s+(.+)$', md_content, re.MULTILINE)
-        title = title_match.group(1) if title_match else '文档'
-        
         return {
             'title': title,
-            'content': html_content
+            'content': html_content,
+            'headings': headings
         }
     except Exception as e:
         print(f"✗ 转换失败: {md_path} - {str(e)}")
@@ -555,7 +658,7 @@ def find_all_readmes(root_dir):
                 readmes.append(os.path.join(root, file))
     return readmes
 
-def generate_sidebar(project_root, readmes):
+def generate_sidebar(project_root, readmes, documents_data):
     """生成侧边栏内容"""
     # 按目录分组
     grouped = {}
@@ -599,13 +702,42 @@ def generate_sidebar(project_root, readmes):
             # 生成文档 ID
             doc_id = file_path.replace('/', '_').replace('.md', '')
             
-            # 文件名
-            file_name = os.path.basename(file_path)
-            display_name = file_name.replace('.md', '')
+            # 获取文档数据
+            doc_data = documents_data.get(doc_id, {})
+            doc_title = doc_data.get('title', '文档')
+            headings = doc_data.get('headings', [])
             
+            # 生成菜单项
             sidebar_html += f'  <li class="sidebar-menu-item" data-doc-id="{doc_id}" onclick="loadDocument(\'{doc_id}\')">\n'
-            sidebar_html += f'    <span class="icon">📄</span>{display_name}\n'
+            
+            # 如果有子标题，添加展开图标
+            if headings:
+                menu_id = doc_id.replace('_', '-')
+                sidebar_html += f'    <span class="icon">📄</span>{doc_title}\n'
+                sidebar_html += f'    <span class="toggle-icon" id="toggle-{menu_id}" onclick="event.stopPropagation(); toggleSubmenu(\'{menu_id}\')">▶</span>\n'
+            else:
+                sidebar_html += f'    <span class="icon">📄</span>{doc_title}\n'
+            
             sidebar_html += f'  </li>\n'
+            
+            # 如果有子标题，生成子菜单
+            if headings:
+                sidebar_html += f'  <ul class="sidebar-submenu" id="submenu-{menu_id}">\n'
+                
+                for heading in headings:
+                    level = heading['level']
+                    text = heading['text']
+                    heading_id = heading['id']
+                    
+                    # 根据级别设置缩进
+                    level_class = f"level-{level}" if level > 1 else ""
+                    indent = "  " * (level - 1)
+                    
+                    sidebar_html += f'    <li class="sidebar-submenu-item {level_class}" data-doc-id="{doc_id}" onclick="loadDocument(\'{doc_id}\', \'{heading_id}\')">\n'
+                    sidebar_html += f'      {indent}{text}\n'
+                    sidebar_html += f'    </li>\n'
+                
+                sidebar_html += f'  </ul>\n'
         
         sidebar_html += f'</ul>\n'
         sidebar_html += f'</div>\n'
@@ -655,7 +787,7 @@ def main():
     
     # 生成侧边栏
     print("正在生成侧边栏...")
-    sidebar_content = generate_sidebar(project_root, readmes)
+    sidebar_content = generate_sidebar(project_root, readmes, documents_data)
     
     # 生成 HTML
     print("正在生成 HTML 文件...")
