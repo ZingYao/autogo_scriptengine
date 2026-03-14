@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plugin 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Plugin 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/lua_engine/model/plugin/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="plugin">Plugin 模块</h1>
+<p>Plugin 模块提供了加载外部 APK 插件的功能，用于扩展应用程序的功能。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="pluginloadapkapkpath">plugin.loadApk(apkPath)</h3>
+<p>加载外部 APK 文件作为插件。</p>
+<p><strong>入参：</strong><br />
+- <code>apkPath</code>: APK 文件路径（字符串）</p>
+<p><strong>出参：</strong> ClassLoader 对象，用于加载插件中的类</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 加载 APK 插件</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">classLoader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">plugin</span><span class="p">.</span><span class="nx">loadApk</span><span class="p">(</span><span class="s2">&quot;/sdcard/plugin.apk&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件加载成功&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 示例1：加载单个插件</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">loadSinglePlugin</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">apkPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/sdcard/my_plugin.apk&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">files</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">apkPath</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;开始加载插件:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">apkPath</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">classLoader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">plugin</span><span class="p">.</span><span class="nx">loadApk</span><span class="p">(</span><span class="nx">apkPath</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">classLoader</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件加载成功&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="c1">// 使用 classLoader 加载插件中的类</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件加载失败&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件文件不存在:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">apkPath</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例2：加载多个插件</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">loadMultiplePlugins</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;/sdcard/plugin1.apk&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;/sdcard/plugin2.apk&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;/sdcard/plugin3.apk&quot;</span>
+<span class="w">    </span><span class="p">];</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">plugins</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">apkPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">plugins</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">files</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">apkPath</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;加载插件 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">apkPath</span><span class="p">);</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">classLoader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">plugin</span><span class="p">.</span><span class="nx">loadApk</span><span class="p">(</span><span class="nx">apkPath</span><span class="p">);</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">classLoader</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 加载成功&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 加载失败&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件文件不存在:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">apkPath</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例3：从目录加载所有插件</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">loadPluginsFromDirectory</span><span class="p">(</span><span class="nx">directory</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">pluginFiles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">files</span><span class="p">.</span><span class="nx">list</span><span class="p">(</span><span class="nx">directory</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">loadedCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;在目录中查找插件:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">directory</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">pluginFiles</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">fileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">pluginFiles</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">fileName</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s2">&quot;.apk&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">apkPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">directory</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;/&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">fileName</span><span class="p">;</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;加载插件:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fileName</span><span class="p">);</span>
+
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">classLoader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">plugin</span><span class="p">.</span><span class="nx">loadApk</span><span class="p">(</span><span class="nx">apkPath</span><span class="p">);</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">classLoader</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件加载成功:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fileName</span><span class="p">);</span>
+<span class="w">                </span><span class="nx">loadedCount</span><span class="o">++</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件加载失败:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fileName</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;共加载 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">loadedCount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 个插件&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例4：带错误处理的插件加载</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">loadPluginWithErrorHandling</span><span class="p">(</span><span class="nx">apkPath</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">files</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">apkPath</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;错误：插件文件不存在&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;加载插件:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">apkPath</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">classLoader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">plugin</span><span class="p">.</span><span class="nx">loadApk</span><span class="p">(</span><span class="nx">apkPath</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">classLoader</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件加载成功&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">classLoader</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;错误：插件加载失败&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;加载插件时发生异常:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例5：插件管理器</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">PluginManager</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">load</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">apkPath</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="nx">name</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件已存在:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">classLoader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">plugin</span><span class="p">.</span><span class="nx">loadApk</span><span class="p">(</span><span class="nx">apkPath</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">classLoader</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="nx">apkPath</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">loader</span><span class="o">:</span><span class="w"> </span><span class="nx">classLoader</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">loadedAt</span><span class="o">:</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">()</span>
+<span class="w">            </span><span class="p">};</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件加载成功:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件加载失败:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">unload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="nx">name</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="ow">delete</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件已卸载:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件不存在:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">plugins</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">names</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">names</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="c1">// 使用插件管理器</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">usePluginManager</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">PluginManager</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// 加载插件</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">&quot;/sdcard/plugin1.apk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;plugin1&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">&quot;/sdcard/plugin2.apk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;plugin2&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 列出所有插件</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">pluginList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">list</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;已加载的插件:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pluginList</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">));</span>
+
+<span class="w">    </span><span class="c1">// 获取插件信息</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">pluginInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;plugin1&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pluginInfo</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;插件路径:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pluginInfo</span><span class="p">.</span><span class="nx">path</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;加载时间:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pluginInfo</span><span class="p">.</span><span class="nx">loadedAt</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 卸载插件</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">unload</span><span class="p">(</span><span class="s2">&quot;plugin1&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 调用示例</span>
+<span class="nx">loadSinglePlugin</span><span class="p">();</span>
+<span class="nx">loadMultiplePlugins</span><span class="p">();</span>
+<span class="nx">loadPluginsFromDirectory</span><span class="p">(</span><span class="s2">&quot;/sdcard/plugins&quot;</span><span class="p">);</span>
+<span class="nx">loadPluginWithErrorHandling</span><span class="p">(</span><span class="s2">&quot;/sdcard/test_plugin.apk&quot;</span><span class="p">);</span>
+<span class="nx">usePluginManager</span><span class="p">();</span>
+</code></pre></div>
+
+<h2 id="_3">注意事项</h2>
+<ol>
+<li>加载 APK 插件需要相应的权限</li>
+<li>插件文件必须是有效的 APK 格式</li>
+<li>加载插件后，返回的 ClassLoader 对象可以用于加载插件中的类</li>
+<li>建议在加载插件前检查文件是否存在</li>
+<li>插件加载可能会失败，需要做好错误处理</li>
+<li>加载的插件会占用系统资源，使用完毕后应适当释放</li>
+<li>不同插件之间可能有依赖关系，需要按正确顺序加载</li>
+<li>插件的安全性需要自行验证，建议只加载可信来源的插件</li>
+</ol>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

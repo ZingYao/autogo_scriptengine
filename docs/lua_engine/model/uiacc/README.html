@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uiacc 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Uiacc 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/lua_engine/model/uiacc/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="uiacc">Uiacc 模块</h1>
+<p>Uiacc（UI Accessibility）模块提供了无障碍服务功能，用于查找和操作界面元素。</p>
+<h2 id="uiacc_1">Uiacc 选择器方法</h2>
+<h3 id="uiaccnewdisplayid">uiacc.new(displayId)</h3>
+<p>创建一个新的 Uiacc 对象。</p>
+<p><strong>入参：</strong><br />
+- <code>displayId</code>: 显示器 ID（整数，可选，默认 0）</p>
+<p><strong>出参：</strong> Uiacc 对象</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 Uiacc 对象</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiacctextu-value">uiacc.text(u, value)</h3>
+<p>根据文本内容选择元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>value</code>: 文本内容（字符串）</p>
+<p><strong>出参：</strong> Uiacc 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiacctextcontainsu-value">uiacc.textContains(u, value)</h3>
+<p>根据文本包含内容选择元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>value</code>: 文本包含内容（字符串）</p>
+<p><strong>出参：</strong> Uiacc 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">textContains</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiacctextstartswithu-value">uiacc.textStartsWith(u, value)</h3>
+<p>根据文本前缀选择元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>value</code>: 文本前缀（字符串）</p>
+<p><strong>出参：</strong> Uiacc 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">textStartsWith</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiacctextendswithu-value">uiacc.textEndsWith(u, value)</h3>
+<p>根据文本后缀选择元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>value</code>: 文本后缀（字符串）</p>
+<p><strong>出参：</strong> Uiacc 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">textEndsWith</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiacctextmatchesu-value">uiacc.textMatches(u, value)</h3>
+<p>根据正则表达式选择元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>value</code>: 正则表达式（字符串）</p>
+<p><strong>出参：</strong> Uiacc 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">textMatches</span><span class="p">(</span><span class="s2">&quot;.*设置.*&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiaccdescu-value">uiacc.desc(u, value)</h3>
+<p>根据描述内容选择元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>value</code>: 描述内容（字符串）</p>
+<p><strong>出参：</strong> Uiacc 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">desc</span><span class="p">(</span><span class="s2">&quot;设置按钮&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiaccidu-value">uiacc.id(u, value)</h3>
+<p>根据 ID 选择元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>value</code>: 元素 ID（字符串）</p>
+<p><strong>出参：</strong> Uiacc 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">id</span><span class="p">(</span><span class="s2">&quot;com.android.settings:id/button&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiaccclassnameu-value">uiacc.className(u, value)</h3>
+<p>根据类名选择元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>value</code>: 类名（字符串）</p>
+<p><strong>出参：</strong> Uiacc 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">className</span><span class="p">(</span><span class="s2">&quot;android.widget.Button&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiaccboundsu-left-top-right-bottom">uiacc.bounds(u, left, top, right, bottom)</h3>
+<p>根据边界选择元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>left</code>: 左边界（整数）<br />
+- <code>top</code>: 上边界（整数）<br />
+- <code>right</code>: 右边界（整数）<br />
+- <code>bottom</code>: 下边界（整数）</p>
+<p><strong>出参：</strong> Uiacc 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">bounds</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiaccclickableu-value">uiacc.clickable(u, value)</h3>
+<p>根据是否可点击选择元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>value</code>: 是否可点击（布尔值）</p>
+<p><strong>出参：</strong> Uiacc 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">clickable</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="uiacc_2">Uiacc 查找方法</h2>
+<h3 id="uiaccfindonceu">uiacc.findOnce(u)</h3>
+<p>查找第一个匹配的元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象</p>
+<p><strong>出参：</strong> UiObject 对象，未找到返回 null</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">findOnce</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到元素&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="uiaccfindu">uiacc.find(u)</h3>
+<p>查找所有匹配的元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象</p>
+<p><strong>出参：</strong> UiObject 数组</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">className</span><span class="p">(</span><span class="s2">&quot;android.widget.Button&quot;</span><span class="p">);</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">objs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">objs</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;个按钮&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="uiaccclicku-text">uiacc.click(u, text)</h3>
+<p>点击指定文本的元素。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>text</code>: 要点击的文本（字符串）</p>
+<p><strong>出参：</strong> 布尔值，true 表示成功，false 表示失败</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">();</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="nx">u</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;点击成功&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="uiaccwaitforu-timeout">uiacc.waitFor(u, timeout)</h3>
+<p>等待元素出现。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象<br />
+- <code>timeout</code>: 超时时间（毫秒，整数）</p>
+<p><strong>出参：</strong> UiObject 对象，超时返回 null</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">waitFor</span><span class="p">(</span><span class="nx">u</span><span class="p">,</span><span class="w"> </span><span class="mf">5000</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;元素已出现&quot;</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;等待超时&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="uiaccreleaseu">uiacc.release(u)</h3>
+<p>释放 Uiacc 对象资源。</p>
+<p><strong>入参：</strong><br />
+- <code>u</code>: Uiacc 对象</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">();</span>
+<span class="c1">// 使用 u...</span>
+<span class="nx">uiacc</span><span class="p">.</span><span class="nx">release</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="uiobject">UiObject 方法</h2>
+<h3 id="uiaccobjclickobj">uiacc.objClick(obj)</h3>
+<p>点击元素。</p>
+<p><strong>入参：</strong><br />
+- <code>obj</code>: UiObject 对象</p>
+<p><strong>出参：</strong> 布尔值，true 表示成功，false 表示失败</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">findOnce</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">objClick</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="uiaccclickcenterobj">uiacc.clickCenter(obj)</h3>
+<p>点击元素中心。</p>
+<p><strong>入参：</strong><br />
+- <code>obj</code>: UiObject 对象</p>
+<p><strong>出参：</strong> 布尔值，true 表示成功，false 表示失败</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">findOnce</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">clickCenter</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="uiaccgettextobj">uiacc.getText(obj)</h3>
+<p>获取元素文本。</p>
+<p><strong>入参：</strong><br />
+- <code>obj</code>: UiObject 对象</p>
+<p><strong>出参：</strong> 元素文本（字符串）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">className</span><span class="p">(</span><span class="s2">&quot;android.widget.TextView&quot;</span><span class="p">);</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">findOnce</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">getText</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;元素文本:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="uiaccgetboundsobj">uiacc.getBounds(obj)</h3>
+<p>获取元素边界。</p>
+<p><strong>入参：</strong><br />
+- <code>obj</code>: UiObject 对象</p>
+<p><strong>出参：</strong> 包含 left、top、right、bottom 的对象</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">findOnce</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">bounds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">getBounds</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;边界:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">bounds</span><span class="p">.</span><span class="nx">left</span><span class="p">,</span><span class="w"> </span><span class="nx">bounds</span><span class="p">.</span><span class="nx">top</span><span class="p">,</span><span class="w"> </span><span class="nx">bounds</span><span class="p">.</span><span class="nx">right</span><span class="p">,</span><span class="w"> </span><span class="nx">bounds</span><span class="p">.</span><span class="nx">bottom</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="_1">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 示例1：查找并点击元素</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">findAndClick</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">findOnce</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到设置按钮&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">objClick</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;未找到设置按钮&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例2：等待元素出现</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">waitForElement</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;加载完成&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">waitFor</span><span class="p">(</span><span class="nx">u</span><span class="p">,</span><span class="w"> </span><span class="mf">10000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;元素已出现&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;等待超时&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例3：查找多个元素</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">findMultipleElements</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">className</span><span class="p">(</span><span class="s2">&quot;android.widget.Button&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">objs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">objs</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;个按钮&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">objs</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">getText</span><span class="p">(</span><span class="nx">objs</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;按钮&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例4：使用多个条件</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">useMultipleConditions</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">className</span><span class="p">(</span><span class="s2">&quot;android.widget.Button&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">clickable</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">findOnce</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到符合条件的元素&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">objClick</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例5：获取元素信息</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">getElementInfo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">().</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">findOnce</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">getText</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">bounds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">getBounds</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">clickable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">getClickable</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文本:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;边界:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">bounds</span><span class="p">.</span><span class="nx">left</span><span class="p">,</span><span class="w"> </span><span class="nx">bounds</span><span class="p">.</span><span class="nx">top</span><span class="p">,</span><span class="w"> </span><span class="nx">bounds</span><span class="p">.</span><span class="nx">right</span><span class="p">,</span><span class="w"> </span><span class="nx">bounds</span><span class="p">.</span><span class="nx">bottom</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;可点击:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">clickable</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例6：点击指定文本</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">clickByText</span><span class="p">(</span><span class="nx">targetText</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="nx">u</span><span class="p">,</span><span class="w"> </span><span class="nx">targetText</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;点击成功:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">targetText</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;点击失败:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">targetText</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例7：遍历所有元素</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">traverseAllElements</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="ow">new</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">objs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;共有&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">objs</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;个元素&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">objs</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">objs</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">getText</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">className</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">uiacc</span><span class="p">.</span><span class="nx">getClassName</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">className</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 调用示例</span>
+<span class="nx">findAndClick</span><span class="p">();</span>
+<span class="nx">waitForElement</span><span class="p">();</span>
+<span class="nx">findMultipleElements</span><span class="p">();</span>
+<span class="nx">useMultipleConditions</span><span class="p">();</span>
+<span class="nx">getElementInfo</span><span class="p">();</span>
+<span class="nx">clickByText</span><span class="p">(</span><span class="s2">&quot;设置&quot;</span><span class="p">);</span>
+<span class="nx">traverseAllElements</span><span class="p">();</span>
+</code></pre></div>
+
+<h2 id="_2">注意事项</h2>
+<ol>
+<li>使用 Uiacc 功能需要启用无障碍服务</li>
+<li>选择器方法支持链式调用，可以组合多个条件</li>
+<li>findOnce 只返回第一个匹配的元素</li>
+<li>find 返回所有匹配的元素数组</li>
+<li>waitFor 会阻塞当前线程直到元素出现或超时</li>
+<li>使用完毕后，建议调用 release 释放资源</li>
+<li>某些应用可能限制了无障碍服务的访问</li>
+<li>元素属性可能会动态变化，建议实时获取</li>
+<li>点击操作可能需要适当的延迟</li>
+<li>建议在操作前检查元素是否存在</li>
+</ol>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

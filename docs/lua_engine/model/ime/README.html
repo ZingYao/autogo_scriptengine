@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IME 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>IME 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/lua_engine/model/ime/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="ime">IME 模块</h1>
+<p>IME（Input Method Editor）模块提供了输入法相关的功能，包括剪切板操作、按键模拟、文本输入和输入法管理。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="imegetcliptext">ime.getClipText()</h3>
+<p>获取剪切板内容。</p>
+<p><strong>入参：</strong> 无</p>
+<p><strong>出参：</strong> 剪切板中的文本内容（字符串）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 获取剪切板内容</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">clipText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ime</span><span class="p">.</span><span class="nx">getClipText</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;剪切板内容:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">clipText</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imesetcliptexttext">ime.setClipText(text)</h3>
+<p>设置剪切板内容。</p>
+<p><strong>入参：</strong><br />
+- <code>text</code>: 要设置的文本内容（字符串）</p>
+<p><strong>出参：</strong> 布尔值，true 表示设置成功，false 表示失败</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置剪切板内容</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ime</span><span class="p">.</span><span class="nx">setClipText</span><span class="p">(</span><span class="s2">&quot;这是新的剪切板内容&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;剪切板设置成功&quot;</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;剪切板设置失败&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imekeyactioncode">ime.keyAction(code)</h3>
+<p>模拟按键操作。</p>
+<p><strong>入参：</strong><br />
+- <code>code</code>: 按键码（整数）</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 模拟按键</span>
+<span class="nx">ime</span><span class="p">.</span><span class="nx">keyAction</span><span class="p">(</span><span class="mf">3</span><span class="p">);</span><span class="w"> </span><span class="c1">// 模拟 HOME 键</span>
+<span class="nx">ime</span><span class="p">.</span><span class="nx">keyAction</span><span class="p">(</span><span class="mf">4</span><span class="p">);</span><span class="w"> </span><span class="c1">// 模拟 BACK 键</span>
+</code></pre></div>
+
+<h3 id="imeinputtexttext-displayid">ime.inputText(text, displayId)</h3>
+<p>输入文本到当前焦点。</p>
+<p><strong>入参：</strong><br />
+- <code>text</code>: 要输入的文本（字符串）<br />
+- <code>displayId</code>: 显示器 ID（整数，可选，默认 0）</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 输入文本</span>
+<span class="nx">ime</span><span class="p">.</span><span class="nx">inputText</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">);</span>
+<span class="nx">ime</span><span class="p">.</span><span class="nx">inputText</span><span class="p">(</span><span class="s2">&quot;测试文本&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imegetimelist">ime.getIMEList()</h3>
+<p>获取系统中的输入法列表。</p>
+<p><strong>入参：</strong> 无</p>
+<p><strong>出参：</strong> 输入法列表（数组）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 获取输入法列表</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">imeList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ime</span><span class="p">.</span><span class="nx">getIMEList</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;输入法列表:&quot;</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">imeList</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">((</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;. &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">imeList</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imesetcurrentimepackagename">ime.setCurrentIME(packageName)</h3>
+<p>设置当前输入法。</p>
+<p><strong>入参：</strong><br />
+- <code>packageName</code>: 输入法的包名（字符串）</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置当前输入法</span>
+<span class="nx">ime</span><span class="p">.</span><span class="nx">setCurrentIME</span><span class="p">(</span><span class="s2">&quot;com.android.inputmethod.pinyin&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 示例1：剪切板操作</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">clipboardDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 设置剪切板内容</span>
+<span class="w">    </span><span class="nx">ime</span><span class="p">.</span><span class="nx">setClipText</span><span class="p">(</span><span class="s2">&quot;这是测试文本&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 获取剪切板内容</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">clipText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ime</span><span class="p">.</span><span class="nx">getClipText</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;剪切板内容:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">clipText</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例2：文本输入</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">inputTextDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 点击输入框</span>
+<span class="w">    </span><span class="nx">motion</span><span class="p">.</span><span class="nx">tap</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">utils</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mf">500</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 输入文本</span>
+<span class="w">    </span><span class="nx">ime</span><span class="p">.</span><span class="nx">inputText</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">utils</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mf">1000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 输入更多文本</span>
+<span class="w">    </span><span class="nx">ime</span><span class="p">.</span><span class="nx">inputText</span><span class="p">(</span><span class="s2">&quot;这是一段测试文本&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例3：按键模拟</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">keyActionDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 模拟 HOME 键</span>
+<span class="w">    </span><span class="nx">ime</span><span class="p">.</span><span class="nx">keyAction</span><span class="p">(</span><span class="mf">3</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">utils</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mf">1000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 模拟 BACK 键</span>
+<span class="w">    </span><span class="nx">ime</span><span class="p">.</span><span class="nx">keyAction</span><span class="p">(</span><span class="mf">4</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">utils</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mf">1000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 模拟 MENU 键</span>
+<span class="w">    </span><span class="nx">ime</span><span class="p">.</span><span class="nx">keyAction</span><span class="p">(</span><span class="mf">82</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例4：输入法管理</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">imeManagementDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 获取输入法列表</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">imeList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ime</span><span class="p">.</span><span class="nx">getIMEList</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;当前系统输入法:&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">imeList</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">((</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;. &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">imeList</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 切换到指定输入法</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">imeList</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">ime</span><span class="p">.</span><span class="nx">setCurrentIME</span><span class="p">(</span><span class="nx">imeList</span><span class="p">[</span><span class="mf">0</span><span class="p">]);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;已切换到:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">imeList</span><span class="p">[</span><span class="mf">0</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例5：剪切板复制粘贴</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">copyPasteDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 复制文本到剪切板</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">textToCopy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;这是要复制的文本&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">ime</span><span class="p">.</span><span class="nx">setClipText</span><span class="p">(</span><span class="nx">textToCopy</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;已复制:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">textToCopy</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 粘贴文本</span>
+<span class="w">    </span><span class="nx">motion</span><span class="p">.</span><span class="nx">tap</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">);</span><span class="w"> </span><span class="c1">// 点击输入框</span>
+<span class="w">    </span><span class="nx">utils</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mf">500</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">clipText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ime</span><span class="p">.</span><span class="nx">getClipText</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">ime</span><span class="p">.</span><span class="nx">inputText</span><span class="p">(</span><span class="nx">clipText</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;已粘贴:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">clipText</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例6：批量输入</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">batchInputDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">texts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;第一行文本&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;第二行文本&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;第三行文本&quot;</span>
+<span class="w">    </span><span class="p">];</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">texts</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">ime</span><span class="p">.</span><span class="nx">inputText</span><span class="p">(</span><span class="nx">texts</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="w">        </span><span class="nx">ime</span><span class="p">.</span><span class="nx">keyAction</span><span class="p">(</span><span class="mf">66</span><span class="p">);</span><span class="w"> </span><span class="c1">// 模拟回车键</span>
+<span class="w">        </span><span class="nx">utils</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mf">500</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 调用示例</span>
+<span class="nx">clipboardDemo</span><span class="p">();</span>
+<span class="nx">inputTextDemo</span><span class="p">();</span>
+<span class="nx">keyActionDemo</span><span class="p">();</span>
+<span class="nx">imeManagementDemo</span><span class="p">();</span>
+<span class="nx">copyPasteDemo</span><span class="p">();</span>
+<span class="nx">batchInputDemo</span><span class="p">();</span>
+</code></pre></div>
+
+<h2 id="_3">注意事项</h2>
+<ol>
+<li>按键码对应 Android 的 KeyEvent 常量，如 3=HOME, 4=BACK, 66=ENTER</li>
+<li>输入文本前，需要确保焦点在输入框中</li>
+<li>切换输入法可能需要系统权限</li>
+<li>剪切板操作可能受到系统限制</li>
+<li>displayId 用于多显示器环境，通常为 0 表示主显示器</li>
+<li>某些按键操作可能需要 root 权限或特殊权限</li>
+<li>输入法切换可能需要用户手动确认</li>
+<li>建议在输入文本前添加适当的延迟，确保焦点已获取</li>
+</ol>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

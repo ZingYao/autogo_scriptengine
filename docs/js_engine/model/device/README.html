@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Device 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/js_engine/model/device/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="device">Device 模块</h1>
+<p>Device 模块提供了设备信息获取和设备控制功能。</p>
+<h2 id="_1">属性</h2>
+<h3 id="devicewidth">device.width</h3>
+<p>设备分辨率宽度，横屏和竖屏时的数值不同。</p>
+<p><strong>类型</strong>: <code>number</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;屏幕宽度: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">width</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="deviceheight">device.height</h3>
+<p>设备分辨率高度，横屏和竖屏时的数值不同。</p>
+<p><strong>类型</strong>: <code>number</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;屏幕高度: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">height</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicesdkint">device.sdkInt</h3>
+<p>安卓系统 API 版本。例如安卓 4.4 的 sdkInt 为 19。</p>
+<p><strong>类型</strong>: <code>number</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">sdkInt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">sdkInt</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;SDK版本: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">sdkInt</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicecpuabi">device.cpuAbi</h3>
+<p>设备的 CPU 架构，如 <code>"arm64-v8a"</code>, <code>"x86"</code>, <code>"x86_64"</code>。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">cpuAbi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">cpuAbi</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;CPU架构: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">cpuAbi</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicebuildid">device.buildId</h3>
+<p>设备构建ID。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">buildId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">buildId</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;构建ID: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">buildId</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicebroad">device.broad</h3>
+<p>设备主板。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">broad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">broad</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;主板: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">broad</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicebrand">device.brand</h3>
+<p>设备品牌。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">brand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">brand</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;品牌: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">brand</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicedevicename">device.deviceName</h3>
+<p>设备名称。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">deviceName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">deviceName</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;设备名称: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">deviceName</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicemodel">device.model</h3>
+<p>设备型号。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">model</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;型号: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">model</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="deviceproduct">device.product</h3>
+<p>设备产品名。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">product</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;产品名: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">product</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicebootloader">device.bootloader</h3>
+<p>设备引导程序版本。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">bootloader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">bootloader</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;引导程序: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">bootloader</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicehardware">device.hardware</h3>
+<p>设备硬件名称。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">hardware</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">hardware</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;硬件: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">hardware</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicefingerprint">device.fingerprint</h3>
+<p>设备指纹。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">fingerprint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">fingerprint</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;指纹: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">fingerprint</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="deviceserial">device.serial</h3>
+<p>设备序列号。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">serial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">serial</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;序列号: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">serial</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="deviceincremental">device.incremental</h3>
+<p>设备增量版本。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">incremental</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">incremental</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;增量版本: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">incremental</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicerelease">device.release</h3>
+<p>设备发布版本。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">release</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">release</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;发布版本: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">release</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicebaseos">device.baseOS</h3>
+<p>设备基础操作系统。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">baseOS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">baseOS</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;基础操作系统: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">baseOS</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicesecuritypatch">device.securityPatch</h3>
+<p>设备安全补丁级别。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">securityPatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">securityPatch</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;安全补丁: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">securityPatch</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicecodename">device.codename</h3>
+<p>设备代号。</p>
+<p><strong>类型</strong>: <code>string</code> (只读)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">codename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">codename</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;代号: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">codename</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_2">方法列表</h2>
+<h3 id="devicegetimei">device.getImei()</h3>
+<p>返回设备的 IMEI。</p>
+<p><strong>返回值</strong>: <code>string</code> - IMEI 号码</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">imei</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getImei</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;IMEI: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">imei</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetandroidid">device.getAndroidId()</h3>
+<p>返回设备的 Android ID。</p>
+<p><strong>返回值</strong>: <code>string</code> - Android ID</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">androidId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getAndroidId</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Android ID: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">androidId</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetwifimac">device.getWifiMac()</h3>
+<p>获取设备 WIFI-MAC。</p>
+<p><strong>返回值</strong>: <code>string</code> - WIFI MAC 地址</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">wifiMac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getWifiMac</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;WIFI MAC: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">wifiMac</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetwlanmac">device.getWlanMac()</h3>
+<p>获取设备以太网 MAC。</p>
+<p><strong>返回值</strong>: <code>string</code> - 以太网 MAC 地址</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">wlanMac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getWlanMac</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;以太网 MAC: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">wlanMac</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetnotification">device.getNotification()</h3>
+<p>获取通知信息。</p>
+<p><strong>返回值</strong>: <code>string</code> - 通知信息</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">notification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getNotification</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;通知: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">notification</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetip">device.getIp()</h3>
+<p>获取设备局域网 IP 地址。</p>
+<p><strong>返回值</strong>: <code>string</code> - IP 地址</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getIp</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;IP地址: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">ip</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetbrightness">device.getBrightness()</h3>
+<p>返回当前的(手动)亮度。范围为 0~255。</p>
+<p><strong>返回值</strong>: <code>number</code> - 当前亮度值</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">brightness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getBrightness</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;当前亮度: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">brightness</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetbrightnessmode">device.getBrightnessMode()</h3>
+<p>返回当前亮度模式，0 为手动亮度，1 为自动亮度。</p>
+<p><strong>返回值</strong>: <code>number</code> - 亮度模式</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">brightnessMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getBrightnessMode</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">brightnessMode</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;手动亮度模式&quot;</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;自动亮度模式&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="devicegetmusicvolume">device.getMusicVolume()</h3>
+<p>返回当前媒体音量。</p>
+<p><strong>返回值</strong>: <code>number</code> - 媒体音量值</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">musicVolume</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getMusicVolume</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;媒体音量: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">musicVolume</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetnotificationvolume">device.getNotificationVolume()</h3>
+<p>返回当前通知音量。</p>
+<p><strong>返回值</strong>: <code>number</code> - 通知音量值</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">notificationVolume</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getNotificationVolume</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;通知音量: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">notificationVolume</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetalarmvolume">device.getAlarmVolume()</h3>
+<p>返回当前闹钟音量。</p>
+<p><strong>返回值</strong>: <code>number</code> - 闹钟音量值</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">alarmVolume</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getAlarmVolume</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;闹钟音量: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">alarmVolume</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetmusicmaxvolume">device.getMusicMaxVolume()</h3>
+<p>返回媒体音量的最大值。</p>
+<p><strong>返回值</strong>: <code>number</code> - 媒体音量最大值</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">maxMusicVolume</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getMusicMaxVolume</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;媒体音量最大值: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">maxMusicVolume</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetnotificationmaxvolume">device.getNotificationMaxVolume()</h3>
+<p>返回通知音量的最大值。</p>
+<p><strong>返回值</strong>: <code>number</code> - 通知音量最大值</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">maxNotificationVolume</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getNotificationMaxVolume</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;通知音量最大值: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">maxNotificationVolume</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetalarmmaxvolume">device.getAlarmMaxVolume()</h3>
+<p>返回闹钟音量的最大值。</p>
+<p><strong>返回值</strong>: <code>number</code> - 闹钟音量最大值</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">maxAlarmVolume</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getAlarmMaxVolume</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;闹钟音量最大值: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">maxAlarmVolume</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicesetmusicvolumevolume">device.setMusicVolume(volume)</h3>
+<p>设置当前媒体音量。</p>
+<p><strong>参数</strong>:<br />
+- <code>volume</code> (number): 音量值</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">device</span><span class="p">.</span><span class="nx">setMusicVolume</span><span class="p">(</span><span class="mf">50</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;媒体音量已设置为50&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicesetnotificationvolumevolume">device.setNotificationVolume(volume)</h3>
+<p>设置当前通知音量。</p>
+<p><strong>参数</strong>:<br />
+- <code>volume</code> (number): 音量值</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">device</span><span class="p">.</span><span class="nx">setNotificationVolume</span><span class="p">(</span><span class="mf">50</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;通知音量已设置为50&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicesetalarmvolumevolume">device.setAlarmVolume(volume)</h3>
+<p>设置当前闹钟音量。</p>
+<p><strong>参数</strong>:<br />
+- <code>volume</code> (number): 音量值</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">device</span><span class="p">.</span><span class="nx">setAlarmVolume</span><span class="p">(</span><span class="mf">50</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;闹钟音量已设置为50&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetbattery">device.getBattery()</h3>
+<p>返回当前电量百分比。</p>
+<p><strong>返回值</strong>: <code>number</code> - 电量百分比 (0-100)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">battery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getBattery</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;电量: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">battery</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetbatterystatus">device.getBatteryStatus()</h3>
+<p>获取电池状态。1：没有充电；2：正充电；3：没插充电器；4：不充电；5：电池充满。</p>
+<p><strong>返回值</strong>: <code>number</code> - 电池状态</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">batteryStatus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getBatteryStatus</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;电池状态: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">batteryStatus</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicesetbatterystatusvalue">device.setBatteryStatus(value)</h3>
+<p>模拟电池状态。1：没有充电；2：正充电；5：电池充满。</p>
+<p><strong>参数</strong>:<br />
+- <code>value</code> (number): 电池状态值</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">device</span><span class="p">.</span><span class="nx">setBatteryStatus</span><span class="p">(</span><span class="mf">2</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;电池状态已设置为充电中&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicesetbatterylevelvalue">device.setBatteryLevel(value)</h3>
+<p>模拟电池电量百分百 0-100。</p>
+<p><strong>参数</strong>:<br />
+- <code>value</code> (number): 电量百分比 (0-100)</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">device</span><span class="p">.</span><span class="nx">setBatteryLevel</span><span class="p">(</span><span class="mf">80</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;电池电量已设置为80%&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegettotalmem">device.getTotalMem()</h3>
+<p>返回设备内存总量，单位(KB)。1MB = 1024KB。</p>
+<p><strong>返回值</strong>: <code>number</code> - 内存总量(KB)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">totalMem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getTotalMem</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;总内存: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="nx">totalMem</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1024</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;MB&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicegetavailmem">device.getAvailMem()</h3>
+<p>返回设备当前可用的内存，单位字节(KB)。</p>
+<p><strong>返回值</strong>: <code>number</code> - 可用内存(KB)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">availMem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getAvailMem</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;可用内存: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="nx">availMem</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1024</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;MB&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="deviceisscreenon">device.isScreenOn()</h3>
+<p>返回设备屏幕是否是亮着的。如果屏幕亮着，返回 <code>true</code>；否则返回 <code>false</code>。</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 屏幕是否亮着</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">device</span><span class="p">.</span><span class="nx">isScreenOn</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;屏幕已点亮&quot;</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;屏幕已关闭&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="deviceisscreenunlock">device.isScreenUnlock()</h3>
+<p>返回屏幕锁是否已经解开。已经解开返回 <code>true</code>；否则返回 <code>false</code>。</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 屏幕是否已解锁</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">device</span><span class="p">.</span><span class="nx">isScreenUnlock</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;屏幕已解锁&quot;</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;屏幕已锁定&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="devicewakeup">device.wakeUp()</h3>
+<p>唤醒设备，包括唤醒设备 CPU、屏幕等，可以用来点亮屏幕。</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">device</span><span class="p">.</span><span class="nx">wakeUp</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;设备已唤醒&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicekeepscreenon">device.keepScreenOn()</h3>
+<p>保持屏幕常亮。</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">device</span><span class="p">.</span><span class="nx">keepScreenOn</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;屏幕常亮已启用&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicevibratems">device.vibrate(ms)</h3>
+<p>使设备震动一段时间，单位毫秒，需要 root 权限。</p>
+<p><strong>参数</strong>:<br />
+- <code>ms</code> (number): 震动时间(毫秒)</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">device</span><span class="p">.</span><span class="nx">vibrate</span><span class="p">(</span><span class="mf">1000</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;设备震动1秒&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="devicecancelvibration">device.cancelVibration()</h3>
+<p>如果设备处于震动状态，则取消震动，需要 root 权限。</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">device</span><span class="p">.</span><span class="nx">cancelVibration</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;震动已取消&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_3">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 获取设备基本信息</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;=== 设备信息 ===&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;分辨率: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">width</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;x&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;SDK版本: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">sdkInt</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;CPU架构: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">cpuAbi</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;品牌: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">brand</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;型号: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">model</span><span class="p">);</span>
+
+<span class="c1">// 获取设备标识</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 设备标识 ===&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;IMEI: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getImei</span><span class="p">());</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Android ID: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getAndroidId</span><span class="p">());</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;WIFI MAC: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getWifiMac</span><span class="p">());</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;IP地址: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getIp</span><span class="p">());</span>
+
+<span class="c1">// 音量控制</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 音量控制 ===&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;当前媒体音量: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getMusicVolume</span><span class="p">());</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;媒体音量最大值: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getMusicMaxVolume</span><span class="p">());</span>
+<span class="nx">device</span><span class="p">.</span><span class="nx">setMusicVolume</span><span class="p">(</span><span class="mf">50</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;媒体音量已设置为50&quot;</span><span class="p">);</span>
+
+<span class="c1">// 电池信息</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 电池信息 ===&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;电量: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getBattery</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;电池状态: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getBatteryStatus</span><span class="p">());</span>
+
+<span class="c1">// 屏幕控制</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 屏幕控制 ===&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">device</span><span class="p">.</span><span class="nx">isScreenOn</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;屏幕已点亮&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">device</span><span class="p">.</span><span class="nx">isScreenUnlock</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;屏幕已解锁&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 震动</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 震动 ===&quot;</span><span class="p">);</span>
+<span class="nx">device</span><span class="p">.</span><span class="nx">vibrate</span><span class="p">(</span><span class="mf">1000</span><span class="p">);</span>
+</code></pre></div>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

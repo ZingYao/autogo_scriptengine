@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoGo ScriptEngine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AutoGo ScriptEngine</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="autogo-scriptengine">AutoGo ScriptEngine</h1>
+<p><a href="https://github.com/Dasongzi1366/AutoGo">AutoGo</a> 的脚本引擎扩展方案，为 AutoGo 提供 JavaScript 和 Lua 脚本语言支持，让开发者可以用熟悉的脚本语言编写自动化任务。</p>
+<h2 id="scriptengine">为什么选择 ScriptEngine</h2>
+<ol>
+<li><strong>降低准入门槛</strong> - 使用脚本语言开发，无需深入理解 Go 语言和 Android 开发，降低学习成本</li>
+<li><strong>代码保护</strong> - 脚本代码易于混淆加密，有效保护业务逻辑</li>
+<li><strong>热更新支持</strong> - 脚本可动态加载，无需重新编译即可更新功能</li>
+</ol>
+<h2 id="_1">功能特性</h2>
+<ul>
+<li><strong>双引擎支持</strong>：同时支持 JavaScript 和 Lua 脚本语言</li>
+<li><strong>丰富的 API</strong>：提供应用管理、设备控制、图像识别、OCR 等多种功能</li>
+<li><strong>方法注册系统</strong>：支持动态注册、重写和恢复方法</li>
+<li><strong>协程支持</strong>：Lua 引擎支持协程操作</li>
+<li><strong>文档生成</strong>：可自动生成 API 文档</li>
+</ul>
+<h2 id="_2">安装</h2>
+<div class="codehilite"><pre><span></span><code>go<span class="w"> </span>get<span class="w"> </span>github.com/ZingYao/autogo_scriptengine@v0.0.5
+</code></pre></div>
+
+<h2 id="_3">📚 详细文档</h2>
+<blockquote>
+<p><strong>🔥 重要提示</strong>：查看以下详细文档以获取完整的 API 参考和使用指南</p>
+</blockquote>
+<h3 id="javascript">📖 JavaScript 引擎文档</h3>
+<h4 id="_4">核心文档</h4>
+<ul>
+<li><a href="./js_engine/README.md">JavaScript 引擎完整文档</a> - 包含所有 API、配置选项和高级用法</li>
+</ul>
+<h4 id="_5">模块文档</h4>
+<ul>
+<li><a href="./js_engine/model/app/README.md">app 模块</a> - 应用管理（启动、安装、卸载、强制停止等）</li>
+<li><a href="./js_engine/model/device/README.md">device 模块</a> - 设备信息（分辨率、SDK 版本、屏幕方向等）</li>
+<li><a href="./js_engine/model/motion/README.md">motion 模块</a> - 触摸操作（点击、滑动、手势等）</li>
+<li><a href="./js_engine/model/files/README.md">files 模块</a> - 文件操作（读写、复制、删除等）</li>
+<li><a href="./js_engine/model/images/README.md">images 模块</a> - 图像处理（截图、找色、找图等）</li>
+<li><a href="./js_engine/model/storages/README.md">storages 模块</a> - 数据存储（键值对存储）</li>
+<li><a href="./js_engine/model/system/README.md">system 模块</a> - 系统功能（剪贴板、通知等）</li>
+<li><a href="./js_engine/model/http/README.md">http 模块</a> - 网络请求（GET、POST 等）</li>
+<li><a href="./js_engine/model/media/README.md">media 模块</a> - 媒体控制（音量、播放等）</li>
+<li><a href="./js_engine/model/opencv/README.md">opencv 模块</a> - 计算机视觉（图像处理、特征检测等）</li>
+<li><a href="./js_engine/model/ppocr/README.md">ppocr 模块</a> - OCR 文字识别</li>
+<li><a href="./js_engine/model/console/README.md">console 模块</a> - 控制台窗口（显示、隐藏、日志输出等）</li>
+<li><a href="./js_engine/model/dotocr/README.md">dotocr 模块</a> - 点字 OCR 识别（基于字库的 OCR）</li>
+<li><a href="./js_engine/model/hud/README.md">hud 模块</a> - HUD 悬浮显示（脚本状态显示等）</li>
+<li><a href="./js_engine/model/ime/README.md">ime 模块</a> - 输入法控制（剪切板、文本输入等）</li>
+<li><a href="./js_engine/model/plugin/README.md">plugin 模块</a> - 插件加载（加载外部 APK 调用 Java 方法）</li>
+<li><a href="./js_engine/model/rhino/README.md">rhino 模块</a> - JavaScript 执行引擎（Rhino）</li>
+<li><a href="./js_engine/model/uiacc/README.md">uiacc 模块</a> - 无障碍 UI 操作（控件查找、点击、输入等）</li>
+<li><a href="./js_engine/model/utils/README.md">utils 模块</a> - 工具方法（日志、Toast、类型转换等）</li>
+<li><a href="./js_engine/model/vdisplay/README.md">vdisplay 模块</a> - 虚拟显示（虚拟屏操作）</li>
+<li><a href="./js_engine/model/yolo/README.md">yolo 模块</a> - YOLO 目标检测（v5/v8 模型）</li>
+<li><a href="./js_engine/model/imgui/README.md">imgui 模块</a> - Dear ImGui GUI 库（窗口、按钮、输入框等控件）</li>
+<li><a href="./js_engine/model/coroutine/README.md">coroutine 模块</a> - 协程支持</li>
+</ul>
+<h3 id="lua">📖 Lua 引擎文档</h3>
+<h4 id="_6">核心文档</h4>
+<ul>
+<li><a href="./lua_engine/README.md">Lua 引擎完整文档</a> - 包含所有 API、配置选项和高级用法</li>
+</ul>
+<h4 id="_7">模块文档</h4>
+<ul>
+<li><a href="./lua_engine/model/app/README.md">app 模块</a> - 应用管理（启动、安装、卸载、强制停止等）</li>
+<li><a href="./lua_engine/model/device/README.md">device 模块</a> - 设备信息（分辨率、SDK 版本、屏幕方向等）</li>
+<li><a href="./lua_engine/model/motion/README.md">motion 模块</a> - 触摸操作（点击、滑动、手势等）</li>
+<li><a href="./lua_engine/model/files/README.md">files 模块</a> - 文件操作（读写、复制、删除等）</li>
+<li><a href="./lua_engine/model/images/README.md">images 模块</a> - 图像处理（截图、找色、找图等）</li>
+<li><a href="./lua_engine/model/storages/README.md">storages 模块</a> - 数据存储（键值对存储）</li>
+<li><a href="./lua_engine/model/system/README.md">system 模块</a> - 系统功能（剪贴板、通知等）</li>
+<li><a href="./lua_engine/model/http/README.md">http 模块</a> - 网络请求（GET、POST 等）</li>
+<li><a href="./lua_engine/model/media/README.md">media 模块</a> - 媒体控制（音量、播放等）</li>
+<li><a href="./lua_engine/model/opencv/README.md">opencv 模块</a> - 计算机视觉（图像处理、特征检测等）</li>
+<li><a href="./lua_engine/model/ppocr/README.md">ppocr 模块</a> - OCR 文字识别</li>
+<li><a href="./lua_engine/model/console/README.md">console 模块</a> - 控制台窗口（显示、隐藏、日志输出等）</li>
+<li><a href="./lua_engine/model/dotocr/README.md">dotocr 模块</a> - 点字 OCR 识别（基于字库的 OCR）</li>
+<li><a href="./lua_engine/model/hud/README.md">hud 模块</a> - HUD 悬浮显示（脚本状态显示等）</li>
+<li><a href="./lua_engine/model/ime/README.md">ime 模块</a> - 输入法控制（剪切板、文本输入等）</li>
+<li><a href="./lua_engine/model/plugin/README.md">plugin 模块</a> - 插件加载（加载外部 APK 调用 Java 方法）</li>
+<li><a href="./lua_engine/model/rhino/README.md">rhino 模块</a> - JavaScript 执行引擎（Rhino）</li>
+<li><a href="./lua_engine/model/uiacc/README.md">uiacc 模块</a> - 无障碍 UI 操作（控件查找、点击、输入等）</li>
+<li><a href="./lua_engine/model/utils/README.md">utils 模块</a> - 工具方法（日志、Toast、类型转换等）</li>
+<li><a href="./lua_engine/model/vdisplay/README.md">vdisplay 模块</a> - 虚拟显示（虚拟屏操作）</li>
+<li><a href="./lua_engine/model/yolo/README.md">yolo 模块</a> - YOLO 目标检测（v5/v8 模型）</li>
+<li><a href="./lua_engine/model/imgui/README.md">imgui 模块</a> - Dear ImGui GUI 库（窗口、按钮、输入框等控件）</li>
+<li><a href="./lua_engine/model/coroutine/README.md">coroutine 模块</a> - 协程支持</li>
+<li><a href="./lua_engine/model/json/README.md">json 模块</a> - JSON 处理</li>
+</ul>
+<h2 id="_8">环境要求</h2>
+<ul>
+<li>Go 1.25.4 或更高版本</li>
+<li>AutoGo 框架（已在项目中集成）</li>
+<li>Android 设备（用于实际运行自动化脚本）</li>
+</ul>
+<h2 id="_9">依赖</h2>
+<ul>
+<li><a href="https://github.com/Dasongzi1366/AutoGo">AutoGo</a> - Android 自动化框架（核心依赖）</li>
+<li><a href="https://github.com/dop251/goja">goja</a> - JavaScript 解释器</li>
+<li><a href="https://github.com/yuin/gopher-lua">gopher-lua</a> - Lua 解释器</li>
+</ul>
+<h2 id="autogo">与 AutoGo 的关系</h2>
+<p>本项目是 AutoGo 的扩展方案，通过封装 AutoGo 提供的原生 API，为开发者提供更灵活的脚本编写方式：</p>
+<ul>
+<li><strong>AutoGo</strong> - 提供 Android 自动化的核心能力（无障碍服务、图像识别、触摸模拟等）</li>
+<li><strong>ScriptEngine</strong> - 为 AutoGo 添加脚本语言支持，让开发者可以用 JavaScript 或 Lua 编写自动化脚本</li>
+</ul>
+<h2 id="_10">许可证</h2>
+<p>MIT License</p>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

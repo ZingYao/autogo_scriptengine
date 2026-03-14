@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DotOCR 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DotOCR 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/lua_engine/model/dotocr/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="dotocr">DotOCR 模块</h1>
+<p>DotOCR 模块提供了基于点阵的 OCR（光学字符识别）功能，支持从屏幕、图像文件、Base64 字符串等多种来源进行文字识别和查找。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="dotocrsetdictname-dict">dotocr.setDict(name, dict)</h3>
+<p>设置字库，用于后续的 OCR 识别。</p>
+<p><strong>入参：</strong><br />
+- <code>name</code>: 字库名称（字符串）<br />
+- <code>dict</code>: 字库内容（字符串）</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置字库</span>
+<span class="nx">dotocr</span><span class="p">.</span><span class="nx">setDict</span><span class="p">(</span><span class="s2">&quot;my_dict&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;字库内容...&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="dotocrocrx1-y1-x2-y2-threshold-colgap-rowgap-sim-mode-dictname-displayid">dotocr.ocr(x1, y1, x2, y2, threshold, colGap, rowGap, sim, mode, dictName, displayId)</h3>
+<p>从屏幕指定区域进行 OCR 识别。</p>
+<p><strong>入参：</strong><br />
+- <code>x1</code>: 区域左上角 X 坐标（整数）<br />
+- <code>y1</code>: 区域左上角 Y 坐标（整数）<br />
+- <code>x2</code>: 区域右下角 X 坐标（整数）<br />
+- <code>y2</code>: 区域右下角 Y 坐标（整数）<br />
+- <code>threshold</code>: 二值化阈值（字符串）<br />
+- <code>colGap</code>: 列间距（整数）<br />
+- <code>rowGap</code>: 行间距（整数）<br />
+- <code>sim</code>: 相似度阈值（浮点数，0-1）<br />
+- <code>mode</code>: 识别模式（整数）<br />
+- <code>dictName</code>: 字库名称（字符串）<br />
+- <code>displayId</code>: 显示器 ID（整数）</p>
+<p><strong>出参：</strong> 识别到的文本字符串</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 识别屏幕区域 (0, 0, 500, 300) 内的文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">ocr</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">300</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="nx">text</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="dotocrocrfromimageimg-threshold-colgap-rowgap-sim-mode-dictname">dotocr.ocrFromImage(img, threshold, colGap, rowGap, sim, mode, dictName)</h3>
+<p>从图像对象进行 OCR 识别。</p>
+<p><strong>入参：</strong><br />
+- <code>img</code>: 图像对象（NRGBA 格式）<br />
+- <code>threshold</code>: 二值化阈值（字符串）<br />
+- <code>colGap</code>: 列间距（整数）<br />
+- <code>rowGap</code>: 行间距（整数）<br />
+- <code>sim</code>: 相似度阈值（浮点数，0-1）<br />
+- <code>mode</code>: 识别模式（整数）<br />
+- <code>dictName</code>: 字库名称（字符串）</p>
+<p><strong>出参：</strong> 识别到的文本字符串</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 从图像对象识别文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">captureScreen</span><span class="p">();</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">ocrFromImage</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="nx">text</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="dotocrocrfrombase64b64-threshold-colgap-rowgap-sim-mode-dictname">dotocr.ocrFromBase64(b64, threshold, colGap, rowGap, sim, mode, dictName)</h3>
+<p>从 Base64 编码的图像字符串进行 OCR 识别。</p>
+<p><strong>入参：</strong><br />
+- <code>b64</code>: Base64 编码的图像字符串<br />
+- <code>threshold</code>: 二值化阈值（字符串）<br />
+- <code>colGap</code>: 列间距（整数）<br />
+- <code>rowGap</code>: 行间距（整数）<br />
+- <code>sim</code>: 相似度阈值（浮点数，0-1）<br />
+- <code>mode</code>: 识别模式（整数）<br />
+- <code>dictName</code>: 字库名称（字符串）</p>
+<p><strong>出参：</strong> 识别到的文本字符串</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 从 Base64 图像识别文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">base64Img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==&quot;</span><span class="p">;</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">ocrFromBase64</span><span class="p">(</span><span class="nx">base64Img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="nx">text</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="dotocrocrfrompathpath-threshold-colgap-rowgap-sim-mode-dictname">dotocr.ocrFromPath(path, threshold, colGap, rowGap, sim, mode, dictName)</h3>
+<p>从图像文件路径进行 OCR 识别。</p>
+<p><strong>入参：</strong><br />
+- <code>path</code>: 图像文件路径（字符串）<br />
+- <code>threshold</code>: 二值化阈值（字符串）<br />
+- <code>colGap</code>: 列间距（整数）<br />
+- <code>rowGap</code>: 行间距（整数）<br />
+- <code>sim</code>: 相似度阈值（浮点数，0-1）<br />
+- <code>mode</code>: 识别模式（整数）<br />
+- <code>dictName</code>: 字库名称（字符串）</p>
+<p><strong>出参：</strong> 识别到的文本字符串</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 从图像文件识别文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">ocrFromPath</span><span class="p">(</span><span class="s2">&quot;/sdcard/image.png&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="nx">text</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="dotocrfindstrx1-y1-x2-y2-text-threshold-colgap-rowgap-sim-dictname-displayid">dotocr.findStr(x1, y1, x2, y2, text, threshold, colGap, rowGap, sim, dictName, displayId)</h3>
+<p>在屏幕指定区域中查找指定字符串的位置。</p>
+<p><strong>入参：</strong><br />
+- <code>x1</code>: 区域左上角 X 坐标（整数）<br />
+- <code>y1</code>: 区域左上角 Y 坐标（整数）<br />
+- <code>x2</code>: 区域右下角 X 坐标（整数）<br />
+- <code>y2</code>: 区域右下角 Y 坐标（整数）<br />
+- <code>text</code>: 要查找的文本（字符串）<br />
+- <code>threshold</code>: 二值化阈值（字符串）<br />
+- <code>colGap</code>: 列间距（整数）<br />
+- <code>rowGap</code>: 行间距（整数）<br />
+- <code>sim</code>: 相似度阈值（浮点数，0-1）<br />
+- <code>dictName</code>: 字库名称（字符串）<br />
+- <code>displayId</code>: 显示器 ID（整数）</p>
+<p><strong>出参：</strong> 包含 x 和 y 坐标的对象，未找到时为 (-1, -1)</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 在屏幕区域查找文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">findStr</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">300</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;开始&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到文字，位置: (&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">motion</span><span class="p">.</span><span class="nx">tap</span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;未找到文字&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="dotocrfindstrfromimageimg-text-threshold-colgap-rowgap-sim-dictname">dotocr.findStrFromImage(img, text, threshold, colGap, rowGap, sim, dictName)</h3>
+<p>在图像中查找指定字符串的位置。</p>
+<p><strong>入参：</strong><br />
+- <code>img</code>: 图像对象（NRGBA 格式）<br />
+- <code>text</code>: 要查找的文本（字符串）<br />
+- <code>threshold</code>: 二值化阈值（字符串）<br />
+- <code>colGap</code>: 列间距（整数）<br />
+- <code>rowGap</code>: 行间距（整数）<br />
+- <code>sim</code>: 相似度阈值（浮点数，0-1）<br />
+- <code>dictName</code>: 字库名称（字符串）</p>
+<p><strong>出参：</strong> 包含 x 和 y 坐标的对象，未找到时为 (-1, -1)</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 在图像中查找文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">captureScreen</span><span class="p">();</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">findStrFromImage</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;开始&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到文字，位置: (&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;)&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="dotocrfindstrfrombase64b64-text-threshold-colgap-rowgap-sim-dictname">dotocr.findStrFromBase64(b64, text, threshold, colGap, rowGap, sim, dictName)</h3>
+<p>在 Base64 编码的图像中查找指定字符串的位置。</p>
+<p><strong>入参：</strong><br />
+- <code>b64</code>: Base64 编码的图像字符串<br />
+- <code>text</code>: 要查找的文本（字符串）<br />
+- <code>threshold</code>: 二值化阈值（字符串）<br />
+- <code>colGap</code>: 列间距（整数）<br />
+- <code>rowGap</code>: 行间距（整数）<br />
+- <code>sim</code>: 相似度阈值（浮点数，0-1）<br />
+- <code>dictName</code>: 字库名称（字符串）</p>
+<p><strong>出参：</strong> 包含 x 和 y 坐标的对象，未找到时为 (-1, -1)</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 在 Base64 图像中查找文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">base64Img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==&quot;</span><span class="p">;</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">findStrFromBase64</span><span class="p">(</span><span class="nx">base64Img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;开始&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到文字，位置: (&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;)&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="dotocrfindstrfrompathpath-text-threshold-colgap-rowgap-sim-dictname">dotocr.findStrFromPath(path, text, threshold, colGap, rowGap, sim, dictName)</h3>
+<p>在图像文件中查找指定字符串的位置。</p>
+<p><strong>入参：</strong><br />
+- <code>path</code>: 图像文件路径（字符串）<br />
+- <code>text</code>: 要查找的文本（字符串）<br />
+- <code>threshold</code>: 二值化阈值（字符串）<br />
+- <code>colGap</code>: 列间距（整数）<br />
+- <code>rowGap</code>: 行间距（整数）<br />
+- <code>sim</code>: 相似度阈值（浮点数，0-1）<br />
+- <code>dictName</code>: 字库名称（字符串）</p>
+<p><strong>出参：</strong> 包含 x 和 y 坐标的对象，未找到时为 (-1, -1)</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 在图像文件中查找文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">findStrFromPath</span><span class="p">(</span><span class="s2">&quot;/sdcard/image.png&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;开始&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到文字，位置: (&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;)&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置字库</span>
+<span class="nx">dotocr</span><span class="p">.</span><span class="nx">setDict</span><span class="p">(</span><span class="s2">&quot;my_dict&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;字库内容...&quot;</span><span class="p">);</span>
+
+<span class="c1">// 示例1：识别屏幕上的文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">screenText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">ocr</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;识别到的文字: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">screenText</span><span class="p">);</span>
+
+<span class="c1">// 示例2：查找并点击屏幕上的文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">findStr</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;开始游戏&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到文字，点击位置: (&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">motion</span><span class="p">.</span><span class="nx">tap</span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;未找到指定文字&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例3：从图像文件识别文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">imagePath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/sdcard/screenshot.png&quot;</span><span class="p">;</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">fileText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">ocrFromPath</span><span class="p">(</span><span class="nx">imagePath</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文件中的文字: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">fileText</span><span class="p">);</span>
+
+<span class="c1">// 示例4：从图像对象识别文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">captureScreen</span><span class="p">();</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">imgText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">ocrFromImage</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;图像中的文字: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">imgText</span><span class="p">);</span>
+
+<span class="c1">// 示例5：在图像中查找文字</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">captureScreen</span><span class="p">();</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">findPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dotocr</span><span class="p">.</span><span class="nx">findStrFromImage</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;确认&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_dict&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">findPos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;在图像中找到文字，位置: (&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">findPos</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">findPos</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;)&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="_3">注意事项</h2>
+<ol>
+<li>使用 OCR 功能前，需要先设置合适的字库</li>
+<li>二值化阈值（threshold）需要根据图像亮度调整，通常在 100-255 之间</li>
+<li>相似度阈值（sim）范围是 0-1，值越大要求越严格</li>
+<li>colGap 和 rowGap 用于控制字符之间的间距，根据实际情况调整</li>
+<li>displayId 用于多显示器环境，通常为 0 表示主显示器</li>
+<li>识别模式（mode）的不同值可能影响识别效果，需要根据场景选择</li>
+<li>查找文字时，如果未找到会返回 (-1, -1)</li>
+</ol>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

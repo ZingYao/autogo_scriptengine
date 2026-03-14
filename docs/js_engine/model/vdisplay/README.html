@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vdisplay 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Vdisplay 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/js_engine/model/vdisplay/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="vdisplay">Vdisplay 模块</h1>
+<p>Vdisplay（Virtual Display）模块提供了虚拟显示设备的创建和管理功能，用于在虚拟屏幕中运行应用。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="vdisplaycreatewidth-height-dpi">vdisplay.create(width, height, dpi)</h3>
+<p>创建一个虚拟显示设备。</p>
+<p><strong>入参：</strong><br />
+- <code>width</code>: 显示宽度（整数）<br />
+- <code>height</code>: 显示高度（整数）<br />
+- <code>dpi</code>: 显示密度（整数）</p>
+<p><strong>出参：</strong> Vdisplay 对象</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建虚拟显示设备</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="mf">320</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备已创建&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="vdisplaygetdisplayidv">vdisplay.getDisplayId(v)</h3>
+<p>获取虚拟显示设备的 DisplayId。</p>
+<p><strong>入参：</strong><br />
+- <code>v</code>: Vdisplay 对象</p>
+<p><strong>出参：</strong> Display ID（整数）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 获取 Display ID</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">displayId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">getDisplayId</span><span class="p">(</span><span class="nx">v</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;Display ID:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="vdisplaylaunchappv-packagename">vdisplay.launchApp(v, packageName)</h3>
+<p>启动指定包名的应用到虚拟显示设备内。</p>
+<p><strong>入参：</strong><br />
+- <code>v</code>: Vdisplay 对象<br />
+- <code>packageName</code>: 应用包名（字符串）</p>
+<p><strong>出参：</strong> 布尔值，true 表示成功，false 表示失败</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 启动应用到虚拟显示</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">launchApp</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;应用启动成功&quot;</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;应用启动失败&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="vdisplaysettitlev-title">vdisplay.setTitle(v, title)</h3>
+<p>设置预览窗口标题。</p>
+<p><strong>入参：</strong><br />
+- <code>v</code>: Vdisplay 对象<br />
+- <code>title</code>: 窗口标题（字符串）</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置窗口标题</span>
+<span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;虚拟显示预览&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="vdisplaysettouchcallbackv-callback">vdisplay.setTouchCallback(v, callback)</h3>
+<p>设置触控回调函数。</p>
+<p><strong>入参：</strong><br />
+- <code>v</code>: Vdisplay 对象<br />
+- <code>callback</code>: 回调函数，参数为 (x, y, action, displayId)</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置触控回调</span>
+<span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setTouchCallback</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;触控事件:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h3 id="vdisplayshowpreviewwindowv-rotated">vdisplay.showPreviewWindow(v, rotated)</h3>
+<p>显示预览窗口。</p>
+<p><strong>入参：</strong><br />
+- <code>v</code>: Vdisplay 对象<br />
+- <code>rotated</code>: 是否旋转（布尔值）</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 显示预览窗口</span>
+<span class="nx">vdisplay</span><span class="p">.</span><span class="nx">showPreviewWindow</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="vdisplayhidepreviewwindowv">vdisplay.hidePreviewWindow(v)</h3>
+<p>隐藏预览窗口。</p>
+<p><strong>入参：</strong><br />
+- <code>v</code>: Vdisplay 对象</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 隐藏预览窗口</span>
+<span class="nx">vdisplay</span><span class="p">.</span><span class="nx">hidePreviewWindow</span><span class="p">(</span><span class="nx">v</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="vdisplaysetpreviewwindowsizev-width-height">vdisplay.setPreviewWindowSize(v, width, height)</h3>
+<p>设置预览窗口大小。</p>
+<p><strong>入参：</strong><br />
+- <code>v</code>: Vdisplay 对象<br />
+- <code>width</code>: 窗口宽度（整数）<br />
+- <code>height</code>: 窗口高度（整数）</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置预览窗口大小</span>
+<span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setPreviewWindowSize</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="mf">540</span><span class="p">,</span><span class="w"> </span><span class="mf">960</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="vdisplaysetpreviewwindowposv-x-y">vdisplay.setPreviewWindowPos(v, x, y)</h3>
+<p>设置预览窗口位置。</p>
+<p><strong>入参：</strong><br />
+- <code>v</code>: Vdisplay 对象<br />
+- <code>x</code>: 窗口左上角 X 坐标（整数）<br />
+- <code>y</code>: 窗口左上角 Y 坐标（整数）</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置预览窗口位置</span>
+<span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setPreviewWindowPos</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="vdisplaydestroyv">vdisplay.destroy(v)</h3>
+<p>销毁指定的虚拟显示设备。</p>
+<p><strong>入参：</strong><br />
+- <code>v</code>: Vdisplay 对象</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 销毁虚拟显示设备</span>
+<span class="nx">vdisplay</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span><span class="nx">v</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 示例1：创建虚拟显示设备</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">createVirtualDisplay</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1080</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1920</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">dpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">320</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;创建虚拟显示设备...&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">width</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="p">,</span><span class="w"> </span><span class="nx">dpi</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">displayId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">getDisplayId</span><span class="p">(</span><span class="nx">v</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备已创建，Display ID:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">v</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例2：启动应用到虚拟显示</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">launchAppInVirtualDisplay</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">packageName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;启动应用:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">packageName</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">launchApp</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">packageName</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;应用启动成功&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;应用启动失败&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">success</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例3：显示预览窗口</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">showPreview</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;显示预览窗口...&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;虚拟显示预览&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">showPreviewWindow</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 设置窗口大小和位置</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setPreviewWindowSize</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="mf">540</span><span class="p">,</span><span class="w"> </span><span class="mf">960</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setPreviewWindowPos</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="mf">50</span><span class="p">,</span><span class="w"> </span><span class="mf">50</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;预览窗口已显示&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例4：隐藏预览窗口</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">hidePreview</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;隐藏预览窗口...&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">hidePreviewWindow</span><span class="p">(</span><span class="nx">v</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;预览窗口已隐藏&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例5：设置触控回调</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">setupTouchCallback</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;设置触控回调...&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setTouchCallback</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">actionText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">actionText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;按下&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">actionText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;抬起&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">actionText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;移动&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;触控事件:&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;位置(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;动作:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">actionText</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Display ID:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">);</span>
+<span class="w">    </span><span class="p">});</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;触控回调已设置&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例6：虚拟显示管理器</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">VirtualDisplayManager</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">create</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">width</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="p">,</span><span class="w"> </span><span class="nx">dpi</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备已存在&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">width</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="p">,</span><span class="w"> </span><span class="nx">dpi</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备已创建&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">destroy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备不存在&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">);</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备已销毁&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">launchApp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">packageName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备不存在&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">launchApp</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">,</span><span class="w"> </span><span class="nx">packageName</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">showPreview</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">rotated</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备不存在&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">showPreviewWindow</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">,</span><span class="w"> </span><span class="nx">rotated</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">hidePreview</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备不存在&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">hidePreviewWindow</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">setPreviewSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">width</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备不存在&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setPreviewWindowSize</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">,</span><span class="w"> </span><span class="nx">width</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">setPreviewPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备不存在&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setPreviewWindowPos</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">,</span><span class="w"> </span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">setTitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">title</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备不存在&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">setTouchCallback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;虚拟显示设备不存在&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setTouchCallback</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">,</span><span class="w"> </span><span class="nx">callback</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">getDisplayId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">getDisplayId</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">display</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="c1">// 使用虚拟显示管理器</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">useVirtualDisplayManager</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">VirtualDisplayManager</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// 创建虚拟显示设备</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="mf">320</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 设置预览窗口</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="s2">&quot;我的虚拟显示&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">setPreviewSize</span><span class="p">(</span><span class="mf">540</span><span class="p">,</span><span class="w"> </span><span class="mf">960</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">setPreviewPos</span><span class="p">(</span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">showPreview</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 设置触控回调</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">setTouchCallback</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;触控:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">);</span>
+<span class="w">    </span><span class="p">});</span>
+
+<span class="w">    </span><span class="c1">// 启动应用</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">launchApp</span><span class="p">(</span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 等待一段时间</span>
+<span class="w">    </span><span class="nx">utils</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mf">10000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 隐藏预览</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">hidePreview</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// 销毁虚拟显示设备</span>
+<span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例7：多窗口预览</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">multiWindowPreview</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">v1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="mf">320</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">v2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mf">720</span><span class="p">,</span><span class="w"> </span><span class="mf">1280</span><span class="p">,</span><span class="w"> </span><span class="mf">320</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 设置第一个预览窗口</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="nx">v1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;虚拟显示 1&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setPreviewWindowSize</span><span class="p">(</span><span class="nx">v1</span><span class="p">,</span><span class="w"> </span><span class="mf">540</span><span class="p">,</span><span class="w"> </span><span class="mf">960</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setPreviewWindowPos</span><span class="p">(</span><span class="nx">v1</span><span class="p">,</span><span class="w"> </span><span class="mf">50</span><span class="p">,</span><span class="w"> </span><span class="mf">50</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">showPreviewWindow</span><span class="p">(</span><span class="nx">v1</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 设置第二个预览窗口</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="nx">v2</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;虚拟显示 2&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setPreviewWindowSize</span><span class="p">(</span><span class="nx">v2</span><span class="p">,</span><span class="w"> </span><span class="mf">360</span><span class="p">,</span><span class="w"> </span><span class="mf">640</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">setPreviewWindowPos</span><span class="p">(</span><span class="nx">v2</span><span class="p">,</span><span class="w"> </span><span class="mf">600</span><span class="p">,</span><span class="w"> </span><span class="mf">50</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">showPreviewWindow</span><span class="p">(</span><span class="nx">v2</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;两个预览窗口已显示&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 等待一段时间</span>
+<span class="w">    </span><span class="nx">utils</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mf">10000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 销毁虚拟显示设备</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span><span class="nx">v1</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">vdisplay</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span><span class="nx">v2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 调用示例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createVirtualDisplay</span><span class="p">();</span>
+<span class="nx">launchAppInVirtualDisplay</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">);</span>
+<span class="nx">showPreview</span><span class="p">(</span><span class="nx">v</span><span class="p">);</span>
+<span class="nx">setupTouchCallback</span><span class="p">(</span><span class="nx">v</span><span class="p">);</span>
+<span class="nx">useVirtualDisplayManager</span><span class="p">();</span>
+<span class="nx">multiWindowPreview</span><span class="p">();</span>
+</code></pre></div>
+
+<h2 id="_3">注意事项</h2>
+<ol>
+<li>创建虚拟显示设备需要相应的权限</li>
+<li>虚拟显示设备会占用系统资源，使用完毕后应销毁</li>
+<li>预览窗口的大小和位置应根据屏幕分辨率合理设置</li>
+<li>触控回调函数会在主线程中调用，避免执行耗时操作</li>
+<li>启动应用到虚拟显示前，确保应用已安装</li>
+<li>预览窗口可以旋转，rotated 参数控制旋转状态</li>
+<li>多个虚拟显示设备可以同时存在</li>
+<li>销毁虚拟显示设备会自动隐藏预览窗口</li>
+<li>Display ID 用于区分不同的显示设备</li>
+<li>建议在创建虚拟显示设备前检查系统资源是否充足</li>
+</ol>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

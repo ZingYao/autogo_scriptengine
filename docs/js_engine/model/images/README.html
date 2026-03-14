@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Images 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Images 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/js_engine/model/images/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="images">Images 模块</h1>
+<p>Images 模块提供了图像处理和颜色识别功能。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="imagespixelx-y-displayid">images.pixel(x, y, displayId?)</h3>
+<p>获取指定坐标的像素颜色。</p>
+<p><strong>参数</strong>:<br />
+- <code>x</code> (number): X坐标<br />
+- <code>y</code> (number): Y坐标<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>string</code> - 像素颜色值</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">pixel</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;颜色: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">color</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imagessetcallbackcallback">images.setCallback(callback)</h3>
+<p>设置图像回调函数。</p>
+<p><strong>参数</strong>:<br />
+- <code>callback</code> (function): 回调函数，接收 (image, displayId) 参数</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">images</span><span class="p">.</span><span class="nx">setCallback</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图像回调触发&quot;</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h3 id="imagescapturescreenx1-y1-x2-y2-displayid">images.captureScreen(x1, y1, x2, y2, displayId?)</h3>
+<p>截取屏幕。</p>
+<p><strong>参数</strong>:<br />
+- <code>x1</code> (number): 区域左上角X坐标<br />
+- <code>y1</code> (number): 区域左上角Y坐标<br />
+- <code>x2</code> (number): 区域右下角X坐标<br />
+- <code>y2</code> (number): 区域右下角Y坐标<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>object</code> - 截取的图像对象，如果失败返回 <code>null</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">captureScreen</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">img</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;屏幕截图成功&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imagescmpcolorx-y-colorstr-sim-displayid">images.cmpColor(x, y, colorStr, sim, displayId?)</h3>
+<p>比较颜色。</p>
+<p><strong>参数</strong>:<br />
+- <code>x</code> (number): X坐标<br />
+- <code>y</code> (number): Y坐标<br />
+- <code>colorStr</code> (string): 颜色字符串<br />
+- <code>sim</code> (number): 相似度阈值 (0-1)<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果颜色匹配返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">images</span><span class="p">.</span><span class="nx">cmpColor</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;#FF0000&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;颜色匹配&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">click</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imagesfindcolorx1-y1-x2-y2-colorstr-sim-dir-displayid">images.findColor(x1, y1, x2, y2, colorStr, sim, dir, displayId?)</h3>
+<p>查找颜色。</p>
+<p><strong>参数</strong>:<br />
+- <code>x1</code> (number): 搜索区域左上角X坐标<br />
+- <code>y1</code> (number): 搜索区域左上角Y坐标<br />
+- <code>x2</code> (number): 搜索区域右下角X坐标<br />
+- <code>y2</code> (number): 搜索区域右下角Y坐标<br />
+- <code>colorStr</code> (string): 要查找的颜色字符串<br />
+- <code>sim</code> (number): 相似度阈值 (0-1)<br />
+- <code>dir</code> (number): 搜索方向 (0=从左到右, 1=从右到左, 2=从上到下, 3=从下到上)<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>number</code>, <code>number</code> - 找到的坐标 (x, y)，如果未找到返回 (-1, -1)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">findColor</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;#FF0000&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">x</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">y</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;找到颜色在: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">y</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">click</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imagesgetcolorcountinregionx1-y1-x2-y2-colorstr-sim-displayid">images.getColorCountInRegion(x1, y1, x2, y2, colorStr, sim, displayId?)</h3>
+<p>获取区域内指定颜色的数量。</p>
+<p><strong>参数</strong>:<br />
+- <code>x1</code> (number): 区域左上角X坐标<br />
+- <code>y1</code> (number): 区域左上角Y坐标<br />
+- <code>x2</code> (number): 区域右下角X坐标<br />
+- <code>y2</code> (number): 区域右下角Y坐标<br />
+- <code>colorStr</code> (string): 颜色字符串<br />
+- <code>sim</code> (number): 相似度阈值 (0-1)<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>number</code> - 颜色数量</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">getColorCountInRegion</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;#FF0000&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;颜色数量: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">count</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imagesdetectsmulticolorscolors-sim-displayid">images.detectsMultiColors(colors, sim, displayId?)</h3>
+<p>检测多点颜色。</p>
+<p><strong>参数</strong>:<br />
+- <code>colors</code> (string): 多点颜色字符串，格式为 "x1,y1,color1,x2,y2,color2,..."<br />
+- <code>sim</code> (number): 相似度阈值 (0-1)<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果多点颜色匹配返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">images</span><span class="p">.</span><span class="nx">detectsMultiColors</span><span class="p">(</span><span class="s2">&quot;0,0,#FF0000,10,10,#00FF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;多点颜色匹配&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imagesfindmulticolorsx1-y1-x2-y2-colors-sim-dir-displayid">images.findMultiColors(x1, y1, x2, y2, colors, sim, dir, displayId?)</h3>
+<p>查找多点颜色。</p>
+<p><strong>参数</strong>:<br />
+- <code>x1</code> (number): 搜索区域左上角X坐标<br />
+- <code>y1</code> (number): 搜索区域左上角Y坐标<br />
+- <code>x2</code> (number): 搜索区域右下角X坐标<br />
+- <code>y2</code> (number): 搜索区域右下角Y坐标<br />
+- <code>colors</code> (string): 多点颜色字符串，格式为 "x1,y1,color1,x2,y2,color2,..."<br />
+- <code>sim</code> (number): 相似度阈值 (0-1)<br />
+- <code>dir</code> (number): 搜索方向 (0=从左到右, 1=从右到左, 2=从上到下, 3=从下到上)<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>number</code>, <code>number</code> - 找到的坐标 (x, y)，如果未找到返回 (-1, -1)</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">findMultiColors</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;0,0,#FF0000,10,10,#00FF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">x</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">y</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;找到多点颜色在: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">y</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imagesreadfrompathpath">images.readFromPath(path)</h3>
+<p>从路径读取图片。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 图片文件路径</p>
+<p><strong>返回值</strong>: <code>object</code> - 图片对象，如果失败返回 <code>null</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">readFromPath</span><span class="p">(</span><span class="s2">&quot;/sdcard/image.png&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">img</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片读取成功&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imagesreadfromurlurl">images.readFromUrl(url)</h3>
+<p>从 URL 读取图片。</p>
+<p><strong>参数</strong>:<br />
+- <code>url</code> (string): 图片URL</p>
+<p><strong>返回值</strong>: <code>object</code> - 图片对象，如果失败返回 <code>null</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">readFromUrl</span><span class="p">(</span><span class="s2">&quot;https://example.com/image.png&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">img</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片读取成功&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imagesreadfrombase64base64str">images.readFromBase64(base64Str)</h3>
+<p>从 Base64 读取图片。</p>
+<p><strong>参数</strong>:<br />
+- <code>base64Str</code> (string): Base64编码的图片数据</p>
+<p><strong>返回值</strong>: <code>object</code> - 图片对象，如果失败返回 <code>null</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">readFromBase64</span><span class="p">(</span><span class="s2">&quot;iVBORw0KG...&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">img</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片读取成功&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imagesreadfrombytesbytes">images.readFromBytes(bytes)</h3>
+<p>从字节数组读取图片。</p>
+<p><strong>参数</strong>:<br />
+- <code>bytes</code> (Array): 图片字节数组</p>
+<p><strong>返回值</strong>: <code>object</code> - 图片对象，如果失败返回 <code>null</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">readFromBytes</span><span class="p">([</span><span class="mf">72</span><span class="p">,</span><span class="w"> </span><span class="mf">101</span><span class="p">,</span><span class="w"> </span><span class="mf">108</span><span class="p">,</span><span class="w"> </span><span class="mf">108</span><span class="p">,</span><span class="w"> </span><span class="mf">111</span><span class="p">]);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">img</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片读取成功&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imagessaveimg-path-quality">images.save(img, path, quality?)</h3>
+<p>保存图片。</p>
+<p><strong>参数</strong>:<br />
+- <code>img</code> (object): 图片对象<br />
+- <code>path</code> (string): 保存路径<br />
+- <code>quality</code> (number, 可选): 图片质量 (1-100)，默认为90</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 是否保存成功</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">save</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/output.png&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">90</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片保存成功&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="imagesencodetobase64img-format-quality">images.encodeToBase64(img, format?, quality?)</h3>
+<p>编码为 Base64。</p>
+<p><strong>参数</strong>:<br />
+- <code>img</code> (object): 图片对象<br />
+- <code>format</code> (string, 可选): 图片格式 (png, jpeg)，默认为png<br />
+- <code>quality</code> (number, 可选): 图片质量 (1-100)，默认为90</p>
+<p><strong>返回值</strong>: <code>string</code> - Base64编码的图片数据</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">base64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">encodeToBase64</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;png&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">90</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Base64长度: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">base64</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imagesencodetobytesimg-format-quality">images.encodeToBytes(img, format?, quality?)</h3>
+<p>编码为字节数组。</p>
+<p><strong>参数</strong>:<br />
+- <code>img</code> (object): 图片对象<br />
+- <code>format</code> (string, 可选): 图片格式 (png, jpeg)，默认为png<br />
+- <code>quality</code> (number, 可选): 图片质量 (1-100)，默认为90</p>
+<p><strong>返回值</strong>: <code>Array</code> - 图片字节数组</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">encodeToBytes</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;png&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">90</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;字节数组长度: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">bytes</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imagesclipimg-x1-y1-x2-y2">images.clip(img, x1, y1, x2, y2)</h3>
+<p>裁剪图片。</p>
+<p><strong>参数</strong>:<br />
+- <code>img</code> (object): 图片对象<br />
+- <code>x1</code> (number): 裁剪区域左上角X坐标<br />
+- <code>y1</code> (number): 裁剪区域左上角Y坐标<br />
+- <code>x2</code> (number): 裁剪区域右下角X坐标<br />
+- <code>y2</code> (number): 裁剪区域右下角Y坐标</p>
+<p><strong>返回值</strong>: <code>object</code> - 裁剪后的图片对象</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">clipped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">clip</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">200</span><span class="p">,</span><span class="w"> </span><span class="mf">200</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片裁剪成功&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imagesresizeimg-width-height">images.resize(img, width, height)</h3>
+<p>调整图片大小。</p>
+<p><strong>参数</strong>:<br />
+- <code>img</code> (object): 图片对象<br />
+- <code>width</code> (number): 目标宽度<br />
+- <code>height</code> (number): 目标高度</p>
+<p><strong>返回值</strong>: <code>object</code> - 调整大小后的图片对象</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">resized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片调整大小成功&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imagesrotateimg-degree">images.rotate(img, degree)</h3>
+<p>旋转图片。</p>
+<p><strong>参数</strong>:<br />
+- <code>img</code> (object): 图片对象<br />
+- <code>degree</code> (number): 旋转角度</p>
+<p><strong>返回值</strong>: <code>object</code> - 旋转后的图片对象</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">rotated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="mf">90</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片旋转成功&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imagesgrayscaleimg">images.grayscale(img)</h3>
+<p>灰度化。</p>
+<p><strong>参数</strong>:<br />
+- <code>img</code> (object): 图片对象</p>
+<p><strong>返回值</strong>: <code>object</code> - 灰度化后的图片对象</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">gray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">grayscale</span><span class="p">(</span><span class="nx">img</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片灰度化成功&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imagesapplythresholdimg-threshold-maxval-typ">images.applyThreshold(img, threshold, maxVal, typ)</h3>
+<p>应用阈值。</p>
+<p><strong>参数</strong>:<br />
+- <code>img</code> (object): 图片对象<br />
+- <code>threshold</code> (number): 阈值<br />
+- <code>maxVal</code> (number): 最大值<br />
+- <code>typ</code> (string): 阈值类型 (BINARY, BINARY_INV, TRUNC, TOZERO, TOZERO_INV, OTSU)</p>
+<p><strong>返回值</strong>: <code>object</code> - 应用阈值后的图片对象</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">applyThreshold</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="mf">128</span><span class="p">,</span><span class="w"> </span><span class="mf">255</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;BINARY&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片阈值化成功&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imagesapplyadaptivethresholdimg-maxvalue-adaptivemethod-thresholdtype-blocksize-c">images.applyAdaptiveThreshold(img, maxValue, adaptiveMethod, thresholdType, blockSize, C)</h3>
+<p>应用自适应阈值。</p>
+<p><strong>参数</strong>:<br />
+- <code>img</code> (object): 图片对象<br />
+- <code>maxValue</code> (number): 最大值<br />
+- <code>adaptiveMethod</code> (string): 自适应方法 (MEAN_C, GAUSSIAN_C)<br />
+- <code>thresholdType</code> (string): 阈值类型 (BINARY, BINARY_INV)<br />
+- <code>blockSize</code> (number): 块大小<br />
+- <code>C</code> (number): 常数</p>
+<p><strong>返回值</strong>: <code>object</code> - 应用自适应阈值后的图片对象</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">adaptive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">applyAdaptiveThreshold</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="mf">255</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;GAUSSIAN_C&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;BINARY&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">11</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片自适应阈值化成功&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="imagesapplybinarizationimg-threshold">images.applyBinarization(img, threshold)</h3>
+<p>二值化。</p>
+<p><strong>参数</strong>:<br />
+- <code>img</code> (object): 图片对象<br />
+- <code>threshold</code> (number): 阈值</p>
+<p><strong>返回值</strong>: <code>object</code> - 二值化后的图片对象</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">applyBinarization</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="mf">128</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片二值化成功&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 获取像素颜色</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">pixel</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;像素颜色: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">color</span><span class="p">);</span>
+
+<span class="c1">// 比较颜色</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">images</span><span class="p">.</span><span class="nx">cmpColor</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;#FF0000&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;颜色匹配&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 查找颜色</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">findColor</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;#FF0000&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">x</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">y</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;找到颜色在: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">y</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">click</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 读取图片</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">readFromPath</span><span class="p">(</span><span class="s2">&quot;/sdcard/template.png&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">img</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 裁剪图片</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">clipped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">clip</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">200</span><span class="p">,</span><span class="w"> </span><span class="mf">200</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 调整大小</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">resized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span><span class="nx">clipped</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 灰度化</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">gray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">grayscale</span><span class="p">(</span><span class="nx">resized</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 保存</span>
+<span class="w">    </span><span class="nx">images</span><span class="p">.</span><span class="nx">save</span><span class="p">(</span><span class="nx">gray</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/output.png&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">90</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;图片处理完成&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

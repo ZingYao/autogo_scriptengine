@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhino 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Rhino 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/lua_engine/model/rhino/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="rhino">Rhino 模块</h1>
+<p>Rhino 模块提供了执行 JavaScript 脚本的功能，支持在指定的上下文中执行代码并获取结果。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="rhinoevalcontextid-script">rhino.eval(contextId, script)</h3>
+<p>执行指定的 JavaScript 脚本并返回结果。</p>
+<p><strong>入参：</strong><br />
+- <code>contextId</code>: 上下文 ID（字符串）<br />
+- <code>script</code>: 要执行的 JavaScript 脚本（字符串）</p>
+<p><strong>出参：</strong> 脚本执行结果</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 执行简单的 JavaScript 代码</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;context1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;1 + 1&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;计算结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+
+<span class="c1">// 执行复杂的脚本</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;function add(a, b) { return a + b; } add(10, 20);&quot;</span><span class="p">;</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">result2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;context2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;函数调用结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result2</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 示例1：基本计算</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">basicCalculation</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;calc&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;2 * 3 + 4&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;计算结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例2：执行函数</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">executeFunction</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;function greet(name) { return &#39;Hello, &#39; + name + &#39;!&#39;; } greet(&#39;World&#39;);&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;greet&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;函数结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例3：使用变量</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">useVariables</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;var x = 10; var y = 20; x + y;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;vars&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;变量计算结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例4：执行复杂逻辑</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">complexLogic</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;var sum = 0; for (var i = 1; i &lt;= 10; i++) { sum += i; } sum;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;loop&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;循环求和结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例5：使用对象</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">useObjects</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;var obj = { name: &#39;张三&#39;, age: 25 }; JSON.stringify(obj);&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;obj&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;对象结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例6：使用数组</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">useArrays</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;var arr = [1, 2, 3, 4, 5]; arr.reduce(function(a, b) { return a + b; }, 0);&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;数组求和结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例7：条件判断</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">conditionalLogic</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;var score = 85; score &gt;= 60 ? &#39;及格&#39; : &#39;不及格&#39;;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;condition&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;判断结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例8：字符串操作</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">stringOperations</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&#39;Hello World&#39;.toUpperCase()&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;字符串操作结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例9：数学运算</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">mathOperations</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Math.max(10, 20, 30, 40, 50)&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;math&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;数学运算结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例10：多个上下文</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">multipleContexts</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;var x = 100; x * 2;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;context1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script1</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;上下文1结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;var y = 200; y / 2;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;context2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script2</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;上下文2结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例11：错误处理</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">errorHandling</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;throw new Error(&#39;测试错误&#39;);&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;捕获到错误:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例12：动态脚本执行</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">dynamicScriptExecution</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">operations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;10 + 20&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;30 - 15&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;5 * 6&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;100 / 4&quot;</span>
+<span class="w">    </span><span class="p">];</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">operations</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;dynamic&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">operations</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;操作 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">operations</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span><span class="w"> </span><span class="s2">&quot;=&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例13：使用闭包</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">useClosure</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;function counter() { var count = 0; return function() { count++; return count; }; } var c = counter(); c(); c(); c();&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;closure&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;闭包结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例14：递归函数</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">recursiveFunction</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;function factorial(n) { return n &lt;= 1 ? 1 : n * factorial(n - 1); } factorial(5);&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">rhino</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;recursive&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">script</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;递归结果:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 调用示例</span>
+<span class="nx">basicCalculation</span><span class="p">();</span>
+<span class="nx">executeFunction</span><span class="p">();</span>
+<span class="nx">useVariables</span><span class="p">();</span>
+<span class="nx">complexLogic</span><span class="p">();</span>
+<span class="nx">useObjects</span><span class="p">();</span>
+<span class="nx">useArrays</span><span class="p">();</span>
+<span class="nx">conditionalLogic</span><span class="p">();</span>
+<span class="nx">stringOperations</span><span class="p">();</span>
+<span class="nx">mathOperations</span><span class="p">();</span>
+<span class="nx">multipleContexts</span><span class="p">();</span>
+<span class="nx">errorHandling</span><span class="p">();</span>
+<span class="nx">dynamicScriptExecution</span><span class="p">();</span>
+<span class="nx">useClosure</span><span class="p">();</span>
+<span class="nx">recursiveFunction</span><span class="p">();</span>
+</code></pre></div>
+
+<h2 id="_3">注意事项</h2>
+<ol>
+<li>contextId 用于标识不同的执行上下文，相同 contextId 的脚本共享变量</li>
+<li>执行的脚本必须是有效的 JavaScript 代码</li>
+<li>脚本执行可能会抛出异常，需要做好错误处理</li>
+<li>复杂的脚本可能需要较长的执行时间</li>
+<li>建议在执行脚本前进行语法检查</li>
+<li>不同上下文之间的变量是隔离的</li>
+<li>脚本执行结果会自动转换为 JavaScript 值</li>
+<li>避免在脚本中执行无限循环或递归过深</li>
+<li>脚本中可以访问 Rhino 引擎提供的所有功能</li>
+<li>建议根据实际需求合理使用不同的上下文 ID</li>
+</ol>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Motion 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/js_engine/model/motion/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="motion">Motion 模块</h1>
+<p>Motion 模块提供了触摸操作和系统按键功能。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="touchdownx-y-fingerid-displayid">touchDown(x, y, fingerId?, displayId?)</h3>
+<p>按下屏幕。</p>
+<p><strong>参数</strong>:<br />
+- <code>x</code> (number): X坐标<br />
+- <code>y</code> (number): Y坐标<br />
+- <code>fingerId</code> (number, 可选): 手指ID，默认为0<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">touchDown</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="touchmovex-y-fingerid-displayid">touchMove(x, y, fingerId?, displayId?)</h3>
+<p>移动手指。</p>
+<p><strong>参数</strong>:<br />
+- <code>x</code> (number): X坐标<br />
+- <code>y</code> (number): Y坐标<br />
+- <code>fingerId</code> (number, 可选): 手指ID，默认为0<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">touchMove</span><span class="p">(</span><span class="mf">600</span><span class="p">,</span><span class="w"> </span><span class="mf">1100</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="touchupx-y-fingerid-displayid">touchUp(x, y, fingerId?, displayId?)</h3>
+<p>抬起手指。</p>
+<p><strong>参数</strong>:<br />
+- <code>x</code> (number): X坐标<br />
+- <code>y</code> (number): Y坐标<br />
+- <code>fingerId</code> (number, 可选): 手指ID，默认为0<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">touchUp</span><span class="p">(</span><span class="mf">600</span><span class="p">,</span><span class="w"> </span><span class="mf">1100</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="clickx-y-fingerid-displayid">click(x, y, fingerId?, displayId?)</h3>
+<p>点击。</p>
+<p><strong>参数</strong>:<br />
+- <code>x</code> (number): X坐标<br />
+- <code>y</code> (number): Y坐标<br />
+- <code>fingerId</code> (number, 可选): 手指ID，默认为0<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">click</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="longclickx-y-duration-fingerid-displayid">longClick(x, y, duration, fingerId?, displayId?)</h3>
+<p>长按。</p>
+<p><strong>参数</strong>:<br />
+- <code>x</code> (number): X坐标<br />
+- <code>y</code> (number): Y坐标<br />
+- <code>duration</code> (number): 长按时间(毫秒)<br />
+- <code>fingerId</code> (number, 可选): 手指ID，默认为0<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">longClick</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">2000</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="swipex1-y1-x2-y2-duration-fingerid-displayid">swipe(x1, y1, x2, y2, duration, fingerId?, displayId?)</h3>
+<p>滑动。</p>
+<p><strong>参数</strong>:<br />
+- <code>x1</code> (number): 起始X坐标<br />
+- <code>y1</code> (number): 起始Y坐标<br />
+- <code>x2</code> (number): 结束X坐标<br />
+- <code>y2</code> (number): 结束Y坐标<br />
+- <code>duration</code> (number): 滑动时间(毫秒)<br />
+- <code>fingerId</code> (number, 可选): 手指ID，默认为0<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">swipe</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">600</span><span class="p">,</span><span class="w"> </span><span class="mf">1100</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="swipe2x1-y1-x2-y2-duration-fingerid-displayid">swipe2(x1, y1, x2, y2, duration, fingerId?, displayId?)</h3>
+<p>滑动(两点)。</p>
+<p><strong>参数</strong>:<br />
+- <code>x1</code> (number): 起始X坐标<br />
+- <code>y1</code> (number): 起始Y坐标<br />
+- <code>x2</code> (number): 结束X坐标<br />
+- <code>y2</code> (number): 结束Y坐标<br />
+- <code>duration</code> (number): 滑动时间(毫秒)<br />
+- <code>fingerId</code> (number, 可选): 手指ID，默认为0<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">swipe2</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">600</span><span class="p">,</span><span class="w"> </span><span class="mf">1100</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="homedisplayid">home(displayId?)</h3>
+<p>按下 Home 键。</p>
+<p><strong>参数</strong>:<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">home</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="backdisplayid">back(displayId?)</h3>
+<p>按下返回键。</p>
+<p><strong>参数</strong>:<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">back</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="recentsdisplayid">recents(displayId?)</h3>
+<p>按下最近任务键。</p>
+<p><strong>参数</strong>:<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">recents</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="powerdialog">powerDialog()</h3>
+<p>长按电源键。</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">powerDialog</span><span class="p">();</span>
+</code></pre></div>
+
+<h3 id="notifications">notifications()</h3>
+<p>下拉通知栏。</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">notifications</span><span class="p">();</span>
+</code></pre></div>
+
+<h3 id="quicksettings">quickSettings()</h3>
+<p>下拉快捷设置。</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">quickSettings</span><span class="p">();</span>
+</code></pre></div>
+
+<h3 id="volumeupdisplayid">volumeUp(displayId?)</h3>
+<p>按下音量加键。</p>
+<p><strong>参数</strong>:<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">volumeUp</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="volumedowndisplayid">volumeDown(displayId?)</h3>
+<p>按下音量减键。</p>
+<p><strong>参数</strong>:<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">volumeDown</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="camera">camera()</h3>
+<p>按下相机键。</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">camera</span><span class="p">();</span>
+</code></pre></div>
+
+<h3 id="keyactioncode-displayid">keyAction(code, displayId?)</h3>
+<p>按键动作。</p>
+<p><strong>参数</strong>:<br />
+- <code>code</code> (number): 按键代码<br />
+- <code>displayId</code> (number, 可选): 显示器ID，默认为0</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">keyAction</span><span class="p">(</span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span><span class="w"> </span><span class="c1">// KEYCODE_HOME</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 基本触摸操作</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;=== 基本触摸操作 ===&quot;</span><span class="p">);</span>
+<span class="nx">touchDown</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="nx">touchMove</span><span class="p">(</span><span class="mf">600</span><span class="p">,</span><span class="w"> </span><span class="mf">1100</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="nx">touchUp</span><span class="p">(</span><span class="mf">600</span><span class="p">,</span><span class="w"> </span><span class="mf">1100</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+
+<span class="c1">// 点击</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 点击操作 ===&quot;</span><span class="p">);</span>
+<span class="nx">click</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+
+<span class="c1">// 长按</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 长按操作 ===&quot;</span><span class="p">);</span>
+<span class="nx">longClick</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">2000</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+
+<span class="c1">// 滑动</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 滑动操作 ===&quot;</span><span class="p">);</span>
+<span class="nx">swipe</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">600</span><span class="p">,</span><span class="w"> </span><span class="mf">1100</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+
+<span class="c1">// 系统按键</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 系统按键 ===&quot;</span><span class="p">);</span>
+<span class="nx">home</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+<span class="nx">sleep</span><span class="p">(</span><span class="mf">1000</span><span class="p">);</span>
+<span class="nx">back</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+<span class="nx">sleep</span><span class="p">(</span><span class="mf">1000</span><span class="p">);</span>
+<span class="nx">recents</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+
+<span class="c1">// 音量控制</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 音量控制 ===&quot;</span><span class="p">);</span>
+<span class="nx">volumeUp</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+<span class="nx">sleep</span><span class="p">(</span><span class="mf">500</span><span class="p">);</span>
+<span class="nx">volumeDown</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+
+<span class="c1">// 其他按键</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n=== 其他按键 ===&quot;</span><span class="p">);</span>
+<span class="nx">powerDialog</span><span class="p">();</span>
+<span class="nx">notifications</span><span class="p">();</span>
+<span class="nx">quickSettings</span><span class="p">();</span>
+</code></pre></div>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

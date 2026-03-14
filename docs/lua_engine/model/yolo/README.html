@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yolo 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Yolo 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/lua_engine/model/yolo/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="yolo">Yolo 模块</h1>
+<p>Yolo 模块提供了基于 YOLO（You Only Look Once）的目标检测功能，支持从屏幕、图像文件、Base64 字符串等多种来源进行对象检测。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="yolonewversion-cputhreadnum-parampath-binpath-labels">yolo.new(version, cpuThreadNum, paramPath, binPath, labels)</h3>
+<p>创建一个新的 YOLO 实例。</p>
+<p><strong>入参：</strong><br />
+- <code>version</code>: YOLO 模型版本（字符串）<br />
+- <code>cpuThreadNum</code>: CPU 线程数（整数）<br />
+- <code>paramPath</code>: 参数文件路径（字符串）<br />
+- <code>binPath</code>: 模型文件路径（字符串）<br />
+- <code>labels</code>: 标签文件路径（字符串）</p>
+<p><strong>出参：</strong> YOLO 对象</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 YOLO 实例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="yolodetectyoloobj-x1-y1-x2-y2-displayid">yolo.detect(yoloObj, x1, y1, x2, y2, displayId)</h3>
+<p>检测屏幕指定区域内的对象。</p>
+<p><strong>入参：</strong><br />
+- <code>yoloObj</code>: YOLO 对象<br />
+- <code>x1</code>: 区域左上角 X 坐标（整数）<br />
+- <code>y1</code>: 区域左上角 Y 坐标（整数）<br />
+- <code>x2</code>: 区域右下角 X 坐标（整数）<br />
+- <code>y2</code>: 区域右下角 Y 坐标（整数）<br />
+- <code>displayId</code>: 显示器 ID（整数，可选，默认 0）</p>
+<p><strong>出参：</strong> 检测结果数组，每个元素包含 x、y、w、h、label、score 字段</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 YOLO 实例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+
+<span class="c1">// 检测屏幕区域</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detect</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;标签:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">label</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;位置:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;大小:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">h</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;置信度:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">score</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="yolodetectfromimageyoloobj-img">yolo.detectFromImage(yoloObj, img)</h3>
+<p>从图像对象检测对象。</p>
+<p><strong>入参：</strong><br />
+- <code>yoloObj</code>: YOLO 对象<br />
+- <code>img</code>: 图像对象（NRGBA 格式）</p>
+<p><strong>出参：</strong> 检测结果数组，每个元素包含 x、y、w、h、label、score 字段</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 YOLO 实例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+
+<span class="c1">// 从图像检测</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">captureScreen</span><span class="p">();</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detectFromImage</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="nx">img</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;标签:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">label</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="yolodetectfrombase64yoloobj-b64-colorstr">yolo.detectFromBase64(yoloObj, b64, colorStr)</h3>
+<p>从 Base64 编码的图像字符串检测对象。</p>
+<p><strong>入参：</strong><br />
+- <code>yoloObj</code>: YOLO 对象<br />
+- <code>b64</code>: Base64 编码的图像字符串<br />
+- <code>colorStr</code>: 颜色过滤字符串（字符串，可选）</p>
+<p><strong>出参：</strong> 检测结果数组，每个元素包含 x、y、w、h、label、score 字段</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 YOLO 实例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+
+<span class="c1">// 从 Base64 图像检测</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">base64Img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==&quot;</span><span class="p">;</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detectFromBase64</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="nx">base64Img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;标签:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">label</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="yolodetectfrompathyoloobj-path-colorstr">yolo.detectFromPath(yoloObj, path, colorStr)</h3>
+<p>从图像文件路径检测对象。</p>
+<p><strong>入参：</strong><br />
+- <code>yoloObj</code>: YOLO 对象<br />
+- <code>path</code>: 图像文件路径（字符串）<br />
+- <code>colorStr</code>: 颜色过滤字符串（字符串，可选）</p>
+<p><strong>出参：</strong> 检测结果数组，每个元素包含 x、y、w、h、label、score 字段</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 YOLO 实例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+
+<span class="c1">// 从文件检测</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detectFromPath</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/image.png&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;标签:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">label</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="yolocloseyoloobj">yolo.close(yoloObj)</h3>
+<p>关闭 YOLO 实例，释放资源。</p>
+<p><strong>入参：</strong><br />
+- <code>yoloObj</code>: YOLO 对象</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 关闭 YOLO 实例</span>
+<span class="nx">yolo</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 示例1：基本目标检测</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">basicDetection</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detect</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;检测到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 个对象&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;标签:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">label</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;位置:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;大小:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">h</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;置信度:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">score</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例2：从图像文件检测</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">detectFromFile</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">imagePath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/sdcard/image.png&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detectFromPath</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="nx">imagePath</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文件中检测到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 个对象&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;标签:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">label</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;置信度:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">score</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例3：从屏幕截图检测</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">detectFromScreenshot</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">captureScreen</span><span class="p">();</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detectFromImage</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="nx">img</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;截图中检测到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 个对象&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;标签:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">label</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例4：查找并点击目标</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">findAndClickTarget</span><span class="p">(</span><span class="nx">targetLabel</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detect</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">label</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">targetLabel</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到目标:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">targetLabel</span><span class="p">);</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">centerX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">w</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">centerY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">h</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
+<span class="w">            </span><span class="nx">motion</span><span class="p">.</span><span class="nx">tap</span><span class="p">(</span><span class="nx">centerX</span><span class="p">,</span><span class="w"> </span><span class="nx">centerY</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;未找到目标:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">targetLabel</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例5：按置信度过滤</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">filterByConfidence</span><span class="p">(</span><span class="nx">minScore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detect</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">filteredResults</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">score</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">minScore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">filteredResults</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;过滤后剩余 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">filteredResults</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 个对象&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">filteredResults</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;标签:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">filteredResults</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">label</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;置信度:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">filteredResults</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">score</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例6：统计检测到的对象</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">countObjects</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detect</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">label</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">counts</span><span class="p">[</span><span class="nx">label</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">counts</span><span class="p">[</span><span class="nx">label</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="nx">counts</span><span class="p">[</span><span class="nx">label</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;对象统计:&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">label</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">counts</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="nx">label</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">counts</span><span class="p">[</span><span class="nx">label</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例7：批量处理多个图像</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">batchDetect</span><span class="p">(</span><span class="nx">imagePaths</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">imagePaths</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">imagePaths</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;处理图像:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">path</span><span class="p">);</span>
+
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detectFromPath</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;检测到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 个对象&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">j</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;标签:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">label</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;置信度:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">score</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">yoloObj</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例8：YOLO 检测器</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">YoloDetector</span><span class="p">(</span><span class="nx">version</span><span class="p">,</span><span class="w"> </span><span class="nx">cpuThreadNum</span><span class="p">,</span><span class="w"> </span><span class="nx">paramPath</span><span class="p">,</span><span class="w"> </span><span class="nx">binPath</span><span class="p">,</span><span class="w"> </span><span class="nx">labelsPath</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="nx">version</span><span class="p">,</span><span class="w"> </span><span class="nx">cpuThreadNum</span><span class="p">,</span><span class="w"> </span><span class="nx">paramPath</span><span class="p">,</span><span class="w"> </span><span class="nx">binPath</span><span class="p">,</span><span class="w"> </span><span class="nx">labelsPath</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">detect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">x1</span><span class="p">,</span><span class="w"> </span><span class="nx">y1</span><span class="p">,</span><span class="w"> </span><span class="nx">x2</span><span class="p">,</span><span class="w"> </span><span class="nx">y2</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detect</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="nx">x1</span><span class="p">,</span><span class="w"> </span><span class="nx">y1</span><span class="p">,</span><span class="w"> </span><span class="nx">x2</span><span class="p">,</span><span class="w"> </span><span class="nx">y2</span><span class="p">,</span><span class="w"> </span><span class="nx">displayId</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">detectFromImage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">img</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detectFromImage</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="nx">img</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">detectFromPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="nx">colorStr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detectFromPath</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="nx">colorStr</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">detectFromBase64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">b64</span><span class="p">,</span><span class="w"> </span><span class="nx">colorStr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">detectFromBase64</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yoloObj</span><span class="p">,</span><span class="w"> </span><span class="nx">b64</span><span class="p">,</span><span class="w"> </span><span class="nx">colorStr</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">findByLabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="nx">targetLabel</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">label</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">targetLabel</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">found</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">found</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">filterByScore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="nx">minScore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">filtered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">score</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">minScore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">filtered</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">filtered</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">countByLabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">label</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">counts</span><span class="p">[</span><span class="nx">label</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">counts</span><span class="p">[</span><span class="nx">label</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="nx">counts</span><span class="p">[</span><span class="nx">label</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">counts</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">close</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">yolo</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yoloObj</span><span class="p">);</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">yoloObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="c1">// 使用 YOLO 检测器</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">useYoloDetector</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">detector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">YoloDetector</span><span class="p">(</span><span class="s2">&quot;v5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.param&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/model.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/labels.txt&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 检测屏幕</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">detector</span><span class="p">.</span><span class="nx">detect</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;检测到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 个对象&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 查找特定标签</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">persons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">detector</span><span class="p">.</span><span class="nx">findByLabel</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;person&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;检测到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">persons</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 个人&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 按置信度过滤</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">highConfidence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">detector</span><span class="p">.</span><span class="nx">filterByScore</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;高置信度对象: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">highConfidence</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 统计对象</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">detector</span><span class="p">.</span><span class="nx">countByLabel</span><span class="p">(</span><span class="nx">results</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;对象统计:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">counts</span><span class="p">));</span>
+
+<span class="w">    </span><span class="c1">// 关闭检测器</span>
+<span class="w">    </span><span class="nx">detector</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// 调用示例</span>
+<span class="nx">basicDetection</span><span class="p">();</span>
+<span class="nx">detectFromFile</span><span class="p">();</span>
+<span class="nx">detectFromScreenshot</span><span class="p">();</span>
+<span class="nx">findAndClickTarget</span><span class="p">(</span><span class="s2">&quot;person&quot;</span><span class="p">);</span>
+<span class="nx">filterByConfidence</span><span class="p">(</span><span class="mf">0.8</span><span class="p">);</span>
+<span class="nx">countObjects</span><span class="p">();</span>
+<span class="nx">batchDetect</span><span class="p">([</span><span class="s2">&quot;/sdcard/img1.png&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/img2.png&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/img3.png&quot;</span><span class="p">]);</span>
+<span class="nx">useYoloDetector</span><span class="p">();</span>
+</code></pre></div>
+
+<h2 id="_3">注意事项</h2>
+<ol>
+<li>使用 YOLO 功能前，需要先创建实例</li>
+<li>创建实例时需要提供模型文件和标签文件路径</li>
+<li>cpuThreadNum 参数影响检测速度，建议根据设备性能设置</li>
+<li>使用完毕后，建议调用 <code>close()</code> 方法释放资源</li>
+<li>检测结果包含对象的位置、大小、标签和置信度</li>
+<li>colorStr 参数用于颜色过滤，可以指定只检测特定颜色的对象</li>
+<li>displayId 用于多显示器环境，通常为 0 表示主显示器</li>
+<li>检测速度取决于图像大小和复杂度</li>
+<li>对于大图像，建议先裁剪到感兴趣的区域再检测</li>
+<li>置信度（score）范围是 0-1，值越大表示检测结果越可靠</li>
+</ol>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

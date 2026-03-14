@@ -26,9 +26,26 @@ go get github.com/ZingYao/autogo_scriptengine@v0.0.5
 
 > **🔥 重要提示**：查看以下详细文档以获取完整的 API 参考和使用指南
 
-### 📖 JavaScript 引擎文档
+### 🌐 HTML 在线文档
 
-#### 核心文档
+> **推荐**：查看美观的 HTML 在线文档，提供更好的阅读体验
+
+- [📖 文档索引](./docs/index.html) - 所有文档的导航页面
+- [🏠 项目主页](./docs/README.html) - 项目介绍和功能特性
+- [JavaScript 引擎文档](./docs/js_engine/README.html) - JavaScript 引擎完整文档
+- [Lua 引擎文档](./docs/lua_engine/README.html) - Lua 引擎完整文档
+
+**使用方法**：
+```bash
+# 生成/更新 HTML 文档
+python3 scripts/convert_to_html.py
+```
+
+### 📖 Markdown 文档
+
+> 如果您更喜欢阅读 Markdown 格式的文档，可以查看以下链接：
+
+#### JavaScript 引擎文档
 - [JavaScript 引擎完整文档](./js_engine/README.md) - 包含所有 API、配置选项和高级用法
 
 #### 模块文档

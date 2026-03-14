@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>System 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/js_engine/model/system/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="system">System 模块</h1>
+<p>System 模块提供了系统级别的功能，包括进程管理、资源监控和系统设置。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="systemgetpidprocessname">system.getPid(processName)</h3>
+<p>根据进程名称获取进程 ID。</p>
+<p><strong>入参：</strong><br />
+- <code>processName</code>: 进程名称（字符串）</p>
+<p><strong>出参：</strong> 进程 ID（整数），未找到返回 0</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 获取进程 ID</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getPid</span><span class="p">(</span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;进程 ID:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pid</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="systemgetmemoryusagepid">system.getMemoryUsage(pid)</h3>
+<p>获取指定进程的内存使用情况。</p>
+<p><strong>入参：</strong><br />
+- <code>pid</code>: 进程 ID（整数）</p>
+<p><strong>出参：</strong> 内存使用量（MB，整数）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 获取内存使用</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getPid</span><span class="p">(</span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pid</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">memory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getMemoryUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;内存使用:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">memory</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MB&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="systemgetcpuusagepid">system.getCpuUsage(pid)</h3>
+<p>获取指定进程的 CPU 使用率。</p>
+<p><strong>入参：</strong><br />
+- <code>pid</code>: 进程 ID（整数）</p>
+<p><strong>出参：</strong> CPU 使用率（浮点数，百分比）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 获取 CPU 使用率</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getPid</span><span class="p">(</span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pid</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">cpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getCpuUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;CPU 使用率:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">cpu</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="systemrestartself">system.restartSelf()</h3>
+<p>重启当前应用程序。</p>
+<p><strong>入参：</strong> 无</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 重启应用</span>
+<span class="nx">system</span><span class="p">.</span><span class="nx">restartSelf</span><span class="p">();</span>
+</code></pre></div>
+
+<h3 id="systemsetbootstartenable">system.setBootStart(enable)</h3>
+<p>设置是否开机自启动。</p>
+<p><strong>入参：</strong><br />
+- <code>enable</code>: 是否启用开机自启动（布尔值）</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 启用开机自启动</span>
+<span class="nx">system</span><span class="p">.</span><span class="nx">setBootStart</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+
+<span class="c1">// 禁用开机自启动</span>
+<span class="nx">system</span><span class="p">.</span><span class="nx">setBootStart</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 示例1：获取进程信息</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">getProcessInfo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">processName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getPid</span><span class="p">(</span><span class="nx">processName</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pid</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;进程名称:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">processName</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;进程 ID:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pid</span><span class="p">);</span>
+
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">memory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getMemoryUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;内存使用:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">memory</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MB&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">cpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getCpuUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;CPU 使用率:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">cpu</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;进程未找到:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">processName</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例2：监控进程资源</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">monitorProcess</span><span class="p">(</span><span class="nx">processName</span><span class="p">,</span><span class="w"> </span><span class="nx">duration</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getPid</span><span class="p">(</span><span class="nx">processName</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pid</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;进程未找到:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">processName</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;开始监控进程:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">processName</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;进程 ID:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pid</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">interval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">memory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getMemoryUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">cpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getCpuUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;内存:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">memory</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MB&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CPU:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">cpu</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 持续监控指定时间</span>
+<span class="w">    </span><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">clearInterval</span><span class="p">(</span><span class="nx">interval</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;监控结束&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="nx">duration</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例3：批量获取进程信息</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">getMultipleProcessInfo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">processes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;com.android.systemui&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;com.android.phone&quot;</span>
+<span class="w">    </span><span class="p">];</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">processes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">processName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">processes</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getPid</span><span class="p">(</span><span class="nx">processName</span><span class="p">);</span>
+
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;---&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">processName</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;---&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pid</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;进程 ID:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pid</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;内存:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getMemoryUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;MB&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;CPU:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getCpuUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;进程未运行&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例4：进程资源监控器</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">ProcessMonitor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">processes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">addProcess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">processName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getPid</span><span class="p">(</span><span class="nx">processName</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pid</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">processes</span><span class="p">[</span><span class="nx">processName</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">pid</span><span class="p">;</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;添加进程:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">processName</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PID:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pid</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;进程未找到:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">processName</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">removeProcess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">processName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="ow">delete</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">processes</span><span class="p">[</span><span class="nx">processName</span><span class="p">];</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;移除进程:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">processName</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">monitor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;=== 进程监控 ===&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">processes</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">processes</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">memory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getMemoryUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">cpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getCpuUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;- 内存:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">memory</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MB&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CPU:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">cpu</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">interval</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">self</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">intervalId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">self</span><span class="p">.</span><span class="nx">monitor</span><span class="p">();</span>
+<span class="w">        </span><span class="p">},</span><span class="w"> </span><span class="nx">interval</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;监控已启动，间隔:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">interval</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ms&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">intervalId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">clearInterval</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">intervalId</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;监控已停止&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="c1">// 使用进程监控器</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">useProcessMonitor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">monitor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ProcessMonitor</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// 添加要监控的进程</span>
+<span class="w">    </span><span class="nx">monitor</span><span class="p">.</span><span class="nx">addProcess</span><span class="p">(</span><span class="s2">&quot;com.android.systemui&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">monitor</span><span class="p">.</span><span class="nx">addProcess</span><span class="p">(</span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 启动监控</span>
+<span class="w">    </span><span class="nx">monitor</span><span class="p">.</span><span class="nx">start</span><span class="p">(</span><span class="mf">2000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 运行一段时间后停止</span>
+<span class="w">    </span><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">monitor</span><span class="p">.</span><span class="nx">stop</span><span class="p">();</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="mf">10000</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例5：系统资源统计</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">systemResourceStats</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">processes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;com.android.systemui&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;com.android.phone&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;com.android.launcher&quot;</span>
+<span class="w">    </span><span class="p">];</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">totalMemory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">totalCpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;=== 系统资源统计 ===&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">processes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">processName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">processes</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getPid</span><span class="p">(</span><span class="nx">processName</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pid</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">memory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getMemoryUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">cpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">system</span><span class="p">.</span><span class="nx">getCpuUsage</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="nx">processName</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;  内存:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">memory</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MB&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;  CPU:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">cpu</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">);</span>
+
+<span class="w">            </span><span class="nx">totalMemory</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">memory</span><span class="p">;</span>
+<span class="w">            </span><span class="nx">totalCpu</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">cpu</span><span class="p">;</span>
+<span class="w">            </span><span class="nx">count</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">count</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;--- 统计 ---&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;监控进程数:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">count</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;总内存使用:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">totalMemory</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MB&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;平均内存:&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">totalMemory</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nx">count</span><span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;MB&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;总 CPU 使用:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">totalCpu</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;平均 CPU:&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">totalCpu</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nx">count</span><span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例6：开机自启动设置</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">manageBootStart</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 启用开机自启动</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;启用开机自启动...&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">system</span><span class="p">.</span><span class="nx">setBootStart</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;已启用&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 检查状态（这里只是示例，实际可能需要其他方法检查）</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;当前状态: 已启用&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 禁用开机自启动</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;禁用开机自启动...&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">system</span><span class="p">.</span><span class="nx">setBootStart</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;已禁用&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例7：应用重启</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">restartApplication</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;应用将在 3 秒后重启...&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">utils</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mf">3000</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">system</span><span class="p">.</span><span class="nx">restartSelf</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// 调用示例</span>
+<span class="nx">getProcessInfo</span><span class="p">();</span>
+<span class="nx">monitorProcess</span><span class="p">(</span><span class="s2">&quot;com.android.settings&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">);</span>
+<span class="nx">getMultipleProcessInfo</span><span class="p">();</span>
+<span class="nx">useProcessMonitor</span><span class="p">();</span>
+<span class="nx">systemResourceStats</span><span class="p">();</span>
+<span class="nx">manageBootStart</span><span class="p">();</span>
+<span class="c1">// restartApplication(); // 取消注释以测试重启功能</span>
+</code></pre></div>
+
+<h2 id="_3">注意事项</h2>
+<ol>
+<li>获取进程信息需要相应的权限</li>
+<li>进程名称通常是应用的包名</li>
+<li>内存使用量单位为 MB</li>
+<li>CPU 使用率是百分比形式，范围 0-100</li>
+<li>重启应用会终止当前进程并重新启动</li>
+<li>开机自启动需要系统权限，可能需要用户授权</li>
+<li>监控进程资源时，建议设置合理的采样间隔</li>
+<li>某些系统进程可能无法获取详细信息</li>
+<li>进程 ID 可能会变化，建议动态获取</li>
+<li>重启应用前建议保存重要数据</li>
+</ol>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

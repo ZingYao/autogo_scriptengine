@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUD 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HUD 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/js_engine/model/hud/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="hud">HUD 模块</h1>
+<p>HUD（Heads-Up Display）模块提供了在屏幕上显示浮动文本的功能，用于显示实时信息、调试数据等。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="hudnew">hud.new()</h3>
+<p>创建一个新的 HUD 对象。</p>
+<p><strong>入参：</strong> 无</p>
+<p><strong>出参：</strong> HUD 对象</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 HUD 对象</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">hudObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">hud</span><span class="p">.</span><span class="ow">new</span><span class="p">();</span>
+</code></pre></div>
+
+<h3 id="hudsetpositionhudobj-x1-y1-x2-y2">hud.setPosition(hudObj, x1, y1, x2, y2)</h3>
+<p>设置 HUD 的显示位置和大小。</p>
+<p><strong>入参：</strong><br />
+- <code>hudObj</code>: HUD 对象<br />
+- <code>x1</code>: 左上角 X 坐标（整数）<br />
+- <code>y1</code>: 左上角 Y 坐标（整数）<br />
+- <code>x2</code>: 右下角 X 坐标（整数）<br />
+- <code>y2</code>: 右下角 Y 坐标（整数）</p>
+<p><strong>出参：</strong> HUD 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置 HUD 位置和大小</span>
+<span class="nx">hud</span><span class="p">.</span><span class="nx">setPosition</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">300</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="hudsetbackgroundcolorhudobj-color">hud.setBackgroundColor(hudObj, color)</h3>
+<p>设置 HUD 的背景颜色。</p>
+<p><strong>入参：</strong><br />
+- <code>hudObj</code>: HUD 对象<br />
+- <code>color</code>: 颜色字符串（如 "#80000000" 表示半透明黑色）</p>
+<p><strong>出参：</strong> HUD 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置背景颜色为半透明黑色</span>
+<span class="nx">hud</span><span class="p">.</span><span class="nx">setBackgroundColor</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;#80000000&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="hudsettextsizehudobj-size">hud.setTextSize(hudObj, size)</h3>
+<p>设置 HUD 中文本的字体大小。</p>
+<p><strong>入参：</strong><br />
+- <code>hudObj</code>: HUD 对象<br />
+- <code>size</code>: 字体大小（整数）</p>
+<p><strong>出参：</strong> HUD 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置字体大小为 16</span>
+<span class="nx">hud</span><span class="p">.</span><span class="nx">setTextSize</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="mf">16</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="hudsettexthudobj-items">hud.setText(hudObj, items)</h3>
+<p>设置 HUD 中要显示的文本内容。</p>
+<p><strong>入参：</strong><br />
+- <code>hudObj</code>: HUD 对象<br />
+- <code>items</code>: 文本项数组，每个项包含 TextColor 和 Text 字段</p>
+<p><strong>出参：</strong> HUD 对象（支持链式调用）</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 设置文本内容</span>
+<span class="nx">hud</span><span class="p">.</span><span class="nx">setText</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;系统状态: 正常&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#00FF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;CPU: 45%&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#00FF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;内存: 60%&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">]);</span>
+</code></pre></div>
+
+<h3 id="hudshowhudobj">hud.show(hudObj)</h3>
+<p>显示 HUD。</p>
+<p><strong>入参：</strong><br />
+- <code>hudObj</code>: HUD 对象</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 显示 HUD</span>
+<span class="nx">hud</span><span class="p">.</span><span class="nx">show</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="hudhidehudobj">hud.hide(hudObj)</h3>
+<p>隐藏 HUD。</p>
+<p><strong>入参：</strong><br />
+- <code>hudObj</code>: HUD 对象</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 隐藏 HUD</span>
+<span class="nx">hud</span><span class="p">.</span><span class="nx">hide</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="hudisvisiblehudobj">hud.isVisible(hudObj)</h3>
+<p>返回 HUD 是否可见。</p>
+<p><strong>入参：</strong><br />
+- <code>hudObj</code>: HUD 对象</p>
+<p><strong>出参：</strong> 布尔值，true 表示可见，false 表示不可见</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 检查 HUD 是否可见</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">hud</span><span class="p">.</span><span class="nx">isVisible</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;HUD 可见:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">visible</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="huddestroyhudobj">hud.destroy(hudObj)</h3>
+<p>销毁 HUD 对象，释放资源。</p>
+<p><strong>入参：</strong><br />
+- <code>hudObj</code>: HUD 对象</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 销毁 HUD 对象</span>
+<span class="nx">hud</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 示例1：创建简单的状态显示 HUD</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">createStatusHUD</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">hudObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">hud</span><span class="p">.</span><span class="ow">new</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setPosition</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="mf">50</span><span class="p">,</span><span class="w"> </span><span class="mf">50</span><span class="p">,</span><span class="w"> </span><span class="mf">400</span><span class="p">,</span><span class="w"> </span><span class="mf">200</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setBackgroundColor</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;#80000000&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setTextSize</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="mf">14</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setText</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;系统状态&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#00FF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;运行中...&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]);</span>
+
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">show</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">hudObj</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例2：创建系统监控 HUD</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">createMonitorHUD</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">hudObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">hud</span><span class="p">.</span><span class="ow">new</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setPosition</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="mf">10</span><span class="p">,</span><span class="w"> </span><span class="mf">10</span><span class="p">,</span><span class="w"> </span><span class="mf">300</span><span class="p">,</span><span class="w"> </span><span class="mf">250</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setBackgroundColor</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;#90000000&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setTextSize</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="mf">12</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">updateMonitorHUD</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">show</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">hudObj</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">updateMonitorHUD</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">cpuUsage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getCpuUsage</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">memUsage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getMemoryUsage</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">battery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">device</span><span class="p">.</span><span class="nx">getBattery</span><span class="p">();</span>
+
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setText</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;=== 系统监控 ===&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#FFFF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;CPU: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">cpuUsage</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#FFFF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;内存: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">memUsage</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; MB&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#00FF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;电池: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">battery</span><span class="p">.</span><span class="nx">level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#00FFFF&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;时间: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">().</span><span class="nx">toLocaleTimeString</span><span class="p">()</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例3：使用链式调用创建 HUD</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">createHUDWithChain</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">hudObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">hud</span><span class="p">.</span><span class="ow">new</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">setPosition</span><span class="p">(</span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">300</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">setBackgroundColor</span><span class="p">(</span><span class="s2">&quot;#80000000&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">setTextSize</span><span class="p">(</span><span class="mf">16</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">setText</span><span class="p">([</span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;欢迎使用&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#00FF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;HUD 显示系统&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">])</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">hudObj</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例4：动态更新 HUD 内容</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">dynamicHUD</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">hudObj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">hud</span><span class="p">.</span><span class="ow">new</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setPosition</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="mf">20</span><span class="p">,</span><span class="w"> </span><span class="mf">20</span><span class="p">,</span><span class="w"> </span><span class="mf">350</span><span class="p">,</span><span class="w"> </span><span class="mf">200</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setBackgroundColor</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;#90000000&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setTextSize</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="mf">14</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">hud</span><span class="p">.</span><span class="nx">show</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">interval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">count</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">hud</span><span class="p">.</span><span class="nx">setText</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">,</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;计数器: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#00FF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;运行时间: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 秒&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nx">TextColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#FFFF00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;状态: 正常&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">count</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">10</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">clearInterval</span><span class="p">(</span><span class="nx">interval</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">hud</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span><span class="nx">hudObj</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 调用示例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">statusHUD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createStatusHUD</span><span class="p">();</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">monitorHUD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createMonitorHUD</span><span class="p">();</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">chainHUD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createHUDWithChain</span><span class="p">();</span>
+<span class="nx">dynamicHUD</span><span class="p">();</span>
+
+<span class="c1">// 定时更新监控 HUD</span>
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">updateMonitorHUD</span><span class="p">(</span><span class="nx">monitorHUD</span><span class="p">);</span>
+<span class="p">},</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_3">注意事项</h2>
+<ol>
+<li>使用完 HUD 后，建议调用 <code>destroy()</code> 方法释放资源</li>
+<li>颜色字符串格式为十六进制，支持透明度，如 "#AARRGGBB"</li>
+<li>setText 方法可以接受多个文本项，每个项可以设置不同的颜色</li>
+<li>HUD 的位置和大小应根据屏幕分辨率合理设置</li>
+<li>背景颜色建议使用半透明颜色，避免遮挡底层内容</li>
+<li>文本颜色和背景颜色应有足够的对比度，确保可读性</li>
+<li>HUD 支持链式调用，可以连续调用多个方法</li>
+<li>动态更新 HUD 内容时，建议使用定时器定期刷新</li>
+</ol>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

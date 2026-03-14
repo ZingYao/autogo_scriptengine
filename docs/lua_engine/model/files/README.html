@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Files 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Files 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/lua_engine/model/files/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="files">Files 模块</h1>
+<p>Files 模块提供了文件和文件夹操作功能。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="filesisdirpath">files.isDir(path)</h3>
+<p>返回路径 path 是否是文件夹。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果是文件夹返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">isDir</span><span class="p">(</span><span class="s2">&quot;/sdcard/Download&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;是文件夹&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h3 id="filesisfilepath">files.isFile(path)</h3>
+<p>返回路径 path 是否是文件。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果是文件返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">isFile</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;是文件&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h3 id="filesisemptydirpath">files.isEmptyDir(path)</h3>
+<p>返回文件夹 path 是否为空文件夹。如果该路径并非文件夹，则直接返回 <code>false</code>。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件夹路径</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果是空文件夹返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">isEmptyDir</span><span class="p">(</span><span class="s2">&quot;/sdcard/empty&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;是空文件夹&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h3 id="filescreatepath">files.create(path)</h3>
+<p>创建一个文件或文件夹并返回是否创建成功。如果文件已经存在，则直接返回 <code>false</code>。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件或文件夹路径</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果创建成功返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件创建成功&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h3 id="filesexistspath">files.exists(path)</h3>
+<p>返回在路径 path 处的文件是否存在。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果文件存在返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">exists</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件存在&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h3 id="filesensuredirpath">files.ensureDir(path)</h3>
+<p>确保路径 path 所在的文件夹存在。如果该路径所在文件夹不存在，则创建该文件夹。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果成功返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">files</span><span class="p">.</span><span class="nf">ensureDir</span><span class="p">(</span><span class="s2">&quot;/sdcard/test/subdir&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件夹已确保存在&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="filesreadpath">files.read(path)</h3>
+<p>读取文本文件 path 的所有内容并返回。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径</p>
+<p><strong>返回值</strong>: <code>string</code> - 文件内容</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件内容: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">content</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="filesreadbytespath">files.readBytes(path)</h3>
+<p>读取文件 path 的所有内容并返回字节数组。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径</p>
+<p><strong>返回值</strong>: <code>table</code> - 字节数组，如果文件不存在返回 <code>nil</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">readBytes</span><span class="p">(</span><span class="s2">&quot;/sdcard/image.png&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件大小: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="o">#</span><span class="nv">bytes</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="s2">&quot; bytes&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="fileswritepath-text">files.write(path, text)</h3>
+<p>把 text 写入到文件 path 中。如果文件存在则覆盖，不存在则创建。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径<br />
+- <code>text</code> (string): 要写入的文本内容</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">files</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Hello, World!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件已写入&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="fileswritebytespath-bytes">files.writeBytes(path, bytes)</h3>
+<p>把 bytes 写入到文件 path 中。如果文件存在则覆盖，不存在则创建。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径<br />
+- <code>bytes</code> (table): 要写入的字节数组</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">72</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mi">108</span><span class="p">,</span><span class="w"> </span><span class="mi">108</span><span class="p">,</span><span class="w"> </span><span class="mi">111</span><span class="p">}</span><span class="w"> </span><span class="c1">-- &quot;Hello&quot;</span>
+<span class="nv">files</span><span class="p">.</span><span class="nf">writeBytes</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">bytes</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;字节数据已写入&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="filesappendpath-text">files.append(path, text)</h3>
+<p>把 text 追加到文件 path 的末尾。如果文件不存在则创建。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径<br />
+- <code>text</code> (string): 要追加的文本内容</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">files</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">追加的内容&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;内容已追加&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="filesappendbytespath-bytes">files.appendBytes(path, bytes)</h3>
+<p>把 bytes 追加到文件 path 的末尾。如果文件不存在则创建。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径<br />
+- <code>bytes</code> (table): 要追加的字节数组</p>
+<p><strong>返回值</strong>: <code>undefined</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">33</span><span class="p">,</span><span class="w"> </span><span class="mi">34</span><span class="p">,</span><span class="w"> </span><span class="mi">35</span><span class="p">}</span><span class="w"> </span><span class="c1">-- &quot;!\&quot;#&quot;</span>
+<span class="nv">files</span><span class="p">.</span><span class="nf">appendBytes</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">bytes</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;字节数据已追加&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="filescopyfrompath-topath">files.copy(fromPath, toPath)</h3>
+<p>复制文件，返回是否复制成功。</p>
+<p><strong>参数</strong>:<br />
+- <code>fromPath</code> (string): 源文件路径<br />
+- <code>toPath</code> (string): 目标文件路径</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果复制成功返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">copy</span><span class="p">(</span><span class="s2">&quot;/sdcard/source.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/dest.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件复制成功&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h3 id="filesmovefrompath-topath">files.move(fromPath, toPath)</h3>
+<p>移动文件，返回是否移动成功。</p>
+<p><strong>参数</strong>:<br />
+- <code>fromPath</code> (string): 源文件路径<br />
+- <code>toPath</code> (string): 目标文件路径</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果移动成功返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">move</span><span class="p">(</span><span class="s2">&quot;/sdcard/source.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/newlocation.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件移动成功&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h3 id="filesrenamepath-newname">files.rename(path, newName)</h3>
+<p>重命名文件，并返回是否重命名成功。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径<br />
+- <code>newName</code> (string): 新文件名</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果重命名成功返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">rename</span><span class="p">(</span><span class="s2">&quot;/sdcard/old.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;new.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件重命名成功&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h3 id="filesremovepath">files.remove(path)</h3>
+<p>删除文件或文件夹，如果是文件夹会删除整个文件夹包含里面的所有文件，返回是否删除成功。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件或文件夹路径</p>
+<p><strong>返回值</strong>: <code>boolean</code> - 如果删除成功返回 <code>true</code>，否则返回 <code>false</code></p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">remove</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件删除成功&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h3 id="filesgetnamepath">files.getName(path)</h3>
+<p>返回文件的文件名。例如 <code>files.getName("/sdcard/1.txt")</code> 返回 <code>"1.txt"</code>。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径</p>
+<p><strong>返回值</strong>: <code>string</code> - 文件名</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">getName</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件名: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">name</span><span class="p">)</span><span class="w"> </span><span class="c1">-- 输出: test.txt</span>
+</code></pre></div>
+
+<h3 id="filesgetnamewithoutextensionpath">files.getNameWithoutExtension(path)</h3>
+<p>返回不含拓展名的文件的文件名。例如 <code>files.getName("/sdcard/1.txt")</code> 返回 <code>"1"</code>。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径</p>
+<p><strong>返回值</strong>: <code>string</code> - 不含扩展名的文件名</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">getNameWithoutExtension</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件名(不含扩展名): &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">name</span><span class="p">)</span><span class="w"> </span><span class="c1">-- 输出: test</span>
+</code></pre></div>
+
+<h3 id="filesgetextensionpath">files.getExtension(path)</h3>
+<p>返回文件的拓展名。例如 <code>files.getExtension("/sdcard/1.txt")</code> 返回 <code>"txt"</code>。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径</p>
+<p><strong>返回值</strong>: <code>string</code> - 文件扩展名</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">ext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">getExtension</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件扩展名: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">ext</span><span class="p">)</span><span class="w"> </span><span class="c1">-- 输出: txt</span>
+</code></pre></div>
+
+<h3 id="filesgetmd5path">files.getMd5(path)</h3>
+<p>返回文件的 MD5 值。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件路径</p>
+<p><strong>返回值</strong>: <code>string</code> - MD5 值</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">md5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">getMd5</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件 MD5: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">md5</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="filespathrelativepath">files.path(relativePath)</h3>
+<p>返回相对路径对应的绝对路径。例如 <code>files.path("./1.png")</code>，如果运行这个语句的脚本位于文件夹 <code>"/sdcard/脚本/"</code> 中，则返回 <code>"/sdcard/脚本/1.png"</code>。</p>
+<p><strong>参数</strong>:<br />
+- <code>relativePath</code> (string): 相对路径</p>
+<p><strong>返回值</strong>: <code>string</code> - 绝对路径</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">absPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">path</span><span class="p">(</span><span class="s2">&quot;./test.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;绝对路径: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">absPath</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="fileslistdirpath">files.listDir(path)</h3>
+<p>列出文件夹 path 下的所有文件和文件夹。</p>
+<p><strong>参数</strong>:<br />
+- <code>path</code> (string): 文件夹路径</p>
+<p><strong>返回值</strong>: <code>table</code> - 文件和文件夹名称数组</p>
+<p><strong>调用示例</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">fileList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">listDir</span><span class="p">(</span><span class="s2">&quot;/sdcard&quot;</span><span class="p">)</span>
+<span class="kr">for</span><span class="w"> </span><span class="nv">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">#</span><span class="nv">fileList</span><span class="w"> </span><span class="kr">do</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="nv">fileList</span><span class="p">[</span><span class="nv">i</span><span class="p">])</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">-- 文件和文件夹检查</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== 文件检查 ===&quot;</span><span class="p">)</span>
+<span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">exists</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件存在&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">isFile</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;是文件&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span>
+<span class="kr">end</span>
+
+<span class="kr">if</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">isDir</span><span class="p">(</span><span class="s2">&quot;/sdcard/Download&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;是文件夹&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">fileList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">listDir</span><span class="p">(</span><span class="s2">&quot;/sdcard/Download&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件夹内容: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nb">table.concat</span><span class="p">(</span><span class="nv">fileList</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;, &quot;</span><span class="p">))</span>
+<span class="kr">end</span>
+
+<span class="c1">-- 文件读写</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== 文件读写 ===&quot;</span><span class="p">)</span>
+<span class="nv">files</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Hello, World!&quot;</span><span class="p">)</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件内容: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">content</span><span class="p">)</span>
+
+<span class="c1">-- 追加内容</span>
+<span class="nv">files</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">追加的内容&quot;</span><span class="p">)</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">newContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;新内容: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">newContent</span><span class="p">)</span>
+
+<span class="c1">-- 文件操作</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== 文件操作 ===&quot;</span><span class="p">)</span>
+<span class="nv">files</span><span class="p">.</span><span class="nf">copy</span><span class="p">(</span><span class="s2">&quot;/sdcard/test.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/copy.txt&quot;</span><span class="p">)</span>
+<span class="nv">files</span><span class="p">.</span><span class="nf">move</span><span class="p">(</span><span class="s2">&quot;/sdcard/copy.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/moved.txt&quot;</span><span class="p">)</span>
+<span class="nv">files</span><span class="p">.</span><span class="nf">rename</span><span class="p">(</span><span class="s2">&quot;/sdcard/moved.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;renamed.txt&quot;</span><span class="p">)</span>
+
+<span class="c1">-- 获取文件信息</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== 文件信息 ===&quot;</span><span class="p">)</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">fullPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/sdcard/test.txt&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件名: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">getName</span><span class="p">(</span><span class="nv">fullPath</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件名(不含扩展名): &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">getNameWithoutExtension</span><span class="p">(</span><span class="nv">fullPath</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件扩展名: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">getExtension</span><span class="p">(</span><span class="nv">fullPath</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;绝对路径: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">files</span><span class="p">.</span><span class="nf">path</span><span class="p">(</span><span class="s2">&quot;./test.txt&quot;</span><span class="p">))</span>
+
+<span class="c1">-- 删除文件</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== 删除文件 ===&quot;</span><span class="p">)</span>
+<span class="nv">files</span><span class="p">.</span><span class="nf">remove</span><span class="p">(</span><span class="s2">&quot;/sdcard/renamed.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文件已删除&quot;</span><span class="p">)</span>
+</code></pre></div>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>

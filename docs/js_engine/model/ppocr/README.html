@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPOCR 模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e9ecef;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PPOCR 模块</h1>
+            <div class="subtitle">来源: /Users/zing/Documents/SelfProject/GolangProject/autogo_scriptengine/js_engine/model/ppocr/README.md</div>
+        </div>
+        <div class="content">
+            <h1 id="ppocr">PPOCR 模块</h1>
+<p>PPOCR 模块提供了基于 PaddleOCR 的文字识别功能，支持从屏幕、图像文件、Base64 字符串等多种来源进行文字识别。</p>
+<h2 id="_1">方法列表</h2>
+<h3 id="ppocrnewversion">ppocr.new(version)</h3>
+<p>创建一个新的 PPOCR 实例。</p>
+<p><strong>入参：</strong><br />
+- <code>version</code>: OCR 模型版本（字符串）</p>
+<p><strong>出参：</strong> PPOCR 对象</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 PPOCR 实例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="ppocrocrocrobj-x1-y1-x2-y2-colorstr-displayid">ppocr.ocr(ocrObj, x1, y1, x2, y2, colorStr, displayId)</h3>
+<p>识别屏幕指定区域的文字。</p>
+<p><strong>入参：</strong><br />
+- <code>ocrObj</code>: PPOCR 对象<br />
+- <code>x1</code>: 区域左上角 X 坐标（整数）<br />
+- <code>y1</code>: 区域左上角 Y 坐标（整数）<br />
+- <code>x2</code>: 区域右下角 X 坐标（整数）<br />
+- <code>y2</code>: 区域右下角 Y 坐标（整数）<br />
+- <code>colorStr</code>: 颜色过滤字符串（字符串，可选）<br />
+- <code>displayId</code>: 显示器 ID（整数，可选，默认 0）</p>
+<p><strong>出参：</strong> 识别结果数组，每个元素包含 text、x、y、w、h 字段</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 PPOCR 实例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+
+<span class="c1">// 识别屏幕区域</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocr</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;位置:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="ppocrocrfromimageocrobj-img-colorstr">ppocr.ocrFromImage(ocrObj, img, colorStr)</h3>
+<p>从图像对象识别文字。</p>
+<p><strong>入参：</strong><br />
+- <code>ocrObj</code>: PPOCR 对象<br />
+- <code>img</code>: 图像对象（NRGBA 格式）<br />
+- <code>colorStr</code>: 颜色过滤字符串（字符串，可选）</p>
+<p><strong>出参：</strong> 识别结果数组，每个元素包含 text、x、y、w、h 字段</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 PPOCR 实例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+
+<span class="c1">// 从图像识别</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">captureScreen</span><span class="p">();</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocrFromImage</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">text</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="ppocrocrfrombase64ocrobj-b64-colorstr">ppocr.ocrFromBase64(ocrObj, b64, colorStr)</h3>
+<p>从 Base64 编码的图像字符串识别文字。</p>
+<p><strong>入参：</strong><br />
+- <code>ocrObj</code>: PPOCR 对象<br />
+- <code>b64</code>: Base64 编码的图像字符串<br />
+- <code>colorStr</code>: 颜色过滤字符串（字符串，可选）</p>
+<p><strong>出参：</strong> 识别结果数组，每个元素包含 text、x、y、w、h 字段</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 PPOCR 实例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+
+<span class="c1">// 从 Base64 图像识别</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">base64Img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==&quot;</span><span class="p">;</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocrFromBase64</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="nx">base64Img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">text</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="ppocrocrfrompathocrobj-path-colorstr">ppocr.ocrFromPath(ocrObj, path, colorStr)</h3>
+<p>从图像文件路径识别文字。</p>
+<p><strong>入参：</strong><br />
+- <code>ocrObj</code>: PPOCR 对象<br />
+- <code>path</code>: 图像文件路径（字符串）<br />
+- <code>colorStr</code>: 颜色过滤字符串（字符串，可选）</p>
+<p><strong>出参：</strong> 识别结果数组，每个元素包含 text、x、y、w、h 字段</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 创建 PPOCR 实例</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+
+<span class="c1">// 从文件识别</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocrFromPath</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/image.png&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">text</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="ppocrcloseocrobj">ppocr.close(ocrObj)</h3>
+<p>关闭 PPOCR 实例，释放资源。</p>
+<p><strong>入参：</strong><br />
+- <code>ocrObj</code>: PPOCR 对象</p>
+<p><strong>出参：</strong> 无</p>
+<p><strong>调用示例：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 关闭 PPOCR 实例</span>
+<span class="nx">ppocr</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">ocr</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="_2">完整示例</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 示例1：基本文字识别</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">basicOCR</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocr</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;识别到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 处文字&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;位置:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;大小:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">h</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">ocr</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例2：从图像文件识别</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">ocrFromFile</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">imagePath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/sdcard/screenshot.png&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocrFromPath</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="nx">imagePath</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文件中识别到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 处文字&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">text</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">ocr</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例3：从屏幕截图识别</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">ocrFromScreenshot</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">images</span><span class="p">.</span><span class="nx">captureScreen</span><span class="p">();</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocrFromImage</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="nx">img</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;截图中识别到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 处文字&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">text</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">ocr</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例4：查找并点击文字</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">findAndClickText</span><span class="p">(</span><span class="nx">targetText</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocr</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">text</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">targetText</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;找到目标文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">targetText</span><span class="p">);</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">centerX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">w</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">centerY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">h</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
+<span class="w">            </span><span class="nx">motion</span><span class="p">.</span><span class="nx">tap</span><span class="p">(</span><span class="nx">centerX</span><span class="p">,</span><span class="w"> </span><span class="nx">centerY</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">ocr</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;未找到目标文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">targetText</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">ocr</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例5：提取所有文字</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">extractAllText</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocr</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1080</span><span class="p">,</span><span class="w"> </span><span class="mf">1920</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">allText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">allText</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">text</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; &quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;提取的文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">allText</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">ocr</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">allText</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例6：按位置过滤文字</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">filterTextByRegion</span><span class="p">(</span><span class="nx">x1</span><span class="p">,</span><span class="w"> </span><span class="nx">y1</span><span class="p">,</span><span class="w"> </span><span class="nx">x2</span><span class="p">,</span><span class="w"> </span><span class="nx">y2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocr</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="nx">x1</span><span class="p">,</span><span class="w"> </span><span class="nx">y1</span><span class="p">,</span><span class="w"> </span><span class="nx">x2</span><span class="p">,</span><span class="w"> </span><span class="nx">y2</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;指定区域内识别到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 处文字&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">text</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">ocr</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 示例7：批量处理多个图像</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">batchOCR</span><span class="p">(</span><span class="nx">imagePaths</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">ocr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="ow">new</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">imagePaths</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">imagePaths</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;处理图像:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">path</span><span class="p">);</span>
+
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">ocrFromPath</span><span class="p">(</span><span class="nx">ocr</span><span class="p">,</span><span class="w"> </span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;识别到 &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; 处文字&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">j</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;文字:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">text</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">ppocr</span><span class="p">.</span><span class="nx">close</span><span class="p">(</span><span class="nx">ocr</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 调用示例</span>
+<span class="nx">basicOCR</span><span class="p">();</span>
+<span class="nx">ocrFromFile</span><span class="p">();</span>
+<span class="nx">ocrFromScreenshot</span><span class="p">();</span>
+<span class="nx">findAndClickText</span><span class="p">(</span><span class="s2">&quot;开始&quot;</span><span class="p">);</span>
+<span class="nx">extractAllText</span><span class="p">();</span>
+<span class="nx">filterTextByRegion</span><span class="p">(</span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="mf">500</span><span class="p">);</span>
+<span class="nx">batchOCR</span><span class="p">([</span><span class="s2">&quot;/sdcard/img1.png&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/img2.png&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sdcard/img3.png&quot;</span><span class="p">]);</span>
+</code></pre></div>
+
+<h2 id="_3">注意事项</h2>
+<ol>
+<li>使用 PPOCR 功能前，需要先创建实例</li>
+<li>使用完毕后，建议调用 <code>close()</code> 方法释放资源</li>
+<li>识别结果包含文字内容、位置和大小信息</li>
+<li>colorStr 参数用于颜色过滤，可以指定只识别特定颜色的文字</li>
+<li>displayId 用于多显示器环境，通常为 0 表示主显示器</li>
+<li>识别速度取决于图像大小和复杂度</li>
+<li>对于大图像，建议先裁剪到感兴趣的区域再识别</li>
+<li>识别准确率受图像质量、文字清晰度等因素影响</li>
+<li>建议根据实际场景选择合适的 OCR 模型版本</li>
+</ol>
+        </div>
+        <div class="footer">
+            <p>AutoGo ScriptEngine - JavaScript & Lua 脚本引擎</p>
+        </div>
+    </div>
+</body>
+</html>
