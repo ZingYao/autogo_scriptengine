@@ -446,17 +446,78 @@ engine := js_engine.NewEngine(&config)
 
 ### Windows 开发环境
 
-在 Windows 环境下开发时，如果引入了某些使用 C 语言的包，可能会遇到以下错误：
+在 Windows 环境下开发时，如果引入了超过 1 个以上的带 C 依赖的库，可能会导致编译命令过长，触发以下错误：
 
 ```
 The command line is too long.
 ```
 
-这是 Windows 命令行长度限制导致的。解决方案：
+**重要说明**：这是受限于当前 AutoGo Extension 的实现，无法从根本上解决。
 
-1. **避免引入问题包**：尽量减少使用包含 C 代码的依赖包
-2. **使用 WSL**：在 Windows Subsystem for Linux (WSL) 环境中开发
-3. **调整项目结构**：将项目拆分为多个子项目，减少单个项目的依赖复杂度
+**解决方案**：
+
+1. **避免过多使用带 C 的库**：尽量减少使用包含 C 代码的依赖包
+2. **减少依赖库的引用**：遇到问题时，仅保留刚需依赖库，使用白名单手动指定需要加载的模块
+3. **切换开发环境**：使用 macOS 或 Linux 系统进行编译
+
+**示例：使用白名单手动指定依赖**
+
+```go
+import "github.com/ZingYao/autogo_scriptengine/js_engine"
+
+// 只加载必需的模块，避免引入过多的 C 依赖
+config := js_engine.DefaultConfig()
+config.WhiteList = []string{
+    "app",      // 应用管理
+    "device",   // 设备信息
+    "motion",   // 触摸操作
+    "files",    // 文件操作
+    "console",  // 控制台
+}
+engine := js_engine.NewEngine(&config)
+defer engine.Close()
+
+// 执行脚本
+err := engine.ExecuteString(`
+    console.log("Hello, JavaScript!");
+    const packageName = app.currentPackage();
+    console.log("当前应用包名: " + packageName);
+`)
+```
+
+**建议的开发流程**：
+
+1. 在 Windows 环境下开发时，只启用核心模块（如 app、device、motion、files、console）
+2. 需要使用其他模块（如 opencv、ppocr 等）时，临时切换到 macOS/Linux 环境编译
+3. 或者使用 WSL (Windows Subsystem for Linux) 环境进行开发
+
+**可用模块列表**：
+
+| 模块 | 是否包含 C 依赖 | 说明 |
+|------|----------------|------|
+| `app` | 否 | 应用管理 |
+| `device` | 否 | 设备信息 |
+| `motion` | 否 | 触摸操作 |
+| `files` | 否 | 文件操作 |
+| `images` | 否 | 图像处理 |
+| `storages` | 否 | 数据存储 |
+| `system` | 否 | 系统功能 |
+| `http` | 否 | 网络请求 |
+| `media` | 否 | 媒体控制 |
+| `console` | 否 | 控制台窗口 |
+| `coroutine` | 否 | 协程管理 |
+| `dotocr` | 否 | 点字 OCR |
+| `hud` | 否 | HUD 悬浮显示 |
+| `ime` | 否 | 输入法控制 |
+| `plugin` | 否 | 插件加载 |
+| `rhino` | 否 | JavaScript 执行引擎 |
+| `uiacc` | 否 | 无障碍 UI 操作 |
+| `utils` | 否 | 工具方法 |
+| `vdisplay` | 否 | 虚拟显示 |
+| `yolo` | 是 | YOLO 目标检测 |
+| `imgui` | 否 | Dear ImGui GUI 库 |
+| `opencv` | 是 | 计算机视觉 |
+| `ppocr` | 是 | OCR 文字识别 |
 
 ### 常见问题处理
 

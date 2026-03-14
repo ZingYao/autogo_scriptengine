@@ -19,7 +19,7 @@
 ## 安装
 
 ```bash
-go get github.com/ZingYao/autogo_scriptengine@v0.0.5
+go get github.com/ZingYao/autogo_scriptengine@v0.0.9
 ```
 
 ## 📚 详细文档
@@ -122,17 +122,45 @@ python3 scripts/convert_to_html.py
 
 ### Windows 开发环境
 
-在 Windows 环境下开发时，如果引入了某些使用 C 语言的包，可能会遇到以下错误：
+在 Windows 环境下开发时，如果引入了超过 1 个以上的带 C 依赖的库，可能会导致编译命令过长，触发以下错误：
 
 ```
 The command line is too long.
 ```
 
-这是 Windows 命令行长度限制导致的。解决方案：
+**重要说明**：这是受限于当前 AutoGo Extension 的实现，无法从根本上解决。
 
-1. **避免引入问题包**：尽量减少使用包含 C 代码的依赖包
-2. **使用 WSL**：在 Windows Subsystem for Linux (WSL) 环境中开发
-3. **调整项目结构**：将项目拆分为多个子项目，减少单个项目的依赖复杂度
+**解决方案**：
+
+1. **避免过多使用带 C 的库**：尽量减少使用包含 C 代码的依赖包
+2. **减少依赖库的引用**：遇到问题时，仅保留刚需依赖库，使用白名单手动指定需要加载的模块
+3. **切换开发环境**：使用 macOS 或 Linux 系统进行编译
+
+**示例：使用白名单手动指定依赖**
+
+```go
+// JavaScript 引擎示例
+import "github.com/ZingYao/autogo_scriptengine/js_engine"
+
+config := js_engine.DefaultConfig()
+config.WhiteList = []string{"app", "device", "motion"}  // 只加载必需的模块
+engine := js_engine.NewEngine(&config)
+```
+
+```go
+// Lua 引擎示例
+import "github.com/ZingYao/autogo_scriptengine/lua_engine"
+
+config := lua_engine.DefaultConfig()
+config.WhiteList = []string{"app", "device", "motion"}  // 只加载必需的模块
+engine := lua_engine.NewLuaEngine(&config)
+```
+
+**建议的开发流程**：
+
+1. 在 Windows 环境下开发时，只启用核心模块（如 app、device、motion）
+2. 需要使用其他模块时，临时切换到 macOS/Linux 环境编译
+3. 或者使用 WSL (Windows Subsystem for Linux) 环境进行开发
 
 ### 常见问题处理
 
