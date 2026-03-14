@@ -79,10 +79,41 @@ func (e *LuaEngine) init() {
 		IncludeGoStackTrace: true,
 	})
 
+	// 初始化模块缓存
+	e.moduleCache = make(map[string]lua.LValue)
+
+	// 设置模块搜索路径
+	e.setupPackagePath()
+
 	e.registerCoreFunctions()
 	if e.config.AutoInjectMethods {
 		e.injectAllMethods()
 	}
+
+	// 注册自定义 require 函数，支持从 embed.FS 加载模块
+	e.registerCustomRequire()
+}
+
+// setupPackagePath 设置 Lua 的模块搜索路径
+func (e *LuaEngine) setupPackagePath() {
+	// 获取当前的 package.path
+	packageTable := e.state.GetGlobal("package").(*lua.LTable)
+	currentPathValue := packageTable.RawGetString("path")
+	currentPath := ""
+	if currentPathValue != lua.LNil {
+		currentPath = currentPathValue.String()
+	}
+
+	// 添加配置的搜索路径
+	for _, searchPath := range e.config.SearchPaths {
+		if currentPath != "" {
+			currentPath += ";"
+		}
+		currentPath += searchPath + "/?.lua;" + searchPath + "/?/init.lua"
+	}
+
+	// 设置新的 package.path
+	packageTable.RawSetString("path", lua.LString(currentPath))
 }
 
 func (e *LuaEngine) GetState() *lua.LState {
@@ -100,6 +131,105 @@ func (e *LuaEngine) registerCoreFunctions() {
 	state.Register("sleep", e.sleepLua)
 	state.Register("console.log", e.consoleLogLua)
 	state.Register("console.error", e.consoleErrorLua)
+}
+
+// registerCustomRequire 注册自定义 require 函数，支持从 embed.FS 加载模块
+func (e *LuaEngine) registerCustomRequire() {
+	if e.config.FileSystem == nil {
+		return
+	}
+
+	// 保存原始 require 函数
+	originalRequire := e.state.GetGlobal("require")
+
+	// 注册自定义 require 函数
+	e.state.Register("require", func(L *lua.LState) int {
+		moduleName := L.CheckString(1)
+
+		// 检查缓存
+		if cachedModule, exists := e.moduleCache[moduleName]; exists {
+			L.Push(cachedModule)
+			return 1
+		}
+
+		// 尝试从 embed.FS 加载模块
+		if moduleValue, ok := e.loadModuleFromFS(L, moduleName); ok {
+			// 缓存模块
+			e.moduleCache[moduleName] = moduleValue
+
+			L.Push(moduleValue)
+			return 1
+		}
+
+		// 如果 embed.FS 中没有找到，使用原始 require
+		if originalRequire != lua.LNil {
+			L.Push(originalRequire)
+			L.Push(lua.LString(moduleName))
+			L.Call(1, 1)
+			return 1
+		}
+
+		// 返回 nil 表示模块未找到
+		L.Push(lua.LNil)
+		return 1
+	})
+}
+
+// loadModuleFromFS 从 embed.FS 加载模块
+func (e *LuaEngine) loadModuleFromFS(L *lua.LState, moduleName string) (lua.LValue, bool) {
+	if e.config.FileSystem == nil {
+		return lua.LNil, false
+	}
+
+	// 尝试不同的路径模式
+	possiblePaths := []string{
+		moduleName + ".lua",
+		moduleName + "/init.lua",
+	}
+
+	// 在所有搜索路径中查找
+	for _, searchPath := range e.config.SearchPaths {
+		for _, pathPattern := range possiblePaths {
+			var fullPath string
+			// 如果搜索路径是 "."，直接使用文件名（表示文件系统根目录）
+			if searchPath == "." {
+				fullPath = pathPattern
+			} else {
+				fullPath = searchPath + "/" + pathPattern
+			}
+			
+			content, err := e.config.FileSystem.Open(fullPath)
+			if err == nil {
+				defer content.Close()
+				data := make([]byte, 0)
+				buf := make([]byte, 1024)
+				for {
+					n, err := content.Read(buf)
+					if err != nil {
+						break
+					}
+					data = append(data, buf[:n]...)
+				}
+
+				// 使用 LoadString 加载代码，然后调用以获取返回值
+				fn, err := L.LoadString(string(data))
+				if err != nil {
+					continue
+				}
+
+				// 调用函数并获取返回值
+				L.Push(fn)
+				if err := L.PCall(0, 1, nil); err == nil {
+					// 获取模块的返回值（模块应该返回一个 table）
+					result := L.Get(-1)
+					L.Pop(1)
+					return result, true
+				}
+			}
+		}
+	}
+
+	return lua.LNil, false
 }
 
 func (e *LuaEngine) consoleLogLua(L *lua.LState) int {
@@ -231,7 +361,10 @@ func (e *LuaEngine) RegisterMethod(name, description string, goFunc interface{},
 	RegisterMethod(name, description, goFunc, overridable)
 }
 
-func (e *LuaEngine) ExecuteString(script string) error {
+// ExecuteString 执行 Lua 代码字符串
+// script: 要执行的 Lua 代码
+// searchPaths: 可选参数，添加模块搜索路径（用于 require）
+func (e *LuaEngine) ExecuteString(script string, searchPaths ...string) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
@@ -239,7 +372,31 @@ func (e *LuaEngine) ExecuteString(script string) error {
 		return fmt.Errorf("Lua engine not initialized")
 	}
 
+	// 如果提供了搜索路径，添加到 package.path
+	if len(searchPaths) > 0 {
+		e.addSearchPaths(searchPaths...)
+	}
+
 	return e.state.DoString(script)
+}
+
+// addSearchPaths 添加模块搜索路径
+func (e *LuaEngine) addSearchPaths(paths ...string) {
+	// 只更新 config.SearchPaths，不更新 package.path
+	// 因为我们使用自定义的 require 函数，它会从 config.SearchPaths 和文件系统中加载模块
+	for _, searchPath := range paths {
+		// 避免重复
+		found := false
+		for _, existingPath := range e.config.SearchPaths {
+			if existingPath == searchPath {
+				found = true
+				break
+			}
+		}
+		if !found {
+			e.config.SearchPaths = append(e.config.SearchPaths, searchPath)
+		}
+	}
 }
 
 func (e *LuaEngine) ExecuteFile(path string) error {
@@ -250,7 +407,66 @@ func (e *LuaEngine) ExecuteFile(path string) error {
 		return fmt.Errorf("Lua engine not initialized")
 	}
 
+	// 如果配置了文件系统，从文件系统读取并执行
+	if e.config.FileSystem != nil {
+		// 读取文件内容
+		content, err := e.config.FileSystem.Open(path)
+		if err != nil {
+			return fmt.Errorf("failed to read file '%s': %v", path, err)
+		}
+		defer content.Close()
+
+		data := make([]byte, 0)
+		buf := make([]byte, 1024)
+		for {
+			n, err := content.Read(buf)
+			if err != nil {
+				break
+			}
+			data = append(data, buf[:n]...)
+		}
+
+		// 自动检测文件所在目录并添加到搜索路径
+		e.addSearchPathsFromPath(path)
+
+		// 执行文件内容
+		return e.state.DoString(string(data))
+	}
+
+	// 自动检测文件所在目录并添加到搜索路径
+	e.addSearchPathsFromPath(path)
+
 	return e.state.DoFile(path)
+}
+
+// addSearchPathsFromPath 从文件路径中提取目录并添加到搜索路径
+func (e *LuaEngine) addSearchPathsFromPath(path string) {
+	// 提取目录（去掉文件名）
+	lastSlash := -1
+	for i := len(path) - 1; i >= 0; i-- {
+		if path[i] == '/' || path[i] == '\\' {
+			lastSlash = i
+			break
+		}
+	}
+
+	var dir string
+	if lastSlash >= 0 {
+		dir = path[:lastSlash]
+	} else {
+		// 如果路径中没有目录分隔符，说明是相对路径
+		// 如果配置了文件系统，使用当前目录（.）
+		// 否则使用空字符串
+		if e.config.FileSystem != nil {
+			dir = "."
+		} else {
+			dir = ""
+		}
+	}
+
+	if dir != "" {
+		e.addSearchPaths(dir)
+	}
 }
 
 func (e *LuaEngine) Close() {
@@ -267,9 +483,12 @@ func (e *LuaEngine) GetRegistry() *MethodRegistry {
 	return GetRegistry()
 }
 
-func ExecuteString(script string) error {
+// ExecuteString 执行 Lua 代码字符串（全局函数）
+// script: 要执行的 Lua 代码
+// searchPaths: 可选参数，添加模块搜索路径（用于 require）
+func ExecuteString(script string, searchPaths ...string) error {
 	if engine != nil {
-		return engine.ExecuteString(script)
+		return engine.ExecuteString(script, searchPaths...)
 	}
 	return fmt.Errorf("Lua engine not initialized")
 }

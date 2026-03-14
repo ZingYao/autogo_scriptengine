@@ -3,6 +3,7 @@ package js_engine
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"sync"
 
 	"github.com/dop251/goja"
@@ -14,6 +15,7 @@ type EngineConfig struct {
 	WhiteList        []string // 白名单：只加载这些模块，空列表 = 加载所有
 	BlackList        []string // 黑名单：跳过这些模块，空列表 = 不跳过任何
 	FailFast        bool     // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
+	FileSystem      fs.FS    // 文件系统，用于 require 功能
 }
 
 // JSEngine JavaScript 引擎

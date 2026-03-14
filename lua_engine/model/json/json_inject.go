@@ -2,6 +2,7 @@ package json
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
@@ -31,6 +32,30 @@ func (m *JsonModule) Register(engine model.Engine) error {
 	jsonObj.RawSetString("stringify", state.NewFunction(func(L *lua.LState) int {
 		value := L.CheckAny(1)
 		result, err := luaValueToJSON(value)
+		if err != nil {
+			L.Push(lua.LNil)
+			L.Push(lua.LString(err.Error()))
+			return 2
+		}
+		L.Push(lua.LString(result))
+		return 1
+	}))
+
+	jsonObj.RawSetString("stringifyArr", state.NewFunction(func(L *lua.LState) int {
+		value := L.CheckAny(1)
+		result, err := luaValueToJSONArray(value)
+		if err != nil {
+			L.Push(lua.LNil)
+			L.Push(lua.LString(err.Error()))
+			return 2
+		}
+		L.Push(lua.LString(result))
+		return 1
+	}))
+
+	jsonObj.RawSetString("stringifyObj", state.NewFunction(func(L *lua.LState) int {
+		value := L.CheckAny(1)
+		result, err := luaValueToJSONObject(value)
 		if err != nil {
 			L.Push(lua.LNil)
 			L.Push(lua.LString(err.Error()))
@@ -71,8 +96,14 @@ func (m *JsonModule) Register(engine model.Engine) error {
 		return 1
 	}))
 
-	engine.RegisterMethod("json.stringify", "将 Lua 值序列化为 JSON 字符串", func(value lua.LValue) (string, error) {
+	engine.RegisterMethod("json.stringify", "将 Lua 值序列化为 JSON 字符串（自动判断数组或对象）", func(value lua.LValue) (string, error) {
 		return luaValueToJSON(value)
+	}, true)
+	engine.RegisterMethod("json.stringifyArr", "将 Lua 值强制序列化为 JSON 数组", func(value lua.LValue) (string, error) {
+		return luaValueToJSONArray(value)
+	}, true)
+	engine.RegisterMethod("json.stringifyObj", "将 Lua 值强制序列化为 JSON 对象", func(value lua.LValue) (string, error) {
+		return luaValueToJSONObject(value)
 	}, true)
 	engine.RegisterMethod("json.parse", "将 JSON 字符串解析为 Lua 值", func(jsonStr string) (lua.LValue, error) {
 		L := state
@@ -92,6 +123,30 @@ func (m *JsonModule) Register(engine model.Engine) error {
 
 func luaValueToJSON(value lua.LValue) (string, error) {
 	data, err := luaValueToGoValue(value)
+	if err != nil {
+		return "", err
+	}
+	result, err := json.Marshal(data)
+	if err != nil {
+		return "", err
+	}
+	return string(result), nil
+}
+
+func luaValueToJSONArray(value lua.LValue) (string, error) {
+	data, err := luaValueToGoArray(value)
+	if err != nil {
+		return "", err
+	}
+	result, err := json.Marshal(data)
+	if err != nil {
+		return "", err
+	}
+	return string(result), nil
+}
+
+func luaValueToJSONObject(value lua.LValue) (string, error) {
+	data, err := luaValueToGoObject(value)
 	if err != nil {
 		return "", err
 	}
@@ -136,23 +191,70 @@ func luaValueToGoValue(value lua.LValue) (interface{}, error) {
 	}
 }
 
+func luaValueToGoArray(value lua.LValue) (interface{}, error) {
+	switch v := value.(type) {
+	case *lua.LNilType:
+		return []interface{}{}, nil
+	case *lua.LTable:
+		return luaTableToArray(v)
+	default:
+		// 非表类型，包装成数组
+		goValue, err := luaValueToGoValue(value)
+		if err != nil {
+			return nil, err
+		}
+		return []interface{}{goValue}, nil
+	}
+}
+
+func luaValueToGoObject(value lua.LValue) (interface{}, error) {
+	switch v := value.(type) {
+	case *lua.LNilType:
+		return map[string]interface{}{}, nil
+	case *lua.LTable:
+		return luaTableToMap(v)
+	default:
+		return nil, fmt.Errorf("value is not a table")
+	}
+}
+
 func isArray(table *lua.LTable) bool {
 	if table == nil {
 		return false
 	}
-	
+
+	// 检查是否有字符串键，如果有字符串键则是对象
+	hasStringKey := false
+	table.ForEach(func(key, value lua.LValue) {
+		if _, ok := key.(lua.LString); ok {
+			hasStringKey = true
+		}
+	})
+	if hasStringKey {
+		return false
+	}
+
+	// 检查是否是连续的数字数组
 	length := table.Len()
 	if length == 0 {
-		return true
+		// 空 table，检查是否有数字键
+		hasNumberKey := false
+		table.ForEach(func(key, value lua.LValue) {
+			if _, ok := key.(lua.LNumber); ok {
+				hasNumberKey = true
+			}
+		})
+		return hasNumberKey
 	}
-	
+
+	// 检查从 1 到 length 的所有索引是否存在
 	for i := 1; i <= length; i++ {
 		value := table.RawGetInt(i)
 		if value == lua.LNil {
 			return false
 		}
 	}
-	
+
 	return true
 }
 

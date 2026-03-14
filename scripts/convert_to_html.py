@@ -800,7 +800,8 @@ def generate_documents_data(project_root, readmes):
             documents[doc_id] = {
                 'title': doc_data['title'],
                 'breadcrumb': rel_path,
-                'content': doc_data['content']
+                'content': doc_data['content'],
+                'headings': doc_data['headings']
             }
     
     return documents

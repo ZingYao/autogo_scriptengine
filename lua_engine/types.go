@@ -3,6 +3,7 @@ package lua_engine
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"sync"
 
 	lua "github.com/yuin/gopher-lua"
@@ -14,13 +15,16 @@ type EngineConfig struct {
 	WhiteList         []string // 白名单：只加载这些模块，空列表 = 加载所有
 	BlackList         []string // 黑名单：跳过这些模块，空列表 = 不跳过任何
 	FailFast          bool     // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
+	SearchPaths       []string // 模块搜索路径，用于 require 查找模块
+	FileSystem        fs.FS    // 虚拟文件系统（embed.FS），用于从嵌入文件中加载模块
 }
 
 // LuaEngine Lua 引擎
 type LuaEngine struct {
-	state  *lua.LState
-	mu     sync.RWMutex
-	config EngineConfig
+	state       *lua.LState
+	mu          sync.RWMutex
+	config      EngineConfig
+	moduleCache map[string]lua.LValue // 模块缓存，用于 require 功能
 }
 
 // DefaultConfig 返回默认配置

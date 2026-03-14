@@ -2,11 +2,14 @@ package js_engine
 
 import (
 	"fmt"
+	"io/fs"
+	"path/filepath"
 	"strconv"
 	"sync"
 	"time"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
+	"github.com/ZingYao/autogo_scriptengine/js_engine/model/require"
 
 	"github.com/dop251/goja"
 )
@@ -96,6 +99,12 @@ func (e *JSEngine) registerCoreFunctions() {
 	vm.Set("overrideMethod", e.overrideMethodJS)
 	vm.Set("restoreMethod", e.restoreMethodJS)
 	vm.Set("sleep", e.sleepJS)
+
+	// 注册 require 功能
+	if e.config.FileSystem != nil {
+		requireModule := require.NewRequireModule(vm, e.config.FileSystem)
+		requireModule.Register()
+	}
 
 	consoleObj := vm.NewObject()
 	consoleObj.Set("log", e.consoleLogJS)
@@ -232,12 +241,29 @@ func (e *JSEngine) RegisterMethod(name, description string, goFunc interface{}, 
 	RegisterMethod(name, description, goFunc, overridable)
 }
 
-func (e *JSEngine) ExecuteString(script string) error {
+// ExecuteString 执行 JavaScript 代码字符串
+// script: 要执行的 JavaScript 代码
+// dir: 可选参数，指定 __dirname（用于 require），如果为空则使用默认值 "scripts"
+func (e *JSEngine) ExecuteString(script string, dir ...string) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
 	if e.vm == nil {
 		return fmt.Errorf("JavaScript engine not initialized")
+	}
+
+	// 如果配置了文件系统且 __dirname 未设置，设置 __dirname
+	// 这样在使用 ExecuteString 时也能正常使用 require
+	if e.config.FileSystem != nil {
+		currentDir := e.vm.Get("__dirname")
+		if currentDir == goja.Undefined() || currentDir.String() == "" {
+			// 如果提供了 dir 参数，使用它；否则使用默认值
+			__dirname := "scripts"
+			if len(dir) > 0 && dir[0] != "" {
+				__dirname = dir[0]
+			}
+			e.vm.Set("__dirname", __dirname)
+		}
 	}
 
 	_, err := e.vm.RunString(script)
@@ -252,6 +278,28 @@ func (e *JSEngine) ExecuteFile(path string) error {
 		return fmt.Errorf("JavaScript engine not initialized")
 	}
 
+	// 如果配置了文件系统，从文件系统读取并自动设置 __dirname
+	if e.config.FileSystem != nil {
+		// 读取文件内容
+		content, err := fs.ReadFile(e.config.FileSystem, path)
+		if err != nil {
+			return fmt.Errorf("failed to read file '%s': %v", path, err)
+		}
+
+		// 从路径中提取目录和文件名
+		dir := filepath.Dir(path)
+		filename := filepath.Base(path)
+
+		// 设置 __dirname 和 __filename
+		e.vm.Set("__dirname", dir)
+		e.vm.Set("__filename", filename)
+
+		// 执行文件内容
+		_, err = e.vm.RunString(string(content))
+		return err
+	}
+
+	// 如果没有配置文件系统，使用原来的方式（通过 load 函数）
 	_, err := e.vm.RunString("load('" + path + "')")
 	return err
 }
@@ -267,9 +315,12 @@ func (e *JSEngine) GetRegistry() *MethodRegistry {
 	return GetRegistry()
 }
 
-func ExecuteString(script string) error {
+// ExecuteString 执行 JavaScript 代码字符串（全局函数）
+// script: 要执行的 JavaScript 代码
+// dir: 可选参数，指定 __dirname（用于 require），如果为空则使用默认值 "scripts"
+func ExecuteString(script string, dir ...string) error {
 	if engine != nil {
-		return engine.ExecuteString(script)
+		return engine.ExecuteString(script, dir...)
 	}
 	return fmt.Errorf("JavaScript engine not initialized")
 }
