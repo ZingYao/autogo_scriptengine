@@ -7,10 +7,12 @@ import (
 	"time"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine"
-	"github.com/ZingYao/autogo_scriptengine/js_engine/define/safe_models"
-	"github.com/ZingYao/autogo_scriptengine/lua_engine"
+	jsAppModel "github.com/ZingYao/autogo_scriptengine/js_engine/model/app_models"
+	jsDeviceModel "github.com/ZingYao/autogo_scriptengine/js_engine/model/device_models"
+	luaAppModel "github.com/ZingYao/autogo_scriptengine/lua_engine/model/app_models"
+	luaDeviceModel "github.com/ZingYao/autogo_scriptengine/lua_engine/model/device_models"
 
-	lua_safe_models "github.com/ZingYao/autogo_scriptengine/lua_engine/define/safe_models"
+	"github.com/ZingYao/autogo_scriptengine/lua_engine"
 )
 
 //go:embed scripts/*
@@ -23,12 +25,12 @@ func init() {
 	// 注册 JavaScript 引擎模块
 	// 方式1: 使用 define 包中的预定义模块数组
 	// 注册核心模块（排除 console、hud、imgui、vdisplay）
-	js_engine.RegisterModule(safe_models.SafeModules...)
+	js_engine.RegisterModule(jsAppModel.AppModels, jsDeviceModel.DeviceModels)
 
 	// 注册 Lua 引擎模块
 	// 方式1: 使用 define 包中的预定义模块数组
 	// 注册核心模块（排除 console、hud、imgui、vdisplay）
-	lua_engine.RegisterModule(lua_safe_models.SafeModules...)
+	lua_engine.RegisterModule(luaAppModel.AppModels, luaDeviceModel.DeviceModels)
 }
 
 func main() {
