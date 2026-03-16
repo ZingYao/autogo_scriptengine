@@ -89,7 +89,7 @@ INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
 
     }
   </script>
-<script src="docsify@4"></script>
+<script src="docsify.min.js"></script>
 <script src="prism-go.min.js"></script>
 <script src="docsify-copy-code"></script>
 <script src="search.min.js"></script>
@@ -119,24 +119,42 @@ SIDEBAR_TEMPLATE = """- 前言
 """
 
 # README.md 模板
-README_TEMPLATE = """# AutoGo ScriptEngine
+README_TEMPLATE = """---
+type: cover
+---
 
-[AutoGo](https://github.com/Dasongzi1366/AutoGo) 的脚本引擎扩展方案，为 AutoGo 提供 JavaScript 和 Lua 脚本语言支持，让开发者可以用熟悉的脚本语言编写自动化任务。
+# AutoGo ScriptEngine
 
-## 为什么选择 ScriptEngine
+## 为 AutoGo 提供 JavaScript 和 Lua 脚本引擎支持
 
-1. **降低准入门槛** - 使用脚本语言开发，无需深入理解 Go 语言和 Android 开发，降低学习成本
-2. **代码保护** - 脚本代码易于混淆加密，有效保护业务逻辑
-3. **热更新支持** - 脚本可动态加载，无需重新编译即可更新功能
-4. **无痛迁移** - 可以无痛迁移其他平台的代码，复用现有的脚本代码库
+> 让开发者可以用熟悉的脚本语言编写自动化任务
 
-## 功能特性
+![color](#f0f4f8)
 
-- **双引擎支持**：同时支持 JavaScript 和 Lua 脚本语言
-- **丰富的 API**：提供应用管理、设备控制、图像识别、OCR 等多种功能
-- **方法注册系统**：支持动态注册、重写和恢复方法
-- **协程支持**：Lua 引擎支持协程操作
-- **文档生成**：可自动生成 API 文档
+<div style="display: flex; justify-content: center; margin: 40px 0;">
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20robot%20programmer%20with%20code%20symbols%20around%20it%2C%20friendly%20expression%2C%20simple%20style%2C%20blue%20and%20green%20colors&image_size=square" alt="ScriptEngine Mascot" style="width: 200px; height: 200px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</div>
+
+## 核心特点
+
+| 特点 | 描述 |
+|------|------|
+| 🚀 **双引擎支持** | 同时支持 JavaScript 和 Lua 脚本语言 |
+| 📚 **丰富的 API** | 提供应用管理、设备控制、图像识别、OCR 等多种功能 |
+| 🔧 **方法注册系统** | 支持动态注册、重写和恢复方法 |
+| 🔄 **协程支持** | Lua 引擎支持协程操作，提升并发能力 |
+| 📖 **文档生成** | 可自动生成 API 文档，方便查阅 |
+| 🔒 **代码保护** | 脚本代码易于混淆加密，有效保护业务逻辑 |
+| 🔥 **热更新支持** | 脚本可动态加载，无需重新编译即可更新功能 |
+| 🔄 **无痛迁移** | 可以无痛迁移其他平台的代码，复用现有的脚本代码库 |
+
+## 快速开始
+
+<div style="display: flex; justify-content: center; gap: 20px; margin: 40px 0;">
+  <a href="#/js_engine/README.md" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">JavaScript 引擎</a>
+  <a href="#/lua_engine/README.md" style="padding: 12px 30px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3); transition: all 0.3s ease;">Lua 引擎</a>
+  <a href="#/changelog.md" style="padding: 12px 30px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3); transition: all 0.3s ease;">更新日志</a>
+</div>
 
 ## 安装
 
@@ -144,117 +162,79 @@ README_TEMPLATE = """# AutoGo ScriptEngine
 go get github.com/ZingYao/autogo_scriptengine@v0.0.9
 ```
 
-## 📚 详细文档
+## 与 AutoGo 的关系
 
-> **🔥 重要提示**：查看以下详细文档以获取完整的 API 参考和使用指南
+本项目是 AutoGo 的扩展方案，通过封装 AutoGo 提供的原生 API，为开发者提供更灵活的脚本编写方式：
 
-### 🌐 HTML 在线文档
-
-> **推荐**：查看美观的 HTML 在线文档，提供更好的阅读体验
-
-- [📖 文档索引](index.html) - 所有文档的导航页面
-- [🏠 项目主页](README.md) - 项目介绍和功能特性
-- [JavaScript 引擎文档](js_engine/README.md) - JavaScript 引擎完整文档
-- [Lua 引擎文档](lua_engine/README.md) - Lua 引擎完整文档
-
-**使用方法**：
-```bash
-# 生成/更新 HTML 文档
-python3 scripts/convert_to_html.py
-```
-
-## 快速开始
-
-### JavaScript 引擎示例
-
-```javascript
-const engine = js_engine.getEngine();
-
-try {
-    // 执行 JavaScript 代码
-    engine.executeString(`
-        console.log("Hello, AutoGo!");
-        const packageName = app.currentPackage();
-        console.log("当前应用: " + packageName);
-    `);
-} finally {
-    engine.close();
-}
-```
-
-### Lua 引擎示例
-
-```lua
-local engine = lua_engine.getEngine()
-
-try {
-    -- 执行 Lua 代码
-    engine.executeString([[
-        print("Hello, AutoGo!")
-        local packageName = app.currentPackage()
-        print("当前应用: " .. packageName)
-    ]])
-} finally {
-    engine.close()
-}
-```
-
-## 模块列表
-
-| 模块 | 说明 | 支持引擎 |
-|------|------|----------|
-| `app` | 应用管理 | JavaScript, Lua |
-| `device` | 设备信息 | JavaScript, Lua |
-| `motion` | 触摸操作 | JavaScript, Lua |
-| `files` | 文件操作 | JavaScript, Lua |
-| `images` | 图像处理 | JavaScript, Lua |
-| `storages` | 数据存储 | JavaScript, Lua |
-| `system` | 系统功能 | JavaScript, Lua |
-| `http` | 网络请求 | JavaScript, Lua |
-| `media` | 媒体控制 | JavaScript, Lua |
-| `opencv` | 计算机视觉 | JavaScript, Lua |
-| `ppocr` | OCR 文字识别 | JavaScript, Lua |
-| `console` | 控制台 | JavaScript, Lua |
-| `dotocr` | 点字 OCR 识别 | JavaScript, Lua |
-| `hud` | HUD 悬浮显示 | JavaScript, Lua |
-| `ime` | 输入法控制 | JavaScript, Lua |
-| `plugin` | 插件加载 | JavaScript, Lua |
-| `rhino` | JavaScript 执行引擎 | JavaScript, Lua |
-| `uiacc` | 无障碍 UI 操作 | JavaScript, Lua |
-| `utils` | 工具方法 | JavaScript, Lua |
-| `vdisplay` | 虚拟显示 | JavaScript, Lua |
-| `yolo` | YOLO 目标检测 | JavaScript, Lua |
-| `imgui` | Dear ImGui GUI 库 | JavaScript, Lua |
-| `coroutine` | 协程支持 | JavaScript, Lua |
-
-## 兼容性说明
-
-### Android 版本兼容性
-
-- **Android 16+**：完全支持
-- **Android 10-15**：部分模块可能存在兼容性问题
-- **Android 9 及以下**：不建议使用
-
-### 常见问题
-
-1. **内存引用错误**：在某些 Android 版本下，某些包可能会出现内存引用错误。遇到问题时，可以修改引入的包来处理。
-
-2. **Windows 编译问题**：在 Windows 环境下开发时，如果引入了超过 1 个以上的带 C 依赖的库，可能会导致编译命令过长，触发以下错误：
-   ```
-   The command line is too long.
-   ```
-   解决方案：
-   - 避免过多使用带 C 的库
-   - 减少依赖库的引用，只注册刚需模块
-   - 切换到 macOS 或 Linux 系统进行编译
+- **AutoGo** - 提供 Android 自动化的核心能力（无障碍服务、图像识别、触摸模拟等）
+- **ScriptEngine** - 为 AutoGo 添加脚本语言支持，让开发者可以用 JavaScript 或 Lua 编写自动化脚本
 
 ## 许可证
 
 MIT License
 
-## 贡献
+---
 
-欢迎提交 Issues 和 Pull Requests！
+<style>
+  :root {
+    --theme-color: #667eea;
+  }
+  
+  .cover {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  }
+  
+  h1 {
+    color: #2c3e50 !important;
+    font-size: 2.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  h2 {
+    color: #34495e !important;
+    font-size: 1.5rem !important;
+    margin-bottom: 2rem !important;
+  }
+  
+  blockquote {
+    border-left: 4px solid var(--theme-color) !important;
+    background: rgba(102, 126, 234, 0.1) !important;
+    padding: 15px 20px !important;
+    border-radius: 0 8px 8px 0 !important;
+    margin: 20px 0 !important;
+  }
+  
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 30px 0 !important;
+  }
+  
+  th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    padding: 12px !important;
+    text-align: left !important;
+    font-weight: 600 !important;
+  }
+  
+  td {
+    padding: 12px !important;
+    border: 1px solid #e0e0e0 !important;
+  }
+  
+  tr:nth-child(even) {
+    background: #f8f9fa !important;
+  }
+  
+  tr:hover {
+    background: #e3f2fd !important;
+  }
+  
+  a:hover {
+    transform: translateY(-2px) !important;
+  }
+</style>
 """
 
 # changelog.md 模板
@@ -373,15 +353,22 @@ def copy_docsify_files(docs_dir, docs_copy_dir):
         print(f"✓ 复制图标文件: {icon_src} -> {icon_dst}")
     
     # 复制 JavaScript 文件
-    js_files = ['docsify@4', 'docsify-copy-code', 'search.min.js', 'prism-go.min.js', 
-                'docsify-footer.min.js', 'docsify-plugin-flexible-alerts.min.js', 'zoom-image.js']
+    js_files = [
+        ('docsify@4', 'docsify.min.js'),
+        ('docsify-copy-code', 'docsify-copy-code'),
+        ('search.min.js', 'search.min.js'),
+        ('prism-go.min.js', 'prism-go.min.js'),
+        ('docsify-footer.min.js', 'docsify-footer.min.js'),
+        ('docsify-plugin-flexible-alerts.min.js', 'docsify-plugin-flexible-alerts.min.js'),
+        ('zoom-image.js', 'zoom-image.js')
+    ]
     
-    for js_file in js_files:
-        js_src = os.path.join(docs_copy_dir, js_file)
-        js_dst = os.path.join(docs_dir, js_file)
+    for src_name, dst_name in js_files:
+        js_src = os.path.join(docs_copy_dir, src_name)
+        js_dst = os.path.join(docs_dir, dst_name)
         if os.path.exists(js_src):
             shutil.copy2(js_src, js_dst)
-            print(f"✓ 复制 JavaScript 文件: {js_file}")
+            print(f"✓ 复制 JavaScript 文件: {src_name} -> {dst_name}")
 
 def main():
     """主函数"""

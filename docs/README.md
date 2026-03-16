@@ -1,166 +1,45 @@
+---
+type: cover
+---
+
 # AutoGo ScriptEngine
 
-[AutoGo](https://github.com/Dasongzi1366/AutoGo) 的脚本引擎扩展方案，为 AutoGo 提供 JavaScript 和 Lua 脚本语言支持，让开发者可以用熟悉的脚本语言编写自动化任务。
+## 为 AutoGo 提供 JavaScript 和 Lua 脚本引擎支持
 
-## 为什么选择 ScriptEngine
+> 让开发者可以用熟悉的脚本语言编写自动化任务
 
-1. **降低准入门槛** - 使用脚本语言开发，无需深入理解 Go 语言和 Android 开发，降低学习成本
-2. **代码保护** - 脚本代码易于混淆加密，有效保护业务逻辑
-3. **热更新支持** - 脚本可动态加载，无需重新编译即可更新功能
-4. **无痛迁移** - 可以无痛迁移其他平台的代码，复用现有的脚本代码库
+![color](#f0f4f8)
 
-## 功能特性
+<div style="display: flex; justify-content: center; margin: 40px 0;">
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20robot%20programmer%20with%20code%20symbols%20around%20it%2C%20friendly%20expression%2C%20simple%20style%2C%20blue%20and%20green%20colors&image_size=square" alt="ScriptEngine Mascot" style="width: 200px; height: 200px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</div>
 
-- **双引擎支持**：同时支持 JavaScript 和 Lua 脚本语言
-- **丰富的 API**：提供应用管理、设备控制、图像识别、OCR 等多种功能
-- **方法注册系统**：支持动态注册、重写和恢复方法
-- **协程支持**：Lua 引擎支持协程操作
-- **文档生成**：可自动生成 API 文档
+## 核心特点
+
+| 特点 | 描述 |
+|------|------|
+| 🚀 **双引擎支持** | 同时支持 JavaScript 和 Lua 脚本语言 |
+| 📚 **丰富的 API** | 提供应用管理、设备控制、图像识别、OCR 等多种功能 |
+| 🔧 **方法注册系统** | 支持动态注册、重写和恢复方法 |
+| 🔄 **协程支持** | Lua 引擎支持协程操作，提升并发能力 |
+| 📖 **文档生成** | 可自动生成 API 文档，方便查阅 |
+| 🔒 **代码保护** | 脚本代码易于混淆加密，有效保护业务逻辑 |
+| 🔥 **热更新支持** | 脚本可动态加载，无需重新编译即可更新功能 |
+| 🔄 **无痛迁移** | 可以无痛迁移其他平台的代码，复用现有的脚本代码库 |
+
+## 快速开始
+
+<div style="display: flex; justify-content: center; gap: 20px; margin: 40px 0;">
+  <a href="#/js_engine/README.md" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">JavaScript 引擎</a>
+  <a href="#/lua_engine/README.md" style="padding: 12px 30px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3); transition: all 0.3s ease;">Lua 引擎</a>
+  <a href="#/changelog.md" style="padding: 12px 30px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3); transition: all 0.3s ease;">更新日志</a>
+</div>
 
 ## 安装
 
 ```bash
 go get github.com/ZingYao/autogo_scriptengine@v0.0.9
 ```
-
-## 📚 详细文档
-
-> **🔥 重要提示**：查看以下详细文档以获取完整的 API 参考和使用指南
-
-### 🌐 HTML 在线文档
-
-> **推荐**：查看美观的 HTML 在线文档，提供更好的阅读体验
-
-- [📖 文档索引](./docs/index.html) - 所有文档的导航页面
-- [🏠 项目主页](./docs/README.html) - 项目介绍和功能特性
-- [JavaScript 引擎文档](./docs/js_engine/README.html) - JavaScript 引擎完整文档
-- [Lua 引擎文档](./docs/lua_engine/README.html) - Lua 引擎完整文档
-
-**使用方法**：
-```bash
-# 生成/更新 HTML 文档
-python3 scripts/convert_to_html.py
-```
-
-### 📖 Markdown 文档
-
-> 如果您更喜欢阅读 Markdown 格式的文档，可以查看以下链接：
-
-#### JavaScript 引擎文档
-- [JavaScript 引擎完整文档](./js_engine/README.md) - 包含所有 API、配置选项和高级用法
-
-#### 模块文档
-- [app 模块](./js_engine/model/app/README.md) - 应用管理（启动、安装、卸载、强制停止等）
-- [device 模块](./js_engine/model/device/README.md) - 设备信息（分辨率、SDK 版本、屏幕方向等）
-- [motion 模块](./js_engine/model/motion/README.md) - 触摸操作（点击、滑动、手势等）
-- [files 模块](./js_engine/model/files/README.md) - 文件操作（读写、复制、删除等）
-- [images 模块](./js_engine/model/images/README.md) - 图像处理（截图、找色、找图等）
-- [storages 模块](./js_engine/model/storages/README.md) - 数据存储（键值对存储）
-- [system 模块](./js_engine/model/system/README.md) - 系统功能（剪贴板、通知等）
-- [http 模块](./js_engine/model/http/README.md) - 网络请求（GET、POST 等）
-- [media 模块](./js_engine/model/media/README.md) - 媒体控制（音量、播放等）
-- [opencv 模块](./js_engine/model/opencv/README.md) - 计算机视觉（图像处理、特征检测等）
-- [ppocr 模块](./js_engine/model/ppocr/README.md) - OCR 文字识别
-- [console 模块](./js_engine/model/console/README.md) - 控制台窗口（显示、隐藏、日志输出等）
-- [dotocr 模块](./js_engine/model/dotocr/README.md) - 点字 OCR 识别（基于字库的 OCR）
-- [hud 模块](./js_engine/model/hud/README.md) - HUD 悬浮显示（脚本状态显示等）
-- [ime 模块](./js_engine/model/ime/README.md) - 输入法控制（剪切板、文本输入等）
-- [plugin 模块](./js_engine/model/plugin/README.md) - 插件加载（加载外部 APK 调用 Java 方法）
-- [rhino 模块](./js_engine/model/rhino/README.md) - JavaScript 执行引擎（Rhino）
-- [uiacc 模块](./js_engine/model/uiacc/README.md) - 无障碍 UI 操作（控件查找、点击、输入等）
-- [utils 模块](./js_engine/model/utils/README.md) - 工具方法（日志、Toast、类型转换等）
-- [vdisplay 模块](./js_engine/model/vdisplay/README.md) - 虚拟显示（虚拟屏操作）
-- [yolo 模块](./js_engine/model/yolo/README.md) - YOLO 目标检测（v5/v8 模型）
-- [imgui 模块](./js_engine/model/imgui/README.md) - Dear ImGui GUI 库（窗口、按钮、输入框等控件）
-- [coroutine 模块](./js_engine/model/coroutine/README.md) - 协程支持
-
-### 📖 Lua 引擎文档
-
-#### 核心文档
-- [Lua 引擎完整文档](./lua_engine/README.md) - 包含所有 API、配置选项和高级用法
-
-#### 模块文档
-- [app 模块](./lua_engine/model/app/README.md) - 应用管理（启动、安装、卸载、强制停止等）
-- [device 模块](./lua_engine/model/device/README.md) - 设备信息（分辨率、SDK 版本、屏幕方向等）
-- [motion 模块](./lua_engine/model/motion/README.md) - 触摸操作（点击、滑动、手势等）
-- [files 模块](./lua_engine/model/files/README.md) - 文件操作（读写、复制、删除等）
-- [images 模块](./lua_engine/model/images/README.md) - 图像处理（截图、找色、找图等）
-- [storages 模块](./lua_engine/model/storages/README.md) - 数据存储（键值对存储）
-- [system 模块](./lua_engine/model/system/README.md) - 系统功能（剪贴板、通知等）
-- [http 模块](./lua_engine/model/http/README.md) - 网络请求（GET、POST 等）
-- [media 模块](./lua_engine/model/media/README.md) - 媒体控制（音量、播放等）
-- [opencv 模块](./lua_engine/model/opencv/README.md) - 计算机视觉（图像处理、特征检测等）
-- [ppocr 模块](./lua_engine/model/ppocr/README.md) - OCR 文字识别
-- [console 模块](./lua_engine/model/console/README.md) - 控制台窗口（显示、隐藏、日志输出等）
-- [dotocr 模块](./lua_engine/model/dotocr/README.md) - 点字 OCR 识别（基于字库的 OCR）
-- [hud 模块](./lua_engine/model/hud/README.md) - HUD 悬浮显示（脚本状态显示等）
-- [ime 模块](./lua_engine/model/ime/README.md) - 输入法控制（剪切板、文本输入等）
-- [plugin 模块](./lua_engine/model/plugin/README.md) - 插件加载（加载外部 APK 调用 Java 方法）
-- [rhino 模块](./lua_engine/model/rhino/README.md) - JavaScript 执行引擎（Rhino）
-- [uiacc 模块](./lua_engine/model/uiacc/README.md) - 无障碍 UI 操作（控件查找、点击、输入等）
-- [utils 模块](./lua_engine/model/utils/README.md) - 工具方法（日志、Toast、类型转换等）
-- [vdisplay 模块](./lua_engine/model/vdisplay/README.md) - 虚拟显示（虚拟屏操作）
-- [yolo 模块](./lua_engine/model/yolo/README.md) - YOLO 目标检测（v5/v8 模型）
-- [imgui 模块](./lua_engine/model/imgui/README.md) - Dear ImGui GUI 库（窗口、按钮、输入框等控件）
-- [coroutine 模块](./lua_engine/model/coroutine/README.md) - 协程支持
-- [json 模块](./lua_engine/model/json/README.md) - JSON 处理
-
-## 环境要求
-
-- Go 1.25.0 或更高版本
-- AutoGo 框架（已在项目中集成）
-- Android 设备（用于实际运行自动化脚本）
-
-## 兼容性说明
-
-### Android 版本兼容性
-
-某些依赖包在特定的 Android 版本下可能会出现内存引用错误（Memory Reference Error）。如果遇到此类问题，可以尝试以下解决方案：
-
-1. **修改引入的包**：根据您的 Android 版本，可以修改项目中引入的相关包
-2. **禁用问题模块**：在引擎配置中禁用导致问题的特定模块
-3. **使用替代方案**：某些功能可能有多种实现方式，可以尝试使用替代方案
-
-### Windows 开发环境
-
-在 Windows 环境下开发时，如果引入了超过 1 个以上的带 C 依赖的库，可能会导致编译命令过长，触发以下错误：
-
-```
-The command line is too long.
-```
-
-**重要说明**：这是受限于当前 AutoGo Extension 的实现，无法从根本上解决。
-
-**解决方案**：
-
-1. **避免过多使用带 C 的库**：尽量减少使用包含 C 代码的依赖包
-2. **减少依赖库的引用**：遇到问题时，仅保留刚需依赖库，使用白名单手动指定需要加载的模块
-3. **切换开发环境**：使用 macOS 或 Linux 系统进行编译
-
-**建议的开发流程**：
-
-1. 在 Windows 环境下开发时，只启用核心模块（如 app、device、motion）
-2. 需要使用其他模块时，临时切换到 macOS/Linux 环境编译
-3. 或者使用 WSL (Windows Subsystem for Linux) 环境进行开发
-
-详细的白名单使用示例和模块依赖列表，请查看：
-- [JavaScript 引擎文档](./js_engine/README.md) - 包含完整的白名单使用示例
-- [Lua 引擎文档](./lua_engine/README.md) - 包含完整的白名单使用示例
-
-### 常见问题处理
-
-如果遇到兼容性问题，建议：
-
-1. 检查您的 Android 设备版本和 SDK 版本
-2. 查看项目的 GitHub Issues，了解已知的兼容性问题
-3. 根据错误信息调整配置或代码
-4. 如有必要，可以 Fork 项目并根据您的环境进行修改
-
-## 依赖
-
-- [AutoGo](https://github.com/Dasongzi1366/AutoGo) - Android 自动化框架（核心依赖）
-- [goja](https://github.com/dop251/goja) - JavaScript 解释器
-- [gopher-lua](https://github.com/yuin/gopher-lua) - Lua 解释器
 
 ## 与 AutoGo 的关系
 
@@ -172,3 +51,66 @@ The command line is too long.
 ## 许可证
 
 MIT License
+
+---
+
+<style>
+  :root {
+    --theme-color: #667eea;
+  }
+  
+  .cover {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  }
+  
+  h1 {
+    color: #2c3e50 !important;
+    font-size: 2.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  h2 {
+    color: #34495e !important;
+    font-size: 1.5rem !important;
+    margin-bottom: 2rem !important;
+  }
+  
+  blockquote {
+    border-left: 4px solid var(--theme-color) !important;
+    background: rgba(102, 126, 234, 0.1) !important;
+    padding: 15px 20px !important;
+    border-radius: 0 8px 8px 0 !important;
+    margin: 20px 0 !important;
+  }
+  
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 30px 0 !important;
+  }
+  
+  th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    padding: 12px !important;
+    text-align: left !important;
+    font-weight: 600 !important;
+  }
+  
+  td {
+    padding: 12px !important;
+    border: 1px solid #e0e0e0 !important;
+  }
+  
+  tr:nth-child(even) {
+    background: #f8f9fa !important;
+  }
+  
+  tr:hover {
+    background: #e3f2fd !important;
+  }
+  
+  a:hover {
+    transform: translateY(-2px) !important;
+  }
+</style>
