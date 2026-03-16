@@ -1,18 +1,8 @@
----
-type: cover
----
-
 # AutoGo Script Engine
 
-## 为 AutoGo 提供 JavaScript 和 Lua 脚本引擎支持
+## 简介
 
-> 让开发者可以用熟悉的脚本语言编写自动化任务
-
-![color](#f0f4f8)
-
-<div style="display: flex; justify-content: center; margin: 40px 0;">
-  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20robot%20programmer%20with%20code%20symbols%20around%20it%2C%20friendly%20expression%2C%20simple%20style%2C%20green%20and%20cyan%20colors&image_size=square" alt="ScriptEngine Mascot" style="width: 200px; height: 200px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-</div>
+AutoGo Script Engine 是为 AutoGo 提供 JavaScript 和 Lua 脚本引擎支持的扩展方案，让开发者可以用熟悉的脚本语言编写自动化任务。
 
 ## 核心特点
 
@@ -27,18 +17,6 @@ type: cover
 | 🔥 **热更新支持** | 脚本可动态加载，无需重新编译即可更新功能 |
 | 🔄 **无痛迁移** | 可以无痛迁移其他平台的代码，复用现有的脚本代码库 |
 
-## 快速开始
-
-<div style="display: flex; justify-content: center; margin: 40px 0;">
-  <a href="#/README.md" style="padding: 15px 40px; background: #4CAF50; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3); transition: all 0.3s ease; font-size: 1.1rem;">开始阅读</a>
-</div>
-
-<div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
-  <a href="#/js_engine/README.md" style="padding: 12px 30px; background: linear-gradient(to left bottom, hsl(216, 100%, 65%) 0%, hsl(107, 100%, 65%) 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3); transition: all 0.3s ease;">JavaScript 引擎</a>
-  <a href="#/lua_engine/README.md" style="padding: 12px 30px; background: linear-gradient(to left bottom, hsl(216, 100%, 65%) 0%, hsl(107, 100%, 65%) 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3); transition: all 0.3s ease;">Lua 引擎</a>
-  <a href="#/changelog.md" style="padding: 12px 30px; background: linear-gradient(to left bottom, hsl(216, 100%, 65%) 0%, hsl(107, 100%, 65%) 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3); transition: all 0.3s ease;">更新日志</a>
-</div>
-
 ## 安装
 
 ```bash
@@ -51,6 +29,13 @@ go get github.com/ZingYao/autogo_scriptengine@v0.0.9
 
 - **AutoGo** - 提供 Android 自动化的核心能力（无障碍服务、图像识别、触摸模拟等）
 - **ScriptEngine** - 为 AutoGo 添加脚本语言支持，让开发者可以用 JavaScript 或 Lua 编写自动化脚本
+
+## 快速开始
+
+1. **安装依赖**：使用上面的命令安装 AutoGo Script Engine
+2. **选择引擎**：根据您的喜好选择 JavaScript 或 Lua 引擎
+3. **编写脚本**：使用所选脚本语言编写自动化任务
+4. **运行脚本**：通过 AutoGo 执行您的脚本
 
 ## 许可证
 
