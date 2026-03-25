@@ -15,42 +15,40 @@ import (
 type ExitAction int
 
 const (
-	ExitActionNone ExitAction = iota // 无动作，直接退出
-	ExitActionRestart                // 重启脚本
-	ExitActionCustom                 // 自定义动作
+	ExitActionNone    ExitAction = iota // 无动作，直接退出
+	ExitActionRestart                   // 重启脚本
+	ExitActionCustom                    // 自定义动作
 )
 
 // EngineConfig 引擎配置选项
 type EngineConfig struct {
-	AutoInjectMethods bool       // 是否自动注入所有方法，默认为 true
-	WhiteList         []string   // 白名单：只加载这些模块，空列表 = 加载所有
-	BlackList         []string   // 黑名单：跳过这些模块，空列表 = 不跳过任何
-	FailFast          bool       // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
-	SearchPaths       []string   // 模块搜索路径，用于 require 查找模块
-	FileSystem        fs.FS      // 虚拟文件系统（embed.FS），用于从嵌入文件中加载模块
-	OnExit            ExitAction // 脚本退出后的动作，默认为 ExitActionNone
-	CustomExitAction  func()     // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
+	WhiteList        []string   // 白名单：只加载这些模块，空列表 = 加载所有
+	BlackList        []string   // 黑名单：跳过这些模块，空列表 = 不跳过任何
+	FailFast         bool       // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
+	SearchPaths      []string   // 模块搜索路径，用于 require 查找模块
+	FileSystem       fs.FS      // 虚拟文件系统（embed.FS），用于从嵌入文件中加载模块
+	OnExit           ExitAction // 脚本退出后的动作，默认为 ExitActionNone
+	CustomExitAction func()     // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
 }
 
 // LuaEngine Lua 引擎
 type LuaEngine struct {
-	state       *lua.LState
-	mu          sync.RWMutex
-	config      EngineConfig
-	moduleCache map[string]lua.LValue // 模块缓存，用于 require 功能
-	currentScript string              // 当前执行的脚本
-	currentSearchPaths []string       // 当前脚本的搜索路径
-	skipExitAction bool               // 是否跳过退出动作（当 os.exit(-1) 时）
-	moduleRegistry *model.ModuleRegistry // 模块注册表，每个引擎实例独立
+	state              *lua.LState
+	mu                 sync.RWMutex
+	config             EngineConfig
+	moduleCache        map[string]lua.LValue // 模块缓存，用于 require 功能
+	currentScript      string                // 当前执行的脚本
+	currentSearchPaths []string              // 当前脚本的搜索路径
+	skipExitAction     bool                  // 是否跳过退出动作（当 os.exit(-1) 时）
+	moduleRegistry     *model.ModuleRegistry // 模块注册表，每个引擎实例独立
 }
 
 // DefaultConfig 返回默认配置
 func DefaultConfig() EngineConfig {
 	return EngineConfig{
-		AutoInjectMethods: true,
-		WhiteList:         []string{}, // 默认为空，加载所有模块
-		BlackList:         []string{}, // 默认为空，不跳过任何模块
-		FailFast:          false,      // 默认为 false，模块加载失败时跳过继续
+		WhiteList: []string{}, // 默认为空，加载所有模块
+		BlackList: []string{}, // 默认为空，不跳过任何模块
+		FailFast:  false,      // 默认为 false，模块加载失败时跳过继续
 	}
 }
 

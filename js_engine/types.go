@@ -14,14 +14,13 @@ import (
 type ExitAction int
 
 const (
-	ExitActionNone ExitAction = iota // 无动作，直接退出
-	ExitActionRestart                // 重启脚本
-	ExitActionCustom                 // 自定义动作
+	ExitActionNone    ExitAction = iota // 无动作，直接退出
+	ExitActionRestart                   // 重启脚本
+	ExitActionCustom                    // 自定义动作
 )
 
 // EngineConfig 引擎配置选项
 type EngineConfig struct {
-	AutoInjectMethods bool       // 是否自动注入所有方法，默认为 true
 	WhiteList        []string   // 白名单：只加载这些模块，空列表 = 加载所有
 	BlackList        []string   // 黑名单：跳过这些模块，空列表 = 不跳过任何
 	FailFast         bool       // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
@@ -32,22 +31,22 @@ type EngineConfig struct {
 
 // JSEngine JavaScript 引擎
 type JSEngine struct {
-	vm               *goja.Runtime
-	mu               sync.RWMutex
-	config           EngineConfig
-	currentScript    string // 当前执行的脚本
-	currentDir       string // 当前脚本的目录
-	skipExitAction   bool   // 是否跳过退出动作（当 process.exit(-1) 时）
-	moduleRegistry   *model.ModuleRegistry // 模块注册表，每个引擎实例独立
+	vm             *goja.Runtime
+	mu             sync.RWMutex
+	config         EngineConfig
+	currentScript  string                // 当前执行的脚本
+	currentDir     string                // 当前脚本的目录
+	skipExitAction bool                  // 是否跳过退出动作（当 process.exit(-1) 时）
+	moduleRegistry *model.ModuleRegistry // 模块注册表，每个引擎实例独立
 }
 
 // DefaultConfig 返回默认配置
 func DefaultConfig() EngineConfig {
 	return EngineConfig{
 		AutoInjectMethods: true,
-		WhiteList:        []string{}, // 默认为空，加载所有模块
-		BlackList:        []string{}, // 默认为空，不跳过任何模块
-		FailFast:        false,    // 默认为 false，模块加载失败时跳过继续
+		WhiteList:         []string{}, // 默认为空，加载所有模块
+		BlackList:         []string{}, // 默认为空，不跳过任何模块
+		FailFast:          false,      // 默认为 false，模块加载失败时跳过继续
 	}
 }
 

@@ -5,6 +5,7 @@
 - JavaScript 引擎
   - [核心](js_engine/README.md)
   - autogo 风格
+    - [概述](js_engine/model/autogo/README.md)
     - [app](js_engine/model/autogo/app/README.md)
     - [console](js_engine/model/autogo/console/README.md)
     - [coroutine](js_engine/model/autogo/coroutine/README.md)
@@ -32,6 +33,7 @@
 - Lua 引擎
   - [核心](lua_engine/README.md)
   - autogo 风格
+    - [概述](lua_engine/model/autogo/README.md)
     - [app](lua_engine/model/autogo/app/README.md)
     - [console](lua_engine/model/autogo/console/README.md)
     - [coroutine](lua_engine/model/autogo/coroutine/README.md)
@@ -55,7 +57,8 @@
     - [utils](lua_engine/model/autogo/utils/README.md)
     - [vdisplay](lua_engine/model/autogo/vdisplay/README.md)
     - [yolo](lua_engine/model/autogo/yolo/README.md)
-  - lrapp 风格
+  - lrappsoft 风格
+    - [概述](lua_engine/model/lrappsoft/README.md)
     - [accessibility](lua_engine/model/lrappsoft/accessibility/README.md)
     - [console](lua_engine/model/lrappsoft/console/README.md)
     - [crypt](lua_engine/model/lrappsoft/crypt/README.md)

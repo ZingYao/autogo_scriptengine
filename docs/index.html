@@ -1,83 +1,106 @@
 <!DOCTYPE html>
-
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8"/>
-<title>AutoGo ScriptEngine</title>
-<link href="icon.svg" rel="icon" type="image/x-icon"/>
-<meta content="never" name="referrer"/>
-<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
-<meta content="AutoGo ScriptEngine - 为 AutoGo 提供 JavaScript 和 Lua 脚本引擎支持" name="description"/>
-<meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" name="viewport"/>
-<link href="style/vue.css" rel="stylesheet"/>
-<link href="style/myStyle.css" rel="stylesheet" type="text/css">
-<style>
-    .cover {
-      background: linear-gradient(to left bottom, hsl(216, 100%, 85%) 0%, hsl(107, 100%, 85%) 100%) !important;
+  <meta charset="UTF-8">
+  <title>AutoGo ScriptEngine</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="AutoGo ScriptEngine - 为 AutoGo 提供 JavaScript 和 Lua 脚本引擎支持">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="style/vue.css">
+  <link rel="icon" href="icon.svg" type="image/x-icon">
+  <style>
+    .app-name-link img {
+      max-width: 80%;
+    }
+    .markdown-section {
+      max-width: 800px;
+    }
+    .sidebar {
+      padding: 1.5rem 0;
+    }
+    /* 回到顶部按钮样式 */
+    .to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #42b983;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 999;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .to-top.visible {
+      opacity: 1;
+    }
+    .to-top:hover {
+      background-color: #3aa676;
     }
   </style>
 </head>
 <body>
-<div id="app">Loading...</div>
-<a class="to-top">Top</a>
-<script>
+  <div id="app"></div>
+  <div class="to-top">Top</div>
+  <script>
     window.$docsify = {
-      el: '#app',
       name: 'AutoGo ScriptEngine',
       repo: 'https://github.com/ZingYao/autogo_scriptengine',
-      coverpage: true,
       loadSidebar: true,
+      subMaxLevel: 3,
       auto2top: true,
-      subMaxLevel: 2,
-      maxLevel: 4,
       homepage: 'README.md',
-
-      alias: {
-        '/API/_sidebar.md': '/_sidebar.md'
-      },
-      
+      coverpage: true,
+      collapsible: true,
+      sidebarDisplayLevel: 1,
       search: {
-        paths: 'auto',
-        placeholder: {
-          '/':'🔍 搜索'
-        },
-        noData: {
-          '/':'😒 找不到结果',
-        },
-        depth: 4,
         maxAge: 86400000,
+        paths: 'auto',
+        placeholder: '搜索',
+        noData: '没有结果',
+        depth: 6,
       },
-
-      footer: {
-        copy: '<span>MIT License</span>',
-        auth: ' <strong>AutoGo ScriptEngine</strong>',
-        pre: '<hr/>',
-        style: 'text-align: center;',
-      },
-
       copyCode: {
-          buttonText: '复制',
-          errorText: '错误',
-          successText: '成功!'
-      },
-
-      'flexible-alerts': {
-        style: 'flat'
+        buttonText: '复制',
+        errorText: '错误',
+        successText: '成功'
       }
-
     }
   </script>
-<script src="docsify.min.js"></script>
-<script src="prism-go.min.js"></script>
-<script src="docsify-copy-code"></script>
-<script src="search.min.js"></script>
-<script src="docsify-footer.min.js"></script>
-<script src="docsify-plugin-flexible-alerts.min.js"></script>
-<script src="zoom-image.js"></script>
-<script src="style/jquery-1.11.3.min.js"></script>
-<script src="style/jquery.toTop.min.js"></script>
-<script>
-    $('.to-top').toTop();
+  <!-- Docsify v4 -->
+  <script src="vendor/docsify/docsify.min.js"></script>
+  <script src="vendor/docsify/search.min.js"></script>
+  <script src="vendor/docsify/docsify-copy-code.min.js"></script>
+  <script src="vendor/prismjs/components/prism-go.min.js"></script>
+  <script src="vendor/prismjs/components/prism-javascript.min.js"></script>
+  <script src="vendor/prismjs/components/prism-lua.min.js"></script>
+  <script>
+    // 回到顶部按钮功能
+    const toTopBtn = document.querySelector('.to-top');
+    
+    // 监听滚动事件
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 300) {
+        toTopBtn.classList.add('visible');
+      } else {
+        toTopBtn.classList.remove('visible');
+      }
+    });
+    
+    // 点击按钮回到顶部
+    toTopBtn.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
   </script>
 </body>
 </html>

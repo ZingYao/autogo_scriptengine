@@ -122,11 +122,11 @@ func (e *JSEngine) loadJS(call goja.FunctionCall) goja.Value {
 	}
 
 	path := call.Argument(0).String()
-	
+
 	// 读取文件内容
 	var content []byte
 	var err error
-	
+
 	if e.config.FileSystem != nil {
 		// 使用配置的文件系统
 		content, err = fs.ReadFile(e.config.FileSystem, path)
@@ -134,7 +134,7 @@ func (e *JSEngine) loadJS(call goja.FunctionCall) goja.Value {
 		// 使用操作系统的文件系统
 		content, err = os.ReadFile(path)
 	}
-	
+
 	if err != nil {
 		panic(fmt.Sprintf("failed to load file '%s': %v", path, err))
 	}

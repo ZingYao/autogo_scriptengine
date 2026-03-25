@@ -68,9 +68,6 @@ func (e *LuaEngine) init() {
 	e.setupPackagePath()
 
 	e.registerCoreFunctions()
-	if e.config.AutoInjectMethods {
-		e.injectAllMethods()
-	}
 
 	// 注册自定义 require 函数，支持从 embed.FS 加载模块
 	e.registerCustomRequire()
@@ -179,7 +176,7 @@ func (e *LuaEngine) loadModuleFromFS(L *lua.LState, moduleName string) (lua.LVal
 			} else {
 				fullPath = searchPath + "/" + pathPattern
 			}
-			
+
 			content, err := e.config.FileSystem.Open(fullPath)
 			if err == nil {
 				defer content.Close()
@@ -233,70 +230,6 @@ func (e *LuaEngine) consoleErrorLua(L *lua.LState) int {
 	return 0
 }
 
-func (e *LuaEngine) injectAllMethods() {
-	whiteList := e.config.WhiteList
-	blackList := e.config.BlackList
-	failFast := e.config.FailFast
-
-	modules := e.moduleRegistry.ListModules()
-
-	for _, name := range modules {
-		module, ok := e.moduleRegistry.GetModule(name)
-		if !ok {
-			continue
-		}
-
-		// 检查白名单
-		if len(whiteList) > 0 {
-			found := false
-			for _, w := range whiteList {
-				if w == name {
-					found = true
-					break
-				}
-			}
-			if !found {
-				continue
-			}
-		}
-
-		// 检查黑名单
-		blacklisted := false
-		for _, b := range blackList {
-			if b == name {
-				blacklisted = true
-				break
-			}
-		}
-		if blacklisted {
-			continue
-		}
-
-		// 检查模块是否可用
-		if !module.IsAvailable() {
-			if failFast {
-				panic(fmt.Sprintf("module %s is not available", name))
-			} else {
-				fmt.Printf("[WARN] module %s is not available, skipping\n", name)
-				continue
-			}
-		}
-
-		// 注册模块
-		err := module.Register(e)
-		if err != nil {
-			if failFast {
-				panic(fmt.Sprintf("failed to register module %s: %v", name, err))
-			} else {
-				fmt.Printf("[WARN] failed to register module %s: %v, skipping\n", name, err)
-				continue
-			}
-		}
-
-		fmt.Printf("[INFO] module %s registered successfully\n", name)
-	}
-}
-
 // InjectModule 注入指定模块的方法
 // module: 模块名称，支持: app, device, motion, files, images, storages, system, http, media, opencv, ppocr, console, dotocr, hud, ime, plugin, rhino, uiacc, utils, vdisplay, yolo, imgui
 func (e *LuaEngine) InjectModule(moduleName string) {
@@ -341,13 +274,6 @@ func (e *LuaEngine) RegisterModule(modules ...model.Module) {
 	}
 }
 
-// InjectAllMethods 注入所有方法（公开方法，允许手动调用）
-func (e *LuaEngine) InjectAllMethods() {
-	e.mu.Lock()
-	defer e.mu.Unlock()
-	e.injectAllMethods()
-}
-
 func (e *LuaEngine) RegisterMethod(name, description string, goFunc interface{}, overridable bool) {
 	RegisterMethod(name, description, goFunc, overridable)
 }
@@ -359,26 +285,27 @@ func (e *LuaEngine) RegisterMethod(name, description string, goFunc interface{},
 //   - os.exit(0): 正常退出，执行配置的退出动作（重启/自定义/无动作）
 //   - os.exit(-1): 强制退出，不执行任何退出动作
 //   - os.exit(其他值): 正常退出，执行配置的退出动作
+//
 // 脚本异常退出时始终打印日志
 func (e *LuaEngine) ExecuteString(script string, searchPaths ...string) error {
 	e.currentScript = script
 	e.currentSearchPaths = searchPaths
 	e.skipExitAction = false
-	
+
 	for {
 		err := e.executeStringOnce(script, searchPaths...)
-		
+
 		// 如果脚本异常退出，打印错误日志
 		if err != nil {
 			fmt.Printf("脚本异常退出: %v\n", err)
 			return err
 		}
-		
+
 		// 如果跳过退出动作（os.exit(-1)），直接返回
 		if e.skipExitAction {
 			return nil
 		}
-		
+
 		// 根据配置的退出动作执行相应操作
 		switch e.config.OnExit {
 		case ExitActionNone:
@@ -444,26 +371,27 @@ func (e *LuaEngine) addSearchPaths(paths ...string) {
 //   - os.exit(0): 正常退出，执行配置的退出动作（重启/自定义/无动作）
 //   - os.exit(-1): 强制退出，不执行任何退出动作
 //   - os.exit(其他值): 正常退出，执行配置的退出动作
+//
 // 脚本异常退出时始终打印日志
 func (e *LuaEngine) ExecuteFile(path string) error {
 	e.currentScript = path
 	e.currentSearchPaths = []string{}
 	e.skipExitAction = false
-	
+
 	for {
 		err := e.executeFileOnce(path)
-		
+
 		// 如果脚本异常退出，打印错误日志
 		if err != nil {
 			fmt.Printf("脚本异常退出: %v\n", err)
 			return err
 		}
-		
+
 		// 如果跳过退出动作（os.exit(-1)），直接返回
 		if e.skipExitAction {
 			return nil
 		}
-		
+
 		// 根据配置的退出动作执行相应操作
 		switch e.config.OnExit {
 		case ExitActionNone:
@@ -578,26 +506,26 @@ func (e *LuaEngine) Close() {
 func (e *LuaEngine) registerExitControl() {
 	// 获取 os 表
 	osTable := e.state.GetGlobal("os").(*lua.LTable)
-	
+
 	// 保存原始的 os.exit 函数
 	originalExit := osTable.RawGetString("exit")
-	
+
 	// 注册新的 os.exit 函数
 	osTable.RawSetString("exit", e.state.NewFunction(func(L *lua.LState) int {
 		code := L.CheckInt(1)
-		
+
 		// 如果退出码为 -1，跳过退出动作
 		if code == -1 {
 			e.skipExitAction = true
 		}
-		
+
 		// 调用原始的 os.exit 函数
 		if originalExit.Type() == lua.LTFunction {
 			L.Push(originalExit)
 			L.Push(lua.LNumber(code))
 			L.Call(1, 0)
 		}
-		
+
 		return 0
 	}))
 }
@@ -630,9 +558,6 @@ func (e *LuaEngine) Restart() error {
 
 	// 重新注册核心函数
 	e.registerCoreFunctions()
-	if e.config.AutoInjectMethods {
-		e.injectAllMethods()
-	}
 
 	// 重新注册自定义 require 函数
 	e.registerCustomRequire()

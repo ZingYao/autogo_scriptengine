@@ -1,108 +1,119 @@
-# AutoGo Lua Engine
+# Lua 引擎使用文档
 
-AutoGo Lua Engine 是一个高性能的 Lua 脚本引擎，为 AutoGo 框架提供了完整的 Lua 脚本支持。
+## 1. 引擎简介
 
-## 特性
+Lua 引擎是 AutoGo 脚本引擎的一部分，用于执行 Lua 脚本。它提供了丰富的 API 接口，支持与设备交互、文件操作、网络请求等功能。
 
-- **完整的 API 注入**: 将 AutoGo 的所有功能模块注入到 Lua 引擎中
-- **模块化设计**: 支持按需加载模块
-- **线程安全**: 所有操作都是线程安全的
-- **文件系统支持**: 支持真实文件系统和虚拟文件系统 (embed.FS)
-- **模块导入**: 支持 Lua require 功能
+## 2. 使用方法
 
-## 快速开始
+### 2.1 基本使用
 
-### 初始化引擎
+创建一个 Lua 脚本文件，例如 `test.lua`，并编写以下代码：
 
-```go
-import "github.com/ZingYao/autogo_scriptengine/lua_engine"
+```lua
+-- 导入 autogo 风格的 API
+local console = require("autogo.console")
+local device = require("autogo.device")
 
-func main() {
-    // 使用默认配置创建引擎（自动注入所有方法）
-    engine := lua_engine.NewLuaEngine(&lua_engine.DefaultConfig())
-    defer engine.Close()
-    
-    // 使用引擎...
-}
+-- 输出日志
+console.log("Hello, AutoGo!")
+
+-- 获取设备信息
+console.log("屏幕宽度: " .. device.width)
+console.log("屏幕高度: " .. device.height)
 ```
 
-### 引擎配置选项
+### 2.2 执行方式
+
+**重要提示**：AutoGo 项目的运行必须要使用 AutoGo 的 VSCode Extension 或者 GoLand 的 Extension 来执行，不能直接使用 `go run` 或者 `go build` 命令。
+
+Lua 脚本可以通过以下两种方式执行：
+
+1. **Embed 方式**：将脚本嵌入到 Go 程序中编译执行
+2. **手动放置方式**：将脚本文件手动放到移动设备上，然后根据路径执行
+
+## 3. 脚本打包到 Embed 中
+
+### 3.1 打包步骤
+
+1. 创建一个包含所有脚本文件的目录，例如 `scripts`
+2. 在 Go 代码中使用 `embed` 指令嵌入脚本文件：
 
 ```go
+package main
+
 import (
     "embed"
-    "os"
+    "log"
+
     "github.com/ZingYao/autogo_scriptengine/lua_engine"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
 )
 
 //go:embed scripts/*
 var scriptsFS embed.FS
 
 func main() {
-    // 使用自定义配置
+    // 初始化 Lua 引擎，配置文件系统以支持 require
     config := lua_engine.DefaultConfig()
-    config.AutoInjectMethods = false  // 禁用自动注入
-    config.FileSystem = scriptsFS      // 设置虚拟文件系统
-    config.SearchPaths = []string{"scripts"}  // 设置模块搜索路径
-    
+    config.FileSystem = scriptsFS
     engine := lua_engine.NewLuaEngine(&config)
     defer engine.Close()
-    
-    // 按需注入模块
-    engine.InjectModule("app")
-    engine.InjectModule("device")
+
+    // 注册所有 autogo 风格模块
+    engine.RegisterModule(all_models.AllModules...)
+
+    // 执行主脚本
+    err := engine.ExecuteFile("scripts/main.lua")
+    if err != nil {
+        log.Fatalf("Failed to execute main.lua: %v", err)
+    }
 }
 ```
 
-### 执行 Lua 代码
+### 3.2 执行 Embed 脚本
+
+使用 AutoGo 的 VSCode Extension 或 GoLand Extension 来运行项目。
+
+## 4. 手动放置脚本到设备
+
+### 4.1 放置步骤
+
+1. 将脚本文件手动复制到移动设备的指定目录
+2. 在 Go 代码中指定脚本路径并执行：
 
 ```go
-// 执行 Lua 字符串
-err := engine.ExecuteString(`
-    console.log("Hello, Lua!")
-    local packageName = app_currentPackage()
-    console.log("当前应用包名: " .. packageName)
-`)
+package main
 
-// 执行 Lua 文件（从真实文件系统）
-err = engine.ExecuteFile("/sdcard/script.lua")
+import (
+    "log"
 
-// 执行 Lua 文件（从虚拟文件系统）
-err = engine.ExecuteFile("scripts/script.lua")
+    "github.com/ZingYao/autogo_scriptengine/lua_engine"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
+)
+
+func main() {
+    // 初始化 Lua 引擎
+    config := lua_engine.DefaultConfig()
+    engine := lua_engine.NewLuaEngine(&config)
+    defer engine.Close()
+
+    // 注册所有 autogo 风格模块
+    engine.RegisterModule(all_models.AllModules...)
+
+    // 执行设备上的脚本文件
+    err := engine.ExecuteFile("/sdcard/scripts/main.lua")
+    if err != nil {
+        log.Fatalf("Failed to execute main.lua: %v", err)
+    }
+}
 ```
 
-## 模块列表
+## 5. 从网络中加载代码并执行
 
-| 模块          | 说明               | 详细文档                                |
-| ----------- | ---------------- | ----------------------------------- |
-| `app`       | 应用管理             | [README](model/app/README.md)       |
-| `device`    | 设备信息             | [README](model/device/README.md)    |
-| `motion`    | 触摸操作             | [README](model/motion/README.md)    |
-| `files`     | 文件操作             | [README](model/files/README.md)     |
-| `images`    | 图像处理             | [README](model/images/README.md)    |
-| `storages`  | 数据存储             | [README](model/storages/README.md)  |
-| `system`    | 系统功能             | [README](model/system/README.md)    |
-| `http`      | 网络请求             | [README](model/http/README.md)      |
-| `media`     | 媒体控制             | [README](model/media/README.md)     |
-| `opencv`    | 计算机视觉            | [README](model/opencv/README.md)    |
-| `ppocr`     | OCR 文字识别         | [README](model/ppocr/README.md)     |
-| `console`   | 控制台窗口            | [README](model/console/README.md)   |
-| `coroutine` | 协程管理             | [README](model/coroutine/README.md) |
-| `dotocr`    | 点字 OCR           | [README](model/dotocr/README.md)    |
-| `hud`       | HUD 悬浮显示         | [README](model/hud/README.md)       |
-| `ime`       | 输入法控制            | [README](model/ime/README.md)       |
-| `plugin`    | 插件加载             | [README](model/plugin/README.md)    |
-| `rhino`     | JavaScript 执行引擎  | [README](model/rhino/README.md)     |
-| `uiacc`     | 无障碍 UI 操作        | [README](model/uiacc/README.md)     |
-| `utils`     | 工具方法             | [README](model/utils/README.md)     |
-| `vdisplay`  | 虚拟显示             | [README](model/vdisplay/README.md)  |
-| `yolo`      | YOLO 目标检测        | [README](model/yolo/README.md)      |
-| `imgui`     | Dear ImGui GUI 库 | [README](model/imgui/README.md)     |
-| `json`      | JSON 处理          | [README](model/json/README.md)      |
+### 5.1 网络加载示例
 
-## DemoCode
-
-### 1. 加载网络的脚本并执行
+以下示例演示如何从网络中加载 Lua 代码并执行：
 
 ```go
 package main
@@ -111,76 +122,181 @@ import (
     "fmt"
     "io"
     "net/http"
+    "log"
+
     "github.com/ZingYao/autogo_scriptengine/lua_engine"
-    lua_safe_models "github.com/ZingYao/autogo_scriptengine/lua_engine/define/safe_models"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
 )
 
 func main() {
-    // 注册 Lua 引擎模块
-    lua_engine.RegisterModule(lua_safe_models.SafeModules...)
-    
-    // 创建引擎
-    engine := lua_engine.NewLuaEngine(&lua_engine.DefaultConfig())
+    // 初始化 Lua 引擎
+    config := lua_engine.DefaultConfig()
+    engine := lua_engine.NewLuaEngine(&config)
     defer engine.Close()
-    
-    // 从网络下载脚本
-    resp, err := http.Get("https://example.com/script.lua")
+
+    // 注册所有 autogo 风格模块
+    engine.RegisterModule(all_models.AllModules...)
+
+    // 从网络加载脚本代码
+    url := "https://example.com/scripts/main.lua"
+    resp, err := http.Get(url)
     if err != nil {
-        fmt.Printf("下载脚本失败: %v\n", err)
-        return
+        log.Fatalf("Failed to download script: %v", err)
     }
     defer resp.Body.Close()
-    
+
     // 读取脚本内容
-    script, err := io.ReadAll(resp.Body)
+    scriptContent, err := io.ReadAll(resp.Body)
     if err != nil {
-        fmt.Printf("读取脚本失败: %v\n", err)
-        return
+        log.Fatalf("Failed to read script: %v", err)
     }
-    
+
     // 执行脚本
-    err = engine.ExecuteString(string(script))
+    err = engine.ExecuteString(string(scriptContent), "main.lua")
     if err != nil {
-        fmt.Printf("执行脚本失败: %v\n", err)
-    } else {
-        fmt.Println("脚本执行成功")
+        log.Fatalf("Failed to execute script: %v", err)
     }
+
+    fmt.Println("Script executed successfully!")
 }
 ```
 
-### 2. 加载真实文件系统的脚本并执行
+### 5.2 网络加载说明
 
-```go
-package main
+1. 使用 `http.Get` 或其他 HTTP 客户端从网络下载脚本
+2. 读取下载的内容为字符串
+3. 使用 `ExecuteString` 方法执行脚本内容
+4. 可以指定脚本文件名用于错误提示
 
-import (
-    "fmt"
-    "os"
-    "github.com/ZingYao/autogo_scriptengine/lua_engine"
-    lua_safe_models "github.com/ZingYao/autogo_scriptengine/lua_engine/define/safe_models"
-)
+## 6. Lua 中如何 require 其他代码文件
 
-func main() {
-    // 注册 Lua 引擎模块
-    lua_engine.RegisterModule(lua_safe_models.SafeModules...)
-    
-    // 创建引擎，配置真实文件系统
-    config := lua_engine.DefaultConfig()
-    config.FileSystem = os.DirFS("/sdcard/script")  // 设置真实文件系统目录
-    engine := lua_engine.NewLuaEngine(&config)
-    defer engine.Close()
-    
-    // 执行脚本文件
-    err := engine.ExecuteFile("main.lua")
-    if err != nil {
-        fmt.Printf("执行脚本失败: %v\n", err)
-    } else {
-        fmt.Println("脚本执行成功")
-    }
-}
+### 6.1 基本 require
+
+在 Lua 中，可以使用 `require` 函数来加载其他 Lua 文件。例如：
+
+```lua
+-- 加载同目录下的 utils.lua 文件
+local utils = require("utils")
+
+-- 调用 utils 中的函数
+utils.doSomething()
 ```
 
-### 3. 加载虚拟文件系统的脚本并运行
+### 6.2 加载子目录中的文件
+
+如果文件在子目录中，可以使用点号分隔路径：
+
+```lua
+-- 加载 lib/utils.lua 文件
+local utils = require("lib.utils")
+```
+
+### 6.3 加载风格包
+
+AutoGo 脚本引擎提供了两种风格包：
+
+1. **autogo 风格**：基于 AutoGo 原生 API
+2. **lrappsoft 风格**：基于懒人脚本 API，兼容大部分懒人脚本的 Lua 方法
+
+加载风格包的示例：
+
+```lua
+-- 加载 autogo 风格的 console 模块
+local console = require("autogo.console")
+
+-- 加载 autogo 风格的 device 模块
+local device = require("autogo.device")
+
+-- 加载 lrappsoft 风格的 console 模块
+local console = require("console")
+
+-- 加载 lrappsoft 风格的 device 模块
+local device = require("device")
+```
+
+### 6.4 模块导出
+
+在 Lua 中，使用 `return` 来导出模块：
+
+```lua
+-- utils.lua
+local utils = {}
+
+function utils.add(a, b)
+    return a + b
+end
+
+function utils.subtract(a, b)
+    return a - b
+end
+
+return utils
+```
+
+## 7. 注意事项
+
+1. Lua 脚本文件的扩展名必须是 `.lua`
+2. require 时不需要添加 `.lua` 扩展名
+3. 脚本执行时，当前目录会被添加到 Lua 的搜索路径中
+4. autogo 风格包的模块路径是 `autogo.模块名`
+5. lrappsoft 风格包的模块路径是直接使用模块名（如 `console`、`device`）
+6. 使用 `embed` 时，需要配置 `FileSystem` 为嵌入的文件系统
+7. 手动放置脚本时，需要确保脚本文件路径正确
+8. **AutoGo 项目的运行必须要使用 AutoGo 的 VSCode Extension 或 GoLand Extension 来执行**
+
+## 8. 示例脚本
+
+### 8.1 基本操作示例
+
+```lua
+-- 导入模块
+local console = require("autogo.console")
+local device = require("autogo.device")
+
+-- 输出日志
+console.log("Hello, AutoGo!")
+
+-- 获取设备信息
+console.log("屏幕宽度: " .. device.width)
+console.log("屏幕高度: " .. device.height)
+```
+
+### 8.2 多文件脚本示例
+
+**utils.lua**：
+
+```lua
+-- 工具函数
+local utils = {}
+
+function utils.add(a, b)
+    return a + b
+end
+
+function utils.subtract(a, b)
+    return a - b
+end
+
+return utils
+```
+
+**main.lua**：
+
+```lua
+-- 加载工具模块
+local utils = require("utils")
+local console = require("autogo.console")
+
+-- 测试工具函数
+local sum = utils.add(5, 3)
+local difference = utils.subtract(10, 4)
+
+-- 输出结果
+console.log("5 + 3 = " .. sum)
+console.log("10 - 4 = " .. difference)
+```
+
+### 8.3 完整的 Go 示例（Embed 方式 - autogo 风格）
 
 ```go
 package main
@@ -188,387 +304,157 @@ package main
 import (
     "embed"
     "fmt"
+    "log"
+
     "github.com/ZingYao/autogo_scriptengine/lua_engine"
-    lua_safe_models "github.com/ZingYao/autogo_scriptengine/lua_engine/define/safe_models"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
 )
 
 //go:embed scripts/*
 var scriptsFS embed.FS
 
 func main() {
-    // 注册 Lua 引擎模块
-    lua_engine.RegisterModule(lua_safe_models.SafeModules...)
-    
-    // 创建引擎，配置虚拟文件系统
-    config := lua_engine.DefaultConfig()
-    config.FileSystem = scriptsFS      // 设置虚拟文件系统
-    config.SearchPaths = []string{"scripts"}  // 设置模块搜索路径
-    engine := lua_engine.NewLuaEngine(&config)
-    defer engine.Close()
-    
-    // 执行脚本文件
-    err := engine.ExecuteFile("scripts/main.lua")
-    if err != nil {
-        fmt.Printf("执行脚本失败: %v\n", err)
-    } else {
-        fmt.Println("脚本执行成功")
-    }
-}
-```
-
-### 4. Main 脚本加载 Model 脚本并运行
-
-**main.lua** (主脚本)
-
-```lua
--- main.lua - 主脚本，加载并调用 model 脚本
-
-console.log("=== 主脚本开始执行 ===")
-
--- 导入 model 脚本
-local model = require("model")
-
--- 调用 model 中的函数
-model.init()
-model.process("测试数据")
-
-console.log("=== 主脚本执行完成 ===")
-```
-
-**model.lua** (模型脚本)
-
-```lua
--- model.lua - 模型脚本
-
-local M = {}
-
--- 初始化函数
-function M.init()
-    console.log("模型初始化完成")
-end
-
--- 处理函数
-function M.process(data)
-    console.log("处理数据: " .. data)
-    -- 在这里添加具体的处理逻辑
-end
-
-return M
-```
-
-**Go 代码**
-
-```go
-package main
-
-import (
-    "embed"
-    "fmt"
-    "github.com/ZingYao/autogo_scriptengine/lua_engine"
-    lua_safe_models "github.com/ZingYao/autogo_scriptengine/lua_engine/define/safe_models"
-)
-
-//go:embed scripts/*
-var scriptsFS embed.FS
-
-func main() {
-    // 注册 Lua 引擎模块
-    lua_engine.RegisterModule(lua_safe_models.SafeModules...)
-    
-    // 创建引擎，配置虚拟文件系统
+    // 初始化 Lua 引擎，配置文件系统以支持 require
     config := lua_engine.DefaultConfig()
     config.FileSystem = scriptsFS
-    config.SearchPaths = []string{"scripts"}
     engine := lua_engine.NewLuaEngine(&config)
     defer engine.Close()
-    
-    // 执行主脚本，主脚本会自动加载 model 脚本
-    err := engine.ExecuteFile("scripts/main.lua")
+
+    // 注册所有 autogo 风格模块
+    engine.RegisterModule(all_models.AllModules...)
+
+    // 执行工具脚本（以便主脚本可以引用）
+    err := engine.ExecuteFile("scripts/utils.lua")
     if err != nil {
-        fmt.Printf("执行脚本失败: %v\n", err)
-    } else {
-        fmt.Println("脚本执行成功")
+        log.Fatalf("Failed to execute utils.lua: %v", err)
     }
+
+    // 执行主脚本
+    err = engine.ExecuteFile("scripts/main.lua")
+    if err != nil {
+        log.Fatalf("Failed to execute main.lua: %v", err)
+    }
+
+    // 输出执行结果
+    fmt.Println("Lua autogo style example completed!")
 }
 ```
 
-## API 参考
-
-### 引擎方法
-
-| 方法                                                                               | 说明                  |
-| -------------------------------------------------------------------------------- | ------------------- |
-| `NewLuaEngine(config *EngineConfig) *LuaEngine`                                  | 创建新的 Lua 引擎实例       |
-| `GetState() *lua.LState`                                                         | 获取 Lua 状态对象         |
-| `InjectModule(moduleName string)`                                                | 注入指定模块              |
-| `InjectModules(modules []string)`                                                | 注入多个模块              |
-| `GetAvailableModules() []string`                                                 | 获取所有可用模块列表          |
-| `InjectAllMethods()`                                                             | 注入所有模块的方法           |
-| `RegisterMethod(name, description string, goFunc interface{}, overridable bool)` | 注册自定义方法             |
-| `ExecuteString(script string, searchPaths ...string) error`                      | 执行 Lua 字符串（可指定搜索路径） |
-| `ExecuteFile(path string) error`                                                 | 执行 Lua 文件           |
-| `Close()`                                                                        | 关闭引擎                |
-| `GetRegistry() *MethodRegistry`                                                  | 获取方法注册表             |
-
-### 方法详细说明
-
-#### NewLuaEngine
-
-创建新的 Lua 引擎实例。
-
-```go
-config := lua_engine.DefaultConfig()
-engine := lua_engine.NewLuaEngine(&config)
-```
-
-#### GetState
-
-获取 Lua 状态对象，用于直接操作 Lua 虚拟机。
-
-```go
-state := engine.GetState()
-```
-
-#### InjectModule
-
-注入指定模块的方法到引擎中。
-
-```go
-engine.InjectModule("app")
-engine.InjectModule("device")
-```
-
-支持的模块：app, device, motion, files, images, storages, system, http, media, opencv, ppocr, console, coroutine, dotocr, hud, ime, plugin, rhino, uiacc, utils, vdisplay, yolo, imgui, json
-
-#### InjectModules
-
-注入多个模块的方法到引擎中。
-
-```go
-engine.InjectModules([]string{"app", "device", "motion"})
-```
-
-#### GetAvailableModules
-
-获取所有可用模块列表。
-
-```go
-modules := engine.GetAvailableModules()
-fmt.Println(modules)
-// 输出: [app device motion files images storages system http media opencv ppocr console coroutine dotocr hud ime plugin rhino uiacc utils vdisplay yolo imgui json]
-```
-
-#### InjectAllMethods
-
-注入所有模块的方法到引擎中。
-
-```go
-engine.InjectAllMethods()
-```
-
-#### RegisterMethod
-
-注册自定义方法到引擎中。
-
-```go
-engine.RegisterMethod("myFunction", "我的自定义函数", func(L *lua.LState) int {
-    // 实现自定义逻辑
-    return 1
-}, true)
-```
-
-参数：
-
-- `name`: 方法名称
-- `description`: 方法描述
-- `goFunc`: Go 函数
-- `overridable`: 是否允许被 Lua 函数重写
-
-#### ExecuteString
-
-执行 Lua 代码字符串。
-
-```go
-// 基本用法
-err := engine.ExecuteString(`
-    console.log("Hello, Lua!")
-`)
-
-// 指定搜索路径（用于 require）
-err = engine.ExecuteString(`
-    local model = require("model")
-    model.init()
-`, "scripts")
-```
-
-参数：
-
-- `script`: 要执行的 Lua 代码
-- `searchPaths`: 可选参数，添加模块搜索路径（用于 require）
-
-#### ExecuteFile
-
-执行 Lua 文件。
-
-```go
-// 从真实文件系统执行
-err := engine.ExecuteFile("/sdcard/script.lua")
-
-// 从虚拟文件系统执行
-err = engine.ExecuteFile("scripts/script.lua")
-```
-
-参数：
-
-- `path`: 文件路径
-
-#### Close
-
-关闭引擎，释放资源。
-
-```go
-defer engine.Close()
-```
-
-#### GetRegistry
-
-获取方法注册表，用于管理已注册的方法。
-
-```go
-registry := engine.GetRegistry()
-```
-
-### 配置选项
-
-| 选项                  | 类型        | 说明                              |
-| ------------------- | --------- | ------------------------------- |
-| `AutoInjectMethods` | bool      | 是否自动注入所有方法，默认为 true             |
-| `WhiteList`         | \[]string | 白名单：只加载这些模块                     |
-| `BlackList`         | \[]string | 黑名单：跳过这些模块                      |
-| `FailFast`          | bool      | 是否在模块加载失败时立即失败，false = 跳过失败模块继续 |
-| `SearchPaths`       | \[]string | 模块搜索路径，用于 require 查找模块          |
-| `FileSystem`        | fs.FS     | 虚拟文件系统 (embed.FS)，用于从嵌入文件中加载模块  |
-
-## 兼容性说明
-
-### Android 版本兼容性
-
-某些依赖包在特定的 Android 版本下可能会出现内存引用错误（Memory Reference Error）。如果遇到此类问题，可以尝试以下解决方案：
-
-1. **修改引入的包**：根据您的 Android 版本，可以修改项目中引入的相关包
-2. **禁用问题模块**：在引擎配置中使用黑名单禁用导致问题的特定模块
-3. **使用替代方案**：某些功能可能有多种实现方式，可以尝试使用替代方案
-
-示例：禁用可能导致问题的模块
-
-```go
-config := lua_engine.DefaultConfig()
-config.BlackList = []string{"opencv", "ppocr"}  // 禁用可能导致内存问题的模块
-engine := lua_engine.NewLuaEngine(&config)
-```
-
-### Windows 开发环境
-
-在 Windows 环境下开发时，如果引入了超过 1 个以上的带 C 依赖的库，可能会导致编译命令过长，触发以下错误：
-
-```
-The command line is too long.
-```
-
-**重要说明**：这是受限于当前 AutoGo Extension 的实现，无法从根本上解决。
-
-**解决方案**：
-
-1. **避免过多使用带 C 的库**：尽量减少使用包含 C 代码的依赖包
-2. **减少依赖库的引用**：遇到问题时，仅注册刚需模块，使用 `RegisterModule` 函数手动注册需要的模块
-3. **切换开发环境**：使用 macOS 或 Linux 系统进行编译
-
-**示例：手动注册模块**
+### 8.4 完整的 Go 示例（手动放置方式 - autogo 风格）
 
 ```go
 package main
 
 import (
+    "fmt"
+    "log"
+
     "github.com/ZingYao/autogo_scriptengine/lua_engine"
-    luaAppModel "github.com/ZingYao/autogo_scriptengine/lua_engine/model/app"
-    luaDeviceModel "github.com/ZingYao/autogo_scriptengine/lua_engine/model/device"
-    luaMotionModel "github.com/ZingYao/autogo_scriptengine/lua_engine/model/motion"
-    luaFilesModel "github.com/ZingYao/autogo_scriptengine/lua_engine/model/files"
-    luaConsoleModel "github.com/ZingYao/autogo_scriptengine/lua_engine/model/console"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
 )
 
-func init() {
-    // 只注册必需的模块，避免引入过多的 C 依赖
-    lua_engine.RegisterModule(
-        luaAppModel.AppModule{},
-        luaDeviceModel.DeviceModule{},
-        luaMotionModel.MotionModule{},
-        luaFilesModel.FilesModule{},
-        luaConsoleModel.ConsoleModule{},
-    )
-}
-
 func main() {
-    // 获取引擎实例
-    engine := lua_engine.GetEngine()
-    defer lua_engine.Close()
+    // 初始化 Lua 引擎
+    config := lua_engine.DefaultConfig()
+    engine := lua_engine.NewLuaEngine(&config)
+    defer engine.Close()
 
-    // 执行脚本
-    err := engine.ExecuteString(`
-        console.log("Hello, Lua!")
-        local packageName = app.currentPackage()
-        console.log("当前应用包名: " .. packageName)
-    `)
+    // 注册所有 autogo 风格模块
+    engine.RegisterModule(all_models.AllModules...)
+
+    // 执行设备上的脚本文件
+    err := engine.ExecuteFile("/sdcard/scripts/main.lua")
     if err != nil {
-        fmt.Printf("执行脚本失败: %v\n", err)
+        log.Fatalf("Failed to execute main.lua: %v", err)
     }
+
+    // 输出执行结果
+    fmt.Println("Lua autogo style example completed!")
 }
 ```
 
-**建议的开发流程**：
+### 8.5 完整的 Go 示例（Embed 方式 - lrappsoft 风格）
 
-1. 在 Windows 环境下开发时，只注册核心模块（如 app、device、motion、files、console）
-2. 需要使用其他模块（如 opencv、ppocr 等）时，临时切换到 macOS/Linux 环境编译
-3. 或者使用 WSL (Windows Subsystem for Linux) 环境进行开发
+```go
+package main
 
-**可用模块列表**：
+import (
+    "embed"
+    "fmt"
+    "log"
 
-| 模块          | 是否包含 C 依赖 | 说明               |
-| ----------- | --------- | ---------------- |
-| `app`       | 否         | 应用管理             |
-| `device`    | 否         | 设备信息             |
-| `motion`    | 否         | 触摸操作             |
-| `files`     | 否         | 文件操作             |
-| `images`    | 否         | 图像处理             |
-| `storages`  | 否         | 数据存储             |
-| `system`    | 否         | 系统功能             |
-| `http`      | 否         | 网络请求             |
-| `media`     | 否         | 媒体控制             |
-| `console`   | 否         | 控制台窗口            |
-| `coroutine` | 否         | 协程支持             |
-| `dotocr`    | 否         | 点字 OCR           |
-| `hud`       | 否         | HUD 悬浮显示         |
-| `ime`       | 否         | 输入法控制            |
-| `plugin`    | 否         | 插件加载             |
-| `rhino`     | 否         | JavaScript 执行引擎  |
-| `uiacc`     | 否         | 无障碍 UI 操作        |
-| `utils`     | 否         | 工具方法             |
-| `vdisplay`  | 否         | 虚拟显示             |
-| `yolo`      | 是         | YOLO 目标检测        |
-| `imgui`     | 否         | Dear ImGui GUI 库 |
-| `opencv`    | 是         | 计算机视觉            |
-| `ppocr`     | 是         | OCR 文字识别         |
-| `json`      | 否         | JSON 处理          |
+    "github.com/ZingYao/autogo_scriptengine/lua_engine"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/lrappsoft_models"
+)
 
-### 常见问题处理
+//go:embed scripts/*
+var scriptsFS embed.FS
 
-如果遇到兼容性问题，建议：
+func main() {
+    // 初始化 Lua 引擎，配置文件系统以支持 require
+    config := lua_engine.DefaultConfig()
+    config.FileSystem = scriptsFS
+    engine := lua_engine.NewLuaEngine(&config)
+    defer engine.Close()
 
-1. 检查您的 Android 设备版本和 SDK 版本
-2. 查看项目的 GitHub Issues，了解已知的兼容性问题
-3. 根据错误信息调整配置或代码
-4. 如有必要，可以 Fork 项目并根据您的环境进行修改
+    // 注册所有 lrappsoft 风格模块
+    engine.RegisterModule(lrappsoft_models.LrappsoftModules...)
 
-## License
+    // 执行工具脚本（以便主脚本可以引用）
+    err := engine.ExecuteFile("scripts/utils.lua")
+    if err != nil {
+        log.Fatalf("Failed to execute utils.lua: %v", err)
+    }
 
-MIT License
+    // 执行主脚本
+    err = engine.ExecuteFile("scripts/main.lua")
+    if err != nil {
+        log.Fatalf("Failed to execute main.lua: %v", err)
+    }
+
+    // 输出执行结果
+    fmt.Println("Lua lrappsoft style example completed!")
+}
+```
+
+### 8.6 完整的 Go 示例（手动放置方式 - lrappsoft 风格）
+
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+
+    "github.com/ZingYao/autogo_scriptengine/lua_engine"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/lrappsoft_models"
+)
+
+func main() {
+    // 初始化 Lua 引擎
+    config := lua_engine.DefaultConfig()
+    engine := lua_engine.NewLuaEngine(&config)
+    defer engine.Close()
+
+    // 注册所有 lrappsoft 风格模块
+    engine.RegisterModule(lrappsoft_models.LrappsoftModules...)
+
+    // 执行设备上的脚本文件
+    err := engine.ExecuteFile("/sdcard/scripts/main.lua")
+    if err != nil {
+        log.Fatalf("Failed to execute main.lua: %v", err)
+    }
+
+    // 输出执行结果
+    fmt.Println("Lua lrappsoft style example completed!")
+}
+```
+
+## 9. 示例代码 GitHub 地址
+
+Lua 引擎的示例代码可以在以下 GitHub 地址找到：
+
+- **Lua autogo 风格示例**：[examples/lua_engine/autogo](https://github.com/ZingYao/autogo_scriptengine/tree/main/examples/lua_engine/autogo)
+- **Lua lrappsoft 风格示例**：[examples/lua_engine/lrappsoft](https://github.com/ZingYao/autogo_scriptengine/tree/main/examples/lua_engine/lrappsoft)
+
+这些示例包含了完整的 Lua 脚本和 Go 代码，展示了如何使用 embed 和 require 功能。
