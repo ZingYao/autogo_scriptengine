@@ -1,5 +1,6 @@
 //go:build ignore
 
+// 际运行时需要修改这里为 main
 package main_test
 
 import (
