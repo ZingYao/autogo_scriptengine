@@ -11,10 +11,7 @@ Lua 引擎是 AutoGo 脚本引擎的一部分，用于执行 Lua 脚本。它提
 创建一个 Lua 脚本文件，例如 `test.lua`，并编写以下代码：
 
 ```lua
--- 导入 autogo 风格的 API
-local console = require("autogo.console")
-local device = require("autogo.device")
-
+-- 直接使用全局模块，无需 require
 -- 输出日志
 console.log("Hello, AutoGo!")
 
@@ -172,7 +169,7 @@ func main() {
 
 ### 6.1 基本 require
 
-在 Lua 中，可以使用 `require` 函数来加载其他 Lua 文件。例如：
+在 Lua 中，可以使用 `require` 函数来加载其他 Lua 文件（仅限用户自定义的 Lua 文件）。例如：
 
 ```lua
 -- 加载同目录下的 utils.lua 文件
@@ -191,27 +188,25 @@ utils.doSomething()
 local utils = require("lib.utils")
 ```
 
-### 6.3 加载风格包
+### 6.3 使用注入的模块
 
-AutoGo 脚本引擎提供了两种风格包：
+AutoGo 脚本引擎提供了两种风格包，所有模块都已通过 Go 代码注入到 Lua 全局环境中，**无需使用 require**：
 
 1. **autogo 风格**：基于 AutoGo 原生 API
 2. **lrappsoft 风格**：基于懒人脚本 API，兼容大部分懒人脚本的 Lua 方法
 
-加载风格包的示例：
+使用注入模块的示例：
 
 ```lua
--- 加载 autogo 风格的 console 模块
-local console = require("autogo.console")
+-- autogo 风格：直接使用全局模块
+console.log("Hello")
+device.width
+motion.click(100, 200)
 
--- 加载 autogo 风格的 device 模块
-local device = require("autogo.device")
-
--- 加载 lrappsoft 风格的 console 模块
-local console = require("console")
-
--- 加载 lrappsoft 风格的 device 模块
-local device = require("device")
+-- lrappsoft 风格：直接使用全局模块
+log("Hello")
+getScreenWidth()
+touchDown(1, 100, 200)
 ```
 
 ### 6.4 模块导出
@@ -238,8 +233,8 @@ return utils
 1. Lua 脚本文件的扩展名必须是 `.lua`
 2. require 时不需要添加 `.lua` 扩展名
 3. 脚本执行时，当前目录会被添加到 Lua 的搜索路径中
-4. autogo 风格包的模块路径是 `autogo.模块名`
-5. lrappsoft 风格包的模块路径是直接使用模块名（如 `console`、`device`）
+4. **所有模块都已通过 Go 代码注入到 Lua 全局环境中，无需使用 require**
+5. autogo 风格和 lrappsoft 风格的模块都直接在全局空间可用
 6. 使用 `embed` 时，需要配置 `FileSystem` 为嵌入的文件系统
 7. 手动放置脚本时，需要确保脚本文件路径正确
 8. **AutoGo 项目的运行必须要使用 AutoGo 的 VSCode Extension 或 GoLand Extension 来执行**
@@ -249,10 +244,7 @@ return utils
 ### 8.1 基本操作示例
 
 ```lua
--- 导入模块
-local console = require("autogo.console")
-local device = require("autogo.device")
-
+-- 直接使用全局模块，无需 require
 -- 输出日志
 console.log("Hello, AutoGo!")
 
@@ -283,9 +275,11 @@ return utils
 **main.lua**：
 
 ```lua
--- 加载工具模块
+-- 加载工具模块（用户自定义的 Lua 文件）
 local utils = require("utils")
-local console = require("autogo.console")
+
+-- 直接使用全局模块（无需 require）
+console.log("Hello, AutoGo!")
 
 -- 测试工具函数
 local sum = utils.add(5, 3)

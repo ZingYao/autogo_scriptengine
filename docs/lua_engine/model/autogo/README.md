@@ -28,35 +28,35 @@ autogo/
 
 ## 4. 使用方法
 
-### 4.1 导入模块
+### 4.1 直接使用模块
 
-在 Lua 脚本中，可以使用 `require` 函数导入 autogo 风格包的模块：
+**重要提示**：所有 autogo 风格包的模块都已通过 Go 代码注入到 Lua 全局环境中，**无需使用 require**，可以直接使用。
 
 ```lua
--- 导入 app 模块
-local app = require("autogo.app")
+-- 直接使用全局模块，无需 require
+-- app 模块：应用相关操作
+app.start("com.example.app")
+app.stop("com.example.app")
 
--- 导入 device 模块
-local device = require("autogo.device")
+-- device 模块：设备信息
+console.log("屏幕宽度: " .. device.width)
+console.log("屏幕高度: " .. device.height)
 
--- 导入 console 模块
-local console = require("autogo.console")
+-- console 模块：控制台输出
+console.log("Hello, AutoGo!")
 
--- 导入 files 模块
-local files = require("autogo.files")
+-- files 模块：文件操作
+files.read("/sdcard/test.txt")
+files.write("/sdcard/test.txt", "Hello")
 
--- 导入 http 模块
-local http = require("autogo.http")
+-- http 模块：网络请求
+http.get("https://example.com")
 ```
 
 ### 4.2 基本使用示例
 
 ```lua
--- 导入模块
-local app = require("autogo.app")
-local device = require("autogo.device")
-local console = require("autogo.console")
-
+-- 直接使用全局模块，无需 require
 -- 启动应用
 app.start("com.example.app")
 
@@ -64,7 +64,7 @@ app.start("com.example.app")
 os.sleep(3000)
 
 -- 点击屏幕
-device.click(500, 500)
+motion.click(500, 500)
 
 -- 输出日志
 console.log("点击成功")
@@ -100,7 +100,7 @@ app.stop("com.example.app")
 
 ## 6. 注意事项
 
-1. autogo 风格包的模块路径是 `autogo.模块名`
+1. **所有模块都已通过 Go 代码注入到 Lua 全局环境中，无需使用 require**
 2. 所有函数的参数和返回值与 AutoGo 原生 API 保持一致
-3. 使用前请确保已导入所需的模块
+3. 使用前请确保已在 Go 代码中注册了所需的模块
 4. 详细的模块 API 文档请参考各模块的 README.md 文件
