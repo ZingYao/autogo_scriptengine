@@ -1,0 +1,4 @@
+github.com/ZingYao/autogo_scriptengine v0.0.9 h1:xJPR/t6XCC3SL79IVAn/iVSPhcd9kPWfHzAyNPhAnVQ=
+github.com/ZingYao/autogo_scriptengine v0.0.9/go.mod h1:ZIv485bq3xO2wS1Ftg+mQUbAEUveJ+29Efq8livtpCk=
+github.com/yuin/gopher-lua v1.1.1 h1:kYKnWBjvbNP4XLT3+bPEwAXJx262OhaHDWDVOPjL46M=
+github.com/yuin/gopher-lua v1.1.1/go.mod h1:GBR0iDaNXjAgGg9zfCvksxSRnQx76gclCIb7kdAd1Pw=
