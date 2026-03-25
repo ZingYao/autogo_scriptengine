@@ -271,6 +271,7 @@ func (e *LuaEngine) GetAvailableModules() []string {
 func (e *LuaEngine) RegisterModule(modules ...model.Module) {
 	for _, module := range modules {
 		e.moduleRegistry.RegisterModule(module)
+		module.Register(e)
 	}
 }
 

@@ -171,70 +171,6 @@ func (e *JSEngine) loadJS(call goja.FunctionCall) goja.Value {
 	return goja.Undefined()
 }
 
-func (e *JSEngine) injectAllMethods() {
-	whiteList := e.config.WhiteList
-	blackList := e.config.BlackList
-	failFast := e.config.FailFast
-
-	modules := e.moduleRegistry.ListModules()
-
-	for _, name := range modules {
-		module, ok := e.moduleRegistry.GetModule(name)
-		if !ok {
-			continue
-		}
-
-		// 检查白名单
-		if len(whiteList) > 0 {
-			found := false
-			for _, w := range whiteList {
-				if w == name {
-					found = true
-					break
-				}
-			}
-			if !found {
-				continue
-			}
-		}
-
-		// 检查黑名单
-		blacklisted := false
-		for _, b := range blackList {
-			if b == name {
-				blacklisted = true
-				break
-			}
-		}
-		if blacklisted {
-			continue
-		}
-
-		// 检查模块是否可用
-		if !module.IsAvailable() {
-			if failFast {
-				panic(fmt.Sprintf("module %s is not available", name))
-			} else {
-				fmt.Printf("[WARN] module %s is not available, skipping\n", name)
-				continue
-			}
-		}
-
-		// 注册模块
-		err := module.Register(e)
-		if err != nil {
-			if failFast {
-				panic(fmt.Sprintf("failed to register module %s: %v", name, err))
-			} else {
-				fmt.Printf("[WARN] failed to register module %s: %v, skipping\n", name, err)
-				continue
-			}
-		}
-
-		fmt.Printf("[INFO] module %s registered successfully\n", name)
-	}
-}
-
 // InjectModule 注入指定模块的方法
 // module: 模块名称，支持: app, device, motion, files, images, storages, system, http, media, opencv, ppocr, console, dotocr, hud, ime, plugin, rhino, uiacc, utils, vdisplay, yolo, imgui
 func (e *JSEngine) InjectModule(moduleName string) {
@@ -277,13 +213,6 @@ func (e *JSEngine) RegisterModule(modules ...model.Module) {
 	for _, module := range modules {
 		e.moduleRegistry.RegisterModule(module)
 	}
-}
-
-// InjectAllMethods 注入所有方法（公开方法，允许手动调用）
-func (e *JSEngine) InjectAllMethods() {
-	e.mu.Lock()
-	defer e.mu.Unlock()
-	e.injectAllMethods()
 }
 
 func (e *JSEngine) RegisterMethod(name, description string, goFunc interface{}, overridable bool) {
