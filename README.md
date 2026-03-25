@@ -15,6 +15,8 @@
 - **丰富的 API**：提供应用管理、设备控制、图像识别、OCR 等多种功能
 - **方法注册系统**：支持动态注册、重写和恢复方法
 - **协程支持**：Lua 引擎支持协程操作
+- **风格包支持**：提供 autogo 和 lrappsoft 两种风格包
+- **懒人脚本兼容**：lrappsoft 风格包兼容大部分懒人脚本的 Lua 方法
 - **文档生成**：可自动生成 API 文档
 
 ## 安装
@@ -27,7 +29,7 @@ go get github.com/ZingYao/autogo_scriptengine@v0.0.12
 
 > **🔥 重要提示**：查看以下详细文档以获取完整的 API 参考和使用指南
 
-**📖 项目文档地址**：[AutoGo ScriptEngine](https://zingyao.github.io/autogo_scriptengine/)
+**📖 项目文档地址**：https://zingyao.github.io/autogo_scriptengine/
 
 ### 🌐 HTML 在线文档
 
@@ -165,13 +167,53 @@ The command line is too long.
 - [goja](https://github.com/dop251/goja) - JavaScript 解释器
 - [gopher-lua](https://github.com/yuin/gopher-lua) - Lua 解释器
 
+## 风格包说明
+
+### autogo 风格包
+
+基于 AutoGo 原生 API 开发的风格包，提供简洁、高效的 API 接口，方便开发者快速编写脚本。
+
+### lrappsoft 风格包
+
+基于懒人脚本 API 开发的风格包，兼容大部分懒人脚本的 Lua 方法，方便开发者快速迁移懒人的 Lua 脚本。
+
+**主要特点**：
+- 兼容懒人脚本的 API 接口
+- 实现了大部分懒人的 Lua 方法
+- 保持与懒人脚本的使用习惯一致
+- 支持懒人脚本的核心功能
+
+**迁移指南**：
+1. 替换导入路径：将原来的导入路径替换为 lrappsoft 风格包的路径
+2. 保持方法调用不变：由于 lrappsoft 风格包实现了与懒人脚本相同的方法名和参数，因此可以保持方法调用不变
+3. 测试脚本：运行迁移后的脚本，确保功能正常
+
+## 依赖架构的重大改变
+
+在本次开发了 lrappsoft 风格包后，依赖架构发生了重大改变：
+
+1. **风格包分离**：将 API 实现分为 autogo 和 lrappsoft 两种风格包，提供不同的编程风格选择
+2. **模块化设计**：每个风格包内部采用模块化设计，便于维护和扩展
+3. **兼容性增强**：通过 lrappsoft 风格包，增强了与懒人脚本的兼容性
+4. **依赖管理**：优化了依赖管理，减少了不必要的依赖
+
 ## 与 AutoGo 的关系
 
 本项目是 AutoGo 的扩展方案，通过封装 AutoGo 提供的原生 API，为开发者提供更灵活的脚本编写方式：
 
 - **AutoGo** - 提供 Android 自动化的核心能力（无障碍服务、图像识别、触摸模拟等）
 - **ScriptEngine** - 为 AutoGo 添加脚本语言支持，让开发者可以用 JavaScript 或 Lua 编写自动化脚本
+- **风格包** - 提供不同风格的 API 接口，满足不同开发者的需求
 
 ## 许可证
 
 MIT License
+
+## 反馈渠道
+
+如果您在使用过程中遇到任何问题或有任何建议，请通过以下方式反馈：
+
+- **GitHub Issues**：https://github.com/ZingYao/autogo_scriptengine/issues
+- **GitHub Discussions**：https://github.com/ZingYao/autogo_scriptengine/discussions
+
+欢迎提交 Issue 或 Discussion，我们会尽快回复并解决问题。

@@ -205,6 +205,86 @@ The command line is too long.
 - **ScriptEngine** - 为 AutoGo 添加脚本语言支持，让开发者可以用 JavaScript 或 Lua 编写自动化脚本
 - **风格包** - 提供不同风格的 API 接口，满足不同开发者的需求
 
+## 问题反馈
+
+如果您在使用过程中遇到任何问题、发现 bug 或者有功能建议，欢迎通过以下方式反馈：
+
+### 📝 提交 Issue
+
+我们非常欢迎您在 GitHub 上提交 Issue 来反馈问题。提交 Issue 时，请尽可能提供以下信息，以便我们更快地定位和解决问题：
+
+**必填信息**：
+- 问题描述：清晰描述您遇到的问题或建议
+- 复现步骤：详细的操作步骤，让我们能够重现问题
+- 预期行为：您期望看到的结果
+- 实际行为：实际发生的情况
+
+**环境信息**：
+- AutoGo ScriptEngine 版本
+- Go 语言版本
+- Android 设备型号和系统版本
+- 使用的脚本语言（JavaScript 或 Lua）
+- 操作系统（Windows/macOS/Linux）
+
+**可选信息**：
+- 错误日志或堆栈信息
+- 最小可复现代码示例
+- 相关截图或录屏
+
+### 🐛 Bug 反馈
+
+发现 bug 时，请按照以下模板提交 Issue：
+
+```markdown
+**Bug 描述**
+简要描述 bug 的表现
+
+**复现步骤**
+1. 执行操作 A
+2. 执行操作 B
+3. 观察到错误 C
+
+**预期行为**
+描述您期望的正常行为
+
+**实际行为**
+描述实际发生的错误行为
+
+**环境信息**
+- AutoGo ScriptEngine 版本：
+- Go 版本：
+- Android 版本：
+- 脚本语言：
+```
+
+### 💡 功能建议
+
+如果您有功能改进建议，请按照以下模板提交 Issue：
+
+```markdown
+**功能描述**
+描述您希望添加或改进的功能
+
+**使用场景**
+描述这个功能的使用场景和价值
+
+**建议方案**
+如果您有具体的实现想法，请描述您的建议方案
+```
+
+### 📌 Issue 标签
+
+提交 Issue 时，请使用合适的标签帮助我们分类：
+- `bug` - 报告 bug
+- `enhancement` - 功能增强建议
+- `documentation` - 文档相关
+- `question` - 使用问题
+- `compatibility` - 兼容性问题
+
+**GitHub Issues 地址**：https://github.com/ZingYao/autogo_scriptengine/issues
+
+在提交 Issue 前，建议先搜索现有的 Issues，确认是否已有类似问题或建议。
+
 ## 许可证
 
 MIT License
