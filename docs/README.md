@@ -22,7 +22,7 @@
 ## 安装
 
 ```bash
-go get github.com/ZingYao/autogo_scriptengine@v0.0.12
+go get github.com/ZingYao/autogo_scriptengine@v0.0.13.12
 ```
 
 ## 📚 详细文档
