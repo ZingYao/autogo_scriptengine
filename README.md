@@ -20,12 +20,14 @@
 ## 安装
 
 ```bash
-go get github.com/ZingYao/autogo_scriptengine@v0.0.9
+go get github.com/ZingYao/autogo_scriptengine@v0.0.12
 ```
 
 ## 📚 详细文档
 
 > **🔥 重要提示**：查看以下详细文档以获取完整的 API 参考和使用指南
+
+**📖 项目文档地址**：[AutoGo ScriptEngine](https://zingyao.github.io/autogo_scriptengine/)
 
 ### 🌐 HTML 在线文档
 
@@ -33,8 +35,6 @@ go get github.com/ZingYao/autogo_scriptengine@v0.0.9
 
 - [📖 文档索引](./docs/index.html) - 所有文档的导航页面
 - [🏠 项目主页](./docs/README.md) - 项目介绍和功能特性
-- [JavaScript 引擎文档](./docs/js_engine/README.md) - JavaScript 引擎完整文档
-- [Lua 引擎文档](./docs/lua_engine/README.md) - Lua 引擎完整文档
 
 **使用方法**：
 ```bash
@@ -47,9 +47,11 @@ python3 scripts/convert_to_html.py
 > 如果您更喜欢阅读 Markdown 格式的文档，可以查看以下链接：
 
 #### JavaScript 引擎文档
+
 - [JavaScript 引擎完整文档](./js_engine/README.md) - 包含所有 API、配置选项和高级用法
 
 #### 模块文档
+
 - [app 模块](./js_engine/model/app/README.md) - 应用管理（启动、安装、卸载、强制停止等）
 - [device 模块](./js_engine/model/device/README.md) - 设备信息（分辨率、SDK 版本、屏幕方向等）
 - [motion 模块](./js_engine/model/motion/README.md) - 触摸操作（点击、滑动、手势等）
@@ -74,12 +76,12 @@ python3 scripts/convert_to_html.py
 - [imgui 模块](./js_engine/model/imgui/README.md) - Dear ImGui GUI 库（窗口、按钮、输入框等控件）
 - [coroutine 模块](./js_engine/model/coroutine/README.md) - 协程支持
 
-### 📖 Lua 引擎文档
+#### 📖 Lua 引擎文档
 
-#### 核心文档
 - [Lua 引擎完整文档](./lua_engine/README.md) - 包含所有 API、配置选项和高级用法
 
 #### 模块文档
+
 - [app 模块](./lua_engine/model/app/README.md) - 应用管理（启动、安装、卸载、强制停止等）
 - [device 模块](./lua_engine/model/device/README.md) - 设备信息（分辨率、SDK 版本、屏幕方向等）
 - [motion 模块](./lua_engine/model/motion/README.md) - 触摸操作（点击、滑动、手势等）
@@ -136,6 +138,7 @@ The command line is too long.
 1. **避免过多使用带 C 的库**：尽量减少使用包含 C 代码的依赖包
 2. **减少依赖库的引用**：遇到问题时，仅保留刚需依赖库，使用白名单手动指定需要加载的模块
 3. **切换开发环境**：使用 macOS 或 Linux 系统进行编译
+4. **或者使用 WSL (Windows Subsystem for Linux) 环境进行开发
 
 **建议的开发流程**：
 

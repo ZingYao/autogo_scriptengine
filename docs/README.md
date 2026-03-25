@@ -22,12 +22,14 @@
 ## 安装
 
 ```bash
-go get github.com/ZingYao/autogo_scriptengine@v0.0.10
+go get github.com/ZingYao/autogo_scriptengine@v0.0.12
 ```
 
 ## 📚 详细文档
 
 > **🔥 重要提示**：查看以下详细文档以获取完整的 API 参考和使用指南
+
+**📖 项目文档地址**：https://zingyao.github.io/autogo_scriptengine/
 
 ### 🌐 HTML 在线文档
 
