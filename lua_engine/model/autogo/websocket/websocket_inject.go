@@ -16,14 +16,6 @@ type WebSocketModule struct {
 	mu          sync.Mutex
 }
 
-// New 创建新的 WebSocket 模块实例
-func New() *WebSocketModule {
-	return &WebSocketModule{
-		connections: make(map[int]*websocket.Conn),
-		nextHandle:  1,
-	}
-}
-
 // Name 返回模块名称
 func (m *WebSocketModule) Name() string {
 	return "websocket"
@@ -37,6 +29,13 @@ func (m *WebSocketModule) IsAvailable() bool {
 // Register 向引擎注册方法
 func (m *WebSocketModule) Register(engine model.Engine) error {
 	state := engine.GetState()
+
+	m.mu.Lock()
+	if m.connections == nil {
+		m.connections = make(map[int]*websocket.Conn)
+		m.nextHandle = 1
+	}
+	m.mu.Unlock()
 
 	wsObj := state.NewTable()
 	state.SetGlobal("websocket", wsObj)
