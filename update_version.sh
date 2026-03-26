@@ -66,23 +66,29 @@ fi
 
 # 更新 examples 目录下的 go.mod 文件
 echo "更新 examples 目录下的 go.mod 文件..."
-find examples -name "go.mod" -type f -exec sed -i '' "s/@v[0-9]\.[0-9]*/@${NEW_VERSION}/g" {} \;
+find examples -name "go.mod" -type f -exec sed -i '' "s/@v[0-9]\.[0-9]\.[0-9]\+\(\.[0-9]\+\)*/@${NEW_VERSION}/g" {} \;
 
-# 更新项目根目录的 go.mod 文件
-echo "更新项目根目录的 go.mod 文件..."
-sed -i '' "s/@v[0-9]\.[0-9]*/@${NEW_VERSION}/g" go.mod
+# 更新项目根目录的 README.md 文件（不是 go.mod）
+echo "更新项目根目录的 README.md 文件..."
+if [ -f "README.md" ]; then
+    sed -i '' "s/@v[0-9]\.[0-9]\.[0-9]\+\(\.[0-9]\+\)*/@${NEW_VERSION}/g" README.md
+fi
 
 # 更新 docs/README.md 文件
 echo "更新 docs/README.md 文件..."
-sed -i '' "s/@v[0-9]\.[0-9]*/@${NEW_VERSION}/g" docs/README.md
+sed -i '' "s/@v[0-9]\.[0-9]\.[0-9]\+\(\.[0-9]\+\)*/@${NEW_VERSION}/g" docs/README.md
 
 # 更新 docs/js_engine/README.md 文件
 echo "更新 docs/js_engine/README.md 文件..."
-sed -i '' "s/@v[0-9]\.[0-9]*/@${NEW_VERSION}/g" docs/js_engine/README.md
+if [ -f "docs/js_engine/README.md" ]; then
+    sed -i '' "s/@v[0-9]\.[0-9]\.[0-9]\+\(\.[0-9]\+\)*/@${NEW_VERSION}/g" docs/js_engine/README.md
+fi
 
 # 更新 docs/lua_engine/README.md 文件
 echo "更新 docs/lua_engine/README.md 文件..."
-sed -i '' "s/@v[0-9]\.[0-9]*/@${NEW_VERSION}/g" docs/lua_engine/README.md
+if [ -f "docs/lua_engine/README.md" ]; then
+    sed -i '' "s/@v[0-9]\.[0-9]\.[0-9]\+\(\.[0-9]\+\)*/@${NEW_VERSION}/g" docs/lua_engine/README.md
+fi
 
 # 提交更改
 echo "提交更改..."
