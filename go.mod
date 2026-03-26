@@ -19,4 +19,4 @@ require (
 	golang.org/x/text v0.3.8 // indirect
 )
 
-// replace github.com/Dasongzi1366/AutoGo => ./AutoGo
+replace github.com/Dasongzi1366/AutoGo => ./AutoGo

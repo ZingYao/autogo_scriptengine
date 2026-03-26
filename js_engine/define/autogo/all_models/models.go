@@ -24,6 +24,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model/autogo/uiacc"
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model/autogo/utils"
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model/autogo/vdisplay"
+	"github.com/ZingYao/autogo_scriptengine/js_engine/model/autogo/websocket"
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model/autogo/yolo"
 )
 
@@ -51,5 +52,6 @@ var AllModules = []model.Module{
 	&system.SystemModule{},
 	&uiacc.UiaccModule{},
 	&utils.UtilsModule{},
+	&websocket.WebSocketModule{},
 	&yolo.YoloModule{},
 }

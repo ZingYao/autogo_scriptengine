@@ -209,6 +209,15 @@ app.launch("com.example.app");
 
 // motion 模块：触摸操作
 click(100, 200);
+
+// websocket 模块：WebSocket 客户端
+var handle = websocket.connect(
+    "ws://echo.websocket.org",
+    function(h) { console.log("连接成功"); },
+    function(h) { console.log("连接关闭"); },
+    function(h, err) { console.log("错误: " + err); },
+    function(h, msg) { console.log("收到: " + msg); }
+);
 ```
 
 ### 6.4 模块导出

@@ -62,6 +62,7 @@ python3 scripts/convert_to_html.py
 - [storages 模块](./js_engine/model/storages/README.md) - 数据存储（键值对存储）
 - [system 模块](./js_engine/model/system/README.md) - 系统功能（剪贴板、通知等）
 - [http 模块](./js_engine/model/http/README.md) - 网络请求（GET、POST 等）
+- [websocket 模块](./js_engine/model/websocket/README.md) - WebSocket 客户端（连接、发送、接收消息等）
 - [media 模块](./js_engine/model/media/README.md) - 媒体控制（音量、播放等）
 - [opencv 模块](./js_engine/model/opencv/README.md) - 计算机视觉（图像处理、特征检测等）
 - [ppocr 模块](./js_engine/model/ppocr/README.md) - OCR 文字识别
@@ -92,6 +93,7 @@ python3 scripts/convert_to_html.py
 - [storages 模块](./lua_engine/model/storages/README.md) - 数据存储（键值对存储）
 - [system 模块](./lua_engine/model/system/README.md) - 系统功能（剪贴板、通知等）
 - [http 模块](./lua_engine/model/http/README.md) - 网络请求（GET、POST 等）
+- [websocket 模块](./lua_engine/model/websocket/README.md) - WebSocket 客户端（连接、发送、接收消息等）
 - [media 模块](./lua_engine/model/media/README.md) - 媒体控制（音量、播放等）
 - [opencv 模块](./lua_engine/model/opencv/README.md) - 计算机视觉（图像处理、特征检测等）
 - [ppocr 模块](./lua_engine/model/ppocr/README.md) - OCR 文字识别
