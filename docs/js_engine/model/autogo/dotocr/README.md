@@ -6,39 +6,52 @@ dotocr 模块提供了 OCR（光学字符识别）功能，支持从屏幕、图
 
 ## 方法列表
 
-### dotocr.setDict(name, dict)
+### dotocr.setDict
 设置字库
 
 **参数：**
-- `name` (String): 字库名称
-- `dict` (String): 字库内容或路径
 
-**返回值：** undefined
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| name | string | 字库名称 |
+| dict | string | 字库内容或路径 |
+
+**返回值：**
+
+无返回值
 
 **使用示例：**
 ```javascript
+// 设置字库
 dotocr.setDict("default", "/path/to/dict.txt");
 ```
 
 ---
 
-### dotocr.ocr(x1, y1, x2, y2, threshold, colGap, rowGap, sim, mode, dictName, displayId)
+### dotocr.ocr
 从屏幕指定区域进行 OCR 识别
 
 **参数：**
-- `x1` (Number): 区域左上角 X 坐标
-- `y1` (Number): 区域左上角 Y 坐标
-- `x2` (Number): 区域右下角 X 坐标
-- `y2` (Number): 区域右下角 Y 坐标
-- `threshold` (String): 颜色阈值
-- `colGap` (Number): 列间隔
-- `rowGap` (Number): 行间隔
-- `sim` (Number): 相似度阈值 (0-1)
-- `mode` (Number): 识别模式
-- `dictName` (String): 使用的字库名称
-- `displayId` (Number): 显示设备 ID
 
-**返回值：** (String) 识别到的文字
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| x1 | number | 区域左上角 X 坐标 |
+| y1 | number | 区域左上角 Y 坐标 |
+| x2 | number | 区域右下角 X 坐标 |
+| y2 | number | 区域右下角 Y 坐标 |
+| threshold | string | 颜色阈值 |
+| colGap | number | 列间隔 |
+| rowGap | number | 行间隔 |
+| sim | number | 相似度阈值 (0-1) |
+| mode | number | 识别模式 |
+| dictName | string | 使用的字库名称 |
+| displayId | number | 显示设备 ID |
+
+**返回值：**
+
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| text | string | 识别到的文字 |
 
 **使用示例：**
 ```javascript
@@ -49,19 +62,26 @@ console.log("识别结果: " + text);
 
 ---
 
-### dotocr.ocrFromImage(img, threshold, colGap, rowGap, sim, mode, dictName)
+### dotocr.ocrFromImage
 从图像进行 OCR 识别
 
 **参数：**
-- `img` (Image): NRGBA 格式的图像对象
-- `threshold` (String): 颜色阈值
-- `colGap` (Number): 列间隔
-- `rowGap` (Number): 行间隔
-- `sim` (Number): 相似度阈值 (0-1)
-- `mode` (Number): 识别模式
-- `dictName` (String): 使用的字库名称
 
-**返回值：** (String) 识别到的文字
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| img | object | NRGBA 格式的图像对象 |
+| threshold | string | 颜色阈值 |
+| colGap | number | 列间隔 |
+| rowGap | number | 行间隔 |
+| sim | number | 相似度阈值 (0-1) |
+| mode | number | 识别模式 |
+| dictName | string | 使用的字库名称 |
+
+**返回值：**
+
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| text | string | 识别到的文字 |
 
 **使用示例：**
 ```javascript
@@ -71,19 +91,26 @@ var text = dotocr.ocrFromImage(img, "FFFFFF-000000", 5, 5, 0.9, 0, "default");
 
 ---
 
-### dotocr.ocrFromBase64(b64, threshold, colGap, rowGap, sim, mode, dictName)
+### dotocr.ocrFromBase64
 从 Base64 编码的图像字符串进行 OCR 识别
 
 **参数：**
-- `b64` (String): Base64 编码的图像字符串
-- `threshold` (String): 颜色阈值
-- `colGap` (Number): 列间隔
-- `rowGap` (Number): 行间隔
-- `sim` (Number): 相似度阈值 (0-1)
-- `mode` (Number): 识别模式
-- `dictName` (String): 使用的字库名称
 
-**返回值：** (String) 识别到的文字
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| b64 | string | Base64 编码的图像字符串 |
+| threshold | string | 颜色阈值 |
+| colGap | number | 列间隔 |
+| rowGap | number | 行间隔 |
+| sim | number | 相似度阈值 (0-1) |
+| mode | number | 识别模式 |
+| dictName | string | 使用的字库名称 |
+
+**返回值：**
+
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| text | string | 识别到的文字 |
 
 **使用示例：**
 ```javascript
@@ -93,19 +120,26 @@ var text = dotocr.ocrFromBase64(base64Str, "FFFFFF-000000", 5, 5, 0.9, 0, "defau
 
 ---
 
-### dotocr.ocrFromPath(path, threshold, colGap, rowGap, sim, mode, dictName)
+### dotocr.ocrFromPath
 从图像文件路径进行 OCR 识别
 
 **参数：**
-- `path` (String): 图像文件路径
-- `threshold` (String): 颜色阈值
-- `colGap` (Number): 列间隔
-- `rowGap` (Number): 行间隔
-- `sim` (Number): 相似度阈值 (0-1)
-- `mode` (Number): 识别模式
-- `dictName` (String): 使用的字库名称
 
-**返回值：** (String) 识别到的文字
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| path | string | 图像文件路径 |
+| threshold | string | 颜色阈值 |
+| colGap | number | 列间隔 |
+| rowGap | number | 行间隔 |
+| sim | number | 相似度阈值 (0-1) |
+| mode | number | 识别模式 |
+| dictName | string | 使用的字库名称 |
+
+**返回值：**
+
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| text | string | 识别到的文字 |
 
 **使用示例：**
 ```javascript
@@ -114,23 +148,31 @@ var text = dotocr.ocrFromPath("/sdcard/screenshot.png", "FFFFFF-000000", 5, 5, 0
 
 ---
 
-### dotocr.findStr(x1, y1, x2, y2, text, threshold, colGap, rowGap, sim, dictName, displayId)
+### dotocr.findStr
 在屏幕指定区域中查找指定字符串的位置
 
 **参数：**
-- `x1` (Number): 区域左上角 X 坐标
-- `y1` (Number): 区域左上角 Y 坐标
-- `x2` (Number): 区域右下角 X 坐标
-- `y2` (Number): 区域右下角 Y 坐标
-- `text` (String): 要查找的文字
-- `threshold` (String): 颜色阈值
-- `colGap` (Number): 列间隔
-- `rowGap` (Number): 行间隔
-- `sim` (Number): 相似度阈值 (0-1)
-- `dictName` (String): 使用的字库名称
-- `displayId` (Number): 显示设备 ID
 
-**返回值：** (Object) 包含 x 和 y 坐标的对象，如果未找到则返回 (-1, -1)
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| x1 | number | 区域左上角 X 坐标 |
+| y1 | number | 区域左上角 Y 坐标 |
+| x2 | number | 区域右下角 X 坐标 |
+| y2 | number | 区域右下角 Y 坐标 |
+| text | string | 要查找的文字 |
+| threshold | string | 颜色阈值 |
+| colGap | number | 列间隔 |
+| rowGap | number | 行间隔 |
+| sim | number | 相似度阈值 (0-1) |
+| dictName | string | 使用的字库名称 |
+| displayId | number | 显示设备 ID |
+
+**返回值：**
+
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| x | number | 找到的 X 坐标（未找到返回 -1） |
+| y | number | 找到的 Y 坐标（未找到返回 -1） |
 
 **使用示例：**
 ```javascript
@@ -142,19 +184,27 @@ if (pos.x !== -1) {
 
 ---
 
-### dotocr.findStrFromImage(img, text, threshold, colGap, rowGap, sim, dictName)
+### dotocr.findStrFromImage
 在图像中查找指定字符串的位置
 
 **参数：**
-- `img` (Image): NRGBA 格式的图像对象
-- `text` (String): 要查找的文字
-- `threshold` (String): 颜色阈值
-- `colGap` (Number): 列间隔
-- `rowGap` (Number): 行间隔
-- `sim` (Number): 相似度阈值 (0-1)
-- `dictName` (String): 使用的字库名称
 
-**返回值：** (Object) 包含 x 和 y 坐标的对象
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| img | object | NRGBA 格式的图像对象 |
+| text | string | 要查找的文字 |
+| threshold | string | 颜色阈值 |
+| colGap | number | 列间隔 |
+| rowGap | number | 行间隔 |
+| sim | number | 相似度阈值 (0-1) |
+| dictName | string | 使用的字库名称 |
+
+**返回值：**
+
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| x | number | 找到的 X 坐标（未找到返回 -1） |
+| y | number | 找到的 Y 坐标（未找到返回 -1） |
 
 **使用示例：**
 ```javascript
@@ -164,19 +214,27 @@ var pos = dotocr.findStrFromImage(img, "登录", "FFFFFF-000000", 5, 5, 0.9, "de
 
 ---
 
-### dotocr.findStrFromBase64(b64, text, threshold, colGap, rowGap, sim, dictName)
+### dotocr.findStrFromBase64
 在 Base64 编码的图像中查找指定字符串的位置
 
 **参数：**
-- `b64` (String): Base64 编码的图像字符串
-- `text` (String): 要查找的文字
-- `threshold` (String): 颜色阈值
-- `colGap` (Number): 列间隔
-- `rowGap` (Number): 行间隔
-- `sim` (Number): 相似度阈值 (0-1)
-- `dictName` (String): 使用的字库名称
 
-**返回值：** (Object) 包含 x 和 y 坐标的对象
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| b64 | string | Base64 编码的图像字符串 |
+| text | string | 要查找的文字 |
+| threshold | string | 颜色阈值 |
+| colGap | number | 列间隔 |
+| rowGap | number | 行间隔 |
+| sim | number | 相似度阈值 (0-1) |
+| dictName | string | 使用的字库名称 |
+
+**返回值：**
+
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| x | number | 找到的 X 坐标（未找到返回 -1） |
+| y | number | 找到的 Y 坐标（未找到返回 -1） |
 
 **使用示例：**
 ```javascript
@@ -185,19 +243,27 @@ var pos = dotocr.findStrFromBase64(base64Str, "确定", "FFFFFF-000000", 5, 5, 0
 
 ---
 
-### dotocr.findStrFromPath(path, text, threshold, colGap, rowGap, sim, dictName)
+### dotocr.findStrFromPath
 在图像文件中查找指定字符串的位置
 
 **参数：**
-- `path` (String): 图像文件路径
-- `text` (String): 要查找的文字
-- `threshold` (String): 颜色阈值
-- `colGap` (Number): 列间隔
-- `rowGap` (Number): 行间隔
-- `sim` (Number): 相似度阈值 (0-1)
-- `dictName` (String): 使用的字库名称
 
-**返回值：** (Object) 包含 x 和 y 坐标的对象
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| path | string | 图像文件路径 |
+| text | string | 要查找的文字 |
+| threshold | string | 颜色阈值 |
+| colGap | number | 列间隔 |
+| rowGap | number | 行间隔 |
+| sim | number | 相似度阈值 (0-1) |
+| dictName | string | 使用的字库名称 |
+
+**返回值：**
+
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| x | number | 找到的 X 坐标（未找到返回 -1） |
+| y | number | 找到的 Y 坐标（未找到返回 -1） |
 
 **使用示例：**
 ```javascript

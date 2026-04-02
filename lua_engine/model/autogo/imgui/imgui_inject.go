@@ -60,7 +60,19 @@ func (m *ImGuiModule) Register(engine model.Engine) error {
 
 	imguiObj.RawSetString("toast", state.NewFunction(func(L *lua.LState) int {
 		message := L.CheckString(1)
-		utils.Toast(message)
+		x := 0
+		y := 0
+		duration := -1
+		if L.GetTop() > 1 {
+			x = L.CheckInt(2)
+		}
+		if L.GetTop() > 2 {
+			y = L.CheckInt(3)
+		}
+		if L.GetTop() > 3 {
+			duration = L.CheckInt(4)
+		}
+		utils.Toast(message, x, y, duration)
 		return 0
 	}))
 
@@ -728,8 +740,8 @@ func (m *ImGuiModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("imgui.alert", "显示对话框", func(title, content, btn1Text, btn2Text string) int {
 		return utils.Alert(title, content, btn1Text, btn2Text)
 	}, true)
-	engine.RegisterMethod("imgui.toast", "显示Toast提示", func(message string) {
-		utils.Toast(message)
+	engine.RegisterMethod("imgui.toast", "显示Toast提示", func(message string, x, y, duration int) {
+		utils.Toast(message, x, y, duration)
 	}, true)
 	engine.RegisterMethod("imgui.drawRect", "绘制矩形", func(x1, y1, x2, y2 int, colorStr string, thickness float32) {
 		color := parseColorString(colorStr)

@@ -271,7 +271,7 @@ func (m *UIModule) Register(engine model.Engine) error {
 		}
 
 		// 调用 AutoGo 的 utils.Toast
-		utils.Toast(message)
+		utils.Toast(message, 0, 0, -1)
 
 		return 0
 	}))

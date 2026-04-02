@@ -9,10 +9,23 @@ rhino 模块提供了 Rhino JavaScript 引擎的集成功能，用于执行 Java
 ### rhino.eval
 执行指定的JavaScript脚本并返回结果
 
+**参数：**
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| script | string | 要执行的 JavaScript 脚本 |
+
+**返回值：**
+
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| result | any | 执行结果 |
+
 **使用示例：**
 ```javascript
-// 调用 rhino.eval 方法
-rhino.eval();
+// 执行 JavaScript 脚本
+var result = rhino.eval("var x = 1 + 2;");
+console.log("结果: " + result);
 ```
 
 ---

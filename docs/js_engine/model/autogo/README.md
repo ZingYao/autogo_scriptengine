@@ -41,6 +41,7 @@ autogo/
 ├── uiacc/       # 无障碍 UI 操作
 ├── utils/       # 工具方法
 ├── vdisplay/    # 虚拟显示
+├── websocket/   # WebSocket 通信
 └── yolo/        # YOLO 目标检测
 ```
 
@@ -98,50 +99,7 @@ os.sleep(2000);
 app.stop("com.example.app");
 ```
 
-## 5. 模块说明
-
-### 5.1 app 模块
-
-提供应用相关的操作，如启动、停止、切换应用等。
-
-### 5.2 console 模块
-
-提供控制台输出功能，如日志输出、错误提示等。
-
-### 5.3 device 模块
-
-提供设备操作功能，如点击、滑动、输入等。
-
-### 5.4 files 模块
-
-提供文件操作功能，如读写文件、创建目录等。
-
-### 5.5 http 模块
-
-提供网络请求功能，如 GET、POST 请求等。
-
-### 5.6 其他模块
-
-- **coroutine**：协程支持
-- **dotocr**：点字 OCR 识别
-- **hud**：HUD 悬浮显示
-- **images**：图像处理
-- **ime**：输入法控制
-- **imgui**：ImGui GUI 库
-- **media**：媒体控制
-- **motion**：触摸操作
-- **opencv**：计算机视觉
-- **plugin**：插件加载
-- **ppocr**：OCR 文字识别
-- **rhino**：JavaScript 执行引擎
-- **storages**：数据存储
-- **system**：系统功能
-- **uiacc**：无障碍 UI 操作
-- **utils**：工具方法
-- **vdisplay**：虚拟显示
-- **yolo**：YOLO 目标检测
-
-## 6. 注意事项
+## 5. 注意事项
 
 1. **所有 autogo 模块都已通过 Go 代码注入到 JavaScript 全局环境中，无需使用 require**
 2. 所有函数的参数和返回值与 AutoGo 原生 API 保持一致

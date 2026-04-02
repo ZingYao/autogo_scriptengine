@@ -19,23 +19,25 @@ websocket 模块支持两种调用方式：
 ## 方法列表
 
 ### websocket.connect
-
 连接 WebSocket 服务器（面向对象方式）
 
 **参数：**
 
-- `url` (string): WebSocket 服务器地址
-- `onOpened` (function): 连接成功回调，参数为 WebSocket 对象
-- `onClosed` (function): 连接关闭回调，参数为 WebSocket 对象
-- `onError` (function): 错误回调，参数为 WebSocket 对象和错误信息
-- `onRecv` (function): 接收消息回调，参数为 WebSocket 对象和消息内容
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| url | string | WebSocket 服务器地址 |
+| onOpened | function | 连接成功回调，参数为 WebSocket 对象 |
+| onClosed | function | 连接关闭回调，参数为 WebSocket 对象 |
+| onError | function | 错误回调，参数为 WebSocket 对象和错误信息 |
+| onRecv | function | 接收消息回调，参数为 WebSocket 对象和消息内容 |
 
 **返回值：**
 
-- WebSocket 对象: 包含 send、close 方法和 handle 属性
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| ws | object | WebSocket 对象，包含 send、close 方法和 handle 属性 |
 
 **使用示例：**
-
 ```javascript
 var ws = websocket.connect(
     "ws://echo.websocket.org",
@@ -57,20 +59,22 @@ ws.close();
 此方法已废弃，请使用 `connect` 方法。`connect` 方法现在直接返回 WebSocket 对象，支持面向对象调用方式。
 
 ### websocket.send
-
 发送消息（传统方式）
 
 **参数：**
 
-- `handle` (number): WebSocket 连接句柄
-- `text` (string): 要发送的消息内容
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| handle | number | WebSocket 连接句柄 |
+| text | string | 要发送的消息内容 |
 
 **返回值：**
 
-- boolean: 发送成功返回 true，失败返回 false
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| success | boolean | 发送成功返回 true，失败返回 false |
 
 **使用示例：**
-
 ```javascript
 var success = websocket.send(handle, "Hello WebSocket!");
 if (success) {
@@ -81,15 +85,19 @@ if (success) {
 ```
 
 ### websocket.close
-
 关闭连接（传统方式）
 
 **参数：**
 
-- `handle` (number): WebSocket 连接句柄
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| handle | number | WebSocket 连接句柄 |
+
+**返回值：**
+
+无返回值
 
 **使用示例：**
-
 ```javascript
 websocket.close(handle);
 ```
@@ -99,29 +107,37 @@ websocket.close(handle);
 使用 `connect` 返回的 WebSocket 对象包含以下方法：
 
 ### send
-
 发送消息
 
 **参数：**
 
-- `text` (string): 要发送的消息内容
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| text | string | 要发送的消息内容 |
 
 **返回值：**
 
-- boolean: 发送成功返回 true，失败返回 false
+| 返回值 | 类型 | 说明 |
+|--------|------|------|
+| success | boolean | 发送成功返回 true，失败返回 false |
 
 **使用示例：**
-
 ```javascript
 ws.send("Hello WebSocket!");
 ```
 
 ### close
-
 关闭连接
 
-**使用示例：**
+**参数：**
 
+无参数
+
+**返回值：**
+
+无返回值
+
+**使用示例：**
 ```javascript
 ws.close();
 ```

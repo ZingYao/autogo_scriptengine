@@ -50,7 +50,19 @@ func (m *UtilsModule) Register(engine model.Engine) error {
 
 	utilsObj.Set("toast", func(call goja.FunctionCall) goja.Value {
 		message := call.Argument(0).String()
-		utils.Toast(message)
+		x := 0
+		y := 0
+		duration := -1
+		if len(call.Arguments) > 1 {
+			x = int(call.Argument(1).ToInteger())
+		}
+		if len(call.Arguments) > 2 {
+			y = int(call.Argument(2).ToInteger())
+		}
+		if len(call.Arguments) > 3 {
+			duration = int(call.Argument(3).ToInteger())
+		}
+		utils.Toast(message, x, y, duration)
 		return goja.Undefined()
 	})
 
@@ -210,7 +222,7 @@ func (m *UtilsModule) Register(engine model.Engine) error {
 
 	engine.RegisterMethod("utils.logI", "记录一条INFO级别的日志", utils.LogI, true)
 	engine.RegisterMethod("utils.logE", "记录一条ERROR级别的日志", utils.LogE, true)
-	engine.RegisterMethod("utils.toast", "显示Toast提示", utils.Toast, true)
+	engine.RegisterMethod("utils.toast", "显示Toast提示", func(message string, x, y, duration int) { utils.Toast(message, x, y, duration) }, true)
 	engine.RegisterMethod("utils.alert", "显示Alert对话框", func(title, content, btn1Text, btn2Text string) int {
 		return utils.Alert(title, content, btn1Text, btn2Text)
 	}, true)
