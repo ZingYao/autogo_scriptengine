@@ -1,6 +1,7 @@
 package js_engine
 
 import (
+	"context"
 	"fmt"
 	"io/fs"
 	"os"
@@ -10,10 +11,33 @@ import (
 	"time"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
-	"github.com/ZingYao/autogo_scriptengine/js_engine/model/require"
 
 	"github.com/dop251/goja"
+	noderequire "github.com/dop251/goja_nodejs/require"
 )
+
+// EngineState 引擎状态
+type EngineState int
+
+const (
+	StateStopped EngineState = iota // 已停止
+	StateRunning                    // 运行中
+	StatePaused                     // 已暂停
+)
+
+// String 返回状态的字符串表示
+func (s EngineState) String() string {
+	switch s {
+	case StateStopped:
+		return "stopped"
+	case StateRunning:
+		return "running"
+	case StatePaused:
+		return "paused"
+	default:
+		return "unknown"
+	}
+}
 
 var (
 	engine *JSEngine
@@ -63,8 +87,96 @@ func (e *JSEngine) init() {
 	defer e.mu.Unlock()
 
 	e.vm = goja.New()
+	e.state = StateStopped
+	e.ctx, e.cancel = context.WithCancel(context.Background())
+	e.pauseChan = make(chan struct{})
 
 	e.registerCoreFunctions()
+	e.registerNodeJS()
+}
+
+// registerNodeJS 注册 Node.js 能力
+func (e *JSEngine) registerNodeJS() {
+	// 注册 Node.js require 功能
+	registry := new(noderequire.Registry)
+	registry.Enable(e.vm)
+
+	// 注册 console 模块
+	consoleObj := e.vm.NewObject()
+	consoleObj.Set("log", e.consoleLogJS)
+	consoleObj.Set("error", e.consoleErrorJS)
+	consoleObj.Set("warn", e.consoleErrorJS)
+	consoleObj.Set("info", e.consoleLogJS)
+	e.vm.Set("console", consoleObj)
+
+	// 注册 process 模块
+	processObj := e.vm.NewObject()
+	e.vm.Set("process", processObj)
+
+	// 注册 __dirname 和 __filename
+	e.vm.Set("__dirname", ".")
+	e.vm.Set("__filename", "script.js")
+}
+
+// Start 启动引擎
+func (e *JSEngine) Start() {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if e.state == StateStopped {
+		e.ctx, e.cancel = context.WithCancel(context.Background())
+		e.pauseChan = make(chan struct{})
+		e.state = StateRunning
+	}
+}
+
+// Pause 暂停引擎执行
+func (e *JSEngine) Pause() {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if e.state == StateRunning && e.vm != nil {
+		e.vm.Interrupt("paused by user")
+		e.state = StatePaused
+	}
+}
+
+// Resume 恢复引擎执行
+func (e *JSEngine) Resume() {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if e.state == StatePaused && e.vm != nil {
+		e.vm.ClearInterrupt()
+		e.state = StateRunning
+		close(e.pauseChan)
+		e.pauseChan = make(chan struct{})
+	}
+}
+
+// Stop 停止引擎执行
+func (e *JSEngine) Stop() {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if e.state != StateStopped {
+		if e.cancel != nil {
+			e.cancel()
+		}
+		if e.vm != nil {
+			e.vm.Interrupt("stopped by user")
+		}
+		e.state = StateStopped
+		close(e.pauseChan)
+	}
+}
+
+// GetState 获取引擎状态
+func (e *JSEngine) GetState() EngineState {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+
+	return e.state
 }
 
 func (e *JSEngine) GetVM() *goja.Runtime {
@@ -81,17 +193,22 @@ func (e *JSEngine) registerCoreFunctions() {
 	vm.Set("restoreMethod", e.restoreMethodJS)
 	vm.Set("sleep", e.sleepJS)
 	vm.Set("load", e.loadJS)
+}
 
-	// 注册 require 功能
-	if e.config.FileSystem != nil {
-		requireModule := require.NewRequireModule(vm, e.config.FileSystem)
-		requireModule.Register()
-	}
+// AddRequirePath 添加自定义 require 路径
+func (e *JSEngine) AddRequirePath(path string) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
 
-	consoleObj := vm.NewObject()
-	consoleObj.Set("log", e.consoleLogJS)
-	consoleObj.Set("error", e.consoleErrorJS)
-	vm.Set("console", consoleObj)
+	e.config.RequirePaths = append(e.config.RequirePaths, path)
+}
+
+// SetRequirePaths 设置自定义 require 路径
+func (e *JSEngine) SetRequirePaths(paths []string) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	e.config.RequirePaths = paths
 }
 
 func (e *JSEngine) consoleLogJS(call goja.FunctionCall) goja.Value {
@@ -223,6 +340,7 @@ func (e *JSEngine) RegisterMethod(name, description string, goFunc interface{}, 
 // ExecuteString 执行 JavaScript 代码字符串
 // script: 要执行的 JavaScript 代码
 // dir: 可选参数，指定 __dirname（用于 require），如果为空则使用默认值 "scripts"
+// mode: 可选参数，执行模式，默认为配置中的 ExecuteMode
 // 支持脚本退出后的动作：
 //   - process.exit(0): 正常退出，执行配置的退出动作（重启/自定义/无动作）
 //   - process.exit(-1): 强制退出，不执行任何退出动作
@@ -230,25 +348,53 @@ func (e *JSEngine) RegisterMethod(name, description string, goFunc interface{}, 
 //
 // 脚本异常退出时始终打印日志
 func (e *JSEngine) ExecuteString(script string, dir ...string) error {
+	return e.ExecuteStringWithMode(script, e.config.ExecuteMode, dir...)
+}
+
+// ExecuteStringWithMode 带执行模式的执行 JavaScript 代码字符串
+// script: 要执行的 JavaScript 代码
+// mode: 执行模式
+// dir: 可选参数，指定 __dirname（用于 require），如果为空则使用默认值 "scripts"
+func (e *JSEngine) ExecuteStringWithMode(script string, mode ExecuteMode, dir ...string) error {
+	e.Start()
 	e.currentScript = script
+
+	// 设置 __dirname
 	if len(dir) > 0 && dir[0] != "" {
 		e.currentDir = dir[0]
 	} else {
 		e.currentDir = "scripts"
 	}
+
 	e.skipExitAction = false
 
+	// 异步执行
+	if mode == ExecuteModeAsync {
+		go func() {
+			e.executeStringLoop(script, dir...)
+		}()
+		return nil
+	}
+
+	// 同步执行
+	return e.executeStringLoop(script, dir...)
+}
+
+// executeStringLoop 执行脚本循环
+func (e *JSEngine) executeStringLoop(script string, dir ...string) error {
 	for {
 		err := e.executeStringOnce(script, dir...)
 
 		// 如果脚本异常退出，打印错误日志
 		if err != nil {
 			fmt.Printf("脚本异常退出: %v\n", err)
+			e.Stop()
 			return err
 		}
 
 		// 如果跳过退出动作（process.exit(-1)），直接返回
 		if e.skipExitAction {
+			e.Stop()
 			return nil
 		}
 
@@ -256,6 +402,7 @@ func (e *JSEngine) ExecuteString(script string, dir ...string) error {
 		switch e.config.OnExit {
 		case ExitActionNone:
 			// 无动作，直接退出
+			e.Stop()
 			return nil
 		case ExitActionRestart:
 			// 重启脚本
@@ -267,6 +414,7 @@ func (e *JSEngine) ExecuteString(script string, dir ...string) error {
 			if e.config.CustomExitAction != nil {
 				e.config.CustomExitAction()
 			}
+			e.Stop()
 			return nil
 		}
 	}
@@ -303,10 +451,34 @@ func (e *JSEngine) executeStringOnce(script string, dir ...string) error {
 	return err
 }
 
+// ExecuteFile 执行 JavaScript 文件
 func (e *JSEngine) ExecuteFile(path string) error {
-	// 使用 load 函数来加载文件
-	_, err := e.vm.RunString("load('" + path + "')")
-	return err
+	return e.ExecuteFileWithMode(path, e.config.ExecuteMode)
+}
+
+// ExecuteFileWithMode 带执行模式的执行 JavaScript 文件
+// path: 要执行的 JavaScript 文件路径
+// mode: 执行模式
+func (e *JSEngine) ExecuteFileWithMode(path string, mode ExecuteMode) error {
+	// 读取文件内容
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	// 提取文件所在目录作为 __dirname
+	dir := filepath.Dir(path)
+
+	// 异步执行
+	if mode == ExecuteModeAsync {
+		go func() {
+			e.ExecuteStringWithMode(string(content), ExecuteModeSync, dir)
+		}()
+		return nil
+	}
+
+	// 同步执行
+	return e.ExecuteStringWithMode(string(content), ExecuteModeSync, dir)
 }
 
 // registerExitControl 注册特殊的 process.exit 函数，用于控制退出动作

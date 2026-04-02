@@ -169,7 +169,7 @@ func main() {
 
 ### 6.1 基本 require
 
-在 JavaScript 中，可以使用 `require` 函数来加载其他 JavaScript 文件（仅限用户自定义的 JS 文件）。例如：
+JavaScript 引擎使用 **goja_nodejs** 提供的 `require` 功能，可以加载其他 JavaScript 文件（仅限用户自定义的 JS 文件）。使用方式与标准 Node.js 相同：
 
 ```javascript
 // 加载同目录下的 utils.js 文件
@@ -222,7 +222,7 @@ var handle = websocket.connect(
 
 ### 6.4 模块导出
 
-在 JavaScript 中，使用 `module.exports` 来导出模块：
+在 JavaScript 中，使用 `module.exports` 来导出模块，与标准 Node.js 相同：
 
 ```javascript
 // utils.js
@@ -240,7 +240,77 @@ module.exports = {
 };
 ```
 
-## 7. 注意事项
+### 6.5 Node.js 兼容性
+
+JavaScript 引擎使用 goja_nodejs 提供的 Node.js 兼容层，支持以下 Node.js 特性：
+
+- `require()` 函数 - 与 Node.js 相同的模块加载机制
+- `module.exports` 模块导出 - 标准的 Node.js 模块导出方式
+- `__dirname` 和 `__filename` 变量 - 提供模块的目录和文件名信息
+- `console` 模块 - 标准的控制台输出功能
+- `process` 模块 - 提供进程相关信息
+
+这使得你可以使用与 Node.js 完全相同的方式编写 JavaScript 脚本，提高了代码的可移植性和兼容性。
+
+## 7. 执行模式
+
+JavaScript 引擎支持两种执行模式：
+
+### 7.1 同步执行
+同步执行是默认模式，会阻塞等待脚本执行完成：
+
+```go
+// 同步执行文件
+err := engine.ExecuteFile("script.js")
+if err != nil {
+    log.Fatalf("执行失败: %v", err)
+}
+
+// 同步执行字符串
+err = engine.ExecuteString("console.log('Hello');", "scripts")
+if err != nil {
+    log.Fatalf("执行失败: %v", err)
+}
+```
+
+### 7.2 异步执行
+异步执行会在后台运行脚本，不会阻塞当前线程：
+
+```go
+// 异步执行文件
+err := engine.ExecuteFileWithMode("script.js", js_engine.ExecuteModeAsync)
+if err != nil {
+    log.Fatalf("执行失败: %v", err)
+}
+
+// 异步执行字符串
+err = engine.ExecuteStringWithMode("console.log('Hello');", js_engine.ExecuteModeAsync, "scripts")
+if err != nil {
+    log.Fatalf("执行失败: %v", err)
+}
+```
+
+## 8. Require 路径配置
+
+### 8.1 自动路径管理
+- 脚本执行时，当前脚本所在目录会自动添加到模块搜索路径中
+- 这意味着你可以直接 require 同目录下的文件，无需指定完整路径
+
+### 8.2 自定义路径
+你可以通过 API 添加自定义的 require 搜索路径：
+
+```go
+// 添加单个路径
+erengine.AddRequirePath("/path/to/modules")
+
+// 设置多个路径
+erengine.SetRequirePaths([]string{
+    "/path/to/modules",
+    "/another/path"
+})
+```
+
+## 9. 注意事项
 
 1. JavaScript 脚本文件的扩展名必须是 `.js`
 2. require 时可以添加 `.js` 扩展名，也可以省略

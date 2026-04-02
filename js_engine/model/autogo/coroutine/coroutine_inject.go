@@ -29,11 +29,11 @@ func (m *CoroutineModule) IsAvailable() bool {
 type CoroutineState int
 
 const (
-	StatePending CoroutineState = iota // 等待中
-	StateRunning                       // 运行中
-	StateCompleted                     // 已完成
-	StateCancelled                     // 已取消
-	StateError                         // 错误
+	StatePending   CoroutineState = iota // 等待中
+	StateRunning                         // 运行中
+	StateCompleted                       // 已完成
+	StateCancelled                       // 已取消
+	StateError                           // 错误
 )
 
 // String 返回状态的字符串表示
@@ -56,17 +56,17 @@ func (s CoroutineState) String() string {
 
 // Coroutine 协程结构体
 type Coroutine struct {
-	ID         string
-	Name       string
-	Ctx        context.Context
-	Cancel     context.CancelFunc
-	VM         *goja.Runtime
-	StartedAt  time.Time
+	ID          string
+	Name        string
+	Ctx         context.Context
+	Cancel      context.CancelFunc
+	VM          *goja.Runtime
+	StartedAt   time.Time
 	CompletedAt time.Time
-	State      CoroutineState
-	Priority   int
-	Error      error
-	Result     interface{}
+	State       CoroutineState
+	Priority    int
+	Error       error
+	Result      interface{}
 }
 
 // CoroutinePool 协程池
@@ -110,15 +110,15 @@ type Scheduler struct {
 
 // CoroutineManager 协程管理器
 type CoroutineManager struct {
-	mu          sync.RWMutex
-	coroutines  map[string]*Coroutine
-	pools       map[string]*CoroutinePool
-	scheduler   *Scheduler
-	counter     int64
-	totalTasks  int64
-	completed   int64
-	failed      int64
-	cancelled   int64
+	mu         sync.RWMutex
+	coroutines map[string]*Coroutine
+	pools      map[string]*CoroutinePool
+	scheduler  *Scheduler
+	counter    int64
+	totalTasks int64
+	completed  int64
+	failed     int64
+	cancelled  int64
 }
 
 var manager = &CoroutineManager{
@@ -247,13 +247,13 @@ func (p *CoroutinePool) GetStats() map[string]interface{} {
 	defer p.mu.RUnlock()
 
 	return map[string]interface{}{
-		"name":        p.name,
-		"maxWorkers":  p.maxWorkers,
-		"maxTasks":    p.maxTasks,
-		"active":      atomic.LoadInt32(&p.active),
-		"queued":      len(p.taskQueue),
-		"workers":     len(p.workers),
-		"closed":      p.closed,
+		"name":       p.name,
+		"maxWorkers": p.maxWorkers,
+		"maxTasks":   p.maxTasks,
+		"active":     atomic.LoadInt32(&p.active),
+		"queued":     len(p.taskQueue),
+		"workers":    len(p.workers),
+		"closed":     p.closed,
 	}
 }
 
@@ -476,12 +476,12 @@ func (m *CoroutineModule) Register(engine model.Engine) error {
 		}
 
 		value := call.Argument(0)
-		
+
 		// 如果是 undefined 或 null，直接返回
 		if goja.IsUndefined(value) || goja.IsNull(value) {
 			return goja.Undefined()
 		}
-		
+
 		// 简化版本：直接返回传入的值
 		// 不尝试调用 then 方法，避免空指针错误
 		return value

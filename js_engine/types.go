@@ -1,6 +1,7 @@
 package js_engine
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/fs"
@@ -19,14 +20,24 @@ const (
 	ExitActionCustom                    // 自定义动作
 )
 
+// ExecuteMode 执行模式
+type ExecuteMode int
+
+const (
+	ExecuteModeSync  ExecuteMode = iota // 同步执行
+	ExecuteModeAsync                    // 异步执行
+)
+
 // EngineConfig 引擎配置选项
 type EngineConfig struct {
-	WhiteList        []string   // 白名单：只加载这些模块，空列表 = 加载所有
-	BlackList        []string   // 黑名单：跳过这些模块，空列表 = 不跳过任何
-	FailFast         bool       // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
-	FileSystem       fs.FS      // 文件系统，用于 require 功能
-	OnExit           ExitAction // 脚本退出后的动作，默认为 ExitActionNone
-	CustomExitAction func()     // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
+	WhiteList        []string    // 白名单：只加载这些模块，空列表 = 加载所有
+	BlackList        []string    // 黑名单：跳过这些模块，空列表 = 不跳过任何
+	FailFast         bool        // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
+	FileSystem       fs.FS       // 文件系统，用于 require 功能
+	OnExit           ExitAction  // 脚本退出后的动作，默认为 ExitActionNone
+	CustomExitAction func()      // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
+	ExecuteMode      ExecuteMode // 执行模式，默认为同步执行
+	RequirePaths     []string    // 自定义 require 路径
 }
 
 // JSEngine JavaScript 引擎
@@ -38,14 +49,20 @@ type JSEngine struct {
 	currentDir     string                // 当前脚本的目录
 	skipExitAction bool                  // 是否跳过退出动作（当 process.exit(-1) 时）
 	moduleRegistry *model.ModuleRegistry // 模块注册表，每个引擎实例独立
+	state          EngineState           // 引擎状态
+	ctx            context.Context       // 上下文，用于控制执行
+	cancel         context.CancelFunc    // 取消函数，用于停止执行
+	pauseChan      chan struct{}         // 暂停通道，用于恢复执行
 }
 
 // DefaultConfig 返回默认配置
 func DefaultConfig() EngineConfig {
 	return EngineConfig{
-		WhiteList: []string{}, // 默认为空，加载所有模块
-		BlackList: []string{}, // 默认为空，不跳过任何模块
-		FailFast:  false,      // 默认为 false，模块加载失败时跳过继续
+		WhiteList:    []string{},      // 默认为空，加载所有模块
+		BlackList:    []string{},      // 默认为空，不跳过任何模块
+		FailFast:     false,           // 默认为 false，模块加载失败时跳过继续
+		ExecuteMode:  ExecuteModeSync, // 默认为同步执行
+		RequirePaths: []string{},      // 默认为空，不添加自定义 require 路径
 	}
 }
 

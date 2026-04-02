@@ -1,6 +1,7 @@
 package lua_engine
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/fs"
@@ -11,6 +12,29 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
+// EngineState 引擎状态
+type EngineState int
+
+const (
+	StateStopped  EngineState = iota // 已停止
+	StateRunning                     // 运行中
+	StatePaused                      // 已暂停
+)
+
+// String 返回状态的字符串表示
+func (s EngineState) String() string {
+	switch s {
+	case StateStopped:
+		return "stopped"
+	case StateRunning:
+		return "running"
+	case StatePaused:
+		return "paused"
+	default:
+		return "unknown"
+	}
+}
+
 // ExitAction 脚本退出后的动作类型
 type ExitAction int
 
@@ -18,6 +42,14 @@ const (
 	ExitActionNone    ExitAction = iota // 无动作，直接退出
 	ExitActionRestart                   // 重启脚本
 	ExitActionCustom                    // 自定义动作
+)
+
+// ExecuteMode 执行模式
+type ExecuteMode int
+
+const (
+	ExecuteModeSync  ExecuteMode = iota // 同步执行
+	ExecuteModeAsync                    // 异步执行
 )
 
 // EngineConfig 引擎配置选项
@@ -29,6 +61,8 @@ type EngineConfig struct {
 	FileSystem       fs.FS      // 虚拟文件系统（embed.FS），用于从嵌入文件中加载模块
 	OnExit           ExitAction // 脚本退出后的动作，默认为 ExitActionNone
 	CustomExitAction func()     // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
+	ExecuteMode      ExecuteMode // 执行模式，默认为同步执行
+	RequirePaths     []string   // 自定义 require 路径
 }
 
 // LuaEngine Lua 引擎
@@ -41,14 +75,20 @@ type LuaEngine struct {
 	currentSearchPaths []string              // 当前脚本的搜索路径
 	skipExitAction     bool                  // 是否跳过退出动作（当 os.exit(-1) 时）
 	moduleRegistry     *model.ModuleRegistry // 模块注册表，每个引擎实例独立
+	engineState        EngineState           // 引擎状态
+	ctx                context.Context       // 上下文，用于控制执行
+	cancel             context.CancelFunc    // 取消函数，用于停止执行
+	pauseChan          chan struct{}         // 暂停通道，用于恢复执行
 }
 
 // DefaultConfig 返回默认配置
 func DefaultConfig() EngineConfig {
 	return EngineConfig{
-		WhiteList: []string{}, // 默认为空，加载所有模块
-		BlackList: []string{}, // 默认为空，不跳过任何模块
-		FailFast:  false,      // 默认为 false，模块加载失败时跳过继续
+		WhiteList:    []string{}, // 默认为空，加载所有模块
+		BlackList:    []string{}, // 默认为空，不跳过任何模块
+		FailFast:     false,      // 默认为 false，模块加载失败时跳过继续
+		ExecuteMode:  ExecuteModeSync, // 默认为同步执行
+		RequirePaths: []string{}, // 默认为空，不添加自定义 require 路径
 	}
 }
 

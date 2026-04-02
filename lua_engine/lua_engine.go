@@ -1,7 +1,9 @@
 package lua_engine
 
 import (
+	"context"
 	"fmt"
+	"os"
 	"sync"
 	"time"
 
@@ -67,10 +69,92 @@ func (e *LuaEngine) init() {
 	// 设置模块搜索路径
 	e.setupPackagePath()
 
+	// 初始化状态管理字段
+	e.engineState = StateStopped
+	e.ctx, e.cancel = context.WithCancel(context.Background())
+	e.pauseChan = make(chan struct{})
+
 	e.registerCoreFunctions()
 
 	// 注册自定义 require 函数，支持从 embed.FS 加载模块
 	e.registerCustomRequire()
+}
+
+// Start 启动引擎
+func (e *LuaEngine) Start() {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if e.engineState == StateStopped {
+		e.ctx, e.cancel = context.WithCancel(context.Background())
+		e.pauseChan = make(chan struct{})
+		e.engineState = StateRunning
+	}
+}
+
+// Pause 暂停引擎执行
+func (e *LuaEngine) Pause() {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if e.engineState == StateRunning {
+		e.engineState = StatePaused
+	}
+}
+
+// Resume 恢复引擎执行
+func (e *LuaEngine) Resume() {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if e.engineState == StatePaused {
+		e.engineState = StateRunning
+		close(e.pauseChan)
+		e.pauseChan = make(chan struct{})
+	}
+}
+
+// Stop 停止引擎执行
+func (e *LuaEngine) Stop() {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if e.engineState != StateStopped {
+		if e.cancel != nil {
+			e.cancel()
+		}
+		e.engineState = StateStopped
+		close(e.pauseChan)
+	}
+}
+
+// GetEngineState 获取引擎状态
+func (e *LuaEngine) GetEngineState() EngineState {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+
+	return e.engineState
+}
+
+// GetState 获取 Lua 状态机，满足模型接口要求
+func (e *LuaEngine) GetState() *lua.LState {
+	return e.state
+}
+
+// AddRequirePath 添加自定义 require 路径
+func (e *LuaEngine) AddRequirePath(path string) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	
+	e.config.RequirePaths = append(e.config.RequirePaths, path)
+}
+
+// SetRequirePaths 设置自定义 require 路径
+func (e *LuaEngine) SetRequirePaths(paths []string) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	
+	e.config.RequirePaths = paths
 }
 
 // setupPackagePath 设置 Lua 的模块搜索路径
@@ -91,11 +175,19 @@ func (e *LuaEngine) setupPackagePath() {
 		currentPath += searchPath + "/?.lua;" + searchPath + "/?/init.lua"
 	}
 
+	// 添加自定义的 require 路径
+	for _, requirePath := range e.config.RequirePaths {
+		if currentPath != "" {
+			currentPath += ";"
+		}
+		currentPath += requirePath + "/?.lua;" + requirePath + "/?/init.lua"
+	}
+
 	// 设置新的 package.path
 	packageTable.RawSetString("path", lua.LString(currentPath))
 }
 
-func (e *LuaEngine) GetState() *lua.LState {
+func (e *LuaEngine) GetLuaState() *lua.LState {
 	return e.state
 }
 
@@ -289,21 +381,46 @@ func (e *LuaEngine) RegisterMethod(name, description string, goFunc interface{},
 //
 // 脚本异常退出时始终打印日志
 func (e *LuaEngine) ExecuteString(script string, searchPaths ...string) error {
+	return e.ExecuteStringWithMode(script, e.config.ExecuteMode, searchPaths...)
+}
+
+// ExecuteStringWithMode 带执行模式的执行 Lua 代码字符串
+// script: 要执行的 Lua 代码
+// mode: 执行模式
+// searchPaths: 可选参数，添加模块搜索路径（用于 require）
+func (e *LuaEngine) ExecuteStringWithMode(script string, mode ExecuteMode, searchPaths ...string) error {
+	e.Start()
 	e.currentScript = script
 	e.currentSearchPaths = searchPaths
 	e.skipExitAction = false
 
+	// 异步执行
+	if mode == ExecuteModeAsync {
+		go func() {
+			e.executeStringLoop(script, searchPaths...)
+		}()
+		return nil
+	}
+
+	// 同步执行
+	return e.executeStringLoop(script, searchPaths...)
+}
+
+// executeStringLoop 执行脚本循环
+func (e *LuaEngine) executeStringLoop(script string, searchPaths ...string) error {
 	for {
 		err := e.executeStringOnce(script, searchPaths...)
 
 		// 如果脚本异常退出，打印错误日志
 		if err != nil {
 			fmt.Printf("脚本异常退出: %v\n", err)
+			e.Stop()
 			return err
 		}
 
 		// 如果跳过退出动作（os.exit(-1)），直接返回
 		if e.skipExitAction {
+			e.Stop()
 			return nil
 		}
 
@@ -311,6 +428,7 @@ func (e *LuaEngine) ExecuteString(script string, searchPaths ...string) error {
 		switch e.config.OnExit {
 		case ExitActionNone:
 			// 无动作，直接退出
+			e.Stop()
 			return nil
 		case ExitActionRestart:
 			// 重启脚本
@@ -322,6 +440,7 @@ func (e *LuaEngine) ExecuteString(script string, searchPaths ...string) error {
 			if e.config.CustomExitAction != nil {
 				e.config.CustomExitAction()
 			}
+			e.Stop()
 			return nil
 		}
 	}
@@ -375,42 +494,81 @@ func (e *LuaEngine) addSearchPaths(paths ...string) {
 //
 // 脚本异常退出时始终打印日志
 func (e *LuaEngine) ExecuteFile(path string) error {
-	e.currentScript = path
-	e.currentSearchPaths = []string{}
-	e.skipExitAction = false
+	return e.ExecuteFileWithMode(path, e.config.ExecuteMode)
+}
 
-	for {
-		err := e.executeFileOnce(path)
+// ExecuteFileWithMode 带执行模式的执行 Lua 文件
+// path: 要执行的 Lua 文件路径
+// mode: 执行模式
+func (e *LuaEngine) ExecuteFileWithMode(path string, mode ExecuteMode) error {
+	// 读取文件内容
+	var content string
 
-		// 如果脚本异常退出，打印错误日志
+	if e.config.FileSystem != nil {
+		// 从文件系统读取
+		file, err := e.config.FileSystem.Open(path)
 		if err != nil {
-			fmt.Printf("脚本异常退出: %v\n", err)
-			return err
+			return fmt.Errorf("failed to read file '%s': %v", path, err)
 		}
+		defer file.Close()
 
-		// 如果跳过退出动作（os.exit(-1)），直接返回
-		if e.skipExitAction {
-			return nil
-		}
-
-		// 根据配置的退出动作执行相应操作
-		switch e.config.OnExit {
-		case ExitActionNone:
-			// 无动作，直接退出
-			return nil
-		case ExitActionRestart:
-			// 重启脚本
-			fmt.Println("脚本正常退出，正在重新启动...")
-			time.Sleep(1 * time.Second)
-			// 继续循环，重新执行脚本
-		case ExitActionCustom:
-			// 执行自定义退出动作
-			if e.config.CustomExitAction != nil {
-				e.config.CustomExitAction()
+		data := make([]byte, 0)
+		buf := make([]byte, 1024)
+		for {
+			n, err := file.Read(buf)
+			if err != nil {
+				break
 			}
-			return nil
+			data = append(data, buf[:n]...)
+		}
+		content = string(data)
+	} else {
+		// 从本地文件系统读取
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return fmt.Errorf("failed to read file '%s': %v", path, err)
+		}
+		content = string(data)
+	}
+
+	// 提取文件所在目录作为搜索路径
+	dir := ""
+	lastSlash := -1
+	for i := len(path) - 1; i >= 0; i-- {
+		if path[i] == '/' || path[i] == '\\' {
+			lastSlash = i
+			break
 		}
 	}
+
+	if lastSlash >= 0 {
+		dir = path[:lastSlash]
+	} else {
+		// 如果路径中没有目录分隔符，说明是相对路径
+		if e.config.FileSystem != nil {
+			dir = "."
+		} else {
+			dir = ""
+		}
+	}
+
+	// 构建搜索路径，包括文件所在目录和自定义 require 路径
+	searchPaths := []string{}
+	if dir != "" {
+		searchPaths = append(searchPaths, dir)
+	}
+	searchPaths = append(searchPaths, e.config.RequirePaths...)
+
+	// 异步执行
+	if mode == ExecuteModeAsync {
+		go func() {
+			e.ExecuteStringWithMode(content, ExecuteModeSync, searchPaths...)
+		}()
+		return nil
+	}
+
+	// 同步执行
+	return e.ExecuteStringWithMode(content, ExecuteModeSync, searchPaths...)
 }
 
 // executeFileOnce 执行一次 Lua 文件

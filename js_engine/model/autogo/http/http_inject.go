@@ -43,7 +43,7 @@ func (m *HttpModule) Register(engine model.Engine) error {
 
 	httpObj.Set("post", func(call goja.FunctionCall) goja.Value {
 		url := call.Argument(0).String()
-		
+
 		// 处理第二个参数，支持字符串或字节数组
 		var data []byte
 		arg1 := call.Argument(1)
@@ -52,7 +52,7 @@ func (m *HttpModule) Register(engine model.Engine) error {
 		} else if bytes, ok := arg1.Export().([]byte); ok {
 			data = bytes
 		}
-		
+
 		headers := make(map[string]string)
 		if len(call.Arguments) > 2 {
 			headersVal := call.Argument(2).Export()
@@ -64,12 +64,12 @@ func (m *HttpModule) Register(engine model.Engine) error {
 				}
 			}
 		}
-		
+
 		timeout := 5000
 		if len(call.Arguments) > 3 {
 			timeout = int(call.Argument(3).ToInteger())
 		}
-		
+
 		code, body := https.Post(url, data, headers, timeout)
 		result := vm.NewObject()
 		result.Set("code", code)

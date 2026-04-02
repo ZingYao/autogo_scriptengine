@@ -228,7 +228,65 @@ end
 return utils
 ```
 
-## 7. 注意事项
+## 7. 执行模式
+
+Lua 引擎支持两种执行模式：
+
+### 7.1 同步执行
+同步执行是默认模式，会阻塞等待脚本执行完成：
+
+```go
+// 同步执行文件
+err := engine.ExecuteFile("script.lua")
+if err != nil {
+    log.Fatalf("执行失败: %v", err)
+}
+
+// 同步执行字符串
+err = engine.ExecuteString("print('Hello')", "scripts")
+if err != nil {
+    log.Fatalf("执行失败: %v", err)
+}
+```
+
+### 7.2 异步执行
+异步执行会在后台运行脚本，不会阻塞当前线程：
+
+```go
+// 异步执行文件
+err := engine.ExecuteFileWithMode("script.lua", lua_engine.ExecuteModeAsync)
+if err != nil {
+    log.Fatalf("执行失败: %v", err)
+}
+
+// 异步执行字符串
+err = engine.ExecuteStringWithMode("print('Hello')", lua_engine.ExecuteModeAsync, "scripts")
+if err != nil {
+    log.Fatalf("执行失败: %v", err)
+}
+```
+
+## 8. Require 路径配置
+
+### 8.1 自动路径管理
+- 脚本执行时，当前脚本所在目录会自动添加到 Lua 的搜索路径中
+- 这意味着你可以直接 require 同目录下的文件，无需指定完整路径
+
+### 8.2 自定义路径
+你可以通过 API 添加自定义的 require 搜索路径：
+
+```go
+// 添加单个路径
+engine.AddRequirePath("/path/to/modules")
+
+// 设置多个路径
+engine.SetRequirePaths([]string{
+    "/path/to/modules",
+    "/another/path"
+})
+```
+
+## 9. 注意事项
 
 1. Lua 脚本文件的扩展名必须是 `.lua`
 2. require 时不需要添加 `.lua` 扩展名
@@ -239,9 +297,9 @@ return utils
 7. 手动放置脚本时，需要确保脚本文件路径正确
 8. **AutoGo 项目的运行必须要使用 AutoGo 的 VSCode Extension 或 GoLand Extension 来执行**
 
-## 8. 示例脚本
+## 10. 示例脚本
 
-### 8.1 基本操作示例
+### 10.1 基本操作示例
 
 ```lua
 -- 直接使用全局模块，无需 require
@@ -253,7 +311,7 @@ console.log("屏幕宽度: " .. device.width)
 console.log("屏幕高度: " .. device.height)
 ```
 
-### 8.2 多文件脚本示例
+### 10.2 多文件脚本示例
 
 **utils.lua**：
 
@@ -290,7 +348,7 @@ console.log("5 + 3 = " .. sum)
 console.log("10 - 4 = " .. difference)
 ```
 
-### 8.3 完整的 Go 示例（Embed 方式 - autogo 风格）
+### 10.3 完整的 Go 示例（Embed 方式 - autogo 风格）
 
 ```go
 package main
@@ -334,7 +392,7 @@ func main() {
 }
 ```
 
-### 8.4 完整的 Go 示例（手动放置方式 - autogo 风格）
+### 10.4 完整的 Go 示例（手动放置方式 - autogo 风格）
 
 ```go
 package main
@@ -367,7 +425,7 @@ func main() {
 }
 ```
 
-### 8.5 完整的 Go 示例（Embed 方式 - lrappsoft 风格）
+### 10.5 完整的 Go 示例（Embed 方式 - lrappsoft 风格）
 
 ```go
 package main
@@ -411,7 +469,7 @@ func main() {
 }
 ```
 
-### 8.6 完整的 Go 示例（手动放置方式 - lrappsoft 风格）
+### 10.6 完整的 Go 示例（手动放置方式 - lrappsoft 风格）
 
 ```go
 package main
@@ -444,7 +502,7 @@ func main() {
 }
 ```
 
-## 9. 示例代码 GitHub 地址
+## 11. 示例代码 GitHub 地址
 
 Lua 引擎的示例代码可以在以下 GitHub 地址找到：
 
