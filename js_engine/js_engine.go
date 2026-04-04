@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
+	"github.com/ZingYao/autogo_scriptengine/js_engine/model/require"
 
 	"github.com/dop251/goja"
-	noderequire "github.com/dop251/goja_nodejs/require"
 )
 
 // EngineState 引擎状态
@@ -97,9 +97,19 @@ func (e *JSEngine) init() {
 
 // registerNodeJS 注册 Node.js 能力
 func (e *JSEngine) registerNodeJS() {
-	// 注册 Node.js require 功能
-	registry := new(noderequire.Registry)
-	registry.Enable(e.vm)
+	// 使用自定义的 require 模块
+	var requireModule *require.RequireModule
+
+	if e.config.FileSystem != nil {
+		// 如果配置了自定义文件系统，使用 fs.FS
+		requireModule = require.NewRequireModule(e.vm, e.config.FileSystem)
+	} else {
+		// 否则使用 os 包直接访问文件系统（支持绝对路径）
+		requireModule = require.NewRequireModuleWithOS(e.vm)
+	}
+
+	// 注册 require 模块
+	requireModule.Register()
 
 	// 注册 console 模块
 	consoleObj := e.vm.NewObject()
@@ -112,10 +122,6 @@ func (e *JSEngine) registerNodeJS() {
 	// 注册 process 模块
 	processObj := e.vm.NewObject()
 	e.vm.Set("process", processObj)
-
-	// 注册 __dirname 和 __filename
-	e.vm.Set("__dirname", ".")
-	e.vm.Set("__filename", "script.js")
 }
 
 // Start 启动引擎
@@ -429,17 +435,12 @@ func (e *JSEngine) executeStringOnce(script string, dir ...string) error {
 		return fmt.Errorf("JavaScript engine not initialized")
 	}
 
-	// 如果配置了文件系统且 __dirname 未设置，设置 __dirname
-	if e.config.FileSystem != nil {
-		currentDir := e.vm.Get("__dirname")
-		if currentDir == goja.Undefined() || currentDir.String() == "" {
-			__dirname := "scripts"
-			if len(dir) > 0 && dir[0] != "" {
-				__dirname = dir[0]
-			}
-			e.vm.Set("__dirname", __dirname)
-		}
+	// 设置 __dirname（每次执行都更新，确保使用正确的工作目录）
+	__dirname := "scripts"
+	if len(dir) > 0 && dir[0] != "" {
+		__dirname = dir[0]
 	}
+	e.vm.Set("__dirname", __dirname)
 
 	// 注册特殊的 process.exit 函数，用于控制退出动作
 	e.registerExitControl()

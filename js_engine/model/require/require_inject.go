@@ -3,6 +3,7 @@ package require
 import (
 	"fmt"
 	"io/fs"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -17,6 +18,7 @@ type RequireModule struct {
 	mu         sync.RWMutex
 	fileSys    fs.FS
 	initialDir string // 初始目录，用于主脚本
+	useOS      bool   // 是否使用 os 包直接访问文件系统（支持绝对路径）
 }
 
 // NewRequireModule 创建新的 require 模块
@@ -26,6 +28,17 @@ func NewRequireModule(vm *goja.Runtime, fileSys fs.FS) *RequireModule {
 		cache:      make(map[string]goja.Value),
 		fileSys:    fileSys,
 		initialDir: "scripts", // 默认初始目录
+		useOS:      false,
+	}
+}
+
+// NewRequireModuleWithOS 创建支持直接文件系统访问的 require 模块
+func NewRequireModuleWithOS(vm *goja.Runtime) *RequireModule {
+	return &RequireModule{
+		vm:         vm,
+		cache:      make(map[string]goja.Value),
+		initialDir: "scripts",
+		useOS:      true,
 	}
 }
 
@@ -135,35 +148,53 @@ func (r *RequireModule) resolveModule(modulePath string) (string, error) {
 // resolveExtension 解析文件扩展名
 func (r *RequireModule) resolveExtension(path string) (string, error) {
 	// 尝试直接读取
-	if _, err := fs.Stat(r.fileSys, path); err == nil {
+	if r.fileExists(path) {
 		return path, nil
 	}
 
 	// 尝试添加 .js 扩展名
 	jsPath := path + ".js"
-	if _, err := fs.Stat(r.fileSys, jsPath); err == nil {
+	if r.fileExists(jsPath) {
 		return jsPath, nil
 	}
 
 	// 尝试添加 .json 扩展名
 	jsonPath := path + ".json"
-	if _, err := fs.Stat(r.fileSys, jsonPath); err == nil {
+	if r.fileExists(jsonPath) {
 		return jsonPath, nil
 	}
 
 	// 尝试 index.js
 	indexPath := filepath.Join(path, "index.js")
-	if _, err := fs.Stat(r.fileSys, indexPath); err == nil {
+	if r.fileExists(indexPath) {
 		return indexPath, nil
 	}
 
 	return "", fmt.Errorf("module not found: %s", path)
 }
 
+// fileExists 检查文件是否存在
+func (r *RequireModule) fileExists(path string) bool {
+	if r.useOS {
+		_, err := os.Stat(path)
+		return err == nil
+	}
+	_, err := fs.Stat(r.fileSys, path)
+	return err == nil
+}
+
+// readFile 读取文件内容
+func (r *RequireModule) readFile(path string) ([]byte, error) {
+	if r.useOS {
+		return os.ReadFile(path)
+	}
+	return fs.ReadFile(r.fileSys, path)
+}
+
 // loadModule 加载模块
 func (r *RequireModule) loadModule(path string) (goja.Value, error) {
 	// 读取文件内容
-	content, err := fs.ReadFile(r.fileSys, path)
+	content, err := r.readFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file: %v", err)
 	}
