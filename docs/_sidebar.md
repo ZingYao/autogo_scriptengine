@@ -33,6 +33,7 @@
 
 - Lua 引擎
   - [核心](lua_engine/README.md)
+  - [字节码支持](lua_engine/bytecode/README.md)
   - autogo 风格
     - [概述](lua_engine/model/autogo/README.md)
     - [app](lua_engine/model/autogo/app/README.md)
@@ -83,3 +84,6 @@
     - [touch](lua_engine/model/lrappsoft/touch/README.md)
     - [ui](lua_engine/model/lrappsoft/ui/README.md)
     - [virtualscreen](lua_engine/model/lrappsoft/virtualscreen/README.md)
+
+- 调试工具
+  - [快速调试工具](debugger/README.md)
