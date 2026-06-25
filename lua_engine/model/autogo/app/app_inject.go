@@ -71,7 +71,7 @@ func (m *AppModule) Register(engine model.Engine) error {
 		return 1
 	}))
 
-	appObj.RawSetString("openAppSetting", state.NewFunction(func(L *lua.LState) int {
+	appObj.RawSetString("openSetting", state.NewFunction(func(L *lua.LState) int {
 		packageName := L.CheckString(1)
 		result := app.OpenSetting(packageName)
 		L.Push(lua.LBool(result))
@@ -261,7 +261,7 @@ func (m *AppModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("app.startService", "启动服务", func(options app.IntentOptions) {
 		app.StartService(options)
 	}, true)
-	engine.RegisterMethod("app.openAppSetting", "打开应用的详情页(设置页)", func(packageName string) bool {
+	engine.RegisterMethod("app.openSetting", "打开应用的详情页(设置页)", func(packageName string) bool {
 		return app.OpenSetting(packageName)
 	}, true)
 	engine.RegisterMethod("app.viewFile", "用其他应用查看文件", func(path string) {

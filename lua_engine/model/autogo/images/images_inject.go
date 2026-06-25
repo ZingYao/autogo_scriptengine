@@ -186,6 +186,30 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		return 1
 	}))
 
+	imagesObj.RawSetString("findMultiColorsAll", state.NewFunction(func(L *lua.LState) int {
+		x1 := L.CheckInt(1)
+		y1 := L.CheckInt(2)
+		x2 := L.CheckInt(3)
+		y2 := L.CheckInt(4)
+		colors := L.CheckString(5)
+		sim := float32(L.CheckNumber(6))
+		dir := L.CheckInt(7)
+		displayId := 0
+		if L.GetTop() > 7 {
+			displayId = L.CheckInt(8)
+		}
+		points := images.FindMultiColorsAll(x1, y1, x2, y2, colors, sim, dir, displayId)
+		result := L.NewTable()
+		for i, point := range points {
+			pointTable := L.NewTable()
+			pointTable.RawSetString("x", lua.LNumber(point.X))
+			pointTable.RawSetString("y", lua.LNumber(point.Y))
+			result.RawSetInt(i+1, pointTable)
+		}
+		L.Push(result)
+		return 1
+	}))
+
 	imagesObj.RawSetString("readFromPath", state.NewFunction(func(L *lua.LState) int {
 		path := L.CheckString(1)
 		result := images.ReadFromPath(path)
@@ -404,46 +428,30 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		return 1
 	}))
 
-	engine.RegisterMethod("images.pixel", "获取指定坐标的像素颜色", func(x, y int) string { return images.Pixel(x, y, 0) }, true)
-	engine.RegisterMethod("images.setCallback", "设置回调函数", func(callback func(*image.NRGBA, int)) { images.SetCallback(callback) }, true)
-	engine.RegisterMethod("images.captureScreen", "截取屏幕", func(x1, y1, x2, y2 int) *image.NRGBA {
-		return images.CaptureScreen(x1, y1, x2, y2, 0)
-	}, true)
-	engine.RegisterMethod("images.cmpColor", "比较颜色", func(x, y int, colorStr string, sim float32) bool {
-		return images.CmpColor(x, y, colorStr, sim, 0)
-	}, true)
-	engine.RegisterMethod("images.findColor", "查找颜色", func(x1, y1, x2, y2 int, colorStr string, sim float32, dir int) (int, int) {
-		return images.FindColor(x1, y1, x2, y2, colorStr, sim, dir, 0)
-	}, true)
-	engine.RegisterMethod("images.getColorCountInRegion", "获取区域内指定颜色的数量", func(x1, y1, x2, y2 int, colorStr string, sim float32) int {
-		return images.GetColorCountInRegion(x1, y1, x2, y2, colorStr, sim, 0)
-	}, true)
-	engine.RegisterMethod("images.detectsMultiColors", "检测多点颜色", func(colors string, sim float32) bool {
-		return images.DetectsMultiColors(colors, sim, 0)
-	}, true)
-	engine.RegisterMethod("images.readFromPath", "从路径读取图片", func(path string) *image.NRGBA { return images.ReadFromPath(path) }, true)
-	engine.RegisterMethod("images.readFromUrl", "从URL读取图片", func(url string) *image.NRGBA { return images.ReadFromUrl(url) }, true)
-	engine.RegisterMethod("images.readFromBase64", "从Base64读取图片", func(base64Str string) *image.NRGBA { return images.ReadFromBase64(base64Str) }, true)
-	engine.RegisterMethod("images.readFromBytes", "从字节数组读取图片", func(data []byte) *image.NRGBA { return images.ReadFromBytes(data) }, true)
-	engine.RegisterMethod("images.toNrgba", "转换为NRGBA格式", func(img image.Image) *image.NRGBA { return images.ToNrgba(img) }, true)
-	engine.RegisterMethod("images.save", "保存图片", func(img *image.NRGBA, path string, quality int) bool { return images.Save(img, path, quality) }, true)
-	engine.RegisterMethod("images.encodeToBase64", "编码为Base64", func(img *image.NRGBA, format string, quality int) string {
-		return images.EncodeToBase64(img, format, quality)
-	}, true)
-	engine.RegisterMethod("images.encodeToBytes", "编码为字节数组", func(img *image.NRGBA, format string, quality int) []byte {
-		return images.EncodeToBytes(img, format, quality)
-	}, true)
-	engine.RegisterMethod("images.clip", "裁剪图片", func(img *image.NRGBA, x1, y1, x2, y2 int) *image.NRGBA { return images.Clip(img, x1, y1, x2, y2) }, true)
-	engine.RegisterMethod("images.resize", "调整图片大小", func(img *image.NRGBA, width, height int) *image.NRGBA { return images.Resize(img, width, height) }, true)
-	engine.RegisterMethod("images.rotate", "旋转图片", func(img *image.NRGBA, degree int) *image.NRGBA { return images.Rotate(img, degree) }, true)
-	engine.RegisterMethod("images.grayscale", "灰度化", func(img *image.NRGBA) *image.Gray { return images.Grayscale(img) }, true)
-	engine.RegisterMethod("images.applyThreshold", "应用阈值", func(img *image.NRGBA, threshold, maxVal int, typ string) *image.Gray {
-		return images.ApplyThreshold(img, threshold, maxVal, typ)
-	}, true)
-	engine.RegisterMethod("images.applyAdaptiveThreshold", "应用自适应阈值", func(img *image.NRGBA, maxValue float64, adaptiveMethod, thresholdType string, blockSize int, C float64) *image.Gray {
-		return images.ApplyAdaptiveThreshold(img, maxValue, adaptiveMethod, thresholdType, blockSize, C)
-	}, true)
-	engine.RegisterMethod("images.applyBinarization", "二值化", func(img *image.NRGBA, threshold int) *image.Gray { return images.ApplyBinarization(img, threshold) }, true)
+	engine.RegisterMethod("images.setCallback", "设置回调函数", images.SetCallback, true)
+	engine.RegisterMethod("images.captureScreen", "截取屏幕", images.CaptureScreen, true)
+	engine.RegisterMethod("images.pixel", "获取指定坐标的像素颜色", images.Pixel, true)
+	engine.RegisterMethod("images.cmpColor", "比较颜色", images.CmpColor, true)
+	engine.RegisterMethod("images.findColor", "查找颜色", images.FindColor, true)
+	engine.RegisterMethod("images.getColorCountInRegion", "获取区域内指定颜色的数量", images.GetColorCountInRegion, true)
+	engine.RegisterMethod("images.detectsMultiColors", "检测多点颜色", images.DetectsMultiColors, true)
+	engine.RegisterMethod("images.findMultiColors", "查找多点颜色", images.FindMultiColors, true)
+	engine.RegisterMethod("images.findMultiColorsAll", "查找所有多点颜色", images.FindMultiColorsAll, true)
+	engine.RegisterMethod("images.readFromPath", "从路径读取图片", images.ReadFromPath, true)
+	engine.RegisterMethod("images.readFromUrl", "从URL读取图片", images.ReadFromUrl, true)
+	engine.RegisterMethod("images.readFromBase64", "从Base64读取图片", images.ReadFromBase64, true)
+	engine.RegisterMethod("images.readFromBytes", "从字节数组读取图片", images.ReadFromBytes, true)
+	engine.RegisterMethod("images.save", "保存图片", images.Save, true)
+	engine.RegisterMethod("images.encodeToBase64", "编码为Base64", images.EncodeToBase64, true)
+	engine.RegisterMethod("images.encodeToBytes", "编码为字节数组", images.EncodeToBytes, true)
+	engine.RegisterMethod("images.toNrgba", "转换为NRGBA格式", images.ToNrgba, true)
+	engine.RegisterMethod("images.clip", "裁剪图片", images.Clip, true)
+	engine.RegisterMethod("images.resize", "调整图片大小", images.Resize, true)
+	engine.RegisterMethod("images.rotate", "旋转图片", images.Rotate, true)
+	engine.RegisterMethod("images.grayscale", "灰度化", images.Grayscale, true)
+	engine.RegisterMethod("images.applyThreshold", "应用阈值", images.ApplyThreshold, true)
+	engine.RegisterMethod("images.applyAdaptiveThreshold", "应用自适应阈值", images.ApplyAdaptiveThreshold, true)
+	engine.RegisterMethod("images.applyBinarization", "二值化", images.ApplyBinarization, true)
 
 	return nil
 }

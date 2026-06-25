@@ -208,7 +208,7 @@ console.log("屏幕宽度: " + device.width);
 app.launch("com.example.app");
 
 // motion 模块：触摸操作
-click(100, 200);
+motion.click(100, 200);
 
 // websocket 模块：WebSocket 客户端
 var handle = websocket.connect(
@@ -219,6 +219,10 @@ var handle = websocket.connect(
     function(h, msg) { console.log("收到: " + msg); }
 );
 ```
+
+autogo 风格遵循 Go API 映射规则：Go 导出函数挂到对应模块对象下，方法名按常规小驼峰转换。例如 `app.OpenSetting` 映射为 `app.openSetting`，不会额外保留 `app.openAppSetting` 等历史别名，也不会注册 `click(...)` 这类全局入口。
+
+JavaScript 当前使用统一的 `js_engine/define/autogo/...` 注册包；Lua 侧已额外按 Android/iOS 拆分 define 目录。
 
 ### 6.4 模块导出
 

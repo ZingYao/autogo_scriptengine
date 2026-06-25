@@ -9,7 +9,7 @@ import (
 	"log"
 
 	"github.com/ZingYao/autogo_scriptengine/lua_engine"
-	"github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/define/android/autogo/all_models"
 )
 
 //go:embed scripts/*

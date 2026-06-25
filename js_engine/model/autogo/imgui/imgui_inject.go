@@ -10413,5 +10413,7 @@ func (m *ImGuiModule) Register(engine model.Engine) error {
 		return vm.ToValue(imgui.NewColorFromColor(c))
 	})
 
+	registerImguiReflectBridgeJS(engine, imguiObj)
+
 	return nil
 }

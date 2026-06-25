@@ -1,0 +1,10922 @@
+package imgui
+
+import (
+	"reflect"
+
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
+
+	"github.com/Dasongzi1366/AutoGo/imgui"
+	lua "github.com/yuin/gopher-lua"
+)
+
+type imguiReflectFuncEntry struct {
+	name string
+	fn   reflect.Value
+}
+
+type imguiReflectMethodEntry struct {
+	name     string
+	goMethod string
+}
+
+type imguiReflectGenericFuncEntry struct {
+	name  string
+	label string
+	fn    interface{}
+}
+
+var imguiReflectGenericFromCFuncs = []imguiReflectGenericFuncEntry{
+	{"newBitArrayForNamedKeysFromC", "ImGui.NewBitArrayForNamedKeysFromC", func(cvalue uintptr) interface{} { return imgui.NewBitArrayForNamedKeysFromC(cvalue) }},
+	{"newBitArrayPtrFromC", "ImGui.NewBitArrayPtrFromC", func(cvalue uintptr) interface{} { return imgui.NewBitArrayPtrFromC(cvalue) }},
+	{"newBitVectorFromC", "ImGui.NewBitVectorFromC", func(cvalue uintptr) interface{} { return imgui.NewBitVectorFromC(cvalue) }},
+	{"newDrawChannelFromC", "ImGui.NewDrawChannelFromC", func(cvalue uintptr) interface{} { return imgui.NewDrawChannelFromC(cvalue) }},
+	{"newDrawCmdFromC", "ImGui.NewDrawCmdFromC", func(cvalue uintptr) interface{} { return imgui.NewDrawCmdFromC(cvalue) }},
+	{"newDrawCmdHeaderFromC", "ImGui.NewDrawCmdHeaderFromC", func(cvalue uintptr) interface{} { return imgui.NewDrawCmdHeaderFromC(cvalue) }},
+	{"newDrawDataFromC", "ImGui.NewDrawDataFromC", func(cvalue uintptr) interface{} { return imgui.NewDrawDataFromC(cvalue) }},
+	{"newDrawDataBuilderFromC", "ImGui.NewDrawDataBuilderFromC", func(cvalue uintptr) interface{} { return imgui.NewDrawDataBuilderFromC(cvalue) }},
+	{"newDrawIdxFromC", "ImGui.NewDrawIdxFromC", func(cvalue uintptr) interface{} { return imgui.NewDrawIdxFromC(cvalue) }},
+	{"newDrawListFromC", "ImGui.NewDrawListFromC", func(cvalue uintptr) interface{} { return imgui.NewDrawListFromC(cvalue) }},
+	{"newDrawListSharedDataFromC", "ImGui.NewDrawListSharedDataFromC", func(cvalue uintptr) interface{} { return imgui.NewDrawListSharedDataFromC(cvalue) }},
+	{"newDrawListSplitterFromC", "ImGui.NewDrawListSplitterFromC", func(cvalue uintptr) interface{} { return imgui.NewDrawListSplitterFromC(cvalue) }},
+	{"newDrawVertFromC", "ImGui.NewDrawVertFromC", func(cvalue uintptr) interface{} { return imgui.NewDrawVertFromC(cvalue) }},
+	{"newFontFromC", "ImGui.NewFontFromC", func(cvalue uintptr) interface{} { return imgui.NewFontFromC(cvalue) }},
+	{"newFontAtlasFromC", "ImGui.NewFontAtlasFromC", func(cvalue uintptr) interface{} { return imgui.NewFontAtlasFromC(cvalue) }},
+	{"newFontAtlasBuilderFromC", "ImGui.NewFontAtlasBuilderFromC", func(cvalue uintptr) interface{} { return imgui.NewFontAtlasBuilderFromC(cvalue) }},
+	{"newFontAtlasPostProcessDataFromC", "ImGui.NewFontAtlasPostProcessDataFromC", func(cvalue uintptr) interface{} { return imgui.NewFontAtlasPostProcessDataFromC(cvalue) }},
+	{"newFontAtlasRectFromC", "ImGui.NewFontAtlasRectFromC", func(cvalue uintptr) interface{} { return imgui.NewFontAtlasRectFromC(cvalue) }},
+	{"newFontAtlasRectEntryFromC", "ImGui.NewFontAtlasRectEntryFromC", func(cvalue uintptr) interface{} { return imgui.NewFontAtlasRectEntryFromC(cvalue) }},
+	{"newFontAtlasRectIdFromC", "ImGui.NewFontAtlasRectIdFromC", func(cvalue uintptr) interface{} { return imgui.NewFontAtlasRectIdFromC(cvalue) }},
+	{"newFontBakedFromC", "ImGui.NewFontBakedFromC", func(cvalue uintptr) interface{} { return imgui.NewFontBakedFromC(cvalue) }},
+	{"newFontConfigFromC", "ImGui.NewFontConfigFromC", func(cvalue uintptr) interface{} { return imgui.NewFontConfigFromC(cvalue) }},
+	{"newFontGlyphFromC", "ImGui.NewFontGlyphFromC", func(cvalue uintptr) interface{} { return imgui.NewFontGlyphFromC(cvalue) }},
+	{"newFontGlyphRangesBuilderFromC", "ImGui.NewFontGlyphRangesBuilderFromC", func(cvalue uintptr) interface{} { return imgui.NewFontGlyphRangesBuilderFromC(cvalue) }},
+	{"newFontLoaderFromC", "ImGui.NewFontLoaderFromC", func(cvalue uintptr) interface{} { return imgui.NewFontLoaderFromC(cvalue) }},
+	{"newFontStackDataFromC", "ImGui.NewFontStackDataFromC", func(cvalue uintptr) interface{} { return imgui.NewFontStackDataFromC(cvalue) }},
+	{"newBoxSelectStateFromC", "ImGui.NewBoxSelectStateFromC", func(cvalue uintptr) interface{} { return imgui.NewBoxSelectStateFromC(cvalue) }},
+	{"newColorModFromC", "ImGui.NewColorModFromC", func(cvalue uintptr) interface{} { return imgui.NewColorModFromC(cvalue) }},
+	{"newComboPreviewDataFromC", "ImGui.NewComboPreviewDataFromC", func(cvalue uintptr) interface{} { return imgui.NewComboPreviewDataFromC(cvalue) }},
+	{"newContextFromC", "ImGui.NewContextFromC", func(cvalue uintptr) interface{} { return imgui.NewContextFromC(cvalue) }},
+	{"newContextHookFromC", "ImGui.NewContextHookFromC", func(cvalue uintptr) interface{} { return imgui.NewContextHookFromC(cvalue) }},
+	{"newDataTypeInfoFromC", "ImGui.NewDataTypeInfoFromC", func(cvalue uintptr) interface{} { return imgui.NewDataTypeInfoFromC(cvalue) }},
+	{"newDataTypeStorageFromC", "ImGui.NewDataTypeStorageFromC", func(cvalue uintptr) interface{} { return imgui.NewDataTypeStorageFromC(cvalue) }},
+	{"newDeactivatedItemDataFromC", "ImGui.NewDeactivatedItemDataFromC", func(cvalue uintptr) interface{} { return imgui.NewDeactivatedItemDataFromC(cvalue) }},
+	{"newDebugAllocEntryFromC", "ImGui.NewDebugAllocEntryFromC", func(cvalue uintptr) interface{} { return imgui.NewDebugAllocEntryFromC(cvalue) }},
+	{"newDebugAllocInfoFromC", "ImGui.NewDebugAllocInfoFromC", func(cvalue uintptr) interface{} { return imgui.NewDebugAllocInfoFromC(cvalue) }},
+	{"newDockContextFromC", "ImGui.NewDockContextFromC", func(cvalue uintptr) interface{} { return imgui.NewDockContextFromC(cvalue) }},
+	{"newDockNodeFromC", "ImGui.NewDockNodeFromC", func(cvalue uintptr) interface{} { return imgui.NewDockNodeFromC(cvalue) }},
+	{"newDockNodeSettingsFromC", "ImGui.NewDockNodeSettingsFromC", func(cvalue uintptr) interface{} { return imgui.NewDockNodeSettingsFromC(cvalue) }},
+	{"newDockRequestFromC", "ImGui.NewDockRequestFromC", func(cvalue uintptr) interface{} { return imgui.NewDockRequestFromC(cvalue) }},
+	{"newErrorRecoveryStateFromC", "ImGui.NewErrorRecoveryStateFromC", func(cvalue uintptr) interface{} { return imgui.NewErrorRecoveryStateFromC(cvalue) }},
+	{"newFocusScopeDataFromC", "ImGui.NewFocusScopeDataFromC", func(cvalue uintptr) interface{} { return imgui.NewFocusScopeDataFromC(cvalue) }},
+	{"newGroupDataFromC", "ImGui.NewGroupDataFromC", func(cvalue uintptr) interface{} { return imgui.NewGroupDataFromC(cvalue) }},
+	{"newIDFromC", "ImGui.NewIDFromC", func(cvalue uintptr) interface{} { return imgui.NewIDFromC(cvalue) }},
+	{"newIDStackToolFromC", "ImGui.NewIDStackToolFromC", func(cvalue uintptr) interface{} { return imgui.NewIDStackToolFromC(cvalue) }},
+	{"newIOFromC", "ImGui.NewIOFromC", func(cvalue uintptr) interface{} { return imgui.NewIOFromC(cvalue) }},
+	{"newInputEventFromC", "ImGui.NewInputEventFromC", func(cvalue uintptr) interface{} { return imgui.NewInputEventFromC(cvalue) }},
+	{"newInputEventAppFocusedFromC", "ImGui.NewInputEventAppFocusedFromC", func(cvalue uintptr) interface{} { return imgui.NewInputEventAppFocusedFromC(cvalue) }},
+	{"newInputEventKeyFromC", "ImGui.NewInputEventKeyFromC", func(cvalue uintptr) interface{} { return imgui.NewInputEventKeyFromC(cvalue) }},
+	{"newInputEventMouseButtonFromC", "ImGui.NewInputEventMouseButtonFromC", func(cvalue uintptr) interface{} { return imgui.NewInputEventMouseButtonFromC(cvalue) }},
+	{"newInputEventMousePosFromC", "ImGui.NewInputEventMousePosFromC", func(cvalue uintptr) interface{} { return imgui.NewInputEventMousePosFromC(cvalue) }},
+	{"newInputEventMouseViewportFromC", "ImGui.NewInputEventMouseViewportFromC", func(cvalue uintptr) interface{} { return imgui.NewInputEventMouseViewportFromC(cvalue) }},
+	{"newInputEventMouseWheelFromC", "ImGui.NewInputEventMouseWheelFromC", func(cvalue uintptr) interface{} { return imgui.NewInputEventMouseWheelFromC(cvalue) }},
+	{"newInputEventTextFromC", "ImGui.NewInputEventTextFromC", func(cvalue uintptr) interface{} { return imgui.NewInputEventTextFromC(cvalue) }},
+	{"newInputTextCallbackDataFromC", "ImGui.NewInputTextCallbackDataFromC", func(cvalue uintptr) interface{} { return imgui.NewInputTextCallbackDataFromC(cvalue) }},
+	{"newInputTextDeactivateDataFromC", "ImGui.NewInputTextDeactivateDataFromC", func(cvalue uintptr) interface{} { return imgui.NewInputTextDeactivateDataFromC(cvalue) }},
+	{"newInputTextDeactivatedStateFromC", "ImGui.NewInputTextDeactivatedStateFromC", func(cvalue uintptr) interface{} { return imgui.NewInputTextDeactivatedStateFromC(cvalue) }},
+	{"newInputTextStateFromC", "ImGui.NewInputTextStateFromC", func(cvalue uintptr) interface{} { return imgui.NewInputTextStateFromC(cvalue) }},
+	{"newKeyChordFromC", "ImGui.NewKeyChordFromC", func(cvalue uintptr) interface{} { return imgui.NewKeyChordFromC(cvalue) }},
+	{"newKeyDataFromC", "ImGui.NewKeyDataFromC", func(cvalue uintptr) interface{} { return imgui.NewKeyDataFromC(cvalue) }},
+	{"newKeyOwnerDataFromC", "ImGui.NewKeyOwnerDataFromC", func(cvalue uintptr) interface{} { return imgui.NewKeyOwnerDataFromC(cvalue) }},
+	{"newKeyRoutingDataFromC", "ImGui.NewKeyRoutingDataFromC", func(cvalue uintptr) interface{} { return imgui.NewKeyRoutingDataFromC(cvalue) }},
+	{"newKeyRoutingIndexFromC", "ImGui.NewKeyRoutingIndexFromC", func(cvalue uintptr) interface{} { return imgui.NewKeyRoutingIndexFromC(cvalue) }},
+	{"newKeyRoutingTableFromC", "ImGui.NewKeyRoutingTableFromC", func(cvalue uintptr) interface{} { return imgui.NewKeyRoutingTableFromC(cvalue) }},
+	{"newLastItemDataFromC", "ImGui.NewLastItemDataFromC", func(cvalue uintptr) interface{} { return imgui.NewLastItemDataFromC(cvalue) }},
+	{"newListClipperFromC", "ImGui.NewListClipperFromC", func(cvalue uintptr) interface{} { return imgui.NewListClipperFromC(cvalue) }},
+	{"newListClipperDataFromC", "ImGui.NewListClipperDataFromC", func(cvalue uintptr) interface{} { return imgui.NewListClipperDataFromC(cvalue) }},
+	{"newListClipperRangeFromC", "ImGui.NewListClipperRangeFromC", func(cvalue uintptr) interface{} { return imgui.NewListClipperRangeFromC(cvalue) }},
+	{"newLocEntryFromC", "ImGui.NewLocEntryFromC", func(cvalue uintptr) interface{} { return imgui.NewLocEntryFromC(cvalue) }},
+	{"newMenuColumnsFromC", "ImGui.NewMenuColumnsFromC", func(cvalue uintptr) interface{} { return imgui.NewMenuColumnsFromC(cvalue) }},
+	{"newMetricsConfigFromC", "ImGui.NewMetricsConfigFromC", func(cvalue uintptr) interface{} { return imgui.NewMetricsConfigFromC(cvalue) }},
+	{"newMultiSelectIOFromC", "ImGui.NewMultiSelectIOFromC", func(cvalue uintptr) interface{} { return imgui.NewMultiSelectIOFromC(cvalue) }},
+	{"newMultiSelectStateFromC", "ImGui.NewMultiSelectStateFromC", func(cvalue uintptr) interface{} { return imgui.NewMultiSelectStateFromC(cvalue) }},
+	{"newMultiSelectTempDataFromC", "ImGui.NewMultiSelectTempDataFromC", func(cvalue uintptr) interface{} { return imgui.NewMultiSelectTempDataFromC(cvalue) }},
+	{"newNavItemDataFromC", "ImGui.NewNavItemDataFromC", func(cvalue uintptr) interface{} { return imgui.NewNavItemDataFromC(cvalue) }},
+	{"newNextItemDataFromC", "ImGui.NewNextItemDataFromC", func(cvalue uintptr) interface{} { return imgui.NewNextItemDataFromC(cvalue) }},
+	{"newNextWindowDataFromC", "ImGui.NewNextWindowDataFromC", func(cvalue uintptr) interface{} { return imgui.NewNextWindowDataFromC(cvalue) }},
+	{"newOldColumnDataFromC", "ImGui.NewOldColumnDataFromC", func(cvalue uintptr) interface{} { return imgui.NewOldColumnDataFromC(cvalue) }},
+	{"newOldColumnsFromC", "ImGui.NewOldColumnsFromC", func(cvalue uintptr) interface{} { return imgui.NewOldColumnsFromC(cvalue) }},
+	{"newOnceUponAFrameFromC", "ImGui.NewOnceUponAFrameFromC", func(cvalue uintptr) interface{} { return imgui.NewOnceUponAFrameFromC(cvalue) }},
+	{"newPayloadFromC", "ImGui.NewPayloadFromC", func(cvalue uintptr) interface{} { return imgui.NewPayloadFromC(cvalue) }},
+	{"newPlatformIOFromC", "ImGui.NewPlatformIOFromC", func(cvalue uintptr) interface{} { return imgui.NewPlatformIOFromC(cvalue) }},
+	{"newPlatformImeDataFromC", "ImGui.NewPlatformImeDataFromC", func(cvalue uintptr) interface{} { return imgui.NewPlatformImeDataFromC(cvalue) }},
+	{"newPlatformMonitorFromC", "ImGui.NewPlatformMonitorFromC", func(cvalue uintptr) interface{} { return imgui.NewPlatformMonitorFromC(cvalue) }},
+	{"newPopupDataFromC", "ImGui.NewPopupDataFromC", func(cvalue uintptr) interface{} { return imgui.NewPopupDataFromC(cvalue) }},
+	{"newPtrOrIndexFromC", "ImGui.NewPtrOrIndexFromC", func(cvalue uintptr) interface{} { return imgui.NewPtrOrIndexFromC(cvalue) }},
+	{"newSelectionBasicStorageFromC", "ImGui.NewSelectionBasicStorageFromC", func(cvalue uintptr) interface{} { return imgui.NewSelectionBasicStorageFromC(cvalue) }},
+	{"newSelectionExternalStorageFromC", "ImGui.NewSelectionExternalStorageFromC", func(cvalue uintptr) interface{} { return imgui.NewSelectionExternalStorageFromC(cvalue) }},
+	{"newSelectionRequestFromC", "ImGui.NewSelectionRequestFromC", func(cvalue uintptr) interface{} { return imgui.NewSelectionRequestFromC(cvalue) }},
+	{"newSelectionUserDataFromC", "ImGui.NewSelectionUserDataFromC", func(cvalue uintptr) interface{} { return imgui.NewSelectionUserDataFromC(cvalue) }},
+	{"newSettingsHandlerFromC", "ImGui.NewSettingsHandlerFromC", func(cvalue uintptr) interface{} { return imgui.NewSettingsHandlerFromC(cvalue) }},
+	{"newShrinkWidthItemFromC", "ImGui.NewShrinkWidthItemFromC", func(cvalue uintptr) interface{} { return imgui.NewShrinkWidthItemFromC(cvalue) }},
+	{"newSizeCallbackDataFromC", "ImGui.NewSizeCallbackDataFromC", func(cvalue uintptr) interface{} { return imgui.NewSizeCallbackDataFromC(cvalue) }},
+	{"newStackLevelInfoFromC", "ImGui.NewStackLevelInfoFromC", func(cvalue uintptr) interface{} { return imgui.NewStackLevelInfoFromC(cvalue) }},
+	{"newStorageFromC", "ImGui.NewStorageFromC", func(cvalue uintptr) interface{} { return imgui.NewStorageFromC(cvalue) }},
+	{"newStoragePairFromC", "ImGui.NewStoragePairFromC", func(cvalue uintptr) interface{} { return imgui.NewStoragePairFromC(cvalue) }},
+	{"newStyleFromC", "ImGui.NewStyleFromC", func(cvalue uintptr) interface{} { return imgui.NewStyleFromC(cvalue) }},
+	{"newStyleModFromC", "ImGui.NewStyleModFromC", func(cvalue uintptr) interface{} { return imgui.NewStyleModFromC(cvalue) }},
+	{"newStyleVarInfoFromC", "ImGui.NewStyleVarInfoFromC", func(cvalue uintptr) interface{} { return imgui.NewStyleVarInfoFromC(cvalue) }},
+	{"newTabBarFromC", "ImGui.NewTabBarFromC", func(cvalue uintptr) interface{} { return imgui.NewTabBarFromC(cvalue) }},
+	{"newTabItemFromC", "ImGui.NewTabItemFromC", func(cvalue uintptr) interface{} { return imgui.NewTabItemFromC(cvalue) }},
+	{"newTableFromC", "ImGui.NewTableFromC", func(cvalue uintptr) interface{} { return imgui.NewTableFromC(cvalue) }},
+	{"newTableCellDataFromC", "ImGui.NewTableCellDataFromC", func(cvalue uintptr) interface{} { return imgui.NewTableCellDataFromC(cvalue) }},
+	{"newTableColumnFromC", "ImGui.NewTableColumnFromC", func(cvalue uintptr) interface{} { return imgui.NewTableColumnFromC(cvalue) }},
+	{"newTableColumnIdxFromC", "ImGui.NewTableColumnIdxFromC", func(cvalue uintptr) interface{} { return imgui.NewTableColumnIdxFromC(cvalue) }},
+	{"newTableColumnSettingsFromC", "ImGui.NewTableColumnSettingsFromC", func(cvalue uintptr) interface{} { return imgui.NewTableColumnSettingsFromC(cvalue) }},
+	{"newTableColumnSortSpecsFromC", "ImGui.NewTableColumnSortSpecsFromC", func(cvalue uintptr) interface{} { return imgui.NewTableColumnSortSpecsFromC(cvalue) }},
+	{"newTableColumnsSettingsFromC", "ImGui.NewTableColumnsSettingsFromC", func(cvalue uintptr) interface{} { return imgui.NewTableColumnsSettingsFromC(cvalue) }},
+	{"newTableDrawChannelIdxFromC", "ImGui.NewTableDrawChannelIdxFromC", func(cvalue uintptr) interface{} { return imgui.NewTableDrawChannelIdxFromC(cvalue) }},
+	{"newTableHeaderDataFromC", "ImGui.NewTableHeaderDataFromC", func(cvalue uintptr) interface{} { return imgui.NewTableHeaderDataFromC(cvalue) }},
+	{"newTableInstanceDataFromC", "ImGui.NewTableInstanceDataFromC", func(cvalue uintptr) interface{} { return imgui.NewTableInstanceDataFromC(cvalue) }},
+	{"newTableSettingsFromC", "ImGui.NewTableSettingsFromC", func(cvalue uintptr) interface{} { return imgui.NewTableSettingsFromC(cvalue) }},
+	{"newTableSortSpecsFromC", "ImGui.NewTableSortSpecsFromC", func(cvalue uintptr) interface{} { return imgui.NewTableSortSpecsFromC(cvalue) }},
+	{"newTableTempDataFromC", "ImGui.NewTableTempDataFromC", func(cvalue uintptr) interface{} { return imgui.NewTableTempDataFromC(cvalue) }},
+	{"newTextBufferFromC", "ImGui.NewTextBufferFromC", func(cvalue uintptr) interface{} { return imgui.NewTextBufferFromC(cvalue) }},
+	{"newTextFilterFromC", "ImGui.NewTextFilterFromC", func(cvalue uintptr) interface{} { return imgui.NewTextFilterFromC(cvalue) }},
+	{"newTextIndexFromC", "ImGui.NewTextIndexFromC", func(cvalue uintptr) interface{} { return imgui.NewTextIndexFromC(cvalue) }},
+	{"newTextRangeFromC", "ImGui.NewTextRangeFromC", func(cvalue uintptr) interface{} { return imgui.NewTextRangeFromC(cvalue) }},
+	{"newTreeNodeStackDataFromC", "ImGui.NewTreeNodeStackDataFromC", func(cvalue uintptr) interface{} { return imgui.NewTreeNodeStackDataFromC(cvalue) }},
+	{"newTypingSelectRequestFromC", "ImGui.NewTypingSelectRequestFromC", func(cvalue uintptr) interface{} { return imgui.NewTypingSelectRequestFromC(cvalue) }},
+	{"newTypingSelectStateFromC", "ImGui.NewTypingSelectStateFromC", func(cvalue uintptr) interface{} { return imgui.NewTypingSelectStateFromC(cvalue) }},
+	{"newViewportFromC", "ImGui.NewViewportFromC", func(cvalue uintptr) interface{} { return imgui.NewViewportFromC(cvalue) }},
+	{"newViewportPFromC", "ImGui.NewViewportPFromC", func(cvalue uintptr) interface{} { return imgui.NewViewportPFromC(cvalue) }},
+	{"newWindowFromC", "ImGui.NewWindowFromC", func(cvalue uintptr) interface{} { return imgui.NewWindowFromC(cvalue) }},
+	{"newWindowClassFromC", "ImGui.NewWindowClassFromC", func(cvalue uintptr) interface{} { return imgui.NewWindowClassFromC(cvalue) }},
+	{"newWindowDockStyleFromC", "ImGui.NewWindowDockStyleFromC", func(cvalue uintptr) interface{} { return imgui.NewWindowDockStyleFromC(cvalue) }},
+	{"newWindowSettingsFromC", "ImGui.NewWindowSettingsFromC", func(cvalue uintptr) interface{} { return imgui.NewWindowSettingsFromC(cvalue) }},
+	{"newWindowStackDataFromC", "ImGui.NewWindowStackDataFromC", func(cvalue uintptr) interface{} { return imgui.NewWindowStackDataFromC(cvalue) }},
+	{"newWindowTempDataFromC", "ImGui.NewWindowTempDataFromC", func(cvalue uintptr) interface{} { return imgui.NewWindowTempDataFromC(cvalue) }},
+	{"newPoolIdxFromC", "ImGui.NewPoolIdxFromC", func(cvalue uintptr) interface{} { return imgui.NewPoolIdxFromC(cvalue) }},
+	{"newTextureDataFromC", "ImGui.NewTextureDataFromC", func(cvalue uintptr) interface{} { return imgui.NewTextureDataFromC(cvalue) }},
+	{"newTextureIDFromC", "ImGui.NewTextureIDFromC", func(cvalue uintptr) interface{} { return imgui.NewTextureIDFromC(cvalue) }},
+	{"newTextureRectFromC", "ImGui.NewTextureRectFromC", func(cvalue uintptr) interface{} { return imgui.NewTextureRectFromC(cvalue) }},
+	{"newTextureRefFromC", "ImGui.NewTextureRefFromC", func(cvalue uintptr) interface{} { return imgui.NewTextureRefFromC(cvalue) }},
+	{"newVec1FromC", "ImGui.NewVec1FromC", func(cvalue uintptr) interface{} { return imgui.NewVec1FromC(cvalue) }},
+	{"newVec2iFromC", "ImGui.NewVec2iFromC", func(cvalue uintptr) interface{} { return imgui.NewVec2iFromC(cvalue) }},
+	{"newWchar16FromC", "ImGui.NewWchar16FromC", func(cvalue uintptr) interface{} { return imgui.NewWchar16FromC(cvalue) }},
+	{"newWchar32FromC", "ImGui.NewWchar32FromC", func(cvalue uintptr) interface{} { return imgui.NewWchar32FromC(cvalue) }},
+	{"newSTBTexteditStateFromC", "ImGui.NewSTBTexteditStateFromC", func(cvalue uintptr) interface{} { return imgui.NewSTBTexteditStateFromC(cvalue) }},
+	{"newstbrpcontextopaqueFromC", "ImGui.NewstbrpcontextopaqueFromC", func(cvalue uintptr) interface{} { return imgui.NewstbrpcontextopaqueFromC(cvalue) }},
+	{"newstbrpnodeFromC", "ImGui.NewstbrpnodeFromC", func(cvalue uintptr) interface{} { return imgui.NewstbrpnodeFromC(cvalue) }},
+}
+
+var imguiReflectFuncs = []imguiReflectFuncEntry{
+	{"setAssertHandler", reflect.ValueOf(imgui.SetAssertHandler)},
+	{"init", reflect.ValueOf(imgui.Init)},
+	{"run", reflect.ValueOf(imgui.Run)},
+	{"close", reflect.ValueOf(imgui.Close)},
+	{"newDrawCallbackFromC", reflect.ValueOf(imgui.NewDrawCallbackFromC)},
+	{"clearDrawCallbackPool", reflect.ValueOf(imgui.ClearDrawCallbackPool)},
+	{"newContextHookCallbackFromC", reflect.ValueOf(imgui.NewContextHookCallbackFromC)},
+	{"clearContextHookCallbackPool", reflect.ValueOf(imgui.ClearContextHookCallbackPool)},
+	{"newErrorCallbackFromC", reflect.ValueOf(imgui.NewErrorCallbackFromC)},
+	{"clearErrorCallbackPool", reflect.ValueOf(imgui.ClearErrorCallbackPool)},
+	{"newMemAllocFuncFromC", reflect.ValueOf(imgui.NewMemAllocFuncFromC)},
+	{"clearMemAllocFuncPool", reflect.ValueOf(imgui.ClearMemAllocFuncPool)},
+	{"newMemFreeFuncFromC", reflect.ValueOf(imgui.NewMemFreeFuncFromC)},
+	{"clearMemFreeFuncPool", reflect.ValueOf(imgui.ClearMemFreeFuncPool)},
+	{"newSizeCallbackFromC", reflect.ValueOf(imgui.NewSizeCallbackFromC)},
+	{"clearSizeCallbackPool", reflect.ValueOf(imgui.ClearSizeCallbackPool)},
+	{"newVec2", reflect.ValueOf(imgui.NewVec2)},
+	{"newVec4", reflect.ValueOf(imgui.NewVec4)},
+	{"newColor", reflect.ValueOf(imgui.NewColor)},
+	{"newColorFromPacked", reflect.ValueOf(imgui.NewColorFromPacked)},
+	{"newColorFromColor", reflect.ValueOf(imgui.NewColorFromColor)},
+	{"colorHSVV", reflect.ValueOf(imgui.ColorHSVV)},
+	{"newDrawCmd", reflect.ValueOf(imgui.NewDrawCmd)},
+	{"internalNewDrawDataBuilder", reflect.ValueOf(imgui.InternalNewDrawDataBuilder)},
+	{"newDrawData", reflect.ValueOf(imgui.NewDrawData)},
+	{"internalNewDrawListSharedData", reflect.ValueOf(imgui.InternalNewDrawListSharedData)},
+	{"newDrawListSplitter", reflect.ValueOf(imgui.NewDrawListSplitter)},
+	{"newDrawList", reflect.ValueOf(imgui.NewDrawList)},
+	{"internalNewFontAtlasBuilder", reflect.ValueOf(imgui.InternalNewFontAtlasBuilder)},
+	{"newFontAtlasRect", reflect.ValueOf(imgui.NewFontAtlasRect)},
+	{"newFontAtlas", reflect.ValueOf(imgui.NewFontAtlas)},
+	{"newFontBaked", reflect.ValueOf(imgui.NewFontBaked)},
+	{"newFontConfig", reflect.ValueOf(imgui.NewFontConfig)},
+	{"newFontGlyphRangesBuilder", reflect.ValueOf(imgui.NewFontGlyphRangesBuilder)},
+	{"newFontGlyph", reflect.ValueOf(imgui.NewFontGlyph)},
+	{"internalNewFontLoader", reflect.ValueOf(imgui.InternalNewFontLoader)},
+	{"newFont", reflect.ValueOf(imgui.NewFont)},
+	{"internalNewBoxSelectState", reflect.ValueOf(imgui.InternalNewBoxSelectState)},
+	{"internalNewComboPreviewData", reflect.ValueOf(imgui.InternalNewComboPreviewData)},
+	{"internalNewContextHook", reflect.ValueOf(imgui.InternalNewContextHook)},
+	{"internalNewContext", reflect.ValueOf(imgui.InternalNewContext)},
+	{"internalNewDebugAllocInfo", reflect.ValueOf(imgui.InternalNewDebugAllocInfo)},
+	{"internalNewDockContext", reflect.ValueOf(imgui.InternalNewDockContext)},
+	{"internalNewDockNode", reflect.ValueOf(imgui.InternalNewDockNode)},
+	{"internalNewErrorRecoveryState", reflect.ValueOf(imgui.InternalNewErrorRecoveryState)},
+	{"internalNewIDStackTool", reflect.ValueOf(imgui.InternalNewIDStackTool)},
+	{"newIO", reflect.ValueOf(imgui.NewIO)},
+	{"internalNewInputEvent", reflect.ValueOf(imgui.InternalNewInputEvent)},
+	{"newInputTextCallbackData", reflect.ValueOf(imgui.NewInputTextCallbackData)},
+	{"internalNewInputTextDeactivatedState", reflect.ValueOf(imgui.InternalNewInputTextDeactivatedState)},
+	{"internalNewInputTextState", reflect.ValueOf(imgui.InternalNewInputTextState)},
+	{"internalNewKeyOwnerData", reflect.ValueOf(imgui.InternalNewKeyOwnerData)},
+	{"internalNewKeyRoutingData", reflect.ValueOf(imgui.InternalNewKeyRoutingData)},
+	{"internalNewKeyRoutingTable", reflect.ValueOf(imgui.InternalNewKeyRoutingTable)},
+	{"internalNewLastItemData", reflect.ValueOf(imgui.InternalNewLastItemData)},
+	{"internalNewListClipperData", reflect.ValueOf(imgui.InternalNewListClipperData)},
+	{"internalListClipperRangeFromIndices", reflect.ValueOf(imgui.InternalListClipperRangeFromIndices)},
+	{"internalListClipperRangeFromPositions", reflect.ValueOf(imgui.InternalListClipperRangeFromPositions)},
+	{"newListClipper", reflect.ValueOf(imgui.NewListClipper)},
+	{"internalNewMenuColumns", reflect.ValueOf(imgui.InternalNewMenuColumns)},
+	{"internalNewMultiSelectState", reflect.ValueOf(imgui.InternalNewMultiSelectState)},
+	{"internalNewMultiSelectTempData", reflect.ValueOf(imgui.InternalNewMultiSelectTempData)},
+	{"internalNewNavItemData", reflect.ValueOf(imgui.InternalNewNavItemData)},
+	{"internalNewNextItemData", reflect.ValueOf(imgui.InternalNewNextItemData)},
+	{"internalNewNextWindowData", reflect.ValueOf(imgui.InternalNewNextWindowData)},
+	{"internalNewOldColumnData", reflect.ValueOf(imgui.InternalNewOldColumnData)},
+	{"internalNewOldColumns", reflect.ValueOf(imgui.InternalNewOldColumns)},
+	{"newOnceUponAFrame", reflect.ValueOf(imgui.NewOnceUponAFrame)},
+	{"newPayload", reflect.ValueOf(imgui.NewPayload)},
+	{"newPlatformIO", reflect.ValueOf(imgui.NewPlatformIO)},
+	{"newPlatformImeData", reflect.ValueOf(imgui.NewPlatformImeData)},
+	{"newPlatformMonitor", reflect.ValueOf(imgui.NewPlatformMonitor)},
+	{"internalNewPopupData", reflect.ValueOf(imgui.InternalNewPopupData)},
+	{"internalNewPtrOrIndexInt", reflect.ValueOf(imgui.InternalNewPtrOrIndexInt)},
+	{"internalNewPtrOrIndexPtr", reflect.ValueOf(imgui.InternalNewPtrOrIndexPtr)},
+	{"newSelectionBasicStorage", reflect.ValueOf(imgui.NewSelectionBasicStorage)},
+	{"newSelectionExternalStorage", reflect.ValueOf(imgui.NewSelectionExternalStorage)},
+	{"internalNewSettingsHandler", reflect.ValueOf(imgui.InternalNewSettingsHandler)},
+	{"internalNewStackLevelInfo", reflect.ValueOf(imgui.InternalNewStackLevelInfo)},
+	{"newStoragePairFloat", reflect.ValueOf(imgui.NewStoragePairFloat)},
+	{"newStoragePairInt", reflect.ValueOf(imgui.NewStoragePairInt)},
+	{"newStoragePairPtr", reflect.ValueOf(imgui.NewStoragePairPtr)},
+	{"internalNewStyleModFloat", reflect.ValueOf(imgui.InternalNewStyleModFloat)},
+	{"internalNewStyleModInt", reflect.ValueOf(imgui.InternalNewStyleModInt)},
+	{"internalNewStyleModVec2", reflect.ValueOf(imgui.InternalNewStyleModVec2)},
+	{"newStyle", reflect.ValueOf(imgui.NewStyle)},
+	{"internalNewTabBar", reflect.ValueOf(imgui.InternalNewTabBar)},
+	{"internalNewTabItem", reflect.ValueOf(imgui.InternalNewTabItem)},
+	{"internalNewTableColumnSettings", reflect.ValueOf(imgui.InternalNewTableColumnSettings)},
+	{"newTableColumnSortSpecs", reflect.ValueOf(imgui.NewTableColumnSortSpecs)},
+	{"internalNewTableColumn", reflect.ValueOf(imgui.InternalNewTableColumn)},
+	{"internalNewTableInstanceData", reflect.ValueOf(imgui.InternalNewTableInstanceData)},
+	{"internalNewTableSettings", reflect.ValueOf(imgui.InternalNewTableSettings)},
+	{"newTableSortSpecs", reflect.ValueOf(imgui.NewTableSortSpecs)},
+	{"internalNewTableTempData", reflect.ValueOf(imgui.InternalNewTableTempData)},
+	{"internalNewTable", reflect.ValueOf(imgui.InternalNewTable)},
+	{"newTextBuffer", reflect.ValueOf(imgui.NewTextBuffer)},
+	{"newTextFilter", reflect.ValueOf(imgui.NewTextFilter)},
+	{"newTextRangeNil", reflect.ValueOf(imgui.NewTextRangeNil)},
+	{"newTextRangeStr", reflect.ValueOf(imgui.NewTextRangeStr)},
+	{"internalNewTypingSelectState", reflect.ValueOf(imgui.InternalNewTypingSelectState)},
+	{"internalNewViewportP", reflect.ValueOf(imgui.InternalNewViewportP)},
+	{"newViewport", reflect.ValueOf(imgui.NewViewport)},
+	{"newWindowClass", reflect.ValueOf(imgui.NewWindowClass)},
+	{"internalNewWindowSettings", reflect.ValueOf(imgui.InternalNewWindowSettings)},
+	{"internalNewWindow", reflect.ValueOf(imgui.InternalNewWindow)},
+	{"newTextureData", reflect.ValueOf(imgui.NewTextureData)},
+	{"newTextureRefNil", reflect.ValueOf(imgui.NewTextureRefNil)},
+	{"newTextureRefTextureID", reflect.ValueOf(imgui.NewTextureRefTextureID)},
+	{"internalNewVec1Float", reflect.ValueOf(imgui.InternalNewVec1Float)},
+	{"internalNewVec1Nil", reflect.ValueOf(imgui.InternalNewVec1Nil)},
+	{"internalNewVec2iInt", reflect.ValueOf(imgui.InternalNewVec2iInt)},
+	{"internalNewVec2iNil", reflect.ValueOf(imgui.InternalNewVec2iNil)},
+	{"newVec4Float", reflect.ValueOf(imgui.NewVec4Float)},
+	{"newVec4Nil", reflect.ValueOf(imgui.NewVec4Nil)},
+	{"acceptDragDropPayloadV", reflect.ValueOf(imgui.AcceptDragDropPayloadV)},
+	{"internalActivateItemByID", reflect.ValueOf(imgui.InternalActivateItemByID)},
+	{"internalAddContextHook", reflect.ValueOf(imgui.InternalAddContextHook)},
+	{"internalAddSettingsHandler", reflect.ValueOf(imgui.InternalAddSettingsHandler)},
+	{"alignTextToFramePadding", reflect.ValueOf(imgui.AlignTextToFramePadding)},
+	{"arrowButton", reflect.ValueOf(imgui.ArrowButton)},
+	{"internalArrowButtonExV", reflect.ValueOf(imgui.InternalArrowButtonExV)},
+	{"beginV", reflect.ValueOf(imgui.BeginV)},
+	{"internalBeginBoxSelect", reflect.ValueOf(imgui.InternalBeginBoxSelect)},
+	{"internalBeginChildEx", reflect.ValueOf(imgui.InternalBeginChildEx)},
+	{"beginChildIDV", reflect.ValueOf(imgui.BeginChildIDV)},
+	{"beginChildStrV", reflect.ValueOf(imgui.BeginChildStrV)},
+	{"internalBeginColumnsV", reflect.ValueOf(imgui.InternalBeginColumnsV)},
+	{"beginComboV", reflect.ValueOf(imgui.BeginComboV)},
+	{"internalBeginComboPopup", reflect.ValueOf(imgui.InternalBeginComboPopup)},
+	{"internalBeginComboPreview", reflect.ValueOf(imgui.InternalBeginComboPreview)},
+	{"beginDisabledV", reflect.ValueOf(imgui.BeginDisabledV)},
+	{"internalBeginDisabledOverrideReenable", reflect.ValueOf(imgui.InternalBeginDisabledOverrideReenable)},
+	{"internalBeginDockableDragDropSource", reflect.ValueOf(imgui.InternalBeginDockableDragDropSource)},
+	{"internalBeginDockableDragDropTarget", reflect.ValueOf(imgui.InternalBeginDockableDragDropTarget)},
+	{"internalBeginDocked", reflect.ValueOf(imgui.InternalBeginDocked)},
+	{"beginDragDropSourceV", reflect.ValueOf(imgui.BeginDragDropSourceV)},
+	{"beginDragDropTarget", reflect.ValueOf(imgui.BeginDragDropTarget)},
+	{"internalBeginDragDropTargetCustom", reflect.ValueOf(imgui.InternalBeginDragDropTargetCustom)},
+	{"internalBeginDragDropTargetViewportV", reflect.ValueOf(imgui.InternalBeginDragDropTargetViewportV)},
+	{"internalBeginErrorTooltip", reflect.ValueOf(imgui.InternalBeginErrorTooltip)},
+	{"beginGroup", reflect.ValueOf(imgui.BeginGroup)},
+	{"beginItemTooltip", reflect.ValueOf(imgui.BeginItemTooltip)},
+	{"beginListBoxV", reflect.ValueOf(imgui.BeginListBoxV)},
+	{"beginMainMenuBar", reflect.ValueOf(imgui.BeginMainMenuBar)},
+	{"beginMenuV", reflect.ValueOf(imgui.BeginMenuV)},
+	{"beginMenuBar", reflect.ValueOf(imgui.BeginMenuBar)},
+	{"internalBeginMenuExV", reflect.ValueOf(imgui.InternalBeginMenuExV)},
+	{"beginMultiSelectV", reflect.ValueOf(imgui.BeginMultiSelectV)},
+	{"beginPopupV", reflect.ValueOf(imgui.BeginPopupV)},
+	{"beginPopupContextItemV", reflect.ValueOf(imgui.BeginPopupContextItemV)},
+	{"beginPopupContextVoidV", reflect.ValueOf(imgui.BeginPopupContextVoidV)},
+	{"beginPopupContextWindowV", reflect.ValueOf(imgui.BeginPopupContextWindowV)},
+	{"internalBeginPopupEx", reflect.ValueOf(imgui.InternalBeginPopupEx)},
+	{"internalBeginPopupMenuEx", reflect.ValueOf(imgui.InternalBeginPopupMenuEx)},
+	{"beginPopupModalV", reflect.ValueOf(imgui.BeginPopupModalV)},
+	{"beginTabBarV", reflect.ValueOf(imgui.BeginTabBarV)},
+	{"internalBeginTabBarEx", reflect.ValueOf(imgui.InternalBeginTabBarEx)},
+	{"beginTabItemV", reflect.ValueOf(imgui.BeginTabItemV)},
+	{"beginTableV", reflect.ValueOf(imgui.BeginTableV)},
+	{"internalBeginTableExV", reflect.ValueOf(imgui.InternalBeginTableExV)},
+	{"beginTooltip", reflect.ValueOf(imgui.BeginTooltip)},
+	{"internalBeginTooltipEx", reflect.ValueOf(imgui.InternalBeginTooltipEx)},
+	{"internalBeginTooltipHidden", reflect.ValueOf(imgui.InternalBeginTooltipHidden)},
+	{"internalBeginViewportSideBar", reflect.ValueOf(imgui.InternalBeginViewportSideBar)},
+	{"internalBringWindowToDisplayBack", reflect.ValueOf(imgui.InternalBringWindowToDisplayBack)},
+	{"internalBringWindowToDisplayBehind", reflect.ValueOf(imgui.InternalBringWindowToDisplayBehind)},
+	{"internalBringWindowToDisplayFront", reflect.ValueOf(imgui.InternalBringWindowToDisplayFront)},
+	{"internalBringWindowToFocusFront", reflect.ValueOf(imgui.InternalBringWindowToFocusFront)},
+	{"bullet", reflect.ValueOf(imgui.Bullet)},
+	{"bulletText", reflect.ValueOf(imgui.BulletText)},
+	{"buttonV", reflect.ValueOf(imgui.ButtonV)},
+	{"internalButtonBehaviorV", reflect.ValueOf(imgui.InternalButtonBehaviorV)},
+	{"internalButtonExV", reflect.ValueOf(imgui.InternalButtonExV)},
+	{"internalCalcClipRectVisibleItemsY", reflect.ValueOf(imgui.InternalCalcClipRectVisibleItemsY)},
+	{"internalCalcItemSize", reflect.ValueOf(imgui.InternalCalcItemSize)},
+	{"calcItemWidth", reflect.ValueOf(imgui.CalcItemWidth)},
+	{"internalCalcRoundingFlagsForRectInRect", reflect.ValueOf(imgui.InternalCalcRoundingFlagsForRectInRect)},
+	{"calcTextSizeV", reflect.ValueOf(imgui.CalcTextSizeV)},
+	{"internalCalcTypematicRepeatAmount", reflect.ValueOf(imgui.InternalCalcTypematicRepeatAmount)},
+	{"internalCalcWindowNextAutoFitSize", reflect.ValueOf(imgui.InternalCalcWindowNextAutoFitSize)},
+	{"internalCalcWrapWidthForPos", reflect.ValueOf(imgui.InternalCalcWrapWidthForPos)},
+	{"internalCallContextHooks", reflect.ValueOf(imgui.InternalCallContextHooks)},
+	{"checkbox", reflect.ValueOf(imgui.Checkbox)},
+	{"checkboxFlagsIntPtr", reflect.ValueOf(imgui.CheckboxFlagsIntPtr)},
+	{"internalCheckboxFlagsS64Ptr", reflect.ValueOf(imgui.InternalCheckboxFlagsS64Ptr)},
+	{"internalCheckboxFlagsU64Ptr", reflect.ValueOf(imgui.InternalCheckboxFlagsU64Ptr)},
+	{"checkboxFlagsUintPtr", reflect.ValueOf(imgui.CheckboxFlagsUintPtr)},
+	{"internalClearActiveID", reflect.ValueOf(imgui.InternalClearActiveID)},
+	{"internalClearDragDrop", reflect.ValueOf(imgui.InternalClearDragDrop)},
+	{"internalClearIniSettings", reflect.ValueOf(imgui.InternalClearIniSettings)},
+	{"internalClearWindowSettings", reflect.ValueOf(imgui.InternalClearWindowSettings)},
+	{"internalCloseButton", reflect.ValueOf(imgui.InternalCloseButton)},
+	{"closeCurrentPopup", reflect.ValueOf(imgui.CloseCurrentPopup)},
+	{"internalClosePopupToLevel", reflect.ValueOf(imgui.InternalClosePopupToLevel)},
+	{"internalClosePopupsExceptModals", reflect.ValueOf(imgui.InternalClosePopupsExceptModals)},
+	{"internalClosePopupsOverWindow", reflect.ValueOf(imgui.InternalClosePopupsOverWindow)},
+	{"internalCollapseButton", reflect.ValueOf(imgui.InternalCollapseButton)},
+	{"collapsingHeaderBoolPtrV", reflect.ValueOf(imgui.CollapsingHeaderBoolPtrV)},
+	{"collapsingHeaderTreeNodeFlagsV", reflect.ValueOf(imgui.CollapsingHeaderTreeNodeFlagsV)},
+	{"colorButtonV", reflect.ValueOf(imgui.ColorButtonV)},
+	{"colorConvertFloat4ToU32", reflect.ValueOf(imgui.ColorConvertFloat4ToU32)},
+	{"colorConvertHSVtoRGB", reflect.ValueOf(imgui.ColorConvertHSVtoRGB)},
+	{"colorConvertRGBtoHSV", reflect.ValueOf(imgui.ColorConvertRGBtoHSV)},
+	{"colorConvertU32ToFloat4", reflect.ValueOf(imgui.ColorConvertU32ToFloat4)},
+	{"colorEdit3V", reflect.ValueOf(imgui.ColorEdit3V)},
+	{"colorEdit4V", reflect.ValueOf(imgui.ColorEdit4V)},
+	{"internalColorEditOptionsPopup", reflect.ValueOf(imgui.InternalColorEditOptionsPopup)},
+	{"colorPicker3V", reflect.ValueOf(imgui.ColorPicker3V)},
+	{"colorPicker4V", reflect.ValueOf(imgui.ColorPicker4V)},
+	{"internalColorPickerOptionsPopup", reflect.ValueOf(imgui.InternalColorPickerOptionsPopup)},
+	{"internalColorTooltip", reflect.ValueOf(imgui.InternalColorTooltip)},
+	{"columnsV", reflect.ValueOf(imgui.ColumnsV)},
+	{"comboStrV", reflect.ValueOf(imgui.ComboStrV)},
+	{"comboStrarrV", reflect.ValueOf(imgui.ComboStrarrV)},
+	{"internalConvertSingleModFlagToKey", reflect.ValueOf(imgui.InternalConvertSingleModFlagToKey)},
+	{"createContextV", reflect.ValueOf(imgui.CreateContextV)},
+	{"internalCreateNewWindowSettings", reflect.ValueOf(imgui.InternalCreateNewWindowSettings)},
+	{"internalDataTypeApplyFromTextV", reflect.ValueOf(imgui.InternalDataTypeApplyFromTextV)},
+	{"internalDataTypeApplyOp", reflect.ValueOf(imgui.InternalDataTypeApplyOp)},
+	{"internalDataTypeClamp", reflect.ValueOf(imgui.InternalDataTypeClamp)},
+	{"internalDataTypeCompare", reflect.ValueOf(imgui.InternalDataTypeCompare)},
+	{"internalDataTypeFormatString", reflect.ValueOf(imgui.InternalDataTypeFormatString)},
+	{"internalDataTypeGetInfo", reflect.ValueOf(imgui.InternalDataTypeGetInfo)},
+	{"internalDataTypeIsZero", reflect.ValueOf(imgui.InternalDataTypeIsZero)},
+	{"internalDebugAllocHook", reflect.ValueOf(imgui.InternalDebugAllocHook)},
+	{"internalDebugBreakButton", reflect.ValueOf(imgui.InternalDebugBreakButton)},
+	{"internalDebugBreakButtonTooltip", reflect.ValueOf(imgui.InternalDebugBreakButtonTooltip)},
+	{"internalDebugBreakClearData", reflect.ValueOf(imgui.InternalDebugBreakClearData)},
+	{"debugCheckVersionAndDataLayout", reflect.ValueOf(imgui.DebugCheckVersionAndDataLayout)},
+	{"internalDebugDrawCursorPosV", reflect.ValueOf(imgui.InternalDebugDrawCursorPosV)},
+	{"internalDebugDrawItemRectV", reflect.ValueOf(imgui.InternalDebugDrawItemRectV)},
+	{"internalDebugDrawLineExtentsV", reflect.ValueOf(imgui.InternalDebugDrawLineExtentsV)},
+	{"debugFlashStyleColor", reflect.ValueOf(imgui.DebugFlashStyleColor)},
+	{"internalDebugHookIdInfo", reflect.ValueOf(imgui.InternalDebugHookIdInfo)},
+	{"internalDebugLocateItem", reflect.ValueOf(imgui.InternalDebugLocateItem)},
+	{"internalDebugLocateItemOnHover", reflect.ValueOf(imgui.InternalDebugLocateItemOnHover)},
+	{"internalDebugLocateItemResolveWithLastItem", reflect.ValueOf(imgui.InternalDebugLocateItemResolveWithLastItem)},
+	{"debugLog", reflect.ValueOf(imgui.DebugLog)},
+	{"internalDebugNodeColumns", reflect.ValueOf(imgui.InternalDebugNodeColumns)},
+	{"internalDebugNodeDockNode", reflect.ValueOf(imgui.InternalDebugNodeDockNode)},
+	{"internalDebugNodeDrawCmdShowMeshAndBoundingBox", reflect.ValueOf(imgui.InternalDebugNodeDrawCmdShowMeshAndBoundingBox)},
+	{"internalDebugNodeDrawList", reflect.ValueOf(imgui.InternalDebugNodeDrawList)},
+	{"internalDebugNodeFont", reflect.ValueOf(imgui.InternalDebugNodeFont)},
+	{"internalDebugNodeFontGlyph", reflect.ValueOf(imgui.InternalDebugNodeFontGlyph)},
+	{"internalDebugNodeFontGlyphesForSrcMask", reflect.ValueOf(imgui.InternalDebugNodeFontGlyphesForSrcMask)},
+	{"internalDebugNodeInputTextState", reflect.ValueOf(imgui.InternalDebugNodeInputTextState)},
+	{"internalDebugNodeMultiSelectState", reflect.ValueOf(imgui.InternalDebugNodeMultiSelectState)},
+	{"internalDebugNodePlatformMonitor", reflect.ValueOf(imgui.InternalDebugNodePlatformMonitor)},
+	{"internalDebugNodeStorage", reflect.ValueOf(imgui.InternalDebugNodeStorage)},
+	{"internalDebugNodeTabBar", reflect.ValueOf(imgui.InternalDebugNodeTabBar)},
+	{"internalDebugNodeTable", reflect.ValueOf(imgui.InternalDebugNodeTable)},
+	{"internalDebugNodeTableSettings", reflect.ValueOf(imgui.InternalDebugNodeTableSettings)},
+	{"internalDebugNodeTextureV", reflect.ValueOf(imgui.InternalDebugNodeTextureV)},
+	{"internalDebugNodeTypingSelectState", reflect.ValueOf(imgui.InternalDebugNodeTypingSelectState)},
+	{"internalDebugNodeViewport", reflect.ValueOf(imgui.InternalDebugNodeViewport)},
+	{"internalDebugNodeWindow", reflect.ValueOf(imgui.InternalDebugNodeWindow)},
+	{"internalDebugNodeWindowSettings", reflect.ValueOf(imgui.InternalDebugNodeWindowSettings)},
+	{"internalDebugRenderKeyboardPreview", reflect.ValueOf(imgui.InternalDebugRenderKeyboardPreview)},
+	{"internalDebugRenderViewportThumbnail", reflect.ValueOf(imgui.InternalDebugRenderViewportThumbnail)},
+	{"debugStartItemPicker", reflect.ValueOf(imgui.DebugStartItemPicker)},
+	{"debugTextEncoding", reflect.ValueOf(imgui.DebugTextEncoding)},
+	{"internalDebugTextUnformattedWithLocateItem", reflect.ValueOf(imgui.InternalDebugTextUnformattedWithLocateItem)},
+	{"destroyContextV", reflect.ValueOf(imgui.DestroyContextV)},
+	{"internalDestroyPlatformWindow", reflect.ValueOf(imgui.InternalDestroyPlatformWindow)},
+	{"destroyPlatformWindows", reflect.ValueOf(imgui.DestroyPlatformWindows)},
+	{"internalDockBuilderAddNodeV", reflect.ValueOf(imgui.InternalDockBuilderAddNodeV)},
+	{"internalDockBuilderCopyWindowSettings", reflect.ValueOf(imgui.InternalDockBuilderCopyWindowSettings)},
+	{"internalDockBuilderDockWindow", reflect.ValueOf(imgui.InternalDockBuilderDockWindow)},
+	{"internalDockBuilderFinish", reflect.ValueOf(imgui.InternalDockBuilderFinish)},
+	{"internalDockBuilderGetCentralNode", reflect.ValueOf(imgui.InternalDockBuilderGetCentralNode)},
+	{"internalDockBuilderGetNode", reflect.ValueOf(imgui.InternalDockBuilderGetNode)},
+	{"internalDockBuilderRemoveNode", reflect.ValueOf(imgui.InternalDockBuilderRemoveNode)},
+	{"internalDockBuilderRemoveNodeChildNodes", reflect.ValueOf(imgui.InternalDockBuilderRemoveNodeChildNodes)},
+	{"internalDockBuilderRemoveNodeDockedWindowsV", reflect.ValueOf(imgui.InternalDockBuilderRemoveNodeDockedWindowsV)},
+	{"internalDockBuilderSetNodePos", reflect.ValueOf(imgui.InternalDockBuilderSetNodePos)},
+	{"internalDockBuilderSetNodeSize", reflect.ValueOf(imgui.InternalDockBuilderSetNodeSize)},
+	{"internalDockBuilderSplitNode", reflect.ValueOf(imgui.InternalDockBuilderSplitNode)},
+	{"internalDockContextCalcDropPosForDocking", reflect.ValueOf(imgui.InternalDockContextCalcDropPosForDocking)},
+	{"internalDockContextClearNodes", reflect.ValueOf(imgui.InternalDockContextClearNodes)},
+	{"internalDockContextEndFrame", reflect.ValueOf(imgui.InternalDockContextEndFrame)},
+	{"internalDockContextFindNodeByID", reflect.ValueOf(imgui.InternalDockContextFindNodeByID)},
+	{"internalDockContextGenNodeID", reflect.ValueOf(imgui.InternalDockContextGenNodeID)},
+	{"internalDockContextInitialize", reflect.ValueOf(imgui.InternalDockContextInitialize)},
+	{"internalDockContextNewFrameUpdateDocking", reflect.ValueOf(imgui.InternalDockContextNewFrameUpdateDocking)},
+	{"internalDockContextNewFrameUpdateUndocking", reflect.ValueOf(imgui.InternalDockContextNewFrameUpdateUndocking)},
+	{"internalDockContextProcessUndockNode", reflect.ValueOf(imgui.InternalDockContextProcessUndockNode)},
+	{"internalDockContextProcessUndockWindowV", reflect.ValueOf(imgui.InternalDockContextProcessUndockWindowV)},
+	{"internalDockContextQueueDock", reflect.ValueOf(imgui.InternalDockContextQueueDock)},
+	{"internalDockContextQueueUndockNode", reflect.ValueOf(imgui.InternalDockContextQueueUndockNode)},
+	{"internalDockContextQueueUndockWindow", reflect.ValueOf(imgui.InternalDockContextQueueUndockWindow)},
+	{"internalDockContextRebuildNodes", reflect.ValueOf(imgui.InternalDockContextRebuildNodes)},
+	{"internalDockContextShutdown", reflect.ValueOf(imgui.InternalDockContextShutdown)},
+	{"internalDockNodeBeginAmendTabBar", reflect.ValueOf(imgui.InternalDockNodeBeginAmendTabBar)},
+	{"internalDockNodeEndAmendTabBar", reflect.ValueOf(imgui.InternalDockNodeEndAmendTabBar)},
+	{"internalDockNodeGetDepth", reflect.ValueOf(imgui.InternalDockNodeGetDepth)},
+	{"internalDockNodeGetRootNode", reflect.ValueOf(imgui.InternalDockNodeGetRootNode)},
+	{"internalDockNodeGetWindowMenuButtonId", reflect.ValueOf(imgui.InternalDockNodeGetWindowMenuButtonId)},
+	{"internalDockNodeIsInHierarchyOf", reflect.ValueOf(imgui.InternalDockNodeIsInHierarchyOf)},
+	{"internalDockNodeWindowMenuHandlerDefault", reflect.ValueOf(imgui.InternalDockNodeWindowMenuHandlerDefault)},
+	{"dockSpaceV", reflect.ValueOf(imgui.DockSpaceV)},
+	{"dockSpaceOverViewportV", reflect.ValueOf(imgui.DockSpaceOverViewportV)},
+	{"internalDragBehavior", reflect.ValueOf(imgui.InternalDragBehavior)},
+	{"dragFloatV", reflect.ValueOf(imgui.DragFloatV)},
+	{"dragFloat2V", reflect.ValueOf(imgui.DragFloat2V)},
+	{"dragFloat3V", reflect.ValueOf(imgui.DragFloat3V)},
+	{"dragFloat4V", reflect.ValueOf(imgui.DragFloat4V)},
+	{"dragFloatRange2V", reflect.ValueOf(imgui.DragFloatRange2V)},
+	{"dragIntV", reflect.ValueOf(imgui.DragIntV)},
+	{"dragInt2V", reflect.ValueOf(imgui.DragInt2V)},
+	{"dragInt3V", reflect.ValueOf(imgui.DragInt3V)},
+	{"dragInt4V", reflect.ValueOf(imgui.DragInt4V)},
+	{"dragIntRange2V", reflect.ValueOf(imgui.DragIntRange2V)},
+	{"dragScalarV", reflect.ValueOf(imgui.DragScalarV)},
+	{"dragScalarNV", reflect.ValueOf(imgui.DragScalarNV)},
+	{"dummy", reflect.ValueOf(imgui.Dummy)},
+	{"end", reflect.ValueOf(imgui.End)},
+	{"internalEndBoxSelect", reflect.ValueOf(imgui.InternalEndBoxSelect)},
+	{"endChild", reflect.ValueOf(imgui.EndChild)},
+	{"internalEndColumns", reflect.ValueOf(imgui.InternalEndColumns)},
+	{"endCombo", reflect.ValueOf(imgui.EndCombo)},
+	{"internalEndComboPreview", reflect.ValueOf(imgui.InternalEndComboPreview)},
+	{"endDisabled", reflect.ValueOf(imgui.EndDisabled)},
+	{"internalEndDisabledOverrideReenable", reflect.ValueOf(imgui.InternalEndDisabledOverrideReenable)},
+	{"endDragDropSource", reflect.ValueOf(imgui.EndDragDropSource)},
+	{"endDragDropTarget", reflect.ValueOf(imgui.EndDragDropTarget)},
+	{"internalEndErrorTooltip", reflect.ValueOf(imgui.InternalEndErrorTooltip)},
+	{"endFrame", reflect.ValueOf(imgui.EndFrame)},
+	{"endGroup", reflect.ValueOf(imgui.EndGroup)},
+	{"endListBox", reflect.ValueOf(imgui.EndListBox)},
+	{"endMainMenuBar", reflect.ValueOf(imgui.EndMainMenuBar)},
+	{"endMenu", reflect.ValueOf(imgui.EndMenu)},
+	{"endMenuBar", reflect.ValueOf(imgui.EndMenuBar)},
+	{"endMultiSelect", reflect.ValueOf(imgui.EndMultiSelect)},
+	{"endPopup", reflect.ValueOf(imgui.EndPopup)},
+	{"endTabBar", reflect.ValueOf(imgui.EndTabBar)},
+	{"endTabItem", reflect.ValueOf(imgui.EndTabItem)},
+	{"endTable", reflect.ValueOf(imgui.EndTable)},
+	{"endTooltip", reflect.ValueOf(imgui.EndTooltip)},
+	{"internalErrorCheckEndFrameFinalizeErrorTooltip", reflect.ValueOf(imgui.InternalErrorCheckEndFrameFinalizeErrorTooltip)},
+	{"internalErrorCheckUsingSetCursorPosToExtendParentBoundaries", reflect.ValueOf(imgui.InternalErrorCheckUsingSetCursorPosToExtendParentBoundaries)},
+	{"internalErrorLog", reflect.ValueOf(imgui.InternalErrorLog)},
+	{"internalErrorRecoveryStoreState", reflect.ValueOf(imgui.InternalErrorRecoveryStoreState)},
+	{"internalErrorRecoveryTryToRecoverState", reflect.ValueOf(imgui.InternalErrorRecoveryTryToRecoverState)},
+	{"internalErrorRecoveryTryToRecoverWindowState", reflect.ValueOf(imgui.InternalErrorRecoveryTryToRecoverWindowState)},
+	{"internalFindBestWindowPosForPopup", reflect.ValueOf(imgui.InternalFindBestWindowPosForPopup)},
+	{"internalFindBestWindowPosForPopupEx", reflect.ValueOf(imgui.InternalFindBestWindowPosForPopupEx)},
+	{"internalFindBlockingModal", reflect.ValueOf(imgui.InternalFindBlockingModal)},
+	{"internalFindBottomMostVisibleWindowWithinBeginStack", reflect.ValueOf(imgui.InternalFindBottomMostVisibleWindowWithinBeginStack)},
+	{"internalFindHoveredViewportFromPlatformWindowStack", reflect.ValueOf(imgui.InternalFindHoveredViewportFromPlatformWindowStack)},
+	{"internalFindOrCreateColumns", reflect.ValueOf(imgui.InternalFindOrCreateColumns)},
+	{"internalFindRenderedTextEndV", reflect.ValueOf(imgui.InternalFindRenderedTextEndV)},
+	{"internalFindSettingsHandler", reflect.ValueOf(imgui.InternalFindSettingsHandler)},
+	{"findViewportByID", reflect.ValueOf(imgui.FindViewportByID)},
+	{"findViewportByPlatformHandle", reflect.ValueOf(imgui.FindViewportByPlatformHandle)},
+	{"internalFindWindowByID", reflect.ValueOf(imgui.InternalFindWindowByID)},
+	{"internalFindWindowByName", reflect.ValueOf(imgui.InternalFindWindowByName)},
+	{"internalFindWindowDisplayIndex", reflect.ValueOf(imgui.InternalFindWindowDisplayIndex)},
+	{"internalFindWindowSettingsByID", reflect.ValueOf(imgui.InternalFindWindowSettingsByID)},
+	{"internalFindWindowSettingsByWindow", reflect.ValueOf(imgui.InternalFindWindowSettingsByWindow)},
+	{"internalFixupKeyChord", reflect.ValueOf(imgui.InternalFixupKeyChord)},
+	{"internalFocusItem", reflect.ValueOf(imgui.InternalFocusItem)},
+	{"internalFocusTopMostWindowUnderOne", reflect.ValueOf(imgui.InternalFocusTopMostWindowUnderOne)},
+	{"internalFocusWindowV", reflect.ValueOf(imgui.InternalFocusWindowV)},
+	{"internalGcAwakeTransientWindowBuffers", reflect.ValueOf(imgui.InternalGcAwakeTransientWindowBuffers)},
+	{"internalGcCompactTransientMiscBuffers", reflect.ValueOf(imgui.InternalGcCompactTransientMiscBuffers)},
+	{"internalGcCompactTransientWindowBuffers", reflect.ValueOf(imgui.InternalGcCompactTransientWindowBuffers)},
+	{"internalActiveID", reflect.ValueOf(imgui.InternalActiveID)},
+	{"backgroundDrawListV", reflect.ValueOf(imgui.BackgroundDrawListV)},
+	{"internalBoxSelectState", reflect.ValueOf(imgui.InternalBoxSelectState)},
+	{"clipboardText", reflect.ValueOf(imgui.ClipboardText)},
+	{"colorU32ColV", reflect.ValueOf(imgui.ColorU32ColV)},
+	{"colorU32U32V", reflect.ValueOf(imgui.ColorU32U32V)},
+	{"colorU32Vec4", reflect.ValueOf(imgui.ColorU32Vec4)},
+	{"columnIndex", reflect.ValueOf(imgui.ColumnIndex)},
+	{"internalColumnNormFromOffset", reflect.ValueOf(imgui.InternalColumnNormFromOffset)},
+	{"columnOffsetV", reflect.ValueOf(imgui.ColumnOffsetV)},
+	{"internalColumnOffsetFromNorm", reflect.ValueOf(imgui.InternalColumnOffsetFromNorm)},
+	{"columnWidthV", reflect.ValueOf(imgui.ColumnWidthV)},
+	{"columnsCount", reflect.ValueOf(imgui.ColumnsCount)},
+	{"internalColumnsID", reflect.ValueOf(imgui.InternalColumnsID)},
+	{"contentRegionAvail", reflect.ValueOf(imgui.ContentRegionAvail)},
+	{"currentContext", reflect.ValueOf(imgui.CurrentContext)},
+	{"internalCurrentFocusScope", reflect.ValueOf(imgui.InternalCurrentFocusScope)},
+	{"internalCurrentTabBar", reflect.ValueOf(imgui.InternalCurrentTabBar)},
+	{"internalCurrentTable", reflect.ValueOf(imgui.InternalCurrentTable)},
+	{"internalCurrentWindow", reflect.ValueOf(imgui.InternalCurrentWindow)},
+	{"internalCurrentWindowRead", reflect.ValueOf(imgui.InternalCurrentWindowRead)},
+	{"cursorPos", reflect.ValueOf(imgui.CursorPos)},
+	{"cursorPosX", reflect.ValueOf(imgui.CursorPosX)},
+	{"cursorPosY", reflect.ValueOf(imgui.CursorPosY)},
+	{"cursorScreenPos", reflect.ValueOf(imgui.CursorScreenPos)},
+	{"cursorStartPos", reflect.ValueOf(imgui.CursorStartPos)},
+	{"internalDefaultFont", reflect.ValueOf(imgui.InternalDefaultFont)},
+	{"dragDropPayload", reflect.ValueOf(imgui.DragDropPayload)},
+	{"currentDrawData", reflect.ValueOf(imgui.CurrentDrawData)},
+	{"currentDrawListSharedData", reflect.ValueOf(imgui.CurrentDrawListSharedData)},
+	{"internalFocusID", reflect.ValueOf(imgui.InternalFocusID)},
+	{"currentFont", reflect.ValueOf(imgui.CurrentFont)},
+	{"getFontBaked", reflect.ValueOf(imgui.GetFontBaked)},
+	{"internalFontRasterizerDensity", reflect.ValueOf(imgui.InternalFontRasterizerDensity)},
+	{"fontSize", reflect.ValueOf(imgui.FontSize)},
+	{"fontTexUvWhitePixel", reflect.ValueOf(imgui.FontTexUvWhitePixel)},
+	{"foregroundDrawListViewportPtrV", reflect.ValueOf(imgui.ForegroundDrawListViewportPtrV)},
+	{"internalForegroundDrawListWindowPtr", reflect.ValueOf(imgui.InternalForegroundDrawListWindowPtr)},
+	{"frameCount", reflect.ValueOf(imgui.FrameCount)},
+	{"frameHeight", reflect.ValueOf(imgui.FrameHeight)},
+	{"frameHeightWithSpacing", reflect.ValueOf(imgui.FrameHeightWithSpacing)},
+	{"internalHoveredID", reflect.ValueOf(imgui.InternalHoveredID)},
+	{"internalIDWithSeedInt", reflect.ValueOf(imgui.InternalIDWithSeedInt)},
+	{"internalIDWithSeedStr", reflect.ValueOf(imgui.InternalIDWithSeedStr)},
+	{"iDInt", reflect.ValueOf(imgui.IDInt)},
+	{"iDPtr", reflect.ValueOf(imgui.IDPtr)},
+	{"iDStr", reflect.ValueOf(imgui.IDStr)},
+	{"iDStrStr", reflect.ValueOf(imgui.IDStrStr)},
+	{"internalIOContextPtr", reflect.ValueOf(imgui.InternalIOContextPtr)},
+	{"currentIO", reflect.ValueOf(imgui.CurrentIO)},
+	{"internalInputTextState", reflect.ValueOf(imgui.InternalInputTextState)},
+	{"internalItemFlags", reflect.ValueOf(imgui.InternalItemFlags)},
+	{"itemID", reflect.ValueOf(imgui.ItemID)},
+	{"itemRectMax", reflect.ValueOf(imgui.ItemRectMax)},
+	{"itemRectMin", reflect.ValueOf(imgui.ItemRectMin)},
+	{"itemRectSize", reflect.ValueOf(imgui.ItemRectSize)},
+	{"internalItemStatusFlags", reflect.ValueOf(imgui.InternalItemStatusFlags)},
+	{"internalKeyChordName", reflect.ValueOf(imgui.InternalKeyChordName)},
+	{"internalKeyDataContextPtr", reflect.ValueOf(imgui.InternalKeyDataContextPtr)},
+	{"internalKeyDataKey", reflect.ValueOf(imgui.InternalKeyDataKey)},
+	{"internalKeyMagnitude2d", reflect.ValueOf(imgui.InternalKeyMagnitude2d)},
+	{"keyName", reflect.ValueOf(imgui.KeyName)},
+	{"internalKeyOwner", reflect.ValueOf(imgui.InternalKeyOwner)},
+	{"internalKeyOwnerData", reflect.ValueOf(imgui.InternalKeyOwnerData)},
+	{"keyPressedAmount", reflect.ValueOf(imgui.KeyPressedAmount)},
+	{"mainViewport", reflect.ValueOf(imgui.MainViewport)},
+	{"mouseClickedCount", reflect.ValueOf(imgui.MouseClickedCount)},
+	{"currentMouseCursor", reflect.ValueOf(imgui.CurrentMouseCursor)},
+	{"mouseDragDeltaV", reflect.ValueOf(imgui.MouseDragDeltaV)},
+	{"mousePos", reflect.ValueOf(imgui.MousePos)},
+	{"mousePosOnOpeningCurrentPopup", reflect.ValueOf(imgui.MousePosOnOpeningCurrentPopup)},
+	{"internalMultiSelectState", reflect.ValueOf(imgui.InternalMultiSelectState)},
+	{"internalNavTweakPressedAmount", reflect.ValueOf(imgui.InternalNavTweakPressedAmount)},
+	{"internalPlatformIOContextPtr", reflect.ValueOf(imgui.InternalPlatformIOContextPtr)},
+	{"currentPlatformIO", reflect.ValueOf(imgui.CurrentPlatformIO)},
+	{"internalPopupAllowedExtentRect", reflect.ValueOf(imgui.InternalPopupAllowedExtentRect)},
+	{"internalRoundedFontSize", reflect.ValueOf(imgui.InternalRoundedFontSize)},
+	{"scrollMaxX", reflect.ValueOf(imgui.ScrollMaxX)},
+	{"scrollMaxY", reflect.ValueOf(imgui.ScrollMaxY)},
+	{"scrollX", reflect.ValueOf(imgui.ScrollX)},
+	{"scrollY", reflect.ValueOf(imgui.ScrollY)},
+	{"internalShortcutRoutingData", reflect.ValueOf(imgui.InternalShortcutRoutingData)},
+	{"stateStorage", reflect.ValueOf(imgui.StateStorage)},
+	{"currentStyle", reflect.ValueOf(imgui.CurrentStyle)},
+	{"styleColorName", reflect.ValueOf(imgui.StyleColorName)},
+	{"styleColorVec4", reflect.ValueOf(imgui.StyleColorVec4)},
+	{"internalStyleVarInfo", reflect.ValueOf(imgui.InternalStyleVarInfo)},
+	{"textLineHeight", reflect.ValueOf(imgui.TextLineHeight)},
+	{"textLineHeightWithSpacing", reflect.ValueOf(imgui.TextLineHeightWithSpacing)},
+	{"time", reflect.ValueOf(imgui.Time)},
+	{"internalTopMostAndVisiblePopupModal", reflect.ValueOf(imgui.InternalTopMostAndVisiblePopupModal)},
+	{"internalTopMostPopupModal", reflect.ValueOf(imgui.InternalTopMostPopupModal)},
+	{"treeNodeToLabelSpacing", reflect.ValueOf(imgui.TreeNodeToLabelSpacing)},
+	{"internalTypematicRepeatRate", reflect.ValueOf(imgui.InternalTypematicRepeatRate)},
+	{"internalTypingSelectRequestV", reflect.ValueOf(imgui.InternalTypingSelectRequestV)},
+	{"version", reflect.ValueOf(imgui.Version)},
+	{"internalViewportPlatformMonitor", reflect.ValueOf(imgui.InternalViewportPlatformMonitor)},
+	{"internalWindowAlwaysWantOwnTabBar", reflect.ValueOf(imgui.InternalWindowAlwaysWantOwnTabBar)},
+	{"windowDockID", reflect.ValueOf(imgui.WindowDockID)},
+	{"internalWindowDockNode", reflect.ValueOf(imgui.InternalWindowDockNode)},
+	{"windowDpiScale", reflect.ValueOf(imgui.WindowDpiScale)},
+	{"windowDrawList", reflect.ValueOf(imgui.WindowDrawList)},
+	{"windowHeight", reflect.ValueOf(imgui.WindowHeight)},
+	{"windowPos", reflect.ValueOf(imgui.WindowPos)},
+	{"internalWindowResizeBorderID", reflect.ValueOf(imgui.InternalWindowResizeBorderID)},
+	{"internalWindowResizeCornerID", reflect.ValueOf(imgui.InternalWindowResizeCornerID)},
+	{"internalWindowScrollbarID", reflect.ValueOf(imgui.InternalWindowScrollbarID)},
+	{"internalWindowScrollbarRect", reflect.ValueOf(imgui.InternalWindowScrollbarRect)},
+	{"windowSize", reflect.ValueOf(imgui.WindowSize)},
+	{"windowViewport", reflect.ValueOf(imgui.WindowViewport)},
+	{"windowWidth", reflect.ValueOf(imgui.WindowWidth)},
+	{"internalImAbsFloat", reflect.ValueOf(imgui.InternalImAbsFloat)},
+	{"internalImAbsInt", reflect.ValueOf(imgui.InternalImAbsInt)},
+	{"internalImAbsDouble", reflect.ValueOf(imgui.InternalImAbsDouble)},
+	{"internalImAlphaBlendColors", reflect.ValueOf(imgui.InternalImAlphaBlendColors)},
+	{"internalImBezierCubicCalc", reflect.ValueOf(imgui.InternalImBezierCubicCalc)},
+	{"internalImBezierCubicClosestPoint", reflect.ValueOf(imgui.InternalImBezierCubicClosestPoint)},
+	{"internalImBezierCubicClosestPointCasteljau", reflect.ValueOf(imgui.InternalImBezierCubicClosestPointCasteljau)},
+	{"internalImBezierQuadraticCalc", reflect.ValueOf(imgui.InternalImBezierQuadraticCalc)},
+	{"internalImBitArrayClearAllBits", reflect.ValueOf(imgui.InternalImBitArrayClearAllBits)},
+	{"internalImBitArrayClearBit", reflect.ValueOf(imgui.InternalImBitArrayClearBit)},
+	{"internalImBitArrayGetStorageSizeInBytes", reflect.ValueOf(imgui.InternalImBitArrayGetStorageSizeInBytes)},
+	{"internalImBitArraySetBit", reflect.ValueOf(imgui.InternalImBitArraySetBit)},
+	{"internalImBitArraySetBitRange", reflect.ValueOf(imgui.InternalImBitArraySetBitRange)},
+	{"internalImBitArrayTestBit", reflect.ValueOf(imgui.InternalImBitArrayTestBit)},
+	{"internalImCharIsBlankA", reflect.ValueOf(imgui.InternalImCharIsBlankA)},
+	{"internalImCharIsBlankW", reflect.ValueOf(imgui.InternalImCharIsBlankW)},
+	{"internalImCharIsXdigitA", reflect.ValueOf(imgui.InternalImCharIsXdigitA)},
+	{"internalImClamp", reflect.ValueOf(imgui.InternalImClamp)},
+	{"internalImCountSetBits", reflect.ValueOf(imgui.InternalImCountSetBits)},
+	{"internalImDot", reflect.ValueOf(imgui.InternalImDot)},
+	{"internalImExponentialMovingAverage", reflect.ValueOf(imgui.InternalImExponentialMovingAverage)},
+	{"internalImFileLoadToMemoryV", reflect.ValueOf(imgui.InternalImFileLoadToMemoryV)},
+	{"internalImFloorFloat", reflect.ValueOf(imgui.InternalImFloorFloat)},
+	{"internalImFloorVec2", reflect.ValueOf(imgui.InternalImFloorVec2)},
+	{"internalImFontAtlasAddDrawListSharedData", reflect.ValueOf(imgui.InternalImFontAtlasAddDrawListSharedData)},
+	{"internalImFontAtlasBakedAdd", reflect.ValueOf(imgui.InternalImFontAtlasBakedAdd)},
+	{"internalImFontAtlasBakedAddFontGlyph", reflect.ValueOf(imgui.InternalImFontAtlasBakedAddFontGlyph)},
+	{"internalImFontAtlasBakedAddFontGlyphAdvancedX", reflect.ValueOf(imgui.InternalImFontAtlasBakedAddFontGlyphAdvancedX)},
+	{"internalImFontAtlasBakedDiscard", reflect.ValueOf(imgui.InternalImFontAtlasBakedDiscard)},
+	{"internalImFontAtlasBakedDiscardFontGlyph", reflect.ValueOf(imgui.InternalImFontAtlasBakedDiscardFontGlyph)},
+	{"internalImFontAtlasBakedGetClosestMatch", reflect.ValueOf(imgui.InternalImFontAtlasBakedGetClosestMatch)},
+	{"internalImFontAtlasBakedGetId", reflect.ValueOf(imgui.InternalImFontAtlasBakedGetId)},
+	{"internalImFontAtlasBakedGetOrAdd", reflect.ValueOf(imgui.InternalImFontAtlasBakedGetOrAdd)},
+	{"internalImFontAtlasBakedSetFontGlyphBitmap", reflect.ValueOf(imgui.InternalImFontAtlasBakedSetFontGlyphBitmap)},
+	{"internalImFontAtlasBuildClear", reflect.ValueOf(imgui.InternalImFontAtlasBuildClear)},
+	{"internalImFontAtlasBuildDestroy", reflect.ValueOf(imgui.InternalImFontAtlasBuildDestroy)},
+	{"internalImFontAtlasBuildDiscardBakes", reflect.ValueOf(imgui.InternalImFontAtlasBuildDiscardBakes)},
+	{"internalImFontAtlasBuildGetOversampleFactors", reflect.ValueOf(imgui.InternalImFontAtlasBuildGetOversampleFactors)},
+	{"internalImFontAtlasBuildInit", reflect.ValueOf(imgui.InternalImFontAtlasBuildInit)},
+	{"internalImFontAtlasBuildLegacyPreloadAllGlyphRanges", reflect.ValueOf(imgui.InternalImFontAtlasBuildLegacyPreloadAllGlyphRanges)},
+	{"internalImFontAtlasBuildMain", reflect.ValueOf(imgui.InternalImFontAtlasBuildMain)},
+	{"internalImFontAtlasBuildRenderBitmapFromString", reflect.ValueOf(imgui.InternalImFontAtlasBuildRenderBitmapFromString)},
+	{"internalImFontAtlasBuildSetupFontLoader", reflect.ValueOf(imgui.InternalImFontAtlasBuildSetupFontLoader)},
+	{"internalImFontAtlasBuildSetupFontSpecialGlyphs", reflect.ValueOf(imgui.InternalImFontAtlasBuildSetupFontSpecialGlyphs)},
+	{"internalImFontAtlasBuildUpdatePointers", reflect.ValueOf(imgui.InternalImFontAtlasBuildUpdatePointers)},
+	{"internalImFontAtlasDebugLogTextureRequests", reflect.ValueOf(imgui.InternalImFontAtlasDebugLogTextureRequests)},
+	{"internalImFontAtlasFontDestroyOutput", reflect.ValueOf(imgui.InternalImFontAtlasFontDestroyOutput)},
+	{"internalImFontAtlasFontDestroySourceData", reflect.ValueOf(imgui.InternalImFontAtlasFontDestroySourceData)},
+	{"internalImFontAtlasFontDiscardBakes", reflect.ValueOf(imgui.InternalImFontAtlasFontDiscardBakes)},
+	{"internalImFontAtlasFontInitOutput", reflect.ValueOf(imgui.InternalImFontAtlasFontInitOutput)},
+	{"internalImFontAtlasFontSourceAddToFont", reflect.ValueOf(imgui.InternalImFontAtlasFontSourceAddToFont)},
+	{"internalImFontAtlasFontSourceInit", reflect.ValueOf(imgui.InternalImFontAtlasFontSourceInit)},
+	{"internalImFontAtlasGetFontLoaderForStbTruetype", reflect.ValueOf(imgui.InternalImFontAtlasGetFontLoaderForStbTruetype)},
+	{"internalImFontAtlasGetMouseCursorTexData", reflect.ValueOf(imgui.InternalImFontAtlasGetMouseCursorTexData)},
+	{"internalImFontAtlasPackAddRectV", reflect.ValueOf(imgui.InternalImFontAtlasPackAddRectV)},
+	{"internalImFontAtlasPackDiscardRect", reflect.ValueOf(imgui.InternalImFontAtlasPackDiscardRect)},
+	{"internalImFontAtlasPackGetRect", reflect.ValueOf(imgui.InternalImFontAtlasPackGetRect)},
+	{"internalImFontAtlasPackGetRectSafe", reflect.ValueOf(imgui.InternalImFontAtlasPackGetRectSafe)},
+	{"internalImFontAtlasPackInit", reflect.ValueOf(imgui.InternalImFontAtlasPackInit)},
+	{"internalImFontAtlasRectIdGetGeneration", reflect.ValueOf(imgui.InternalImFontAtlasRectIdGetGeneration)},
+	{"internalImFontAtlasRectIdGetIndex", reflect.ValueOf(imgui.InternalImFontAtlasRectIdGetIndex)},
+	{"internalImFontAtlasRectIdMake", reflect.ValueOf(imgui.InternalImFontAtlasRectIdMake)},
+	{"internalImFontAtlasRemoveDrawListSharedData", reflect.ValueOf(imgui.InternalImFontAtlasRemoveDrawListSharedData)},
+	{"internalImFontAtlasTextureAdd", reflect.ValueOf(imgui.InternalImFontAtlasTextureAdd)},
+	{"internalImFontAtlasTextureBlockConvert", reflect.ValueOf(imgui.InternalImFontAtlasTextureBlockConvert)},
+	{"internalImFontAtlasTextureBlockCopy", reflect.ValueOf(imgui.InternalImFontAtlasTextureBlockCopy)},
+	{"internalImFontAtlasTextureBlockFill", reflect.ValueOf(imgui.InternalImFontAtlasTextureBlockFill)},
+	{"internalImFontAtlasTextureBlockPostProcess", reflect.ValueOf(imgui.InternalImFontAtlasTextureBlockPostProcess)},
+	{"internalImFontAtlasTextureBlockPostProcessMultiply", reflect.ValueOf(imgui.InternalImFontAtlasTextureBlockPostProcessMultiply)},
+	{"internalImFontAtlasTextureBlockQueueUpload", reflect.ValueOf(imgui.InternalImFontAtlasTextureBlockQueueUpload)},
+	{"internalImFontAtlasTextureCompact", reflect.ValueOf(imgui.InternalImFontAtlasTextureCompact)},
+	{"internalImFontAtlasTextureGetSizeEstimate", reflect.ValueOf(imgui.InternalImFontAtlasTextureGetSizeEstimate)},
+	{"internalImFontAtlasTextureGrowV", reflect.ValueOf(imgui.InternalImFontAtlasTextureGrowV)},
+	{"internalImFontAtlasTextureMakeSpace", reflect.ValueOf(imgui.InternalImFontAtlasTextureMakeSpace)},
+	{"internalImFontAtlasTextureRepack", reflect.ValueOf(imgui.InternalImFontAtlasTextureRepack)},
+	{"internalImFontAtlasUpdateDrawListsSharedData", reflect.ValueOf(imgui.InternalImFontAtlasUpdateDrawListsSharedData)},
+	{"internalImFontAtlasUpdateDrawListsTextures", reflect.ValueOf(imgui.InternalImFontAtlasUpdateDrawListsTextures)},
+	{"internalImFontAtlasUpdateNewFrame", reflect.ValueOf(imgui.InternalImFontAtlasUpdateNewFrame)},
+	{"internalImFontCalcTextSizeEx", reflect.ValueOf(imgui.InternalImFontCalcTextSizeEx)},
+	{"internalImFontCalcWordWrapPositionExV", reflect.ValueOf(imgui.InternalImFontCalcWordWrapPositionExV)},
+	{"internalImFormatString", reflect.ValueOf(imgui.InternalImFormatString)},
+	{"internalImFormatStringToTempBuffer", reflect.ValueOf(imgui.InternalImFormatStringToTempBuffer)},
+	{"internalImHashDataV", reflect.ValueOf(imgui.InternalImHashDataV)},
+	{"internalImHashSkipUncontributingPrefix", reflect.ValueOf(imgui.InternalImHashSkipUncontributingPrefix)},
+	{"internalImHashStrV", reflect.ValueOf(imgui.InternalImHashStrV)},
+	{"internalImInvLength", reflect.ValueOf(imgui.InternalImInvLength)},
+	{"internalImIsFloatAboveGuaranteedIntegerPrecision", reflect.ValueOf(imgui.InternalImIsFloatAboveGuaranteedIntegerPrecision)},
+	{"internalImIsPowerOfTwoInt", reflect.ValueOf(imgui.InternalImIsPowerOfTwoInt)},
+	{"internalImIsPowerOfTwoU64", reflect.ValueOf(imgui.InternalImIsPowerOfTwoU64)},
+	{"internalImLengthSqrVec2", reflect.ValueOf(imgui.InternalImLengthSqrVec2)},
+	{"internalImLengthSqrVec4", reflect.ValueOf(imgui.InternalImLengthSqrVec4)},
+	{"internalImLerpVec2Float", reflect.ValueOf(imgui.InternalImLerpVec2Float)},
+	{"internalImLerpVec2Vec2", reflect.ValueOf(imgui.InternalImLerpVec2Vec2)},
+	{"internalImLerpVec4", reflect.ValueOf(imgui.InternalImLerpVec4)},
+	{"internalImLineClosestPoint", reflect.ValueOf(imgui.InternalImLineClosestPoint)},
+	{"internalImLinearRemapClamp", reflect.ValueOf(imgui.InternalImLinearRemapClamp)},
+	{"internalImLinearSweep", reflect.ValueOf(imgui.InternalImLinearSweep)},
+	{"internalImLogFloat", reflect.ValueOf(imgui.InternalImLogFloat)},
+	{"internalImLogDouble", reflect.ValueOf(imgui.InternalImLogDouble)},
+	{"internalImLowerBound", reflect.ValueOf(imgui.InternalImLowerBound)},
+	{"internalImMax", reflect.ValueOf(imgui.InternalImMax)},
+	{"internalImMemdup", reflect.ValueOf(imgui.InternalImMemdup)},
+	{"internalImMin", reflect.ValueOf(imgui.InternalImMin)},
+	{"internalImModPositive", reflect.ValueOf(imgui.InternalImModPositive)},
+	{"internalImMul", reflect.ValueOf(imgui.InternalImMul)},
+	{"internalImParseFormatFindEnd", reflect.ValueOf(imgui.InternalImParseFormatFindEnd)},
+	{"internalImParseFormatFindStart", reflect.ValueOf(imgui.InternalImParseFormatFindStart)},
+	{"internalImParseFormatPrecision", reflect.ValueOf(imgui.InternalImParseFormatPrecision)},
+	{"internalImParseFormatSanitizeForPrinting", reflect.ValueOf(imgui.InternalImParseFormatSanitizeForPrinting)},
+	{"internalImParseFormatSanitizeForScanning", reflect.ValueOf(imgui.InternalImParseFormatSanitizeForScanning)},
+	{"internalImParseFormatTrimDecorations", reflect.ValueOf(imgui.InternalImParseFormatTrimDecorations)},
+	{"internalImPowFloat", reflect.ValueOf(imgui.InternalImPowFloat)},
+	{"internalImPowDouble", reflect.ValueOf(imgui.InternalImPowDouble)},
+	{"internalImRotate", reflect.ValueOf(imgui.InternalImRotate)},
+	{"internalImRound64", reflect.ValueOf(imgui.InternalImRound64)},
+	{"internalImRsqrtFloat", reflect.ValueOf(imgui.InternalImRsqrtFloat)},
+	{"internalImRsqrtDouble", reflect.ValueOf(imgui.InternalImRsqrtDouble)},
+	{"internalImSaturate", reflect.ValueOf(imgui.InternalImSaturate)},
+	{"internalImSignFloat", reflect.ValueOf(imgui.InternalImSignFloat)},
+	{"internalImSignDouble", reflect.ValueOf(imgui.InternalImSignDouble)},
+	{"internalImStrSkipBlank", reflect.ValueOf(imgui.InternalImStrSkipBlank)},
+	{"internalImStrTrimBlanks", reflect.ValueOf(imgui.InternalImStrTrimBlanks)},
+	{"internalImStrbol", reflect.ValueOf(imgui.InternalImStrbol)},
+	{"internalImStrchrRange", reflect.ValueOf(imgui.InternalImStrchrRange)},
+	{"internalImStrdup", reflect.ValueOf(imgui.InternalImStrdup)},
+	{"internalImStrdupcpy", reflect.ValueOf(imgui.InternalImStrdupcpy)},
+	{"internalImStreolRange", reflect.ValueOf(imgui.InternalImStreolRange)},
+	{"internalImStricmp", reflect.ValueOf(imgui.InternalImStricmp)},
+	{"internalImStristr", reflect.ValueOf(imgui.InternalImStristr)},
+	{"internalImStrlenW", reflect.ValueOf(imgui.InternalImStrlenW)},
+	{"internalImStrncpy", reflect.ValueOf(imgui.InternalImStrncpy)},
+	{"internalImStrnicmp", reflect.ValueOf(imgui.InternalImStrnicmp)},
+	{"internalImTextCalcWordWrapNextLineStartV", reflect.ValueOf(imgui.InternalImTextCalcWordWrapNextLineStartV)},
+	{"internalImTextCharFromUtf8", reflect.ValueOf(imgui.InternalImTextCharFromUtf8)},
+	{"internalImTextCharToUtf8", reflect.ValueOf(imgui.InternalImTextCharToUtf8)},
+	{"internalImTextCountCharsFromUtf8", reflect.ValueOf(imgui.InternalImTextCountCharsFromUtf8)},
+	{"internalImTextCountLines", reflect.ValueOf(imgui.InternalImTextCountLines)},
+	{"internalImTextCountUtf8BytesFromChar", reflect.ValueOf(imgui.InternalImTextCountUtf8BytesFromChar)},
+	{"internalImTextCountUtf8BytesFromStr", reflect.ValueOf(imgui.InternalImTextCountUtf8BytesFromStr)},
+	{"internalImTextFindPreviousUtf8Codepoint", reflect.ValueOf(imgui.InternalImTextFindPreviousUtf8Codepoint)},
+	{"internalImTextStrFromUtf8V", reflect.ValueOf(imgui.InternalImTextStrFromUtf8V)},
+	{"internalImTextStrToUtf8", reflect.ValueOf(imgui.InternalImTextStrToUtf8)},
+	{"internalImTextureDataGetFormatBytesPerPixel", reflect.ValueOf(imgui.InternalImTextureDataGetFormatBytesPerPixel)},
+	{"internalImTextureDataGetFormatName", reflect.ValueOf(imgui.InternalImTextureDataGetFormatName)},
+	{"internalImTextureDataGetStatusName", reflect.ValueOf(imgui.InternalImTextureDataGetStatusName)},
+	{"internalImToUpper", reflect.ValueOf(imgui.InternalImToUpper)},
+	{"internalImTriangleArea", reflect.ValueOf(imgui.InternalImTriangleArea)},
+	{"internalImTriangleBarycentricCoords", reflect.ValueOf(imgui.InternalImTriangleBarycentricCoords)},
+	{"internalImTriangleClosestPoint", reflect.ValueOf(imgui.InternalImTriangleClosestPoint)},
+	{"internalImTriangleContainsPoint", reflect.ValueOf(imgui.InternalImTriangleContainsPoint)},
+	{"internalImTriangleIsClockwise", reflect.ValueOf(imgui.InternalImTriangleIsClockwise)},
+	{"internalImTrunc64", reflect.ValueOf(imgui.InternalImTrunc64)},
+	{"internalImTruncFloat", reflect.ValueOf(imgui.InternalImTruncFloat)},
+	{"internalImTruncVec2", reflect.ValueOf(imgui.InternalImTruncVec2)},
+	{"internalImUpperPowerOfTwo", reflect.ValueOf(imgui.InternalImUpperPowerOfTwo)},
+	{"imageV", reflect.ValueOf(imgui.ImageV)},
+	{"imageButtonV", reflect.ValueOf(imgui.ImageButtonV)},
+	{"internalImageButtonExV", reflect.ValueOf(imgui.InternalImageButtonExV)},
+	{"imageWithBgV", reflect.ValueOf(imgui.ImageWithBgV)},
+	{"indentV", reflect.ValueOf(imgui.IndentV)},
+	{"internalInitialize", reflect.ValueOf(imgui.InternalInitialize)},
+	{"inputDoubleV", reflect.ValueOf(imgui.InputDoubleV)},
+	{"inputFloatV", reflect.ValueOf(imgui.InputFloatV)},
+	{"inputFloat2V", reflect.ValueOf(imgui.InputFloat2V)},
+	{"inputFloat3V", reflect.ValueOf(imgui.InputFloat3V)},
+	{"inputFloat4V", reflect.ValueOf(imgui.InputFloat4V)},
+	{"inputIntV", reflect.ValueOf(imgui.InputIntV)},
+	{"inputInt2V", reflect.ValueOf(imgui.InputInt2V)},
+	{"inputInt3V", reflect.ValueOf(imgui.InputInt3V)},
+	{"inputInt4V", reflect.ValueOf(imgui.InputInt4V)},
+	{"inputScalarV", reflect.ValueOf(imgui.InputScalarV)},
+	{"inputScalarNV", reflect.ValueOf(imgui.InputScalarNV)},
+	{"internalInputTextDeactivateHook", reflect.ValueOf(imgui.InternalInputTextDeactivateHook)},
+	{"invisibleButtonV", reflect.ValueOf(imgui.InvisibleButtonV)},
+	{"internalIsActiveIdUsingNavDir", reflect.ValueOf(imgui.InternalIsActiveIdUsingNavDir)},
+	{"internalIsAliasKey", reflect.ValueOf(imgui.InternalIsAliasKey)},
+	{"isAnyItemActive", reflect.ValueOf(imgui.IsAnyItemActive)},
+	{"isAnyItemFocused", reflect.ValueOf(imgui.IsAnyItemFocused)},
+	{"isAnyItemHovered", reflect.ValueOf(imgui.IsAnyItemHovered)},
+	{"isAnyMouseDown", reflect.ValueOf(imgui.IsAnyMouseDown)},
+	{"internalIsClippedEx", reflect.ValueOf(imgui.InternalIsClippedEx)},
+	{"internalIsDragDropActive", reflect.ValueOf(imgui.InternalIsDragDropActive)},
+	{"internalIsDragDropPayloadBeingAccepted", reflect.ValueOf(imgui.InternalIsDragDropPayloadBeingAccepted)},
+	{"internalIsGamepadKey", reflect.ValueOf(imgui.InternalIsGamepadKey)},
+	{"isItemActivated", reflect.ValueOf(imgui.IsItemActivated)},
+	{"isItemActive", reflect.ValueOf(imgui.IsItemActive)},
+	{"internalIsItemActiveAsInputText", reflect.ValueOf(imgui.InternalIsItemActiveAsInputText)},
+	{"isItemClickedV", reflect.ValueOf(imgui.IsItemClickedV)},
+	{"isItemDeactivated", reflect.ValueOf(imgui.IsItemDeactivated)},
+	{"isItemDeactivatedAfterEdit", reflect.ValueOf(imgui.IsItemDeactivatedAfterEdit)},
+	{"isItemEdited", reflect.ValueOf(imgui.IsItemEdited)},
+	{"isItemFocused", reflect.ValueOf(imgui.IsItemFocused)},
+	{"isItemHoveredV", reflect.ValueOf(imgui.IsItemHoveredV)},
+	{"isItemToggledOpen", reflect.ValueOf(imgui.IsItemToggledOpen)},
+	{"isItemToggledSelection", reflect.ValueOf(imgui.IsItemToggledSelection)},
+	{"isItemVisible", reflect.ValueOf(imgui.IsItemVisible)},
+	{"internalIsKeyChordPressedInputFlagsV", reflect.ValueOf(imgui.InternalIsKeyChordPressedInputFlagsV)},
+	{"isKeyChordPressed", reflect.ValueOf(imgui.IsKeyChordPressed)},
+	{"internalIsKeyDownID", reflect.ValueOf(imgui.InternalIsKeyDownID)},
+	{"isKeyDown", reflect.ValueOf(imgui.IsKeyDown)},
+	{"isKeyPressedBoolV", reflect.ValueOf(imgui.IsKeyPressedBoolV)},
+	{"internalIsKeyPressedInputFlagsV", reflect.ValueOf(imgui.InternalIsKeyPressedInputFlagsV)},
+	{"internalIsKeyReleasedID", reflect.ValueOf(imgui.InternalIsKeyReleasedID)},
+	{"isKeyReleased", reflect.ValueOf(imgui.IsKeyReleased)},
+	{"internalIsKeyboardKey", reflect.ValueOf(imgui.InternalIsKeyboardKey)},
+	{"internalIsLRModKey", reflect.ValueOf(imgui.InternalIsLRModKey)},
+	{"internalIsLegacyKey", reflect.ValueOf(imgui.InternalIsLegacyKey)},
+	{"isMouseClickedBoolV", reflect.ValueOf(imgui.IsMouseClickedBoolV)},
+	{"internalIsMouseClickedInputFlagsV", reflect.ValueOf(imgui.InternalIsMouseClickedInputFlagsV)},
+	{"internalIsMouseDoubleClickedID", reflect.ValueOf(imgui.InternalIsMouseDoubleClickedID)},
+	{"isMouseDoubleClicked", reflect.ValueOf(imgui.IsMouseDoubleClicked)},
+	{"internalIsMouseDownID", reflect.ValueOf(imgui.InternalIsMouseDownID)},
+	{"isMouseDown", reflect.ValueOf(imgui.IsMouseDown)},
+	{"internalIsMouseDragPastThresholdV", reflect.ValueOf(imgui.InternalIsMouseDragPastThresholdV)},
+	{"isMouseDraggingV", reflect.ValueOf(imgui.IsMouseDraggingV)},
+	{"isMouseHoveringRectV", reflect.ValueOf(imgui.IsMouseHoveringRectV)},
+	{"internalIsMouseKey", reflect.ValueOf(imgui.InternalIsMouseKey)},
+	{"isMousePosValidV", reflect.ValueOf(imgui.IsMousePosValidV)},
+	{"isMouseReleasedWithDelay", reflect.ValueOf(imgui.IsMouseReleasedWithDelay)},
+	{"internalIsMouseReleasedID", reflect.ValueOf(imgui.InternalIsMouseReleasedID)},
+	{"isMouseReleased", reflect.ValueOf(imgui.IsMouseReleased)},
+	{"internalIsNamedKey", reflect.ValueOf(imgui.InternalIsNamedKey)},
+	{"internalIsNamedKeyOrMod", reflect.ValueOf(imgui.InternalIsNamedKeyOrMod)},
+	{"internalIsPopupOpenID", reflect.ValueOf(imgui.InternalIsPopupOpenID)},
+	{"isPopupOpenStrV", reflect.ValueOf(imgui.IsPopupOpenStrV)},
+	{"isRectVisible", reflect.ValueOf(imgui.IsRectVisible)},
+	{"isRectVisibleVec2", reflect.ValueOf(imgui.IsRectVisibleVec2)},
+	{"internalIsWindowAbove", reflect.ValueOf(imgui.InternalIsWindowAbove)},
+	{"isWindowAppearing", reflect.ValueOf(imgui.IsWindowAppearing)},
+	{"internalIsWindowChildOf", reflect.ValueOf(imgui.InternalIsWindowChildOf)},
+	{"isWindowCollapsed", reflect.ValueOf(imgui.IsWindowCollapsed)},
+	{"internalIsWindowContentHoverableV", reflect.ValueOf(imgui.InternalIsWindowContentHoverableV)},
+	{"isWindowDocked", reflect.ValueOf(imgui.IsWindowDocked)},
+	{"isWindowFocusedV", reflect.ValueOf(imgui.IsWindowFocusedV)},
+	{"isWindowHoveredV", reflect.ValueOf(imgui.IsWindowHoveredV)},
+	{"internalIsWindowNavFocusable", reflect.ValueOf(imgui.InternalIsWindowNavFocusable)},
+	{"internalIsWindowWithinBeginStackOf", reflect.ValueOf(imgui.InternalIsWindowWithinBeginStackOf)},
+	{"internalItemAddV", reflect.ValueOf(imgui.InternalItemAddV)},
+	{"internalItemHoverable", reflect.ValueOf(imgui.InternalItemHoverable)},
+	{"internalItemSizeRectV", reflect.ValueOf(imgui.InternalItemSizeRectV)},
+	{"internalItemSizeVec2V", reflect.ValueOf(imgui.InternalItemSizeVec2V)},
+	{"internalKeepAliveID", reflect.ValueOf(imgui.InternalKeepAliveID)},
+	{"labelText", reflect.ValueOf(imgui.LabelText)},
+	{"listBoxStrarrV", reflect.ValueOf(imgui.ListBoxStrarrV)},
+	{"loadIniSettingsFromDisk", reflect.ValueOf(imgui.LoadIniSettingsFromDisk)},
+	{"loadIniSettingsFromMemoryV", reflect.ValueOf(imgui.LoadIniSettingsFromMemoryV)},
+	{"internalLocalizeGetMsg", reflect.ValueOf(imgui.InternalLocalizeGetMsg)},
+	{"internalLocalizeRegisterEntries", reflect.ValueOf(imgui.InternalLocalizeRegisterEntries)},
+	{"internalLogBegin", reflect.ValueOf(imgui.InternalLogBegin)},
+	{"logButtons", reflect.ValueOf(imgui.LogButtons)},
+	{"logFinish", reflect.ValueOf(imgui.LogFinish)},
+	{"internalLogRenderedTextV", reflect.ValueOf(imgui.InternalLogRenderedTextV)},
+	{"internalLogSetNextTextDecoration", reflect.ValueOf(imgui.InternalLogSetNextTextDecoration)},
+	{"logText", reflect.ValueOf(imgui.LogText)},
+	{"internalLogToBufferV", reflect.ValueOf(imgui.InternalLogToBufferV)},
+	{"logToClipboardV", reflect.ValueOf(imgui.LogToClipboardV)},
+	{"logToFileV", reflect.ValueOf(imgui.LogToFileV)},
+	{"logToTTYV", reflect.ValueOf(imgui.LogToTTYV)},
+	{"internalMarkIniSettingsDirty", reflect.ValueOf(imgui.InternalMarkIniSettingsDirty)},
+	{"internalMarkIniSettingsDirtyWindowPtr", reflect.ValueOf(imgui.InternalMarkIniSettingsDirtyWindowPtr)},
+	{"internalMarkItemEdited", reflect.ValueOf(imgui.InternalMarkItemEdited)},
+	{"memAlloc", reflect.ValueOf(imgui.MemAlloc)},
+	{"memFree", reflect.ValueOf(imgui.MemFree)},
+	{"internalMenuItemExV", reflect.ValueOf(imgui.InternalMenuItemExV)},
+	{"menuItemBoolV", reflect.ValueOf(imgui.MenuItemBoolV)},
+	{"menuItemBoolPtrV", reflect.ValueOf(imgui.MenuItemBoolPtrV)},
+	{"internalMouseButtonToKey", reflect.ValueOf(imgui.InternalMouseButtonToKey)},
+	{"internalMultiSelectAddSetAll", reflect.ValueOf(imgui.InternalMultiSelectAddSetAll)},
+	{"internalMultiSelectAddSetRange", reflect.ValueOf(imgui.InternalMultiSelectAddSetRange)},
+	{"internalMultiSelectItemFooter", reflect.ValueOf(imgui.InternalMultiSelectItemFooter)},
+	{"internalMultiSelectItemHeader", reflect.ValueOf(imgui.InternalMultiSelectItemHeader)},
+	{"internalNavClearPreferredPosForAxis", reflect.ValueOf(imgui.InternalNavClearPreferredPosForAxis)},
+	{"internalNavHighlightActivated", reflect.ValueOf(imgui.InternalNavHighlightActivated)},
+	{"internalNavInitRequestApplyResult", reflect.ValueOf(imgui.InternalNavInitRequestApplyResult)},
+	{"internalNavInitWindow", reflect.ValueOf(imgui.InternalNavInitWindow)},
+	{"internalNavMoveRequestApplyResult", reflect.ValueOf(imgui.InternalNavMoveRequestApplyResult)},
+	{"internalNavMoveRequestButNoResultYet", reflect.ValueOf(imgui.InternalNavMoveRequestButNoResultYet)},
+	{"internalNavMoveRequestCancel", reflect.ValueOf(imgui.InternalNavMoveRequestCancel)},
+	{"internalNavMoveRequestForward", reflect.ValueOf(imgui.InternalNavMoveRequestForward)},
+	{"internalNavMoveRequestResolveWithLastItem", reflect.ValueOf(imgui.InternalNavMoveRequestResolveWithLastItem)},
+	{"internalNavMoveRequestResolveWithPastTreeNode", reflect.ValueOf(imgui.InternalNavMoveRequestResolveWithPastTreeNode)},
+	{"internalNavMoveRequestSubmit", reflect.ValueOf(imgui.InternalNavMoveRequestSubmit)},
+	{"internalNavMoveRequestTryWrapping", reflect.ValueOf(imgui.InternalNavMoveRequestTryWrapping)},
+	{"internalNavUpdateCurrentWindowIsScrollPushableX", reflect.ValueOf(imgui.InternalNavUpdateCurrentWindowIsScrollPushableX)},
+	{"newFrame", reflect.ValueOf(imgui.NewFrame)},
+	{"newLine", reflect.ValueOf(imgui.NewLine)},
+	{"nextColumn", reflect.ValueOf(imgui.NextColumn)},
+	{"internalOpenPopupExV", reflect.ValueOf(imgui.InternalOpenPopupExV)},
+	{"openPopupOnItemClickV", reflect.ValueOf(imgui.OpenPopupOnItemClickV)},
+	{"openPopupIDV", reflect.ValueOf(imgui.OpenPopupIDV)},
+	{"openPopupStrV", reflect.ValueOf(imgui.OpenPopupStrV)},
+	{"plotHistogramFloatPtrV", reflect.ValueOf(imgui.PlotHistogramFloatPtrV)},
+	{"plotLinesFloatPtrV", reflect.ValueOf(imgui.PlotLinesFloatPtrV)},
+	{"popClipRect", reflect.ValueOf(imgui.PopClipRect)},
+	{"internalPopColumnsBackground", reflect.ValueOf(imgui.InternalPopColumnsBackground)},
+	{"internalPopFocusScope", reflect.ValueOf(imgui.InternalPopFocusScope)},
+	{"popFont", reflect.ValueOf(imgui.PopFont)},
+	{"popID", reflect.ValueOf(imgui.PopID)},
+	{"popItemFlag", reflect.ValueOf(imgui.PopItemFlag)},
+	{"popItemWidth", reflect.ValueOf(imgui.PopItemWidth)},
+	{"internalPopPasswordFont", reflect.ValueOf(imgui.InternalPopPasswordFont)},
+	{"popStyleColorV", reflect.ValueOf(imgui.PopStyleColorV)},
+	{"popStyleVarV", reflect.ValueOf(imgui.PopStyleVarV)},
+	{"popTextWrapPos", reflect.ValueOf(imgui.PopTextWrapPos)},
+	{"progressBarV", reflect.ValueOf(imgui.ProgressBarV)},
+	{"pushClipRect", reflect.ValueOf(imgui.PushClipRect)},
+	{"internalPushColumnClipRect", reflect.ValueOf(imgui.InternalPushColumnClipRect)},
+	{"internalPushColumnsBackground", reflect.ValueOf(imgui.InternalPushColumnsBackground)},
+	{"internalPushFocusScope", reflect.ValueOf(imgui.InternalPushFocusScope)},
+	{"pushFont", reflect.ValueOf(imgui.PushFont)},
+	{"pushIDInt", reflect.ValueOf(imgui.PushIDInt)},
+	{"pushIDPtr", reflect.ValueOf(imgui.PushIDPtr)},
+	{"pushIDStr", reflect.ValueOf(imgui.PushIDStr)},
+	{"pushIDStrStr", reflect.ValueOf(imgui.PushIDStrStr)},
+	{"pushItemFlag", reflect.ValueOf(imgui.PushItemFlag)},
+	{"pushItemWidth", reflect.ValueOf(imgui.PushItemWidth)},
+	{"internalPushMultiItemsWidths", reflect.ValueOf(imgui.InternalPushMultiItemsWidths)},
+	{"internalPushOverrideID", reflect.ValueOf(imgui.InternalPushOverrideID)},
+	{"internalPushPasswordFont", reflect.ValueOf(imgui.InternalPushPasswordFont)},
+	{"pushStyleColorU32", reflect.ValueOf(imgui.PushStyleColorU32)},
+	{"pushStyleColorVec4", reflect.ValueOf(imgui.PushStyleColorVec4)},
+	{"pushStyleVarX", reflect.ValueOf(imgui.PushStyleVarX)},
+	{"pushStyleVarY", reflect.ValueOf(imgui.PushStyleVarY)},
+	{"pushStyleVarFloat", reflect.ValueOf(imgui.PushStyleVarFloat)},
+	{"pushStyleVarVec2", reflect.ValueOf(imgui.PushStyleVarVec2)},
+	{"pushTextWrapPosV", reflect.ValueOf(imgui.PushTextWrapPosV)},
+	{"radioButtonBool", reflect.ValueOf(imgui.RadioButtonBool)},
+	{"radioButtonIntPtr", reflect.ValueOf(imgui.RadioButtonIntPtr)},
+	{"internalRegisterFontAtlas", reflect.ValueOf(imgui.InternalRegisterFontAtlas)},
+	{"internalRegisterUserTexture", reflect.ValueOf(imgui.InternalRegisterUserTexture)},
+	{"internalRemoveContextHook", reflect.ValueOf(imgui.InternalRemoveContextHook)},
+	{"internalRemoveSettingsHandler", reflect.ValueOf(imgui.InternalRemoveSettingsHandler)},
+	{"render", reflect.ValueOf(imgui.Render)},
+	{"internalRenderArrowV", reflect.ValueOf(imgui.InternalRenderArrowV)},
+	{"internalRenderArrowDockMenu", reflect.ValueOf(imgui.InternalRenderArrowDockMenu)},
+	{"internalRenderArrowPointingAt", reflect.ValueOf(imgui.InternalRenderArrowPointingAt)},
+	{"internalRenderBullet", reflect.ValueOf(imgui.InternalRenderBullet)},
+	{"internalRenderCheckMark", reflect.ValueOf(imgui.InternalRenderCheckMark)},
+	{"internalRenderColorRectWithAlphaCheckerboardV", reflect.ValueOf(imgui.InternalRenderColorRectWithAlphaCheckerboardV)},
+	{"internalRenderDragDropTargetRectEx", reflect.ValueOf(imgui.InternalRenderDragDropTargetRectEx)},
+	{"internalRenderDragDropTargetRectForItem", reflect.ValueOf(imgui.InternalRenderDragDropTargetRectForItem)},
+	{"internalRenderFrameV", reflect.ValueOf(imgui.InternalRenderFrameV)},
+	{"internalRenderFrameBorderV", reflect.ValueOf(imgui.InternalRenderFrameBorderV)},
+	{"internalRenderMouseCursor", reflect.ValueOf(imgui.InternalRenderMouseCursor)},
+	{"internalRenderNavCursorV", reflect.ValueOf(imgui.InternalRenderNavCursorV)},
+	{"renderPlatformWindowsDefaultV", reflect.ValueOf(imgui.RenderPlatformWindowsDefaultV)},
+	{"internalRenderRectFilledRangeH", reflect.ValueOf(imgui.InternalRenderRectFilledRangeH)},
+	{"internalRenderRectFilledWithHole", reflect.ValueOf(imgui.InternalRenderRectFilledWithHole)},
+	{"internalRenderTextV", reflect.ValueOf(imgui.InternalRenderTextV)},
+	{"internalRenderTextClippedV", reflect.ValueOf(imgui.InternalRenderTextClippedV)},
+	{"internalRenderTextClippedExV", reflect.ValueOf(imgui.InternalRenderTextClippedExV)},
+	{"internalRenderTextEllipsis", reflect.ValueOf(imgui.InternalRenderTextEllipsis)},
+	{"internalRenderTextWrapped", reflect.ValueOf(imgui.InternalRenderTextWrapped)},
+	{"resetMouseDragDeltaV", reflect.ValueOf(imgui.ResetMouseDragDeltaV)},
+	{"sameLineV", reflect.ValueOf(imgui.SameLineV)},
+	{"saveIniSettingsToDisk", reflect.ValueOf(imgui.SaveIniSettingsToDisk)},
+	{"saveIniSettingsToMemoryV", reflect.ValueOf(imgui.SaveIniSettingsToMemoryV)},
+	{"internalScaleWindowsInViewport", reflect.ValueOf(imgui.InternalScaleWindowsInViewport)},
+	{"internalScrollToBringRectIntoView", reflect.ValueOf(imgui.InternalScrollToBringRectIntoView)},
+	{"internalScrollToItemV", reflect.ValueOf(imgui.InternalScrollToItemV)},
+	{"internalScrollToRectV", reflect.ValueOf(imgui.InternalScrollToRectV)},
+	{"internalScrollToRectExV", reflect.ValueOf(imgui.InternalScrollToRectExV)},
+	{"internalScrollbar", reflect.ValueOf(imgui.InternalScrollbar)},
+	{"internalScrollbarExV", reflect.ValueOf(imgui.InternalScrollbarExV)},
+	{"selectableBoolV", reflect.ValueOf(imgui.SelectableBoolV)},
+	{"selectableBoolPtrV", reflect.ValueOf(imgui.SelectableBoolPtrV)},
+	{"separator", reflect.ValueOf(imgui.Separator)},
+	{"internalSeparatorExV", reflect.ValueOf(imgui.InternalSeparatorExV)},
+	{"separatorText", reflect.ValueOf(imgui.SeparatorText)},
+	{"drawRect", reflect.ValueOf(imgui.DrawRect)},
+	{"internalSeparatorTextEx", reflect.ValueOf(imgui.InternalSeparatorTextEx)},
+	{"internalSetActiveID", reflect.ValueOf(imgui.InternalSetActiveID)},
+	{"internalSetActiveIdUsingAllKeyboardKeys", reflect.ValueOf(imgui.InternalSetActiveIdUsingAllKeyboardKeys)},
+	{"setAllocatorFunctionsV", reflect.ValueOf(imgui.SetAllocatorFunctionsV)},
+	{"setClipboardText", reflect.ValueOf(imgui.SetClipboardText)},
+	{"setColorEditOptions", reflect.ValueOf(imgui.SetColorEditOptions)},
+	{"setColumnOffset", reflect.ValueOf(imgui.SetColumnOffset)},
+	{"setColumnWidth", reflect.ValueOf(imgui.SetColumnWidth)},
+	{"setCurrentContext", reflect.ValueOf(imgui.SetCurrentContext)},
+	{"internalSetCurrentFont", reflect.ValueOf(imgui.InternalSetCurrentFont)},
+	{"internalSetCurrentViewport", reflect.ValueOf(imgui.InternalSetCurrentViewport)},
+	{"setCursorPos", reflect.ValueOf(imgui.SetCursorPos)},
+	{"setCursorPosX", reflect.ValueOf(imgui.SetCursorPosX)},
+	{"setCursorPosY", reflect.ValueOf(imgui.SetCursorPosY)},
+	{"setCursorScreenPos", reflect.ValueOf(imgui.SetCursorScreenPos)},
+	{"setDragDropPayloadV", reflect.ValueOf(imgui.SetDragDropPayloadV)},
+	{"internalSetFocusID", reflect.ValueOf(imgui.InternalSetFocusID)},
+	{"internalSetFontRasterizerDensity", reflect.ValueOf(imgui.InternalSetFontRasterizerDensity)},
+	{"internalSetHoveredID", reflect.ValueOf(imgui.InternalSetHoveredID)},
+	{"setItemDefaultFocus", reflect.ValueOf(imgui.SetItemDefaultFocus)},
+	{"internalSetItemKeyOwnerInputFlags", reflect.ValueOf(imgui.InternalSetItemKeyOwnerInputFlags)},
+	{"setItemKeyOwner", reflect.ValueOf(imgui.SetItemKeyOwner)},
+	{"setItemTooltip", reflect.ValueOf(imgui.SetItemTooltip)},
+	{"internalSetKeyOwnerV", reflect.ValueOf(imgui.InternalSetKeyOwnerV)},
+	{"internalSetKeyOwnersForKeyChordV", reflect.ValueOf(imgui.InternalSetKeyOwnersForKeyChordV)},
+	{"setKeyboardFocusHereV", reflect.ValueOf(imgui.SetKeyboardFocusHereV)},
+	{"internalSetLastItemData", reflect.ValueOf(imgui.InternalSetLastItemData)},
+	{"setMouseCursor", reflect.ValueOf(imgui.SetMouseCursor)},
+	{"setNavCursorVisible", reflect.ValueOf(imgui.SetNavCursorVisible)},
+	{"internalSetNavCursorVisibleAfterMove", reflect.ValueOf(imgui.InternalSetNavCursorVisibleAfterMove)},
+	{"internalSetNavFocusScope", reflect.ValueOf(imgui.InternalSetNavFocusScope)},
+	{"internalSetNavID", reflect.ValueOf(imgui.InternalSetNavID)},
+	{"internalSetNavWindow", reflect.ValueOf(imgui.InternalSetNavWindow)},
+	{"setNextFrameWantCaptureKeyboard", reflect.ValueOf(imgui.SetNextFrameWantCaptureKeyboard)},
+	{"setNextFrameWantCaptureMouse", reflect.ValueOf(imgui.SetNextFrameWantCaptureMouse)},
+	{"setNextItemAllowOverlap", reflect.ValueOf(imgui.SetNextItemAllowOverlap)},
+	{"setNextItemOpenV", reflect.ValueOf(imgui.SetNextItemOpenV)},
+	{"internalSetNextItemRefVal", reflect.ValueOf(imgui.InternalSetNextItemRefVal)},
+	{"setNextItemSelectionUserData", reflect.ValueOf(imgui.SetNextItemSelectionUserData)},
+	{"setNextItemShortcutV", reflect.ValueOf(imgui.SetNextItemShortcutV)},
+	{"setNextItemStorageID", reflect.ValueOf(imgui.SetNextItemStorageID)},
+	{"setNextItemWidth", reflect.ValueOf(imgui.SetNextItemWidth)},
+	{"setNextWindowBgAlpha", reflect.ValueOf(imgui.SetNextWindowBgAlpha)},
+	{"setNextWindowClass", reflect.ValueOf(imgui.SetNextWindowClass)},
+	{"setNextWindowCollapsedV", reflect.ValueOf(imgui.SetNextWindowCollapsedV)},
+	{"setNextWindowContentSize", reflect.ValueOf(imgui.SetNextWindowContentSize)},
+	{"setNextWindowDockIDV", reflect.ValueOf(imgui.SetNextWindowDockIDV)},
+	{"setNextWindowFocus", reflect.ValueOf(imgui.SetNextWindowFocus)},
+	{"setNextWindowPosV", reflect.ValueOf(imgui.SetNextWindowPosV)},
+	{"internalSetNextWindowRefreshPolicy", reflect.ValueOf(imgui.InternalSetNextWindowRefreshPolicy)},
+	{"setNextWindowScroll", reflect.ValueOf(imgui.SetNextWindowScroll)},
+	{"setNextWindowSizeV", reflect.ValueOf(imgui.SetNextWindowSizeV)},
+	{"setNextWindowSizeConstraintsV", reflect.ValueOf(imgui.SetNextWindowSizeConstraintsV)},
+	{"setNextWindowViewport", reflect.ValueOf(imgui.SetNextWindowViewport)},
+	{"setScrollFromPosXFloatV", reflect.ValueOf(imgui.SetScrollFromPosXFloatV)},
+	{"internalSetScrollFromPosXWindowPtr", reflect.ValueOf(imgui.InternalSetScrollFromPosXWindowPtr)},
+	{"setScrollFromPosYFloatV", reflect.ValueOf(imgui.SetScrollFromPosYFloatV)},
+	{"internalSetScrollFromPosYWindowPtr", reflect.ValueOf(imgui.InternalSetScrollFromPosYWindowPtr)},
+	{"setScrollHereXV", reflect.ValueOf(imgui.SetScrollHereXV)},
+	{"setScrollHereYV", reflect.ValueOf(imgui.SetScrollHereYV)},
+	{"setScrollXFloat", reflect.ValueOf(imgui.SetScrollXFloat)},
+	{"internalSetScrollXWindowPtr", reflect.ValueOf(imgui.InternalSetScrollXWindowPtr)},
+	{"setScrollYFloat", reflect.ValueOf(imgui.SetScrollYFloat)},
+	{"internalSetScrollYWindowPtr", reflect.ValueOf(imgui.InternalSetScrollYWindowPtr)},
+	{"internalSetShortcutRouting", reflect.ValueOf(imgui.InternalSetShortcutRouting)},
+	{"setStateStorage", reflect.ValueOf(imgui.SetStateStorage)},
+	{"setTabItemClosed", reflect.ValueOf(imgui.SetTabItemClosed)},
+	{"setTooltip", reflect.ValueOf(imgui.SetTooltip)},
+	{"internalSetWindowClipRectBeforeSetChannel", reflect.ValueOf(imgui.InternalSetWindowClipRectBeforeSetChannel)},
+	{"setWindowCollapsedBoolV", reflect.ValueOf(imgui.SetWindowCollapsedBoolV)},
+	{"setWindowCollapsedStrV", reflect.ValueOf(imgui.SetWindowCollapsedStrV)},
+	{"internalSetWindowCollapsedWindowPtrV", reflect.ValueOf(imgui.InternalSetWindowCollapsedWindowPtrV)},
+	{"internalSetWindowDock", reflect.ValueOf(imgui.InternalSetWindowDock)},
+	{"setWindowFocus", reflect.ValueOf(imgui.SetWindowFocus)},
+	{"setWindowFocusStr", reflect.ValueOf(imgui.SetWindowFocusStr)},
+	{"setWindowFontScale", reflect.ValueOf(imgui.SetWindowFontScale)},
+	{"internalSetWindowHiddenAndSkipItemsForCurrentFrame", reflect.ValueOf(imgui.InternalSetWindowHiddenAndSkipItemsForCurrentFrame)},
+	{"internalSetWindowHitTestHole", reflect.ValueOf(imgui.InternalSetWindowHitTestHole)},
+	{"internalSetWindowParentWindowForFocusRoute", reflect.ValueOf(imgui.InternalSetWindowParentWindowForFocusRoute)},
+	{"setWindowPosStrV", reflect.ValueOf(imgui.SetWindowPosStrV)},
+	{"setWindowPosVec2V", reflect.ValueOf(imgui.SetWindowPosVec2V)},
+	{"internalSetWindowPosWindowPtrV", reflect.ValueOf(imgui.InternalSetWindowPosWindowPtrV)},
+	{"setWindowSizeStrV", reflect.ValueOf(imgui.SetWindowSizeStrV)},
+	{"setWindowSizeVec2V", reflect.ValueOf(imgui.SetWindowSizeVec2V)},
+	{"internalSetWindowSizeWindowPtrV", reflect.ValueOf(imgui.InternalSetWindowSizeWindowPtrV)},
+	{"internalSetWindowViewport", reflect.ValueOf(imgui.InternalSetWindowViewport)},
+	{"internalShadeVertsLinearColorGradientKeepAlpha", reflect.ValueOf(imgui.InternalShadeVertsLinearColorGradientKeepAlpha)},
+	{"internalShadeVertsLinearUV", reflect.ValueOf(imgui.InternalShadeVertsLinearUV)},
+	{"internalShadeVertsTransformPos", reflect.ValueOf(imgui.InternalShadeVertsTransformPos)},
+	{"internalShortcutID", reflect.ValueOf(imgui.InternalShortcutID)},
+	{"shortcutNilV", reflect.ValueOf(imgui.ShortcutNilV)},
+	{"showAboutWindowV", reflect.ValueOf(imgui.ShowAboutWindowV)},
+	{"showDebugLogWindowV", reflect.ValueOf(imgui.ShowDebugLogWindowV)},
+	{"showDemoWindowV", reflect.ValueOf(imgui.ShowDemoWindowV)},
+	{"internalShowFontAtlas", reflect.ValueOf(imgui.InternalShowFontAtlas)},
+	{"showFontSelector", reflect.ValueOf(imgui.ShowFontSelector)},
+	{"showIDStackToolWindowV", reflect.ValueOf(imgui.ShowIDStackToolWindowV)},
+	{"showMetricsWindowV", reflect.ValueOf(imgui.ShowMetricsWindowV)},
+	{"showStyleEditorV", reflect.ValueOf(imgui.ShowStyleEditorV)},
+	{"showStyleSelector", reflect.ValueOf(imgui.ShowStyleSelector)},
+	{"showUserGuide", reflect.ValueOf(imgui.ShowUserGuide)},
+	{"internalShrinkWidths", reflect.ValueOf(imgui.InternalShrinkWidths)},
+	{"internalShutdown", reflect.ValueOf(imgui.InternalShutdown)},
+	{"sliderAngleV", reflect.ValueOf(imgui.SliderAngleV)},
+	{"internalSliderBehavior", reflect.ValueOf(imgui.InternalSliderBehavior)},
+	{"sliderFloatV", reflect.ValueOf(imgui.SliderFloatV)},
+	{"sliderFloat2V", reflect.ValueOf(imgui.SliderFloat2V)},
+	{"sliderFloat3V", reflect.ValueOf(imgui.SliderFloat3V)},
+	{"sliderFloat4V", reflect.ValueOf(imgui.SliderFloat4V)},
+	{"sliderIntV", reflect.ValueOf(imgui.SliderIntV)},
+	{"sliderInt2V", reflect.ValueOf(imgui.SliderInt2V)},
+	{"sliderInt3V", reflect.ValueOf(imgui.SliderInt3V)},
+	{"sliderInt4V", reflect.ValueOf(imgui.SliderInt4V)},
+	{"sliderScalarV", reflect.ValueOf(imgui.SliderScalarV)},
+	{"sliderScalarNV", reflect.ValueOf(imgui.SliderScalarNV)},
+	{"smallButton", reflect.ValueOf(imgui.SmallButton)},
+	{"spacing", reflect.ValueOf(imgui.Spacing)},
+	{"internalSplitterBehaviorV", reflect.ValueOf(imgui.InternalSplitterBehaviorV)},
+	{"internalStartMouseMovingWindow", reflect.ValueOf(imgui.InternalStartMouseMovingWindow)},
+	{"internalStartMouseMovingWindowOrNode", reflect.ValueOf(imgui.InternalStartMouseMovingWindowOrNode)},
+	{"internalStopMouseMovingWindow", reflect.ValueOf(imgui.InternalStopMouseMovingWindow)},
+	{"styleColorsClassicV", reflect.ValueOf(imgui.StyleColorsClassicV)},
+	{"styleColorsDarkV", reflect.ValueOf(imgui.StyleColorsDarkV)},
+	{"styleColorsLightV", reflect.ValueOf(imgui.StyleColorsLightV)},
+	{"internalTabBarAddTab", reflect.ValueOf(imgui.InternalTabBarAddTab)},
+	{"internalTabBarCloseTab", reflect.ValueOf(imgui.InternalTabBarCloseTab)},
+	{"internalTabBarFindByID", reflect.ValueOf(imgui.InternalTabBarFindByID)},
+	{"internalTabBarFindMostRecentlySelectedTabForActiveWindow", reflect.ValueOf(imgui.InternalTabBarFindMostRecentlySelectedTabForActiveWindow)},
+	{"internalTabBarFindTabByID", reflect.ValueOf(imgui.InternalTabBarFindTabByID)},
+	{"internalTabBarFindTabByOrder", reflect.ValueOf(imgui.InternalTabBarFindTabByOrder)},
+	{"internalTabBarGetCurrentTab", reflect.ValueOf(imgui.InternalTabBarGetCurrentTab)},
+	{"internalTabBarGetTabName", reflect.ValueOf(imgui.InternalTabBarGetTabName)},
+	{"internalTabBarGetTabOrder", reflect.ValueOf(imgui.InternalTabBarGetTabOrder)},
+	{"internalTabBarProcessReorder", reflect.ValueOf(imgui.InternalTabBarProcessReorder)},
+	{"internalTabBarQueueFocusStr", reflect.ValueOf(imgui.InternalTabBarQueueFocusStr)},
+	{"internalTabBarQueueFocusTabItemPtr", reflect.ValueOf(imgui.InternalTabBarQueueFocusTabItemPtr)},
+	{"internalTabBarQueueReorder", reflect.ValueOf(imgui.InternalTabBarQueueReorder)},
+	{"internalTabBarQueueReorderFromMousePos", reflect.ValueOf(imgui.InternalTabBarQueueReorderFromMousePos)},
+	{"internalTabBarRemove", reflect.ValueOf(imgui.InternalTabBarRemove)},
+	{"internalTabBarRemoveTab", reflect.ValueOf(imgui.InternalTabBarRemoveTab)},
+	{"internalTabItemBackground", reflect.ValueOf(imgui.InternalTabItemBackground)},
+	{"tabItemButtonV", reflect.ValueOf(imgui.TabItemButtonV)},
+	{"internalTabItemCalcSizeStr", reflect.ValueOf(imgui.InternalTabItemCalcSizeStr)},
+	{"internalTabItemCalcSizeWindowPtr", reflect.ValueOf(imgui.InternalTabItemCalcSizeWindowPtr)},
+	{"internalTabItemEx", reflect.ValueOf(imgui.InternalTabItemEx)},
+	{"internalTabItemLabelAndCloseButton", reflect.ValueOf(imgui.InternalTabItemLabelAndCloseButton)},
+	{"internalTabItemSpacing", reflect.ValueOf(imgui.InternalTabItemSpacing)},
+	{"tableAngledHeadersRow", reflect.ValueOf(imgui.TableAngledHeadersRow)},
+	{"internalTableAngledHeadersRowEx", reflect.ValueOf(imgui.InternalTableAngledHeadersRowEx)},
+	{"internalTableBeginApplyRequests", reflect.ValueOf(imgui.InternalTableBeginApplyRequests)},
+	{"internalTableBeginCell", reflect.ValueOf(imgui.InternalTableBeginCell)},
+	{"internalTableBeginContextMenuPopup", reflect.ValueOf(imgui.InternalTableBeginContextMenuPopup)},
+	{"internalTableBeginInitMemory", reflect.ValueOf(imgui.InternalTableBeginInitMemory)},
+	{"internalTableBeginRow", reflect.ValueOf(imgui.InternalTableBeginRow)},
+	{"internalTableCalcMaxColumnWidth", reflect.ValueOf(imgui.InternalTableCalcMaxColumnWidth)},
+	{"internalTableDrawBorders", reflect.ValueOf(imgui.InternalTableDrawBorders)},
+	{"internalTableDrawDefaultContextMenu", reflect.ValueOf(imgui.InternalTableDrawDefaultContextMenu)},
+	{"internalTableEndCell", reflect.ValueOf(imgui.InternalTableEndCell)},
+	{"internalTableEndRow", reflect.ValueOf(imgui.InternalTableEndRow)},
+	{"internalTableFindByID", reflect.ValueOf(imgui.InternalTableFindByID)},
+	{"internalTableFixColumnSortDirection", reflect.ValueOf(imgui.InternalTableFixColumnSortDirection)},
+	{"internalTableGcCompactSettings", reflect.ValueOf(imgui.InternalTableGcCompactSettings)},
+	{"internalTableGcCompactTransientBuffersTablePtr", reflect.ValueOf(imgui.InternalTableGcCompactTransientBuffersTablePtr)},
+	{"internalTableGcCompactTransientBuffersTableTempDataPtr", reflect.ValueOf(imgui.InternalTableGcCompactTransientBuffersTableTempDataPtr)},
+	{"internalTableGetBoundSettings", reflect.ValueOf(imgui.InternalTableGetBoundSettings)},
+	{"internalTableGetCellBgRect", reflect.ValueOf(imgui.InternalTableGetCellBgRect)},
+	{"tableGetColumnCount", reflect.ValueOf(imgui.TableGetColumnCount)},
+	{"tableGetColumnFlagsV", reflect.ValueOf(imgui.TableGetColumnFlagsV)},
+	{"tableGetColumnIndex", reflect.ValueOf(imgui.TableGetColumnIndex)},
+	{"tableGetColumnNameIntV", reflect.ValueOf(imgui.TableGetColumnNameIntV)},
+	{"internalTableGetColumnNameTablePtr", reflect.ValueOf(imgui.InternalTableGetColumnNameTablePtr)},
+	{"internalTableGetColumnNextSortDirection", reflect.ValueOf(imgui.InternalTableGetColumnNextSortDirection)},
+	{"internalTableGetColumnResizeIDV", reflect.ValueOf(imgui.InternalTableGetColumnResizeIDV)},
+	{"internalTableGetColumnWidthAuto", reflect.ValueOf(imgui.InternalTableGetColumnWidthAuto)},
+	{"internalTableGetHeaderAngledMaxLabelWidth", reflect.ValueOf(imgui.InternalTableGetHeaderAngledMaxLabelWidth)},
+	{"internalTableGetHeaderRowHeight", reflect.ValueOf(imgui.InternalTableGetHeaderRowHeight)},
+	{"tableGetHoveredColumn", reflect.ValueOf(imgui.TableGetHoveredColumn)},
+	{"internalTableGetHoveredRow", reflect.ValueOf(imgui.InternalTableGetHoveredRow)},
+	{"internalTableGetInstanceData", reflect.ValueOf(imgui.InternalTableGetInstanceData)},
+	{"internalTableGetInstanceID", reflect.ValueOf(imgui.InternalTableGetInstanceID)},
+	{"tableGetRowIndex", reflect.ValueOf(imgui.TableGetRowIndex)},
+	{"tableGetSortSpecs", reflect.ValueOf(imgui.TableGetSortSpecs)},
+	{"tableHeader", reflect.ValueOf(imgui.TableHeader)},
+	{"tableHeadersRow", reflect.ValueOf(imgui.TableHeadersRow)},
+	{"internalTableLoadSettings", reflect.ValueOf(imgui.InternalTableLoadSettings)},
+	{"internalTableMergeDrawChannels", reflect.ValueOf(imgui.InternalTableMergeDrawChannels)},
+	{"tableNextColumn", reflect.ValueOf(imgui.TableNextColumn)},
+	{"tableNextRowV", reflect.ValueOf(imgui.TableNextRowV)},
+	{"internalTableOpenContextMenuV", reflect.ValueOf(imgui.InternalTableOpenContextMenuV)},
+	{"internalTablePopBackgroundChannel", reflect.ValueOf(imgui.InternalTablePopBackgroundChannel)},
+	{"internalTablePopColumnChannel", reflect.ValueOf(imgui.InternalTablePopColumnChannel)},
+	{"internalTablePushBackgroundChannel", reflect.ValueOf(imgui.InternalTablePushBackgroundChannel)},
+	{"internalTablePushColumnChannel", reflect.ValueOf(imgui.InternalTablePushColumnChannel)},
+	{"internalTableRemove", reflect.ValueOf(imgui.InternalTableRemove)},
+	{"internalTableResetSettings", reflect.ValueOf(imgui.InternalTableResetSettings)},
+	{"internalTableSaveSettings", reflect.ValueOf(imgui.InternalTableSaveSettings)},
+	{"tableSetBgColorV", reflect.ValueOf(imgui.TableSetBgColorV)},
+	{"tableSetColumnEnabled", reflect.ValueOf(imgui.TableSetColumnEnabled)},
+	{"tableSetColumnIndex", reflect.ValueOf(imgui.TableSetColumnIndex)},
+	{"internalTableSetColumnSortDirection", reflect.ValueOf(imgui.InternalTableSetColumnSortDirection)},
+	{"internalTableSetColumnWidth", reflect.ValueOf(imgui.InternalTableSetColumnWidth)},
+	{"internalTableSetColumnWidthAutoAll", reflect.ValueOf(imgui.InternalTableSetColumnWidthAutoAll)},
+	{"internalTableSetColumnWidthAutoSingle", reflect.ValueOf(imgui.InternalTableSetColumnWidthAutoSingle)},
+	{"internalTableSettingsAddSettingsHandler", reflect.ValueOf(imgui.InternalTableSettingsAddSettingsHandler)},
+	{"internalTableSettingsCreate", reflect.ValueOf(imgui.InternalTableSettingsCreate)},
+	{"internalTableSettingsFindByID", reflect.ValueOf(imgui.InternalTableSettingsFindByID)},
+	{"tableSetupColumnV", reflect.ValueOf(imgui.TableSetupColumnV)},
+	{"internalTableSetupDrawChannels", reflect.ValueOf(imgui.InternalTableSetupDrawChannels)},
+	{"tableSetupScrollFreeze", reflect.ValueOf(imgui.TableSetupScrollFreeze)},
+	{"internalTableSortSpecsBuild", reflect.ValueOf(imgui.InternalTableSortSpecsBuild)},
+	{"internalTableSortSpecsSanitize", reflect.ValueOf(imgui.InternalTableSortSpecsSanitize)},
+	{"internalTableUpdateBorders", reflect.ValueOf(imgui.InternalTableUpdateBorders)},
+	{"internalTableUpdateColumnsWeightFromWidth", reflect.ValueOf(imgui.InternalTableUpdateColumnsWeightFromWidth)},
+	{"internalTableUpdateLayout", reflect.ValueOf(imgui.InternalTableUpdateLayout)},
+	{"internalTeleportMousePos", reflect.ValueOf(imgui.InternalTeleportMousePos)},
+	{"internalTempInputIsActive", reflect.ValueOf(imgui.InternalTempInputIsActive)},
+	{"internalTempInputScalarV", reflect.ValueOf(imgui.InternalTempInputScalarV)},
+	{"internalTempInputText", reflect.ValueOf(imgui.InternalTempInputText)},
+	{"internalTestKeyOwner", reflect.ValueOf(imgui.InternalTestKeyOwner)},
+	{"internalTestShortcutRouting", reflect.ValueOf(imgui.InternalTestShortcutRouting)},
+	{"text", reflect.ValueOf(imgui.Text)},
+	{"internalTextAligned", reflect.ValueOf(imgui.InternalTextAligned)},
+	{"textColored", reflect.ValueOf(imgui.TextColored)},
+	{"textDisabled", reflect.ValueOf(imgui.TextDisabled)},
+	{"internalTextExV", reflect.ValueOf(imgui.InternalTextExV)},
+	{"textLink", reflect.ValueOf(imgui.TextLink)},
+	{"textLinkOpenURLV", reflect.ValueOf(imgui.TextLinkOpenURLV)},
+	{"textUnformattedV", reflect.ValueOf(imgui.TextUnformattedV)},
+	{"textWrapped", reflect.ValueOf(imgui.TextWrapped)},
+	{"internalTranslateWindowsInViewport", reflect.ValueOf(imgui.InternalTranslateWindowsInViewport)},
+	{"internalTreeNodeBehaviorV", reflect.ValueOf(imgui.InternalTreeNodeBehaviorV)},
+	{"internalTreeNodeDrawLineToChildNode", reflect.ValueOf(imgui.InternalTreeNodeDrawLineToChildNode)},
+	{"internalTreeNodeDrawLineToTreePop", reflect.ValueOf(imgui.InternalTreeNodeDrawLineToTreePop)},
+	{"treeNodeExPtr", reflect.ValueOf(imgui.TreeNodeExPtr)},
+	{"treeNodeExStrV", reflect.ValueOf(imgui.TreeNodeExStrV)},
+	{"treeNodeExStrStr", reflect.ValueOf(imgui.TreeNodeExStrStr)},
+	{"internalTreeNodeGetOpen", reflect.ValueOf(imgui.InternalTreeNodeGetOpen)},
+	{"internalTreeNodeSetOpen", reflect.ValueOf(imgui.InternalTreeNodeSetOpen)},
+	{"internalTreeNodeUpdateNextOpen", reflect.ValueOf(imgui.InternalTreeNodeUpdateNextOpen)},
+	{"treeNodePtr", reflect.ValueOf(imgui.TreeNodePtr)},
+	{"treeNodeStr", reflect.ValueOf(imgui.TreeNodeStr)},
+	{"treeNodeStrStr", reflect.ValueOf(imgui.TreeNodeStrStr)},
+	{"treePop", reflect.ValueOf(imgui.TreePop)},
+	{"internalTreePushOverrideID", reflect.ValueOf(imgui.InternalTreePushOverrideID)},
+	{"treePushPtr", reflect.ValueOf(imgui.TreePushPtr)},
+	{"treePushStr", reflect.ValueOf(imgui.TreePushStr)},
+	{"unindentV", reflect.ValueOf(imgui.UnindentV)},
+	{"internalUnregisterFontAtlas", reflect.ValueOf(imgui.InternalUnregisterFontAtlas)},
+	{"internalUnregisterUserTexture", reflect.ValueOf(imgui.InternalUnregisterUserTexture)},
+	{"internalUpdateCurrentFontSize", reflect.ValueOf(imgui.InternalUpdateCurrentFontSize)},
+	{"internalUpdateHoveredWindowAndCaptureFlags", reflect.ValueOf(imgui.InternalUpdateHoveredWindowAndCaptureFlags)},
+	{"internalUpdateInputEvents", reflect.ValueOf(imgui.InternalUpdateInputEvents)},
+	{"internalUpdateMouseMovingWindowEndFrame", reflect.ValueOf(imgui.InternalUpdateMouseMovingWindowEndFrame)},
+	{"internalUpdateMouseMovingWindowNewFrame", reflect.ValueOf(imgui.InternalUpdateMouseMovingWindowNewFrame)},
+	{"updatePlatformWindows", reflect.ValueOf(imgui.UpdatePlatformWindows)},
+	{"internalUpdateWindowParentAndRootLinks", reflect.ValueOf(imgui.InternalUpdateWindowParentAndRootLinks)},
+	{"internalUpdateWindowSkipRefresh", reflect.ValueOf(imgui.InternalUpdateWindowSkipRefresh)},
+	{"vSliderFloatV", reflect.ValueOf(imgui.VSliderFloatV)},
+	{"vSliderIntV", reflect.ValueOf(imgui.VSliderIntV)},
+	{"vSliderScalarV", reflect.ValueOf(imgui.VSliderScalarV)},
+	{"valueBool", reflect.ValueOf(imgui.ValueBool)},
+	{"valueFloatV", reflect.ValueOf(imgui.ValueFloatV)},
+	{"valueInt", reflect.ValueOf(imgui.ValueInt)},
+	{"valueUint", reflect.ValueOf(imgui.ValueUint)},
+	{"internalWindowPosAbsToRel", reflect.ValueOf(imgui.InternalWindowPosAbsToRel)},
+	{"internalWindowPosRelToAbs", reflect.ValueOf(imgui.InternalWindowPosRelToAbs)},
+	{"internalWindowRectAbsToRel", reflect.ValueOf(imgui.InternalWindowRectAbsToRel)},
+	{"internalWindowRectRelToAbs", reflect.ValueOf(imgui.InternalWindowRectRelToAbs)},
+	{"colorHSV", reflect.ValueOf(imgui.ColorHSV)},
+	{"acceptDragDropPayload", reflect.ValueOf(imgui.AcceptDragDropPayload)},
+	{"internalArrowButtonEx", reflect.ValueOf(imgui.InternalArrowButtonEx)},
+	{"begin", reflect.ValueOf(imgui.Begin)},
+	{"beginChildID", reflect.ValueOf(imgui.BeginChildID)},
+	{"beginChildStr", reflect.ValueOf(imgui.BeginChildStr)},
+	{"internalBeginColumns", reflect.ValueOf(imgui.InternalBeginColumns)},
+	{"beginCombo", reflect.ValueOf(imgui.BeginCombo)},
+	{"beginDisabled", reflect.ValueOf(imgui.BeginDisabled)},
+	{"beginDragDropSource", reflect.ValueOf(imgui.BeginDragDropSource)},
+	{"internalBeginDragDropTargetViewport", reflect.ValueOf(imgui.InternalBeginDragDropTargetViewport)},
+	{"beginListBox", reflect.ValueOf(imgui.BeginListBox)},
+	{"beginMenu", reflect.ValueOf(imgui.BeginMenu)},
+	{"internalBeginMenuEx", reflect.ValueOf(imgui.InternalBeginMenuEx)},
+	{"beginMultiSelect", reflect.ValueOf(imgui.BeginMultiSelect)},
+	{"beginPopup", reflect.ValueOf(imgui.BeginPopup)},
+	{"beginPopupContextItem", reflect.ValueOf(imgui.BeginPopupContextItem)},
+	{"beginPopupContextVoid", reflect.ValueOf(imgui.BeginPopupContextVoid)},
+	{"beginPopupContextWindow", reflect.ValueOf(imgui.BeginPopupContextWindow)},
+	{"beginPopupModal", reflect.ValueOf(imgui.BeginPopupModal)},
+	{"beginTabBar", reflect.ValueOf(imgui.BeginTabBar)},
+	{"beginTabItem", reflect.ValueOf(imgui.BeginTabItem)},
+	{"beginTable", reflect.ValueOf(imgui.BeginTable)},
+	{"internalBeginTableEx", reflect.ValueOf(imgui.InternalBeginTableEx)},
+	{"button", reflect.ValueOf(imgui.Button)},
+	{"internalButtonBehavior", reflect.ValueOf(imgui.InternalButtonBehavior)},
+	{"internalButtonEx", reflect.ValueOf(imgui.InternalButtonEx)},
+	{"calcTextSize", reflect.ValueOf(imgui.CalcTextSize)},
+	{"collapsingHeaderBoolPtr", reflect.ValueOf(imgui.CollapsingHeaderBoolPtr)},
+	{"collapsingHeaderTreeNodeFlags", reflect.ValueOf(imgui.CollapsingHeaderTreeNodeFlags)},
+	{"colorButton", reflect.ValueOf(imgui.ColorButton)},
+	{"colorEdit3", reflect.ValueOf(imgui.ColorEdit3)},
+	{"colorEdit4", reflect.ValueOf(imgui.ColorEdit4)},
+	{"colorPicker3", reflect.ValueOf(imgui.ColorPicker3)},
+	{"colorPicker4", reflect.ValueOf(imgui.ColorPicker4)},
+	{"columns", reflect.ValueOf(imgui.Columns)},
+	{"comboStr", reflect.ValueOf(imgui.ComboStr)},
+	{"comboStrarr", reflect.ValueOf(imgui.ComboStrarr)},
+	{"createContext", reflect.ValueOf(imgui.CreateContext)},
+	{"internalDataTypeApplyFromText", reflect.ValueOf(imgui.InternalDataTypeApplyFromText)},
+	{"internalDebugDrawCursorPos", reflect.ValueOf(imgui.InternalDebugDrawCursorPos)},
+	{"internalDebugDrawItemRect", reflect.ValueOf(imgui.InternalDebugDrawItemRect)},
+	{"internalDebugDrawLineExtents", reflect.ValueOf(imgui.InternalDebugDrawLineExtents)},
+	{"internalDebugNodeTexture", reflect.ValueOf(imgui.InternalDebugNodeTexture)},
+	{"destroyContext", reflect.ValueOf(imgui.DestroyContext)},
+	{"internalDockBuilderAddNode", reflect.ValueOf(imgui.InternalDockBuilderAddNode)},
+	{"internalDockBuilderRemoveNodeDockedWindows", reflect.ValueOf(imgui.InternalDockBuilderRemoveNodeDockedWindows)},
+	{"internalDockContextProcessUndockWindow", reflect.ValueOf(imgui.InternalDockContextProcessUndockWindow)},
+	{"dockSpace", reflect.ValueOf(imgui.DockSpace)},
+	{"dockSpaceOverViewport", reflect.ValueOf(imgui.DockSpaceOverViewport)},
+	{"dragFloat", reflect.ValueOf(imgui.DragFloat)},
+	{"dragFloat2", reflect.ValueOf(imgui.DragFloat2)},
+	{"dragFloat3", reflect.ValueOf(imgui.DragFloat3)},
+	{"dragFloat4", reflect.ValueOf(imgui.DragFloat4)},
+	{"dragFloatRange2", reflect.ValueOf(imgui.DragFloatRange2)},
+	{"dragInt", reflect.ValueOf(imgui.DragInt)},
+	{"dragInt2", reflect.ValueOf(imgui.DragInt2)},
+	{"dragInt3", reflect.ValueOf(imgui.DragInt3)},
+	{"dragInt4", reflect.ValueOf(imgui.DragInt4)},
+	{"dragIntRange2", reflect.ValueOf(imgui.DragIntRange2)},
+	{"dragScalar", reflect.ValueOf(imgui.DragScalar)},
+	{"dragScalarN", reflect.ValueOf(imgui.DragScalarN)},
+	{"internalFindRenderedTextEnd", reflect.ValueOf(imgui.InternalFindRenderedTextEnd)},
+	{"internalFocusWindow", reflect.ValueOf(imgui.InternalFocusWindow)},
+	{"backgroundDrawList", reflect.ValueOf(imgui.BackgroundDrawList)},
+	{"colorU32Col", reflect.ValueOf(imgui.ColorU32Col)},
+	{"colorU32U32", reflect.ValueOf(imgui.ColorU32U32)},
+	{"columnOffset", reflect.ValueOf(imgui.ColumnOffset)},
+	{"columnWidth", reflect.ValueOf(imgui.ColumnWidth)},
+	{"foregroundDrawListViewportPtr", reflect.ValueOf(imgui.ForegroundDrawListViewportPtr)},
+	{"mouseDragDelta", reflect.ValueOf(imgui.MouseDragDelta)},
+	{"internalTypingSelectRequest", reflect.ValueOf(imgui.InternalTypingSelectRequest)},
+	{"internalImFileLoadToMemory", reflect.ValueOf(imgui.InternalImFileLoadToMemory)},
+	{"internalImFontAtlasPackAddRect", reflect.ValueOf(imgui.InternalImFontAtlasPackAddRect)},
+	{"internalImFontAtlasTextureGrow", reflect.ValueOf(imgui.InternalImFontAtlasTextureGrow)},
+	{"internalImFontCalcWordWrapPositionEx", reflect.ValueOf(imgui.InternalImFontCalcWordWrapPositionEx)},
+	{"internalImHashData", reflect.ValueOf(imgui.InternalImHashData)},
+	{"internalImHashStr", reflect.ValueOf(imgui.InternalImHashStr)},
+	{"internalImTextCalcWordWrapNextLineStart", reflect.ValueOf(imgui.InternalImTextCalcWordWrapNextLineStart)},
+	{"internalImTextStrFromUtf8", reflect.ValueOf(imgui.InternalImTextStrFromUtf8)},
+	{"image", reflect.ValueOf(imgui.Image)},
+	{"imageButton", reflect.ValueOf(imgui.ImageButton)},
+	{"internalImageButtonEx", reflect.ValueOf(imgui.InternalImageButtonEx)},
+	{"imageWithBg", reflect.ValueOf(imgui.ImageWithBg)},
+	{"indent", reflect.ValueOf(imgui.Indent)},
+	{"inputDouble", reflect.ValueOf(imgui.InputDouble)},
+	{"inputFloat", reflect.ValueOf(imgui.InputFloat)},
+	{"inputFloat2", reflect.ValueOf(imgui.InputFloat2)},
+	{"inputFloat3", reflect.ValueOf(imgui.InputFloat3)},
+	{"inputFloat4", reflect.ValueOf(imgui.InputFloat4)},
+	{"inputInt", reflect.ValueOf(imgui.InputInt)},
+	{"inputInt2", reflect.ValueOf(imgui.InputInt2)},
+	{"inputInt3", reflect.ValueOf(imgui.InputInt3)},
+	{"inputInt4", reflect.ValueOf(imgui.InputInt4)},
+	{"inputScalar", reflect.ValueOf(imgui.InputScalar)},
+	{"inputScalarN", reflect.ValueOf(imgui.InputScalarN)},
+	{"internalInputTextEx", reflect.ValueOf(imgui.InternalInputTextEx)},
+	{"invisibleButton", reflect.ValueOf(imgui.InvisibleButton)},
+	{"isItemClicked", reflect.ValueOf(imgui.IsItemClicked)},
+	{"isItemHovered", reflect.ValueOf(imgui.IsItemHovered)},
+	{"internalIsKeyChordPressedInputFlags", reflect.ValueOf(imgui.InternalIsKeyChordPressedInputFlags)},
+	{"isKeyPressedBool", reflect.ValueOf(imgui.IsKeyPressedBool)},
+	{"internalIsKeyPressedInputFlags", reflect.ValueOf(imgui.InternalIsKeyPressedInputFlags)},
+	{"isMouseClickedBool", reflect.ValueOf(imgui.IsMouseClickedBool)},
+	{"internalIsMouseClickedInputFlags", reflect.ValueOf(imgui.InternalIsMouseClickedInputFlags)},
+	{"internalIsMouseDragPastThreshold", reflect.ValueOf(imgui.InternalIsMouseDragPastThreshold)},
+	{"isMouseDragging", reflect.ValueOf(imgui.IsMouseDragging)},
+	{"isMouseHoveringRect", reflect.ValueOf(imgui.IsMouseHoveringRect)},
+	{"isMousePosValid", reflect.ValueOf(imgui.IsMousePosValid)},
+	{"isPopupOpenStr", reflect.ValueOf(imgui.IsPopupOpenStr)},
+	{"internalIsWindowContentHoverable", reflect.ValueOf(imgui.InternalIsWindowContentHoverable)},
+	{"isWindowFocused", reflect.ValueOf(imgui.IsWindowFocused)},
+	{"isWindowHovered", reflect.ValueOf(imgui.IsWindowHovered)},
+	{"internalItemAdd", reflect.ValueOf(imgui.InternalItemAdd)},
+	{"internalItemSizeRect", reflect.ValueOf(imgui.InternalItemSizeRect)},
+	{"internalItemSizeVec2", reflect.ValueOf(imgui.InternalItemSizeVec2)},
+	{"listBoxStrarr", reflect.ValueOf(imgui.ListBoxStrarr)},
+	{"loadIniSettingsFromMemory", reflect.ValueOf(imgui.LoadIniSettingsFromMemory)},
+	{"internalLogRenderedText", reflect.ValueOf(imgui.InternalLogRenderedText)},
+	{"internalLogToBuffer", reflect.ValueOf(imgui.InternalLogToBuffer)},
+	{"logToClipboard", reflect.ValueOf(imgui.LogToClipboard)},
+	{"logToFile", reflect.ValueOf(imgui.LogToFile)},
+	{"logToTTY", reflect.ValueOf(imgui.LogToTTY)},
+	{"internalMenuItemEx", reflect.ValueOf(imgui.InternalMenuItemEx)},
+	{"menuItemBool", reflect.ValueOf(imgui.MenuItemBool)},
+	{"menuItemBoolPtr", reflect.ValueOf(imgui.MenuItemBoolPtr)},
+	{"internalOpenPopupEx", reflect.ValueOf(imgui.InternalOpenPopupEx)},
+	{"openPopupOnItemClick", reflect.ValueOf(imgui.OpenPopupOnItemClick)},
+	{"openPopupID", reflect.ValueOf(imgui.OpenPopupID)},
+	{"openPopupStr", reflect.ValueOf(imgui.OpenPopupStr)},
+	{"plotHistogramFloatPtr", reflect.ValueOf(imgui.PlotHistogramFloatPtr)},
+	{"plotLinesFloatPtr", reflect.ValueOf(imgui.PlotLinesFloatPtr)},
+	{"popStyleColor", reflect.ValueOf(imgui.PopStyleColor)},
+	{"popStyleVar", reflect.ValueOf(imgui.PopStyleVar)},
+	{"progressBar", reflect.ValueOf(imgui.ProgressBar)},
+	{"pushTextWrapPos", reflect.ValueOf(imgui.PushTextWrapPos)},
+	{"internalRenderArrow", reflect.ValueOf(imgui.InternalRenderArrow)},
+	{"internalRenderColorRectWithAlphaCheckerboard", reflect.ValueOf(imgui.InternalRenderColorRectWithAlphaCheckerboard)},
+	{"internalRenderFrame", reflect.ValueOf(imgui.InternalRenderFrame)},
+	{"internalRenderFrameBorder", reflect.ValueOf(imgui.InternalRenderFrameBorder)},
+	{"internalRenderNavCursor", reflect.ValueOf(imgui.InternalRenderNavCursor)},
+	{"renderPlatformWindowsDefault", reflect.ValueOf(imgui.RenderPlatformWindowsDefault)},
+	{"internalRenderText", reflect.ValueOf(imgui.InternalRenderText)},
+	{"internalRenderTextClipped", reflect.ValueOf(imgui.InternalRenderTextClipped)},
+	{"internalRenderTextClippedEx", reflect.ValueOf(imgui.InternalRenderTextClippedEx)},
+	{"resetMouseDragDelta", reflect.ValueOf(imgui.ResetMouseDragDelta)},
+	{"sameLine", reflect.ValueOf(imgui.SameLine)},
+	{"saveIniSettingsToMemory", reflect.ValueOf(imgui.SaveIniSettingsToMemory)},
+	{"internalScrollToItem", reflect.ValueOf(imgui.InternalScrollToItem)},
+	{"internalScrollToRect", reflect.ValueOf(imgui.InternalScrollToRect)},
+	{"internalScrollToRectEx", reflect.ValueOf(imgui.InternalScrollToRectEx)},
+	{"internalScrollbarEx", reflect.ValueOf(imgui.InternalScrollbarEx)},
+	{"selectableBool", reflect.ValueOf(imgui.SelectableBool)},
+	{"selectableBoolPtr", reflect.ValueOf(imgui.SelectableBoolPtr)},
+	{"internalSeparatorEx", reflect.ValueOf(imgui.InternalSeparatorEx)},
+	{"setAllocatorFunctions", reflect.ValueOf(imgui.SetAllocatorFunctions)},
+	{"setDragDropPayload", reflect.ValueOf(imgui.SetDragDropPayload)},
+	{"internalSetKeyOwner", reflect.ValueOf(imgui.InternalSetKeyOwner)},
+	{"internalSetKeyOwnersForKeyChord", reflect.ValueOf(imgui.InternalSetKeyOwnersForKeyChord)},
+	{"setKeyboardFocusHere", reflect.ValueOf(imgui.SetKeyboardFocusHere)},
+	{"setNextItemOpen", reflect.ValueOf(imgui.SetNextItemOpen)},
+	{"setNextItemShortcut", reflect.ValueOf(imgui.SetNextItemShortcut)},
+	{"setNextWindowCollapsed", reflect.ValueOf(imgui.SetNextWindowCollapsed)},
+	{"setNextWindowDockID", reflect.ValueOf(imgui.SetNextWindowDockID)},
+	{"setNextWindowPos", reflect.ValueOf(imgui.SetNextWindowPos)},
+	{"setNextWindowSize", reflect.ValueOf(imgui.SetNextWindowSize)},
+	{"setNextWindowSizeConstraints", reflect.ValueOf(imgui.SetNextWindowSizeConstraints)},
+	{"setScrollFromPosXFloat", reflect.ValueOf(imgui.SetScrollFromPosXFloat)},
+	{"setScrollFromPosYFloat", reflect.ValueOf(imgui.SetScrollFromPosYFloat)},
+	{"setScrollHereX", reflect.ValueOf(imgui.SetScrollHereX)},
+	{"setScrollHereY", reflect.ValueOf(imgui.SetScrollHereY)},
+	{"setWindowCollapsedBool", reflect.ValueOf(imgui.SetWindowCollapsedBool)},
+	{"setWindowCollapsedStr", reflect.ValueOf(imgui.SetWindowCollapsedStr)},
+	{"internalSetWindowCollapsedWindowPtr", reflect.ValueOf(imgui.InternalSetWindowCollapsedWindowPtr)},
+	{"setWindowPosStr", reflect.ValueOf(imgui.SetWindowPosStr)},
+	{"setWindowPosVec2", reflect.ValueOf(imgui.SetWindowPosVec2)},
+	{"internalSetWindowPosWindowPtr", reflect.ValueOf(imgui.InternalSetWindowPosWindowPtr)},
+	{"setWindowSizeStr", reflect.ValueOf(imgui.SetWindowSizeStr)},
+	{"setWindowSizeVec2", reflect.ValueOf(imgui.SetWindowSizeVec2)},
+	{"internalSetWindowSizeWindowPtr", reflect.ValueOf(imgui.InternalSetWindowSizeWindowPtr)},
+	{"shortcut", reflect.ValueOf(imgui.Shortcut)},
+	{"showAboutWindow", reflect.ValueOf(imgui.ShowAboutWindow)},
+	{"showDebugLogWindow", reflect.ValueOf(imgui.ShowDebugLogWindow)},
+	{"showDemoWindow", reflect.ValueOf(imgui.ShowDemoWindow)},
+	{"showIDStackToolWindow", reflect.ValueOf(imgui.ShowIDStackToolWindow)},
+	{"showMetricsWindow", reflect.ValueOf(imgui.ShowMetricsWindow)},
+	{"showStyleEditor", reflect.ValueOf(imgui.ShowStyleEditor)},
+	{"sliderAngle", reflect.ValueOf(imgui.SliderAngle)},
+	{"sliderFloat", reflect.ValueOf(imgui.SliderFloat)},
+	{"sliderFloat2", reflect.ValueOf(imgui.SliderFloat2)},
+	{"sliderFloat3", reflect.ValueOf(imgui.SliderFloat3)},
+	{"sliderFloat4", reflect.ValueOf(imgui.SliderFloat4)},
+	{"sliderInt", reflect.ValueOf(imgui.SliderInt)},
+	{"sliderInt2", reflect.ValueOf(imgui.SliderInt2)},
+	{"sliderInt3", reflect.ValueOf(imgui.SliderInt3)},
+	{"sliderInt4", reflect.ValueOf(imgui.SliderInt4)},
+	{"sliderScalar", reflect.ValueOf(imgui.SliderScalar)},
+	{"sliderScalarN", reflect.ValueOf(imgui.SliderScalarN)},
+	{"internalSplitterBehavior", reflect.ValueOf(imgui.InternalSplitterBehavior)},
+	{"styleColorsClassic", reflect.ValueOf(imgui.StyleColorsClassic)},
+	{"styleColorsDark", reflect.ValueOf(imgui.StyleColorsDark)},
+	{"styleColorsLight", reflect.ValueOf(imgui.StyleColorsLight)},
+	{"tabItemButton", reflect.ValueOf(imgui.TabItemButton)},
+	{"tableGetColumnFlags", reflect.ValueOf(imgui.TableGetColumnFlags)},
+	{"tableGetColumnNameInt", reflect.ValueOf(imgui.TableGetColumnNameInt)},
+	{"internalTableGetColumnResizeID", reflect.ValueOf(imgui.InternalTableGetColumnResizeID)},
+	{"tableNextRow", reflect.ValueOf(imgui.TableNextRow)},
+	{"internalTableOpenContextMenu", reflect.ValueOf(imgui.InternalTableOpenContextMenu)},
+	{"tableSetBgColor", reflect.ValueOf(imgui.TableSetBgColor)},
+	{"tableSetupColumn", reflect.ValueOf(imgui.TableSetupColumn)},
+	{"internalTempInputScalar", reflect.ValueOf(imgui.InternalTempInputScalar)},
+	{"internalTextEx", reflect.ValueOf(imgui.InternalTextEx)},
+	{"textLinkOpenURL", reflect.ValueOf(imgui.TextLinkOpenURL)},
+	{"textUnformatted", reflect.ValueOf(imgui.TextUnformatted)},
+	{"internalTreeNodeBehavior", reflect.ValueOf(imgui.InternalTreeNodeBehavior)},
+	{"treeNodeExStr", reflect.ValueOf(imgui.TreeNodeExStr)},
+	{"unindent", reflect.ValueOf(imgui.Unindent)},
+	{"vSliderFloat", reflect.ValueOf(imgui.VSliderFloat)},
+	{"vSliderInt", reflect.ValueOf(imgui.VSliderInt)},
+	{"vSliderScalar", reflect.ValueOf(imgui.VSliderScalar)},
+	{"valueFloat", reflect.ValueOf(imgui.ValueFloat)},
+	{"inputTextWithHint", reflect.ValueOf(imgui.InputTextWithHint)},
+	{"inputTextMultiline", reflect.ValueOf(imgui.InputTextMultiline)},
+	{"createTextureNrgba", reflect.ValueOf(imgui.CreateTextureNrgba)},
+	{"newEmptyBitArrayForNamedKeys", reflect.ValueOf(imgui.NewEmptyBitArrayForNamedKeys)},
+	{"newEmptyBitVector", reflect.ValueOf(imgui.NewEmptyBitVector)},
+	{"newEmptyDrawChannel", reflect.ValueOf(imgui.NewEmptyDrawChannel)},
+	{"newEmptyDrawCmd", reflect.ValueOf(imgui.NewEmptyDrawCmd)},
+	{"newEmptyDrawCmdHeader", reflect.ValueOf(imgui.NewEmptyDrawCmdHeader)},
+	{"newEmptyDrawData", reflect.ValueOf(imgui.NewEmptyDrawData)},
+	{"newEmptyDrawDataBuilder", reflect.ValueOf(imgui.NewEmptyDrawDataBuilder)},
+	{"newEmptyDrawList", reflect.ValueOf(imgui.NewEmptyDrawList)},
+	{"newEmptyDrawListSharedData", reflect.ValueOf(imgui.NewEmptyDrawListSharedData)},
+	{"newEmptyDrawListSplitter", reflect.ValueOf(imgui.NewEmptyDrawListSplitter)},
+	{"newEmptyDrawVert", reflect.ValueOf(imgui.NewEmptyDrawVert)},
+	{"newEmptyFont", reflect.ValueOf(imgui.NewEmptyFont)},
+	{"newEmptyFontAtlas", reflect.ValueOf(imgui.NewEmptyFontAtlas)},
+	{"newEmptyFontAtlasBuilder", reflect.ValueOf(imgui.NewEmptyFontAtlasBuilder)},
+	{"newEmptyFontAtlasPostProcessData", reflect.ValueOf(imgui.NewEmptyFontAtlasPostProcessData)},
+	{"newEmptyFontAtlasRect", reflect.ValueOf(imgui.NewEmptyFontAtlasRect)},
+	{"newEmptyFontAtlasRectEntry", reflect.ValueOf(imgui.NewEmptyFontAtlasRectEntry)},
+	{"newEmptyFontBaked", reflect.ValueOf(imgui.NewEmptyFontBaked)},
+	{"newEmptyFontConfig", reflect.ValueOf(imgui.NewEmptyFontConfig)},
+	{"newEmptyFontGlyph", reflect.ValueOf(imgui.NewEmptyFontGlyph)},
+	{"newEmptyFontGlyphRangesBuilder", reflect.ValueOf(imgui.NewEmptyFontGlyphRangesBuilder)},
+	{"newEmptyFontLoader", reflect.ValueOf(imgui.NewEmptyFontLoader)},
+	{"newEmptyFontStackData", reflect.ValueOf(imgui.NewEmptyFontStackData)},
+	{"newEmptyBoxSelectState", reflect.ValueOf(imgui.NewEmptyBoxSelectState)},
+	{"newEmptyColorMod", reflect.ValueOf(imgui.NewEmptyColorMod)},
+	{"newEmptyComboPreviewData", reflect.ValueOf(imgui.NewEmptyComboPreviewData)},
+	{"newEmptyContext", reflect.ValueOf(imgui.NewEmptyContext)},
+	{"newEmptyContextHook", reflect.ValueOf(imgui.NewEmptyContextHook)},
+	{"newEmptyDataTypeInfo", reflect.ValueOf(imgui.NewEmptyDataTypeInfo)},
+	{"newEmptyDataTypeStorage", reflect.ValueOf(imgui.NewEmptyDataTypeStorage)},
+	{"newEmptyDeactivatedItemData", reflect.ValueOf(imgui.NewEmptyDeactivatedItemData)},
+	{"newEmptyDebugAllocEntry", reflect.ValueOf(imgui.NewEmptyDebugAllocEntry)},
+	{"newEmptyDebugAllocInfo", reflect.ValueOf(imgui.NewEmptyDebugAllocInfo)},
+	{"newEmptyDockContext", reflect.ValueOf(imgui.NewEmptyDockContext)},
+	{"newEmptyDockNode", reflect.ValueOf(imgui.NewEmptyDockNode)},
+	{"newEmptyErrorRecoveryState", reflect.ValueOf(imgui.NewEmptyErrorRecoveryState)},
+	{"newEmptyFocusScopeData", reflect.ValueOf(imgui.NewEmptyFocusScopeData)},
+	{"newEmptyGroupData", reflect.ValueOf(imgui.NewEmptyGroupData)},
+	{"newEmptyIDStackTool", reflect.ValueOf(imgui.NewEmptyIDStackTool)},
+	{"newEmptyIO", reflect.ValueOf(imgui.NewEmptyIO)},
+	{"newEmptyInputEvent", reflect.ValueOf(imgui.NewEmptyInputEvent)},
+	{"newEmptyInputEventAppFocused", reflect.ValueOf(imgui.NewEmptyInputEventAppFocused)},
+	{"newEmptyInputEventKey", reflect.ValueOf(imgui.NewEmptyInputEventKey)},
+	{"newEmptyInputEventMouseButton", reflect.ValueOf(imgui.NewEmptyInputEventMouseButton)},
+	{"newEmptyInputEventMousePos", reflect.ValueOf(imgui.NewEmptyInputEventMousePos)},
+	{"newEmptyInputEventMouseViewport", reflect.ValueOf(imgui.NewEmptyInputEventMouseViewport)},
+	{"newEmptyInputEventMouseWheel", reflect.ValueOf(imgui.NewEmptyInputEventMouseWheel)},
+	{"newEmptyInputEventText", reflect.ValueOf(imgui.NewEmptyInputEventText)},
+	{"newEmptyInputTextCallbackData", reflect.ValueOf(imgui.NewEmptyInputTextCallbackData)},
+	{"newEmptyInputTextDeactivatedState", reflect.ValueOf(imgui.NewEmptyInputTextDeactivatedState)},
+	{"newEmptyInputTextState", reflect.ValueOf(imgui.NewEmptyInputTextState)},
+	{"newEmptyKeyData", reflect.ValueOf(imgui.NewEmptyKeyData)},
+	{"newEmptyKeyOwnerData", reflect.ValueOf(imgui.NewEmptyKeyOwnerData)},
+	{"newEmptyKeyRoutingData", reflect.ValueOf(imgui.NewEmptyKeyRoutingData)},
+	{"newEmptyKeyRoutingTable", reflect.ValueOf(imgui.NewEmptyKeyRoutingTable)},
+	{"newEmptyLastItemData", reflect.ValueOf(imgui.NewEmptyLastItemData)},
+	{"newEmptyListClipper", reflect.ValueOf(imgui.NewEmptyListClipper)},
+	{"newEmptyListClipperData", reflect.ValueOf(imgui.NewEmptyListClipperData)},
+	{"newEmptyListClipperRange", reflect.ValueOf(imgui.NewEmptyListClipperRange)},
+	{"newEmptyLocEntry", reflect.ValueOf(imgui.NewEmptyLocEntry)},
+	{"newEmptyMenuColumns", reflect.ValueOf(imgui.NewEmptyMenuColumns)},
+	{"newEmptyMetricsConfig", reflect.ValueOf(imgui.NewEmptyMetricsConfig)},
+	{"newEmptyMultiSelectIO", reflect.ValueOf(imgui.NewEmptyMultiSelectIO)},
+	{"newEmptyMultiSelectState", reflect.ValueOf(imgui.NewEmptyMultiSelectState)},
+	{"newEmptyMultiSelectTempData", reflect.ValueOf(imgui.NewEmptyMultiSelectTempData)},
+	{"newEmptyNavItemData", reflect.ValueOf(imgui.NewEmptyNavItemData)},
+	{"newEmptyNextItemData", reflect.ValueOf(imgui.NewEmptyNextItemData)},
+	{"newEmptyNextWindowData", reflect.ValueOf(imgui.NewEmptyNextWindowData)},
+	{"newEmptyOldColumnData", reflect.ValueOf(imgui.NewEmptyOldColumnData)},
+	{"newEmptyOldColumns", reflect.ValueOf(imgui.NewEmptyOldColumns)},
+	{"newEmptyOnceUponAFrame", reflect.ValueOf(imgui.NewEmptyOnceUponAFrame)},
+	{"newEmptyPayload", reflect.ValueOf(imgui.NewEmptyPayload)},
+	{"newEmptyPlatformIO", reflect.ValueOf(imgui.NewEmptyPlatformIO)},
+	{"newEmptyPlatformImeData", reflect.ValueOf(imgui.NewEmptyPlatformImeData)},
+	{"newEmptyPlatformMonitor", reflect.ValueOf(imgui.NewEmptyPlatformMonitor)},
+	{"newEmptyPopupData", reflect.ValueOf(imgui.NewEmptyPopupData)},
+	{"newEmptyPtrOrIndex", reflect.ValueOf(imgui.NewEmptyPtrOrIndex)},
+	{"newEmptySelectionBasicStorage", reflect.ValueOf(imgui.NewEmptySelectionBasicStorage)},
+	{"newEmptySelectionExternalStorage", reflect.ValueOf(imgui.NewEmptySelectionExternalStorage)},
+	{"newEmptySelectionRequest", reflect.ValueOf(imgui.NewEmptySelectionRequest)},
+	{"newEmptySettingsHandler", reflect.ValueOf(imgui.NewEmptySettingsHandler)},
+	{"newEmptyShrinkWidthItem", reflect.ValueOf(imgui.NewEmptyShrinkWidthItem)},
+	{"newEmptySizeCallbackData", reflect.ValueOf(imgui.NewEmptySizeCallbackData)},
+	{"newEmptyStackLevelInfo", reflect.ValueOf(imgui.NewEmptyStackLevelInfo)},
+	{"newEmptyStorage", reflect.ValueOf(imgui.NewEmptyStorage)},
+	{"newEmptyStoragePair", reflect.ValueOf(imgui.NewEmptyStoragePair)},
+	{"newEmptyStyle", reflect.ValueOf(imgui.NewEmptyStyle)},
+	{"newEmptyStyleMod", reflect.ValueOf(imgui.NewEmptyStyleMod)},
+	{"newEmptyStyleVarInfo", reflect.ValueOf(imgui.NewEmptyStyleVarInfo)},
+	{"newEmptyTabBar", reflect.ValueOf(imgui.NewEmptyTabBar)},
+	{"newEmptyTabItem", reflect.ValueOf(imgui.NewEmptyTabItem)},
+	{"newEmptyTable", reflect.ValueOf(imgui.NewEmptyTable)},
+	{"newEmptyTableCellData", reflect.ValueOf(imgui.NewEmptyTableCellData)},
+	{"newEmptyTableColumn", reflect.ValueOf(imgui.NewEmptyTableColumn)},
+	{"newEmptyTableColumnSettings", reflect.ValueOf(imgui.NewEmptyTableColumnSettings)},
+	{"newEmptyTableColumnSortSpecs", reflect.ValueOf(imgui.NewEmptyTableColumnSortSpecs)},
+	{"newEmptyTableHeaderData", reflect.ValueOf(imgui.NewEmptyTableHeaderData)},
+	{"newEmptyTableInstanceData", reflect.ValueOf(imgui.NewEmptyTableInstanceData)},
+	{"newEmptyTableSettings", reflect.ValueOf(imgui.NewEmptyTableSettings)},
+	{"newEmptyTableSortSpecs", reflect.ValueOf(imgui.NewEmptyTableSortSpecs)},
+	{"newEmptyTableTempData", reflect.ValueOf(imgui.NewEmptyTableTempData)},
+	{"newEmptyTextBuffer", reflect.ValueOf(imgui.NewEmptyTextBuffer)},
+	{"newEmptyTextFilter", reflect.ValueOf(imgui.NewEmptyTextFilter)},
+	{"newEmptyTextIndex", reflect.ValueOf(imgui.NewEmptyTextIndex)},
+	{"newEmptyTextRange", reflect.ValueOf(imgui.NewEmptyTextRange)},
+	{"newEmptyTreeNodeStackData", reflect.ValueOf(imgui.NewEmptyTreeNodeStackData)},
+	{"newEmptyTypingSelectRequest", reflect.ValueOf(imgui.NewEmptyTypingSelectRequest)},
+	{"newEmptyTypingSelectState", reflect.ValueOf(imgui.NewEmptyTypingSelectState)},
+	{"newEmptyViewport", reflect.ValueOf(imgui.NewEmptyViewport)},
+	{"newEmptyViewportP", reflect.ValueOf(imgui.NewEmptyViewportP)},
+	{"newEmptyWindow", reflect.ValueOf(imgui.NewEmptyWindow)},
+	{"newEmptyWindowClass", reflect.ValueOf(imgui.NewEmptyWindowClass)},
+	{"newEmptyWindowDockStyle", reflect.ValueOf(imgui.NewEmptyWindowDockStyle)},
+	{"newEmptyWindowSettings", reflect.ValueOf(imgui.NewEmptyWindowSettings)},
+	{"newEmptyWindowStackData", reflect.ValueOf(imgui.NewEmptyWindowStackData)},
+	{"newEmptyWindowTempData", reflect.ValueOf(imgui.NewEmptyWindowTempData)},
+	{"newEmptyTextureData", reflect.ValueOf(imgui.NewEmptyTextureData)},
+	{"newEmptyTextureRect", reflect.ValueOf(imgui.NewEmptyTextureRect)},
+	{"newEmptyTextureRef", reflect.ValueOf(imgui.NewEmptyTextureRef)},
+	{"newEmptyVec1", reflect.ValueOf(imgui.NewEmptyVec1)},
+	{"newEmptyVec2i", reflect.ValueOf(imgui.NewEmptyVec2i)},
+	{"newEmptystbrpcontextopaque", reflect.ValueOf(imgui.NewEmptystbrpcontextopaque)},
+	{"vertexBufferLayout", reflect.ValueOf(imgui.VertexBufferLayout)},
+	{"indexBufferLayout", reflect.ValueOf(imgui.IndexBufferLayout)},
+	{"newGlyphRange", reflect.ValueOf(imgui.NewGlyphRange)},
+}
+
+var imguiReflectMethods = map[string][]imguiReflectMethodEntry{
+	"AssertionError": {
+		{"error", "Error"},
+	},
+	"DrawCallback": {
+		{"c", "C"},
+	},
+	"ContextHookCallback": {
+		{"c", "C"},
+	},
+	"ErrorCallback": {
+		{"c", "C"},
+	},
+	"MemAllocFunc": {
+		{"c", "C"},
+	},
+	"MemFreeFunc": {
+		{"c", "C"},
+	},
+	"SizeCallback": {
+		{"c", "C"},
+	},
+	"Vec2": {
+		{"fromC", "FromC"},
+		{"toC", "ToC"},
+		{"destroy", "Destroy"},
+		{"add", "Add"},
+		{"sub", "Sub"},
+		{"mul", "Mul"},
+		{"div", "Div"},
+	},
+	"Vec4": {
+		{"fromC", "FromC"},
+		{"toC", "ToC"},
+		{"destroy", "Destroy"},
+		{"add", "Add"},
+		{"sub", "Sub"},
+	},
+	"Color": {
+		{"fromC", "FromC"},
+		{"toC", "ToC"},
+		{"pack", "Pack"},
+		{"color", "Color"},
+		{"setHSVV", "SetHSVV"},
+		{"destroy", "Destroy"},
+		{"setHSV", "SetHSV"},
+		{"value", "Value"},
+	},
+	"Rect": {
+		{"fromC", "FromC"},
+		{"toC", "ToC"},
+		{"internalAddRect", "InternalAddRect"},
+		{"internalAddVec2", "InternalAddVec2"},
+		{"internalAsVec4", "InternalAsVec4"},
+		{"internalClipWith", "InternalClipWith"},
+		{"internalClipWithFull", "InternalClipWithFull"},
+		{"internalContainsWithPad", "InternalContainsWithPad"},
+		{"internalContainsRect", "InternalContainsRect"},
+		{"internalContainsVec2", "InternalContainsVec2"},
+		{"internalExpandFloat", "InternalExpandFloat"},
+		{"internalExpandVec2", "InternalExpandVec2"},
+		{"internalFloor", "InternalFloor"},
+		{"internalArea", "InternalArea"},
+		{"internalBL", "InternalBL"},
+		{"internalBR", "InternalBR"},
+		{"internalCenter", "InternalCenter"},
+		{"internalHeight", "InternalHeight"},
+		{"internalSize", "InternalSize"},
+		{"internalTL", "InternalTL"},
+		{"internalTR", "InternalTR"},
+		{"internalWidth", "InternalWidth"},
+		{"internalIsInverted", "InternalIsInverted"},
+		{"internalOverlaps", "InternalOverlaps"},
+		{"internalToVec4", "InternalToVec4"},
+		{"internalTranslate", "InternalTranslate"},
+		{"internalTranslateX", "InternalTranslateX"},
+		{"internalTranslateY", "InternalTranslateY"},
+		{"internalDestroy", "InternalDestroy"},
+	},
+	"BitVector": {
+		{"internalClear", "InternalClear"},
+		{"internalClearBit", "InternalClearBit"},
+		{"internalCreate", "InternalCreate"},
+		{"internalSetBit", "InternalSetBit"},
+		{"internalTestBit", "InternalTestBit"},
+		{"setStorage", "SetStorage"},
+		{"storage", "Storage"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DrawCmd": {
+		{"texID", "TexID"},
+		{"destroy", "Destroy"},
+		{"setClipRect", "SetClipRect"},
+		{"setTexRef", "SetTexRef"},
+		{"setVtxOffset", "SetVtxOffset"},
+		{"setIdxOffset", "SetIdxOffset"},
+		{"setElemCount", "SetElemCount"},
+		{"setUserCallback", "SetUserCallback"},
+		{"setUserCallbackData", "SetUserCallbackData"},
+		{"setUserCallbackDataSize", "SetUserCallbackDataSize"},
+		{"setUserCallbackDataOffset", "SetUserCallbackDataOffset"},
+		{"clipRect", "ClipRect"},
+		{"texRef", "TexRef"},
+		{"vtxOffset", "VtxOffset"},
+		{"idxOffset", "IdxOffset"},
+		{"elemCount", "ElemCount"},
+		{"userCallback", "UserCallback"},
+		{"userCallbackData", "UserCallbackData"},
+		{"userCallbackDataSize", "UserCallbackDataSize"},
+		{"userCallbackDataOffset", "UserCallbackDataOffset"},
+		{"hasUserCallback", "HasUserCallback"},
+		{"callUserCallback", "CallUserCallback"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DrawDataBuilder": {
+		{"internalDestroy", "InternalDestroy"},
+		{"layers", "Layers"},
+		{"layerData1", "LayerData1"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DrawData": {
+		{"addDrawList", "AddDrawList"},
+		{"clear", "Clear"},
+		{"deIndexAllBuffers", "DeIndexAllBuffers"},
+		{"scaleClipRects", "ScaleClipRects"},
+		{"destroy", "Destroy"},
+		{"setValid", "SetValid"},
+		{"setCmdListsCount", "SetCmdListsCount"},
+		{"setTotalIdxCount", "SetTotalIdxCount"},
+		{"setTotalVtxCount", "SetTotalVtxCount"},
+		{"setDisplayPos", "SetDisplayPos"},
+		{"setDisplaySize", "SetDisplaySize"},
+		{"setFramebufferScale", "SetFramebufferScale"},
+		{"setOwnerViewport", "SetOwnerViewport"},
+		{"valid", "Valid"},
+		{"cmdListsCount", "CmdListsCount"},
+		{"totalIdxCount", "TotalIdxCount"},
+		{"totalVtxCount", "TotalVtxCount"},
+		{"cmdLists", "CmdLists"},
+		{"displayPos", "DisplayPos"},
+		{"displaySize", "DisplaySize"},
+		{"framebufferScale", "FramebufferScale"},
+		{"ownerViewport", "OwnerViewport"},
+		{"textures", "Textures"},
+		{"commandLists", "CommandLists"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DrawListSharedData": {
+		{"internalSetCircleTessellationMaxError", "InternalSetCircleTessellationMaxError"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setTexUvWhitePixel", "SetTexUvWhitePixel"},
+		{"setTexUvLines", "SetTexUvLines"},
+		{"setFontAtlas", "SetFontAtlas"},
+		{"setFont", "SetFont"},
+		{"setFontSize", "SetFontSize"},
+		{"setFontScale", "SetFontScale"},
+		{"setCurveTessellationTol", "SetCurveTessellationTol"},
+		{"setCircleSegmentMaxError", "SetCircleSegmentMaxError"},
+		{"setInitialFringeScale", "SetInitialFringeScale"},
+		{"setInitialFlags", "SetInitialFlags"},
+		{"setClipRectFullscreen", "SetClipRectFullscreen"},
+		{"setTempBuffer", "SetTempBuffer"},
+		{"setContext", "SetContext"},
+		{"setArcFastVtx", "SetArcFastVtx"},
+		{"setArcFastRadiusCutoff", "SetArcFastRadiusCutoff"},
+		{"setCircleSegmentCounts", "SetCircleSegmentCounts"},
+		{"texUvWhitePixel", "TexUvWhitePixel"},
+		{"texUvLines", "TexUvLines"},
+		{"fontAtlas", "FontAtlas"},
+		{"font", "Font"},
+		{"fontSize", "FontSize"},
+		{"fontScale", "FontScale"},
+		{"curveTessellationTol", "CurveTessellationTol"},
+		{"circleSegmentMaxError", "CircleSegmentMaxError"},
+		{"initialFringeScale", "InitialFringeScale"},
+		{"initialFlags", "InitialFlags"},
+		{"clipRectFullscreen", "ClipRectFullscreen"},
+		{"drawLists", "DrawLists"},
+		{"context", "Context"},
+		{"arcFastVtx", "ArcFastVtx"},
+		{"arcFastRadiusCutoff", "ArcFastRadiusCutoff"},
+		{"circleSegmentCounts", "CircleSegmentCounts"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DrawListSplitter": {
+		{"clear", "Clear"},
+		{"clearFreeMemory", "ClearFreeMemory"},
+		{"merge", "Merge"},
+		{"setCurrentChannel", "SetCurrentChannel"},
+		{"split", "Split"},
+		{"destroy", "Destroy"},
+		{"setCurrent", "SetCurrent"},
+		{"setCount", "SetCount"},
+		{"setChannels", "SetChannels"},
+		{"current", "Current"},
+		{"count", "Count"},
+		{"channels", "Channels"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DrawList": {
+		{"addBezierCubicV", "AddBezierCubicV"},
+		{"addBezierQuadraticV", "AddBezierQuadraticV"},
+		{"addCallbackV", "AddCallbackV"},
+		{"addCircleV", "AddCircleV"},
+		{"addCircleFilledV", "AddCircleFilledV"},
+		{"addConcavePolyFilled", "AddConcavePolyFilled"},
+		{"addConvexPolyFilled", "AddConvexPolyFilled"},
+		{"addDrawCmd", "AddDrawCmd"},
+		{"addEllipseV", "AddEllipseV"},
+		{"addEllipseFilledV", "AddEllipseFilledV"},
+		{"addImageV", "AddImageV"},
+		{"addImageQuadV", "AddImageQuadV"},
+		{"addImageRoundedV", "AddImageRoundedV"},
+		{"addLineV", "AddLineV"},
+		{"addNgonV", "AddNgonV"},
+		{"addNgonFilled", "AddNgonFilled"},
+		{"addPolyline", "AddPolyline"},
+		{"addQuadV", "AddQuadV"},
+		{"addQuadFilled", "AddQuadFilled"},
+		{"addRectV", "AddRectV"},
+		{"addRectFilledV", "AddRectFilledV"},
+		{"addRectFilledMultiColor", "AddRectFilledMultiColor"},
+		{"addTextFontPtrV", "AddTextFontPtrV"},
+		{"addTextVec2V", "AddTextVec2V"},
+		{"addTriangleV", "AddTriangleV"},
+		{"addTriangleFilled", "AddTriangleFilled"},
+		{"channelsMerge", "ChannelsMerge"},
+		{"channelsSetCurrent", "ChannelsSetCurrent"},
+		{"channelsSplit", "ChannelsSplit"},
+		{"cloneOutput", "CloneOutput"},
+		{"clipRectMax", "ClipRectMax"},
+		{"clipRectMin", "ClipRectMin"},
+		{"pathArcToV", "PathArcToV"},
+		{"pathArcToFast", "PathArcToFast"},
+		{"pathBezierCubicCurveToV", "PathBezierCubicCurveToV"},
+		{"pathBezierQuadraticCurveToV", "PathBezierQuadraticCurveToV"},
+		{"pathClear", "PathClear"},
+		{"pathEllipticalArcToV", "PathEllipticalArcToV"},
+		{"pathFillConcave", "PathFillConcave"},
+		{"pathFillConvex", "PathFillConvex"},
+		{"pathLineTo", "PathLineTo"},
+		{"pathLineToMergeDuplicate", "PathLineToMergeDuplicate"},
+		{"pathRectV", "PathRectV"},
+		{"pathStrokeV", "PathStrokeV"},
+		{"popClipRect", "PopClipRect"},
+		{"popTexture", "PopTexture"},
+		{"primQuadUV", "PrimQuadUV"},
+		{"primRect", "PrimRect"},
+		{"primRectUV", "PrimRectUV"},
+		{"primReserve", "PrimReserve"},
+		{"primUnreserve", "PrimUnreserve"},
+		{"primVtx", "PrimVtx"},
+		{"primWriteIdx", "PrimWriteIdx"},
+		{"primWriteVtx", "PrimWriteVtx"},
+		{"pushClipRectV", "PushClipRectV"},
+		{"pushClipRectFullScreen", "PushClipRectFullScreen"},
+		{"pushTexture", "PushTexture"},
+		{"calcCircleAutoSegmentCount", "CalcCircleAutoSegmentCount"},
+		{"clearFreeMemory", "ClearFreeMemory"},
+		{"onChangedClipRect", "OnChangedClipRect"},
+		{"onChangedTexture", "OnChangedTexture"},
+		{"onChangedVtxOffset", "OnChangedVtxOffset"},
+		{"pathArcToFastEx", "PathArcToFastEx"},
+		{"pathArcToN", "PathArcToN"},
+		{"popUnusedDrawCmd", "PopUnusedDrawCmd"},
+		{"resetForNewFrame", "ResetForNewFrame"},
+		{"setDrawListSharedData", "SetDrawListSharedData"},
+		{"setTexture", "SetTexture"},
+		{"tryMergeDrawCmds", "TryMergeDrawCmds"},
+		{"destroy", "Destroy"},
+		{"addBezierCubic", "AddBezierCubic"},
+		{"addBezierQuadratic", "AddBezierQuadratic"},
+		{"addCallback", "AddCallback"},
+		{"addCircle", "AddCircle"},
+		{"addCircleFilled", "AddCircleFilled"},
+		{"addEllipse", "AddEllipse"},
+		{"addEllipseFilled", "AddEllipseFilled"},
+		{"addImage", "AddImage"},
+		{"addImageQuad", "AddImageQuad"},
+		{"addImageRounded", "AddImageRounded"},
+		{"addLine", "AddLine"},
+		{"addNgon", "AddNgon"},
+		{"addQuad", "AddQuad"},
+		{"addRect", "AddRect"},
+		{"addRectFilled", "AddRectFilled"},
+		{"addTextFontPtr", "AddTextFontPtr"},
+		{"addTextVec2", "AddTextVec2"},
+		{"addTriangle", "AddTriangle"},
+		{"pathArcTo", "PathArcTo"},
+		{"pathBezierCubicCurveTo", "PathBezierCubicCurveTo"},
+		{"pathBezierQuadraticCurveTo", "PathBezierQuadraticCurveTo"},
+		{"pathEllipticalArcTo", "PathEllipticalArcTo"},
+		{"pathRect", "PathRect"},
+		{"pathStroke", "PathStroke"},
+		{"pushClipRect", "PushClipRect"},
+		{"setCmdBuffer", "SetCmdBuffer"},
+		{"setIdxBuffer", "SetIdxBuffer"},
+		{"setVtxBuffer", "SetVtxBuffer"},
+		{"setFlags", "SetFlags"},
+		{"setVtxCurrentIdx", "SetVtxCurrentIdx"},
+		{"setData", "SetData"},
+		{"setVtxWritePtr", "SetVtxWritePtr"},
+		{"setIdxWritePtr", "SetIdxWritePtr"},
+		{"setPath", "SetPath"},
+		{"setCmdHeader", "SetCmdHeader"},
+		{"setSplitter", "SetSplitter"},
+		{"setClipRectStack", "SetClipRectStack"},
+		{"setTextureStack", "SetTextureStack"},
+		{"setCallbacksDataBuf", "SetCallbacksDataBuf"},
+		{"setFringeScale", "SetFringeScale"},
+		{"setOwnerName", "SetOwnerName"},
+		{"cmdBuffer", "CmdBuffer"},
+		{"idxBuffer", "IdxBuffer"},
+		{"vtxBuffer", "VtxBuffer"},
+		{"flags", "Flags"},
+		{"vtxCurrentIdx", "VtxCurrentIdx"},
+		{"data", "Data"},
+		{"vtxWritePtr", "VtxWritePtr"},
+		{"idxWritePtr", "IdxWritePtr"},
+		{"cmdHeader", "CmdHeader"},
+		{"splitter", "Splitter"},
+		{"clipRectStack", "ClipRectStack"},
+		{"textureStack", "TextureStack"},
+		{"callbacksDataBuf", "CallbacksDataBuf"},
+		{"fringeScale", "FringeScale"},
+		{"ownerName", "OwnerName"},
+		{"getVertexBuffer", "GetVertexBuffer"},
+		{"getIndexBuffer", "GetIndexBuffer"},
+		{"commands", "Commands"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontAtlasBuilder": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setPackContext", "SetPackContext"},
+		{"setRects", "SetRects"},
+		{"setRectsIndex", "SetRectsIndex"},
+		{"setRectsIndexFreeListStart", "SetRectsIndexFreeListStart"},
+		{"setRectsPackedCount", "SetRectsPackedCount"},
+		{"setRectsPackedSurface", "SetRectsPackedSurface"},
+		{"setRectsDiscardedCount", "SetRectsDiscardedCount"},
+		{"setRectsDiscardedSurface", "SetRectsDiscardedSurface"},
+		{"setFrameCount", "SetFrameCount"},
+		{"setMaxRectSize", "SetMaxRectSize"},
+		{"setMaxRectBounds", "SetMaxRectBounds"},
+		{"setLockDisableResize", "SetLockDisableResize"},
+		{"setPreloadedAllGlyphsRanges", "SetPreloadedAllGlyphsRanges"},
+		{"setBakedMap", "SetBakedMap"},
+		{"setBakedDiscardedCount", "SetBakedDiscardedCount"},
+		{"setPackIdMouseCursors", "SetPackIdMouseCursors"},
+		{"setPackIdLinesTexData", "SetPackIdLinesTexData"},
+		{"packContext", "PackContext"},
+		{"rects", "Rects"},
+		{"rectsIndex", "RectsIndex"},
+		{"rectsIndexFreeListStart", "RectsIndexFreeListStart"},
+		{"rectsPackedCount", "RectsPackedCount"},
+		{"rectsPackedSurface", "RectsPackedSurface"},
+		{"rectsDiscardedCount", "RectsDiscardedCount"},
+		{"rectsDiscardedSurface", "RectsDiscardedSurface"},
+		{"frameCount", "FrameCount"},
+		{"maxRectSize", "MaxRectSize"},
+		{"maxRectBounds", "MaxRectBounds"},
+		{"lockDisableResize", "LockDisableResize"},
+		{"preloadedAllGlyphsRanges", "PreloadedAllGlyphsRanges"},
+		{"bakedMap", "BakedMap"},
+		{"bakedDiscardedCount", "BakedDiscardedCount"},
+		{"packIdMouseCursors", "PackIdMouseCursors"},
+		{"packIdLinesTexData", "PackIdLinesTexData"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontAtlasRect": {
+		{"destroy", "Destroy"},
+		{"setX", "SetX"},
+		{"setY", "SetY"},
+		{"setW", "SetW"},
+		{"setH", "SetH"},
+		{"setUv0", "SetUv0"},
+		{"setUv1", "SetUv1"},
+		{"x", "X"},
+		{"y", "Y"},
+		{"w", "W"},
+		{"h", "H"},
+		{"uv0", "Uv0"},
+		{"uv1", "Uv1"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontAtlas": {
+		{"addCustomRectV", "AddCustomRectV"},
+		{"addFont", "AddFont"},
+		{"addFontDefaultV", "AddFontDefaultV"},
+		{"addFontFromFileTTFV", "AddFontFromFileTTFV"},
+		{"addFontFromMemoryCompressedBase85TTFV", "AddFontFromMemoryCompressedBase85TTFV"},
+		{"addFontFromMemoryCompressedTTFV", "AddFontFromMemoryCompressedTTFV"},
+		{"addFontFromMemoryTTFV", "AddFontFromMemoryTTFV"},
+		{"clear", "Clear"},
+		{"clearFonts", "ClearFonts"},
+		{"clearInputData", "ClearInputData"},
+		{"clearTexData", "ClearTexData"},
+		{"compactCache", "CompactCache"},
+		{"customRect", "CustomRect"},
+		{"glyphRangesDefault", "GlyphRangesDefault"},
+		{"removeCustomRect", "RemoveCustomRect"},
+		{"removeFont", "RemoveFont"},
+		{"setFontLoader", "SetFontLoader"},
+		{"destroy", "Destroy"},
+		{"addCustomRect", "AddCustomRect"},
+		{"addFontDefault", "AddFontDefault"},
+		{"addFontFromFileTTF", "AddFontFromFileTTF"},
+		{"addFontFromMemoryCompressedBase85TTF", "AddFontFromMemoryCompressedBase85TTF"},
+		{"addFontFromMemoryCompressedTTF", "AddFontFromMemoryCompressedTTF"},
+		{"addFontFromMemoryTTF", "AddFontFromMemoryTTF"},
+		{"setFlags", "SetFlags"},
+		{"setTexDesiredFormat", "SetTexDesiredFormat"},
+		{"setTexGlyphPadding", "SetTexGlyphPadding"},
+		{"setTexMinWidth", "SetTexMinWidth"},
+		{"setTexMinHeight", "SetTexMinHeight"},
+		{"setTexMaxWidth", "SetTexMaxWidth"},
+		{"setTexMaxHeight", "SetTexMaxHeight"},
+		{"setUserData", "SetUserData"},
+		{"setTexRef", "SetTexRef"},
+		{"setTexData", "SetTexData"},
+		{"setLocked", "SetLocked"},
+		{"setRendererHasTextures", "SetRendererHasTextures"},
+		{"setTexIsBuilt", "SetTexIsBuilt"},
+		{"setTexPixelsUseColors", "SetTexPixelsUseColors"},
+		{"setTexUvScale", "SetTexUvScale"},
+		{"setTexUvWhitePixel", "SetTexUvWhitePixel"},
+		{"setSources", "SetSources"},
+		{"setTexUvLines", "SetTexUvLines"},
+		{"setTexNextUniqueID", "SetTexNextUniqueID"},
+		{"setFontNextUniqueID", "SetFontNextUniqueID"},
+		{"setBuilder", "SetBuilder"},
+		{"setFontLoaderName", "SetFontLoaderName"},
+		{"setFontLoaderData", "SetFontLoaderData"},
+		{"setFontLoaderFlags", "SetFontLoaderFlags"},
+		{"setRefCount", "SetRefCount"},
+		{"setOwnerContext", "SetOwnerContext"},
+		{"flags", "Flags"},
+		{"texDesiredFormat", "TexDesiredFormat"},
+		{"texGlyphPadding", "TexGlyphPadding"},
+		{"texMinWidth", "TexMinWidth"},
+		{"texMinHeight", "TexMinHeight"},
+		{"texMaxWidth", "TexMaxWidth"},
+		{"texMaxHeight", "TexMaxHeight"},
+		{"userData", "UserData"},
+		{"texRef", "TexRef"},
+		{"texData", "TexData"},
+		{"texList", "TexList"},
+		{"locked", "Locked"},
+		{"rendererHasTextures", "RendererHasTextures"},
+		{"texIsBuilt", "TexIsBuilt"},
+		{"texPixelsUseColors", "TexPixelsUseColors"},
+		{"texUvScale", "TexUvScale"},
+		{"texUvWhitePixel", "TexUvWhitePixel"},
+		{"fonts", "Fonts"},
+		{"sources", "Sources"},
+		{"texUvLines", "TexUvLines"},
+		{"texNextUniqueID", "TexNextUniqueID"},
+		{"fontNextUniqueID", "FontNextUniqueID"},
+		{"drawListSharedDatas", "DrawListSharedDatas"},
+		{"builder", "Builder"},
+		{"fontLoader", "FontLoader"},
+		{"fontLoaderName", "FontLoaderName"},
+		{"fontLoaderData", "FontLoaderData"},
+		{"fontLoaderFlags", "FontLoaderFlags"},
+		{"refCount", "RefCount"},
+		{"ownerContext", "OwnerContext"},
+		{"handle", "Handle"},
+		{"c", "C"},
+		{"fontCount", "FontCount"},
+	},
+	"FontBaked": {
+		{"clearOutputData", "ClearOutputData"},
+		{"findGlyph", "FindGlyph"},
+		{"findGlyphNoFallback", "FindGlyphNoFallback"},
+		{"charAdvance", "CharAdvance"},
+		{"isGlyphLoaded", "IsGlyphLoaded"},
+		{"destroy", "Destroy"},
+		{"setIndexAdvanceX", "SetIndexAdvanceX"},
+		{"setFallbackAdvanceX", "SetFallbackAdvanceX"},
+		{"setSize", "SetSize"},
+		{"setRasterizerDensity", "SetRasterizerDensity"},
+		{"setIndexLookup", "SetIndexLookup"},
+		{"setGlyphs", "SetGlyphs"},
+		{"setFallbackGlyphIndex", "SetFallbackGlyphIndex"},
+		{"setAscent", "SetAscent"},
+		{"setDescent", "SetDescent"},
+		{"setMetricsTotalSurface", "SetMetricsTotalSurface"},
+		{"setWantDestroy", "SetWantDestroy"},
+		{"setLoadNoFallback", "SetLoadNoFallback"},
+		{"setLoadNoRenderOnLayout", "SetLoadNoRenderOnLayout"},
+		{"setLastUsedFrame", "SetLastUsedFrame"},
+		{"setBakedId", "SetBakedId"},
+		{"setContainerFont", "SetContainerFont"},
+		{"setFontLoaderDatas", "SetFontLoaderDatas"},
+		{"indexAdvanceX", "IndexAdvanceX"},
+		{"fallbackAdvanceX", "FallbackAdvanceX"},
+		{"size", "Size"},
+		{"rasterizerDensity", "RasterizerDensity"},
+		{"indexLookup", "IndexLookup"},
+		{"glyphs", "Glyphs"},
+		{"fallbackGlyphIndex", "FallbackGlyphIndex"},
+		{"ascent", "Ascent"},
+		{"descent", "Descent"},
+		{"metricsTotalSurface", "MetricsTotalSurface"},
+		{"wantDestroy", "WantDestroy"},
+		{"loadNoFallback", "LoadNoFallback"},
+		{"loadNoRenderOnLayout", "LoadNoRenderOnLayout"},
+		{"lastUsedFrame", "LastUsedFrame"},
+		{"bakedId", "BakedId"},
+		{"containerFont", "ContainerFont"},
+		{"fontLoaderDatas", "FontLoaderDatas"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontConfig": {
+		{"destroy", "Destroy"},
+		{"setName", "SetName"},
+		{"setFontData", "SetFontData"},
+		{"setFontDataSize", "SetFontDataSize"},
+		{"setFontDataOwnedByAtlas", "SetFontDataOwnedByAtlas"},
+		{"setMergeMode", "SetMergeMode"},
+		{"setPixelSnapH", "SetPixelSnapH"},
+		{"setPixelSnapV", "SetPixelSnapV"},
+		{"setOversampleH", "SetOversampleH"},
+		{"setOversampleV", "SetOversampleV"},
+		{"setEllipsisChar", "SetEllipsisChar"},
+		{"setSizePixels", "SetSizePixels"},
+		{"setGlyphRanges", "SetGlyphRanges"},
+		{"setGlyphExcludeRanges", "SetGlyphExcludeRanges"},
+		{"setGlyphOffset", "SetGlyphOffset"},
+		{"setGlyphMinAdvanceX", "SetGlyphMinAdvanceX"},
+		{"setGlyphMaxAdvanceX", "SetGlyphMaxAdvanceX"},
+		{"setGlyphExtraAdvanceX", "SetGlyphExtraAdvanceX"},
+		{"setFontNo", "SetFontNo"},
+		{"setFontLoaderFlags", "SetFontLoaderFlags"},
+		{"setRasterizerMultiply", "SetRasterizerMultiply"},
+		{"setRasterizerDensity", "SetRasterizerDensity"},
+		{"setFlags", "SetFlags"},
+		{"setDstFont", "SetDstFont"},
+		{"setFontLoader", "SetFontLoader"},
+		{"setFontLoaderData", "SetFontLoaderData"},
+		{"name", "Name"},
+		{"fontData", "FontData"},
+		{"fontDataSize", "FontDataSize"},
+		{"fontDataOwnedByAtlas", "FontDataOwnedByAtlas"},
+		{"mergeMode", "MergeMode"},
+		{"pixelSnapH", "PixelSnapH"},
+		{"pixelSnapV", "PixelSnapV"},
+		{"oversampleH", "OversampleH"},
+		{"oversampleV", "OversampleV"},
+		{"ellipsisChar", "EllipsisChar"},
+		{"sizePixels", "SizePixels"},
+		{"glyphRanges", "GlyphRanges"},
+		{"glyphExcludeRanges", "GlyphExcludeRanges"},
+		{"glyphOffset", "GlyphOffset"},
+		{"glyphMinAdvanceX", "GlyphMinAdvanceX"},
+		{"glyphMaxAdvanceX", "GlyphMaxAdvanceX"},
+		{"glyphExtraAdvanceX", "GlyphExtraAdvanceX"},
+		{"fontNo", "FontNo"},
+		{"fontLoaderFlags", "FontLoaderFlags"},
+		{"rasterizerMultiply", "RasterizerMultiply"},
+		{"rasterizerDensity", "RasterizerDensity"},
+		{"flags", "Flags"},
+		{"dstFont", "DstFont"},
+		{"fontLoader", "FontLoader"},
+		{"fontLoaderData", "FontLoaderData"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontGlyphRangesBuilder": {
+		{"addChar", "AddChar"},
+		{"addRanges", "AddRanges"},
+		{"addTextV", "AddTextV"},
+		{"clear", "Clear"},
+		{"bit", "Bit"},
+		{"setBit", "SetBit"},
+		{"destroy", "Destroy"},
+		{"addText", "AddText"},
+		{"setUsedChars", "SetUsedChars"},
+		{"usedChars", "UsedChars"},
+		{"buildRanges", "BuildRanges"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontGlyph": {
+		{"destroy", "Destroy"},
+		{"setColored", "SetColored"},
+		{"setVisible", "SetVisible"},
+		{"setSourceIdx", "SetSourceIdx"},
+		{"setCodepoint", "SetCodepoint"},
+		{"setAdvanceX", "SetAdvanceX"},
+		{"setX0", "SetX0"},
+		{"setY0", "SetY0"},
+		{"setX1", "SetX1"},
+		{"setY1", "SetY1"},
+		{"setU0", "SetU0"},
+		{"setV0", "SetV0"},
+		{"setU1", "SetU1"},
+		{"setV1", "SetV1"},
+		{"setPackId", "SetPackId"},
+		{"colored", "Colored"},
+		{"visible", "Visible"},
+		{"sourceIdx", "SourceIdx"},
+		{"codepoint", "Codepoint"},
+		{"advanceX", "AdvanceX"},
+		{"x0", "X0"},
+		{"y0", "Y0"},
+		{"x1", "X1"},
+		{"y1", "Y1"},
+		{"u0", "U0"},
+		{"v0", "V0"},
+		{"u1", "U1"},
+		{"v1", "V1"},
+		{"packId", "PackId"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontLoader": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setName", "SetName"},
+		{"setFontBakedSrcLoaderDataSize", "SetFontBakedSrcLoaderDataSize"},
+		{"name", "Name"},
+		{"fontBakedSrcLoaderDataSize", "FontBakedSrcLoaderDataSize"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Font": {
+		{"addRemapChar", "AddRemapChar"},
+		{"calcTextSizeAV", "CalcTextSizeAV"},
+		{"calcWordWrapPosition", "CalcWordWrapPosition"},
+		{"clearOutputData", "ClearOutputData"},
+		{"debugName", "DebugName"},
+		{"fontBakedV", "FontBakedV"},
+		{"isGlyphInFont", "IsGlyphInFont"},
+		{"isGlyphRangeUnused", "IsGlyphRangeUnused"},
+		{"isLoaded", "IsLoaded"},
+		{"renderCharV", "RenderCharV"},
+		{"renderTextV", "RenderTextV"},
+		{"destroy", "Destroy"},
+		{"calcTextSizeA", "CalcTextSizeA"},
+		{"fontBaked", "FontBaked"},
+		{"renderChar", "RenderChar"},
+		{"renderText", "RenderText"},
+		{"setLastBaked", "SetLastBaked"},
+		{"setContainerAtlas", "SetContainerAtlas"},
+		{"setFlags", "SetFlags"},
+		{"setCurrentRasterizerDensity", "SetCurrentRasterizerDensity"},
+		{"setFontId", "SetFontId"},
+		{"setLegacySize", "SetLegacySize"},
+		{"setEllipsisChar", "SetEllipsisChar"},
+		{"setFallbackChar", "SetFallbackChar"},
+		{"setUsed8kPagesMap", "SetUsed8kPagesMap"},
+		{"setEllipsisAutoBake", "SetEllipsisAutoBake"},
+		{"setRemapPairs", "SetRemapPairs"},
+		{"lastBaked", "LastBaked"},
+		{"containerAtlas", "ContainerAtlas"},
+		{"flags", "Flags"},
+		{"currentRasterizerDensity", "CurrentRasterizerDensity"},
+		{"fontId", "FontId"},
+		{"legacySize", "LegacySize"},
+		{"sources", "Sources"},
+		{"ellipsisChar", "EllipsisChar"},
+		{"fallbackChar", "FallbackChar"},
+		{"used8kPagesMap", "Used8kPagesMap"},
+		{"ellipsisAutoBake", "EllipsisAutoBake"},
+		{"remapPairs", "RemapPairs"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"BoxSelectState": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setID", "SetID"},
+		{"setIsActive", "SetIsActive"},
+		{"setIsStarting", "SetIsStarting"},
+		{"setIsStartedFromVoid", "SetIsStartedFromVoid"},
+		{"setIsStartedSetNavIdOnce", "SetIsStartedSetNavIdOnce"},
+		{"setRequestClear", "SetRequestClear"},
+		{"setKeyMods", "SetKeyMods"},
+		{"setStartPosRel", "SetStartPosRel"},
+		{"setEndPosRel", "SetEndPosRel"},
+		{"setScrollAccum", "SetScrollAccum"},
+		{"setWindow", "SetWindow"},
+		{"setUnclipMode", "SetUnclipMode"},
+		{"setUnclipRect", "SetUnclipRect"},
+		{"setBoxSelectRectPrev", "SetBoxSelectRectPrev"},
+		{"setBoxSelectRectCurr", "SetBoxSelectRectCurr"},
+		{"iD", "ID"},
+		{"isActive", "IsActive"},
+		{"isStarting", "IsStarting"},
+		{"isStartedFromVoid", "IsStartedFromVoid"},
+		{"isStartedSetNavIdOnce", "IsStartedSetNavIdOnce"},
+		{"requestClear", "RequestClear"},
+		{"keyMods", "KeyMods"},
+		{"startPosRel", "StartPosRel"},
+		{"endPosRel", "EndPosRel"},
+		{"scrollAccum", "ScrollAccum"},
+		{"window", "Window"},
+		{"unclipMode", "UnclipMode"},
+		{"unclipRect", "UnclipRect"},
+		{"boxSelectRectPrev", "BoxSelectRectPrev"},
+		{"boxSelectRectCurr", "BoxSelectRectCurr"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"ComboPreviewData": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setPreviewRect", "SetPreviewRect"},
+		{"setBackupCursorPos", "SetBackupCursorPos"},
+		{"setBackupCursorMaxPos", "SetBackupCursorMaxPos"},
+		{"setBackupCursorPosPrevLine", "SetBackupCursorPosPrevLine"},
+		{"setBackupPrevLineTextBaseOffset", "SetBackupPrevLineTextBaseOffset"},
+		{"setBackupLayout", "SetBackupLayout"},
+		{"previewRect", "PreviewRect"},
+		{"backupCursorPos", "BackupCursorPos"},
+		{"backupCursorMaxPos", "BackupCursorMaxPos"},
+		{"backupCursorPosPrevLine", "BackupCursorPosPrevLine"},
+		{"backupPrevLineTextBaseOffset", "BackupPrevLineTextBaseOffset"},
+		{"backupLayout", "BackupLayout"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"ContextHook": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setHookId", "SetHookId"},
+		{"setType", "SetType"},
+		{"setOwner", "SetOwner"},
+		{"setCallback", "SetCallback"},
+		{"setUserData", "SetUserData"},
+		{"hookId", "HookId"},
+		{"type", "Type"},
+		{"owner", "Owner"},
+		{"callback", "Callback"},
+		{"userData", "UserData"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Context": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setInitialized", "SetInitialized"},
+		{"setIO", "SetIO"},
+		{"setPlatformIO", "SetPlatformIO"},
+		{"setStyle", "SetStyle"},
+		{"setConfigFlagsCurrFrame", "SetConfigFlagsCurrFrame"},
+		{"setConfigFlagsLastFrame", "SetConfigFlagsLastFrame"},
+		{"setFont", "SetFont"},
+		{"setFontBaked", "SetFontBaked"},
+		{"setFontSize", "SetFontSize"},
+		{"setFontSizeBase", "SetFontSizeBase"},
+		{"setFontBakedScale", "SetFontBakedScale"},
+		{"setFontRasterizerDensity", "SetFontRasterizerDensity"},
+		{"setCurrentDpiScale", "SetCurrentDpiScale"},
+		{"setDrawListSharedData", "SetDrawListSharedData"},
+		{"setTime", "SetTime"},
+		{"setFrameCount", "SetFrameCount"},
+		{"setFrameCountEnded", "SetFrameCountEnded"},
+		{"setFrameCountPlatformEnded", "SetFrameCountPlatformEnded"},
+		{"setFrameCountRendered", "SetFrameCountRendered"},
+		{"setWithinEndChildID", "SetWithinEndChildID"},
+		{"setWithinFrameScope", "SetWithinFrameScope"},
+		{"setWithinFrameScopeWithImplicitWindow", "SetWithinFrameScopeWithImplicitWindow"},
+		{"setGcCompactAll", "SetGcCompactAll"},
+		{"setTestEngineHookItems", "SetTestEngineHookItems"},
+		{"setTestEngine", "SetTestEngine"},
+		{"setContextName", "SetContextName"},
+		{"setInputEventsQueue", "SetInputEventsQueue"},
+		{"setInputEventsTrail", "SetInputEventsTrail"},
+		{"setInputEventsNextMouseSource", "SetInputEventsNextMouseSource"},
+		{"setInputEventsNextEventId", "SetInputEventsNextEventId"},
+		{"setCurrentWindowStack", "SetCurrentWindowStack"},
+		{"setWindowsById", "SetWindowsById"},
+		{"setWindowsActiveCount", "SetWindowsActiveCount"},
+		{"setWindowsBorderHoverPadding", "SetWindowsBorderHoverPadding"},
+		{"setDebugBreakInWindow", "SetDebugBreakInWindow"},
+		{"setCurrentWindow", "SetCurrentWindow"},
+		{"setHoveredWindow", "SetHoveredWindow"},
+		{"setHoveredWindowUnderMovingWindow", "SetHoveredWindowUnderMovingWindow"},
+		{"setHoveredWindowBeforeClear", "SetHoveredWindowBeforeClear"},
+		{"setMovingWindow", "SetMovingWindow"},
+		{"setWheelingWindow", "SetWheelingWindow"},
+		{"setWheelingWindowRefMousePos", "SetWheelingWindowRefMousePos"},
+		{"setWheelingWindowStartFrame", "SetWheelingWindowStartFrame"},
+		{"setWheelingWindowScrolledFrame", "SetWheelingWindowScrolledFrame"},
+		{"setWheelingWindowReleaseTimer", "SetWheelingWindowReleaseTimer"},
+		{"setWheelingWindowWheelRemainder", "SetWheelingWindowWheelRemainder"},
+		{"setWheelingAxisAvg", "SetWheelingAxisAvg"},
+		{"setDebugDrawIdConflictsId", "SetDebugDrawIdConflictsId"},
+		{"setDebugHookIdInfoId", "SetDebugHookIdInfoId"},
+		{"setHoveredId", "SetHoveredId"},
+		{"setHoveredIdPreviousFrame", "SetHoveredIdPreviousFrame"},
+		{"setHoveredIdPreviousFrameItemCount", "SetHoveredIdPreviousFrameItemCount"},
+		{"setHoveredIdTimer", "SetHoveredIdTimer"},
+		{"setHoveredIdNotActiveTimer", "SetHoveredIdNotActiveTimer"},
+		{"setHoveredIdAllowOverlap", "SetHoveredIdAllowOverlap"},
+		{"setHoveredIdIsDisabled", "SetHoveredIdIsDisabled"},
+		{"setItemUnclipByLog", "SetItemUnclipByLog"},
+		{"setActiveId", "SetActiveId"},
+		{"setActiveIdIsAlive", "SetActiveIdIsAlive"},
+		{"setActiveIdTimer", "SetActiveIdTimer"},
+		{"setActiveIdIsJustActivated", "SetActiveIdIsJustActivated"},
+		{"setActiveIdAllowOverlap", "SetActiveIdAllowOverlap"},
+		{"setActiveIdNoClearOnFocusLoss", "SetActiveIdNoClearOnFocusLoss"},
+		{"setActiveIdHasBeenPressedBefore", "SetActiveIdHasBeenPressedBefore"},
+		{"setActiveIdHasBeenEditedBefore", "SetActiveIdHasBeenEditedBefore"},
+		{"setActiveIdHasBeenEditedThisFrame", "SetActiveIdHasBeenEditedThisFrame"},
+		{"setActiveIdFromShortcut", "SetActiveIdFromShortcut"},
+		{"setActiveIdDisabledId", "SetActiveIdDisabledId"},
+		{"setActiveIdMouseButton", "SetActiveIdMouseButton"},
+		{"setActiveIdClickOffset", "SetActiveIdClickOffset"},
+		{"setActiveIdWindow", "SetActiveIdWindow"},
+		{"setActiveIdSource", "SetActiveIdSource"},
+		{"setActiveIdPreviousFrame", "SetActiveIdPreviousFrame"},
+		{"setDeactivatedItemData", "SetDeactivatedItemData"},
+		{"setActiveIdValueOnActivation", "SetActiveIdValueOnActivation"},
+		{"setLastActiveId", "SetLastActiveId"},
+		{"setLastActiveIdTimer", "SetLastActiveIdTimer"},
+		{"setLastKeyModsChangeTime", "SetLastKeyModsChangeTime"},
+		{"setLastKeyModsChangeFromNoneTime", "SetLastKeyModsChangeFromNoneTime"},
+		{"setLastKeyboardKeyPressTime", "SetLastKeyboardKeyPressTime"},
+		{"setKeysMayBeCharInput", "SetKeysMayBeCharInput"},
+		{"setKeysOwnerData", "SetKeysOwnerData"},
+		{"setKeysRoutingTable", "SetKeysRoutingTable"},
+		{"setActiveIdUsingNavDirMask", "SetActiveIdUsingNavDirMask"},
+		{"setActiveIdUsingAllKeyboardKeys", "SetActiveIdUsingAllKeyboardKeys"},
+		{"setDebugBreakInShortcutRouting", "SetDebugBreakInShortcutRouting"},
+		{"setCurrentFocusScopeId", "SetCurrentFocusScopeId"},
+		{"setCurrentItemFlags", "SetCurrentItemFlags"},
+		{"setDebugLocateId", "SetDebugLocateId"},
+		{"setNextItemData", "SetNextItemData"},
+		{"setLastItemData", "SetLastItemData"},
+		{"setNextWindowData", "SetNextWindowData"},
+		{"setDebugShowGroupRects", "SetDebugShowGroupRects"},
+		{"setDebugFlashStyleColorIdx", "SetDebugFlashStyleColorIdx"},
+		{"setColorStack", "SetColorStack"},
+		{"setStyleVarStack", "SetStyleVarStack"},
+		{"setFontStack", "SetFontStack"},
+		{"setFocusScopeStack", "SetFocusScopeStack"},
+		{"setItemFlagsStack", "SetItemFlagsStack"},
+		{"setGroupStack", "SetGroupStack"},
+		{"setOpenPopupStack", "SetOpenPopupStack"},
+		{"setBeginPopupStack", "SetBeginPopupStack"},
+		{"setTreeNodeStack", "SetTreeNodeStack"},
+		{"setCurrentViewport", "SetCurrentViewport"},
+		{"setMouseViewport", "SetMouseViewport"},
+		{"setMouseLastHoveredViewport", "SetMouseLastHoveredViewport"},
+		{"setPlatformLastFocusedViewportId", "SetPlatformLastFocusedViewportId"},
+		{"setFallbackMonitor", "SetFallbackMonitor"},
+		{"setPlatformMonitorsFullWorkRect", "SetPlatformMonitorsFullWorkRect"},
+		{"setViewportCreatedCount", "SetViewportCreatedCount"},
+		{"setPlatformWindowsCreatedCount", "SetPlatformWindowsCreatedCount"},
+		{"setViewportFocusedStampCount", "SetViewportFocusedStampCount"},
+		{"setNavCursorVisible", "SetNavCursorVisible"},
+		{"setNavHighlightItemUnderNav", "SetNavHighlightItemUnderNav"},
+		{"setNavMousePosDirty", "SetNavMousePosDirty"},
+		{"setNavIdIsAlive", "SetNavIdIsAlive"},
+		{"setNavId", "SetNavId"},
+		{"setNavWindow", "SetNavWindow"},
+		{"setNavFocusScopeId", "SetNavFocusScopeId"},
+		{"setNavLayer", "SetNavLayer"},
+		{"setNavActivateId", "SetNavActivateId"},
+		{"setNavActivateDownId", "SetNavActivateDownId"},
+		{"setNavActivatePressedId", "SetNavActivatePressedId"},
+		{"setNavActivateFlags", "SetNavActivateFlags"},
+		{"setNavFocusRoute", "SetNavFocusRoute"},
+		{"setNavHighlightActivatedId", "SetNavHighlightActivatedId"},
+		{"setNavHighlightActivatedTimer", "SetNavHighlightActivatedTimer"},
+		{"setNavNextActivateId", "SetNavNextActivateId"},
+		{"setNavNextActivateFlags", "SetNavNextActivateFlags"},
+		{"setNavInputSource", "SetNavInputSource"},
+		{"setNavLastValidSelectionUserData", "SetNavLastValidSelectionUserData"},
+		{"setNavCursorHideFrames", "SetNavCursorHideFrames"},
+		{"setNavAnyRequest", "SetNavAnyRequest"},
+		{"setNavInitRequest", "SetNavInitRequest"},
+		{"setNavInitRequestFromMove", "SetNavInitRequestFromMove"},
+		{"setNavInitResult", "SetNavInitResult"},
+		{"setNavMoveSubmitted", "SetNavMoveSubmitted"},
+		{"setNavMoveScoringItems", "SetNavMoveScoringItems"},
+		{"setNavMoveForwardToNextFrame", "SetNavMoveForwardToNextFrame"},
+		{"setNavMoveFlags", "SetNavMoveFlags"},
+		{"setNavMoveScrollFlags", "SetNavMoveScrollFlags"},
+		{"setNavMoveKeyMods", "SetNavMoveKeyMods"},
+		{"setNavMoveDir", "SetNavMoveDir"},
+		{"setNavMoveDirForDebug", "SetNavMoveDirForDebug"},
+		{"setNavMoveClipDir", "SetNavMoveClipDir"},
+		{"setNavScoringRect", "SetNavScoringRect"},
+		{"setNavScoringNoClipRect", "SetNavScoringNoClipRect"},
+		{"setNavScoringDebugCount", "SetNavScoringDebugCount"},
+		{"setNavTabbingDir", "SetNavTabbingDir"},
+		{"setNavTabbingCounter", "SetNavTabbingCounter"},
+		{"setNavMoveResultLocal", "SetNavMoveResultLocal"},
+		{"setNavMoveResultLocalVisible", "SetNavMoveResultLocalVisible"},
+		{"setNavMoveResultOther", "SetNavMoveResultOther"},
+		{"setNavTabbingResultFirst", "SetNavTabbingResultFirst"},
+		{"setNavJustMovedFromFocusScopeId", "SetNavJustMovedFromFocusScopeId"},
+		{"setNavJustMovedToId", "SetNavJustMovedToId"},
+		{"setNavJustMovedToFocusScopeId", "SetNavJustMovedToFocusScopeId"},
+		{"setNavJustMovedToKeyMods", "SetNavJustMovedToKeyMods"},
+		{"setNavJustMovedToIsTabbing", "SetNavJustMovedToIsTabbing"},
+		{"setNavJustMovedToHasSelectionData", "SetNavJustMovedToHasSelectionData"},
+		{"setConfigNavWindowingWithGamepad", "SetConfigNavWindowingWithGamepad"},
+		{"setConfigNavWindowingKeyNext", "SetConfigNavWindowingKeyNext"},
+		{"setConfigNavWindowingKeyPrev", "SetConfigNavWindowingKeyPrev"},
+		{"setNavWindowingTarget", "SetNavWindowingTarget"},
+		{"setNavWindowingTargetAnim", "SetNavWindowingTargetAnim"},
+		{"setNavWindowingListWindow", "SetNavWindowingListWindow"},
+		{"setNavWindowingTimer", "SetNavWindowingTimer"},
+		{"setNavWindowingHighlightAlpha", "SetNavWindowingHighlightAlpha"},
+		{"setNavWindowingInputSource", "SetNavWindowingInputSource"},
+		{"setNavWindowingToggleLayer", "SetNavWindowingToggleLayer"},
+		{"setNavWindowingToggleKey", "SetNavWindowingToggleKey"},
+		{"setNavWindowingAccumDeltaPos", "SetNavWindowingAccumDeltaPos"},
+		{"setNavWindowingAccumDeltaSize", "SetNavWindowingAccumDeltaSize"},
+		{"setDimBgRatio", "SetDimBgRatio"},
+		{"setDragDropActive", "SetDragDropActive"},
+		{"setDragDropWithinSource", "SetDragDropWithinSource"},
+		{"setDragDropWithinTarget", "SetDragDropWithinTarget"},
+		{"setDragDropSourceFlags", "SetDragDropSourceFlags"},
+		{"setDragDropSourceFrameCount", "SetDragDropSourceFrameCount"},
+		{"setDragDropMouseButton", "SetDragDropMouseButton"},
+		{"setDragDropPayload", "SetDragDropPayload"},
+		{"setDragDropTargetRect", "SetDragDropTargetRect"},
+		{"setDragDropTargetClipRect", "SetDragDropTargetClipRect"},
+		{"setDragDropTargetId", "SetDragDropTargetId"},
+		{"setDragDropTargetFullViewport", "SetDragDropTargetFullViewport"},
+		{"setDragDropAcceptFlags", "SetDragDropAcceptFlags"},
+		{"setDragDropAcceptIdCurrRectSurface", "SetDragDropAcceptIdCurrRectSurface"},
+		{"setDragDropAcceptIdCurr", "SetDragDropAcceptIdCurr"},
+		{"setDragDropAcceptIdPrev", "SetDragDropAcceptIdPrev"},
+		{"setDragDropAcceptFrameCount", "SetDragDropAcceptFrameCount"},
+		{"setDragDropHoldJustPressedId", "SetDragDropHoldJustPressedId"},
+		{"setDragDropPayloadBufLocal", "SetDragDropPayloadBufLocal"},
+		{"setClipperTempDataStacked", "SetClipperTempDataStacked"},
+		{"setClipperTempData", "SetClipperTempData"},
+		{"setCurrentTable", "SetCurrentTable"},
+		{"setDebugBreakInTable", "SetDebugBreakInTable"},
+		{"setTablesTempDataStacked", "SetTablesTempDataStacked"},
+		{"setTablesTempData", "SetTablesTempData"},
+		{"setTablesLastTimeActive", "SetTablesLastTimeActive"},
+		{"setDrawChannelsTempMergeBuffer", "SetDrawChannelsTempMergeBuffer"},
+		{"setCurrentTabBar", "SetCurrentTabBar"},
+		{"setCurrentTabBarStack", "SetCurrentTabBarStack"},
+		{"setShrinkWidthBuffer", "SetShrinkWidthBuffer"},
+		{"setBoxSelectState", "SetBoxSelectState"},
+		{"setCurrentMultiSelect", "SetCurrentMultiSelect"},
+		{"setMultiSelectTempDataStacked", "SetMultiSelectTempDataStacked"},
+		{"setMultiSelectTempData", "SetMultiSelectTempData"},
+		{"setHoverItemDelayId", "SetHoverItemDelayId"},
+		{"setHoverItemDelayIdPreviousFrame", "SetHoverItemDelayIdPreviousFrame"},
+		{"setHoverItemDelayTimer", "SetHoverItemDelayTimer"},
+		{"setHoverItemDelayClearTimer", "SetHoverItemDelayClearTimer"},
+		{"setHoverItemUnlockedStationaryId", "SetHoverItemUnlockedStationaryId"},
+		{"setHoverWindowUnlockedStationaryId", "SetHoverWindowUnlockedStationaryId"},
+		{"setMouseCursor", "SetMouseCursor"},
+		{"setMouseStationaryTimer", "SetMouseStationaryTimer"},
+		{"setMouseLastValidPos", "SetMouseLastValidPos"},
+		{"setInputTextState", "SetInputTextState"},
+		{"setInputTextLineIndex", "SetInputTextLineIndex"},
+		{"setInputTextDeactivatedState", "SetInputTextDeactivatedState"},
+		{"setInputTextPasswordFontBackupBaked", "SetInputTextPasswordFontBackupBaked"},
+		{"setInputTextPasswordFontBackupFlags", "SetInputTextPasswordFontBackupFlags"},
+		{"setTempInputId", "SetTempInputId"},
+		{"setDataTypeZeroValue", "SetDataTypeZeroValue"},
+		{"setBeginMenuDepth", "SetBeginMenuDepth"},
+		{"setBeginComboDepth", "SetBeginComboDepth"},
+		{"setColorEditOptions", "SetColorEditOptions"},
+		{"setColorEditCurrentID", "SetColorEditCurrentID"},
+		{"setColorEditSavedID", "SetColorEditSavedID"},
+		{"setColorEditSavedHue", "SetColorEditSavedHue"},
+		{"setColorEditSavedSat", "SetColorEditSavedSat"},
+		{"setColorEditSavedColor", "SetColorEditSavedColor"},
+		{"setColorPickerRef", "SetColorPickerRef"},
+		{"setComboPreviewData", "SetComboPreviewData"},
+		{"setWindowResizeBorderExpectedRect", "SetWindowResizeBorderExpectedRect"},
+		{"setWindowResizeRelativeMode", "SetWindowResizeRelativeMode"},
+		{"setScrollbarSeekMode", "SetScrollbarSeekMode"},
+		{"setScrollbarClickDeltaToGrabCenter", "SetScrollbarClickDeltaToGrabCenter"},
+		{"setSliderGrabClickOffset", "SetSliderGrabClickOffset"},
+		{"setSliderCurrentAccum", "SetSliderCurrentAccum"},
+		{"setSliderCurrentAccumDirty", "SetSliderCurrentAccumDirty"},
+		{"setDragCurrentAccumDirty", "SetDragCurrentAccumDirty"},
+		{"setDragCurrentAccum", "SetDragCurrentAccum"},
+		{"setDragSpeedDefaultRatio", "SetDragSpeedDefaultRatio"},
+		{"setDisabledAlphaBackup", "SetDisabledAlphaBackup"},
+		{"setDisabledStackSize", "SetDisabledStackSize"},
+		{"setTooltipOverrideCount", "SetTooltipOverrideCount"},
+		{"setTooltipPreviousWindow", "SetTooltipPreviousWindow"},
+		{"setClipboardHandlerData", "SetClipboardHandlerData"},
+		{"setMenusIdSubmittedThisFrame", "SetMenusIdSubmittedThisFrame"},
+		{"setTypingSelectState", "SetTypingSelectState"},
+		{"setPlatformImeData", "SetPlatformImeData"},
+		{"setPlatformImeDataPrev", "SetPlatformImeDataPrev"},
+		{"setDockContext", "SetDockContext"},
+		{"setSettingsLoaded", "SetSettingsLoaded"},
+		{"setSettingsDirtyTimer", "SetSettingsDirtyTimer"},
+		{"setSettingsIniData", "SetSettingsIniData"},
+		{"setSettingsHandlers", "SetSettingsHandlers"},
+		{"setHooks", "SetHooks"},
+		{"setHookIdNext", "SetHookIdNext"},
+		{"setLocalizationTable", "SetLocalizationTable"},
+		{"setLogEnabled", "SetLogEnabled"},
+		{"setLogFlags", "SetLogFlags"},
+		{"setLogWindow", "SetLogWindow"},
+		{"setLogBuffer", "SetLogBuffer"},
+		{"setLogNextPrefix", "SetLogNextPrefix"},
+		{"setLogNextSuffix", "SetLogNextSuffix"},
+		{"setLogLinePosY", "SetLogLinePosY"},
+		{"setLogLineFirstItem", "SetLogLineFirstItem"},
+		{"setLogDepthRef", "SetLogDepthRef"},
+		{"setLogDepthToExpand", "SetLogDepthToExpand"},
+		{"setLogDepthToExpandDefault", "SetLogDepthToExpandDefault"},
+		{"setErrorCallback", "SetErrorCallback"},
+		{"setErrorCallbackUserData", "SetErrorCallbackUserData"},
+		{"setErrorTooltipLockedPos", "SetErrorTooltipLockedPos"},
+		{"setErrorFirst", "SetErrorFirst"},
+		{"setErrorCountCurrentFrame", "SetErrorCountCurrentFrame"},
+		{"setStackSizesInNewFrame", "SetStackSizesInNewFrame"},
+		{"setStackSizesInBeginForCurrentWindow", "SetStackSizesInBeginForCurrentWindow"},
+		{"setDebugDrawIdConflictsCount", "SetDebugDrawIdConflictsCount"},
+		{"setDebugLogFlags", "SetDebugLogFlags"},
+		{"setDebugLogBuf", "SetDebugLogBuf"},
+		{"setDebugLogIndex", "SetDebugLogIndex"},
+		{"setDebugLogSkippedErrors", "SetDebugLogSkippedErrors"},
+		{"setDebugLogAutoDisableFlags", "SetDebugLogAutoDisableFlags"},
+		{"setDebugLogAutoDisableFrames", "SetDebugLogAutoDisableFrames"},
+		{"setDebugLocateFrames", "SetDebugLocateFrames"},
+		{"setDebugBreakInLocateId", "SetDebugBreakInLocateId"},
+		{"setDebugBreakKeyChord", "SetDebugBreakKeyChord"},
+		{"setDebugBeginReturnValueCullDepth", "SetDebugBeginReturnValueCullDepth"},
+		{"setDebugItemPickerActive", "SetDebugItemPickerActive"},
+		{"setDebugItemPickerMouseButton", "SetDebugItemPickerMouseButton"},
+		{"setDebugItemPickerBreakId", "SetDebugItemPickerBreakId"},
+		{"setDebugFlashStyleColorTime", "SetDebugFlashStyleColorTime"},
+		{"setDebugFlashStyleColorBackup", "SetDebugFlashStyleColorBackup"},
+		{"setDebugMetricsConfig", "SetDebugMetricsConfig"},
+		{"setDebugIDStackTool", "SetDebugIDStackTool"},
+		{"setDebugAllocInfo", "SetDebugAllocInfo"},
+		{"setDebugHoveredDockNode", "SetDebugHoveredDockNode"},
+		{"setFramerateSecPerFrame", "SetFramerateSecPerFrame"},
+		{"setFramerateSecPerFrameIdx", "SetFramerateSecPerFrameIdx"},
+		{"setFramerateSecPerFrameCount", "SetFramerateSecPerFrameCount"},
+		{"setFramerateSecPerFrameAccum", "SetFramerateSecPerFrameAccum"},
+		{"setWantCaptureMouseNextFrame", "SetWantCaptureMouseNextFrame"},
+		{"setWantCaptureKeyboardNextFrame", "SetWantCaptureKeyboardNextFrame"},
+		{"setWantTextInputNextFrame", "SetWantTextInputNextFrame"},
+		{"setTempBuffer", "SetTempBuffer"},
+		{"setTempKeychordName", "SetTempKeychordName"},
+		{"initialized", "Initialized"},
+		{"iO", "IO"},
+		{"platformIO", "PlatformIO"},
+		{"style", "Style"},
+		{"configFlagsCurrFrame", "ConfigFlagsCurrFrame"},
+		{"configFlagsLastFrame", "ConfigFlagsLastFrame"},
+		{"fontAtlases", "FontAtlases"},
+		{"font", "Font"},
+		{"fontBaked", "FontBaked"},
+		{"fontSize", "FontSize"},
+		{"fontSizeBase", "FontSizeBase"},
+		{"fontBakedScale", "FontBakedScale"},
+		{"fontRasterizerDensity", "FontRasterizerDensity"},
+		{"currentDpiScale", "CurrentDpiScale"},
+		{"drawListSharedData", "DrawListSharedData"},
+		{"time", "Time"},
+		{"frameCount", "FrameCount"},
+		{"frameCountEnded", "FrameCountEnded"},
+		{"frameCountPlatformEnded", "FrameCountPlatformEnded"},
+		{"frameCountRendered", "FrameCountRendered"},
+		{"withinEndChildID", "WithinEndChildID"},
+		{"withinFrameScope", "WithinFrameScope"},
+		{"withinFrameScopeWithImplicitWindow", "WithinFrameScopeWithImplicitWindow"},
+		{"gcCompactAll", "GcCompactAll"},
+		{"testEngineHookItems", "TestEngineHookItems"},
+		{"testEngine", "TestEngine"},
+		{"contextName", "ContextName"},
+		{"inputEventsQueue", "InputEventsQueue"},
+		{"inputEventsTrail", "InputEventsTrail"},
+		{"inputEventsNextMouseSource", "InputEventsNextMouseSource"},
+		{"inputEventsNextEventId", "InputEventsNextEventId"},
+		{"windows", "Windows"},
+		{"windowsFocusOrder", "WindowsFocusOrder"},
+		{"windowsTempSortBuffer", "WindowsTempSortBuffer"},
+		{"currentWindowStack", "CurrentWindowStack"},
+		{"windowsById", "WindowsById"},
+		{"windowsActiveCount", "WindowsActiveCount"},
+		{"windowsBorderHoverPadding", "WindowsBorderHoverPadding"},
+		{"debugBreakInWindow", "DebugBreakInWindow"},
+		{"currentWindow", "CurrentWindow"},
+		{"hoveredWindow", "HoveredWindow"},
+		{"hoveredWindowUnderMovingWindow", "HoveredWindowUnderMovingWindow"},
+		{"hoveredWindowBeforeClear", "HoveredWindowBeforeClear"},
+		{"movingWindow", "MovingWindow"},
+		{"wheelingWindow", "WheelingWindow"},
+		{"wheelingWindowRefMousePos", "WheelingWindowRefMousePos"},
+		{"wheelingWindowStartFrame", "WheelingWindowStartFrame"},
+		{"wheelingWindowScrolledFrame", "WheelingWindowScrolledFrame"},
+		{"wheelingWindowReleaseTimer", "WheelingWindowReleaseTimer"},
+		{"wheelingWindowWheelRemainder", "WheelingWindowWheelRemainder"},
+		{"wheelingAxisAvg", "WheelingAxisAvg"},
+		{"debugDrawIdConflictsId", "DebugDrawIdConflictsId"},
+		{"debugHookIdInfoId", "DebugHookIdInfoId"},
+		{"hoveredId", "HoveredId"},
+		{"hoveredIdPreviousFrame", "HoveredIdPreviousFrame"},
+		{"hoveredIdPreviousFrameItemCount", "HoveredIdPreviousFrameItemCount"},
+		{"hoveredIdTimer", "HoveredIdTimer"},
+		{"hoveredIdNotActiveTimer", "HoveredIdNotActiveTimer"},
+		{"hoveredIdAllowOverlap", "HoveredIdAllowOverlap"},
+		{"hoveredIdIsDisabled", "HoveredIdIsDisabled"},
+		{"itemUnclipByLog", "ItemUnclipByLog"},
+		{"activeId", "ActiveId"},
+		{"activeIdIsAlive", "ActiveIdIsAlive"},
+		{"activeIdTimer", "ActiveIdTimer"},
+		{"activeIdIsJustActivated", "ActiveIdIsJustActivated"},
+		{"activeIdAllowOverlap", "ActiveIdAllowOverlap"},
+		{"activeIdNoClearOnFocusLoss", "ActiveIdNoClearOnFocusLoss"},
+		{"activeIdHasBeenPressedBefore", "ActiveIdHasBeenPressedBefore"},
+		{"activeIdHasBeenEditedBefore", "ActiveIdHasBeenEditedBefore"},
+		{"activeIdHasBeenEditedThisFrame", "ActiveIdHasBeenEditedThisFrame"},
+		{"activeIdFromShortcut", "ActiveIdFromShortcut"},
+		{"activeIdDisabledId", "ActiveIdDisabledId"},
+		{"activeIdMouseButton", "ActiveIdMouseButton"},
+		{"activeIdClickOffset", "ActiveIdClickOffset"},
+		{"activeIdWindow", "ActiveIdWindow"},
+		{"activeIdSource", "ActiveIdSource"},
+		{"activeIdPreviousFrame", "ActiveIdPreviousFrame"},
+		{"deactivatedItemData", "DeactivatedItemData"},
+		{"activeIdValueOnActivation", "ActiveIdValueOnActivation"},
+		{"lastActiveId", "LastActiveId"},
+		{"lastActiveIdTimer", "LastActiveIdTimer"},
+		{"lastKeyModsChangeTime", "LastKeyModsChangeTime"},
+		{"lastKeyModsChangeFromNoneTime", "LastKeyModsChangeFromNoneTime"},
+		{"lastKeyboardKeyPressTime", "LastKeyboardKeyPressTime"},
+		{"keysMayBeCharInput", "KeysMayBeCharInput"},
+		{"keysOwnerData", "KeysOwnerData"},
+		{"keysRoutingTable", "KeysRoutingTable"},
+		{"activeIdUsingNavDirMask", "ActiveIdUsingNavDirMask"},
+		{"activeIdUsingAllKeyboardKeys", "ActiveIdUsingAllKeyboardKeys"},
+		{"debugBreakInShortcutRouting", "DebugBreakInShortcutRouting"},
+		{"currentFocusScopeId", "CurrentFocusScopeId"},
+		{"currentItemFlags", "CurrentItemFlags"},
+		{"debugLocateId", "DebugLocateId"},
+		{"nextItemData", "NextItemData"},
+		{"lastItemData", "LastItemData"},
+		{"nextWindowData", "NextWindowData"},
+		{"debugShowGroupRects", "DebugShowGroupRects"},
+		{"debugFlashStyleColorIdx", "DebugFlashStyleColorIdx"},
+		{"colorStack", "ColorStack"},
+		{"styleVarStack", "StyleVarStack"},
+		{"fontStack", "FontStack"},
+		{"focusScopeStack", "FocusScopeStack"},
+		{"itemFlagsStack", "ItemFlagsStack"},
+		{"groupStack", "GroupStack"},
+		{"openPopupStack", "OpenPopupStack"},
+		{"beginPopupStack", "BeginPopupStack"},
+		{"treeNodeStack", "TreeNodeStack"},
+		{"viewports", "Viewports"},
+		{"currentViewport", "CurrentViewport"},
+		{"mouseViewport", "MouseViewport"},
+		{"mouseLastHoveredViewport", "MouseLastHoveredViewport"},
+		{"platformLastFocusedViewportId", "PlatformLastFocusedViewportId"},
+		{"fallbackMonitor", "FallbackMonitor"},
+		{"platformMonitorsFullWorkRect", "PlatformMonitorsFullWorkRect"},
+		{"viewportCreatedCount", "ViewportCreatedCount"},
+		{"platformWindowsCreatedCount", "PlatformWindowsCreatedCount"},
+		{"viewportFocusedStampCount", "ViewportFocusedStampCount"},
+		{"navCursorVisible", "NavCursorVisible"},
+		{"navHighlightItemUnderNav", "NavHighlightItemUnderNav"},
+		{"navMousePosDirty", "NavMousePosDirty"},
+		{"navIdIsAlive", "NavIdIsAlive"},
+		{"navId", "NavId"},
+		{"navWindow", "NavWindow"},
+		{"navFocusScopeId", "NavFocusScopeId"},
+		{"navLayer", "NavLayer"},
+		{"navActivateId", "NavActivateId"},
+		{"navActivateDownId", "NavActivateDownId"},
+		{"navActivatePressedId", "NavActivatePressedId"},
+		{"navActivateFlags", "NavActivateFlags"},
+		{"navFocusRoute", "NavFocusRoute"},
+		{"navHighlightActivatedId", "NavHighlightActivatedId"},
+		{"navHighlightActivatedTimer", "NavHighlightActivatedTimer"},
+		{"navNextActivateId", "NavNextActivateId"},
+		{"navNextActivateFlags", "NavNextActivateFlags"},
+		{"navInputSource", "NavInputSource"},
+		{"navLastValidSelectionUserData", "NavLastValidSelectionUserData"},
+		{"navCursorHideFrames", "NavCursorHideFrames"},
+		{"navAnyRequest", "NavAnyRequest"},
+		{"navInitRequest", "NavInitRequest"},
+		{"navInitRequestFromMove", "NavInitRequestFromMove"},
+		{"navInitResult", "NavInitResult"},
+		{"navMoveSubmitted", "NavMoveSubmitted"},
+		{"navMoveScoringItems", "NavMoveScoringItems"},
+		{"navMoveForwardToNextFrame", "NavMoveForwardToNextFrame"},
+		{"navMoveFlags", "NavMoveFlags"},
+		{"navMoveScrollFlags", "NavMoveScrollFlags"},
+		{"navMoveKeyMods", "NavMoveKeyMods"},
+		{"navMoveDir", "NavMoveDir"},
+		{"navMoveDirForDebug", "NavMoveDirForDebug"},
+		{"navMoveClipDir", "NavMoveClipDir"},
+		{"navScoringRect", "NavScoringRect"},
+		{"navScoringNoClipRect", "NavScoringNoClipRect"},
+		{"navScoringDebugCount", "NavScoringDebugCount"},
+		{"navTabbingDir", "NavTabbingDir"},
+		{"navTabbingCounter", "NavTabbingCounter"},
+		{"navMoveResultLocal", "NavMoveResultLocal"},
+		{"navMoveResultLocalVisible", "NavMoveResultLocalVisible"},
+		{"navMoveResultOther", "NavMoveResultOther"},
+		{"navTabbingResultFirst", "NavTabbingResultFirst"},
+		{"navJustMovedFromFocusScopeId", "NavJustMovedFromFocusScopeId"},
+		{"navJustMovedToId", "NavJustMovedToId"},
+		{"navJustMovedToFocusScopeId", "NavJustMovedToFocusScopeId"},
+		{"navJustMovedToKeyMods", "NavJustMovedToKeyMods"},
+		{"navJustMovedToIsTabbing", "NavJustMovedToIsTabbing"},
+		{"navJustMovedToHasSelectionData", "NavJustMovedToHasSelectionData"},
+		{"configNavWindowingWithGamepad", "ConfigNavWindowingWithGamepad"},
+		{"configNavWindowingKeyNext", "ConfigNavWindowingKeyNext"},
+		{"configNavWindowingKeyPrev", "ConfigNavWindowingKeyPrev"},
+		{"navWindowingTarget", "NavWindowingTarget"},
+		{"navWindowingTargetAnim", "NavWindowingTargetAnim"},
+		{"navWindowingListWindow", "NavWindowingListWindow"},
+		{"navWindowingTimer", "NavWindowingTimer"},
+		{"navWindowingHighlightAlpha", "NavWindowingHighlightAlpha"},
+		{"navWindowingInputSource", "NavWindowingInputSource"},
+		{"navWindowingToggleLayer", "NavWindowingToggleLayer"},
+		{"navWindowingToggleKey", "NavWindowingToggleKey"},
+		{"navWindowingAccumDeltaPos", "NavWindowingAccumDeltaPos"},
+		{"navWindowingAccumDeltaSize", "NavWindowingAccumDeltaSize"},
+		{"dimBgRatio", "DimBgRatio"},
+		{"dragDropActive", "DragDropActive"},
+		{"dragDropWithinSource", "DragDropWithinSource"},
+		{"dragDropWithinTarget", "DragDropWithinTarget"},
+		{"dragDropSourceFlags", "DragDropSourceFlags"},
+		{"dragDropSourceFrameCount", "DragDropSourceFrameCount"},
+		{"dragDropMouseButton", "DragDropMouseButton"},
+		{"dragDropPayload", "DragDropPayload"},
+		{"dragDropTargetRect", "DragDropTargetRect"},
+		{"dragDropTargetClipRect", "DragDropTargetClipRect"},
+		{"dragDropTargetId", "DragDropTargetId"},
+		{"dragDropTargetFullViewport", "DragDropTargetFullViewport"},
+		{"dragDropAcceptFlags", "DragDropAcceptFlags"},
+		{"dragDropAcceptIdCurrRectSurface", "DragDropAcceptIdCurrRectSurface"},
+		{"dragDropAcceptIdCurr", "DragDropAcceptIdCurr"},
+		{"dragDropAcceptIdPrev", "DragDropAcceptIdPrev"},
+		{"dragDropAcceptFrameCount", "DragDropAcceptFrameCount"},
+		{"dragDropHoldJustPressedId", "DragDropHoldJustPressedId"},
+		{"dragDropPayloadBufLocal", "DragDropPayloadBufLocal"},
+		{"clipperTempDataStacked", "ClipperTempDataStacked"},
+		{"clipperTempData", "ClipperTempData"},
+		{"currentTable", "CurrentTable"},
+		{"debugBreakInTable", "DebugBreakInTable"},
+		{"tablesTempDataStacked", "TablesTempDataStacked"},
+		{"tablesTempData", "TablesTempData"},
+		{"tablesLastTimeActive", "TablesLastTimeActive"},
+		{"drawChannelsTempMergeBuffer", "DrawChannelsTempMergeBuffer"},
+		{"currentTabBar", "CurrentTabBar"},
+		{"currentTabBarStack", "CurrentTabBarStack"},
+		{"shrinkWidthBuffer", "ShrinkWidthBuffer"},
+		{"boxSelectState", "BoxSelectState"},
+		{"currentMultiSelect", "CurrentMultiSelect"},
+		{"multiSelectTempDataStacked", "MultiSelectTempDataStacked"},
+		{"multiSelectTempData", "MultiSelectTempData"},
+		{"hoverItemDelayId", "HoverItemDelayId"},
+		{"hoverItemDelayIdPreviousFrame", "HoverItemDelayIdPreviousFrame"},
+		{"hoverItemDelayTimer", "HoverItemDelayTimer"},
+		{"hoverItemDelayClearTimer", "HoverItemDelayClearTimer"},
+		{"hoverItemUnlockedStationaryId", "HoverItemUnlockedStationaryId"},
+		{"hoverWindowUnlockedStationaryId", "HoverWindowUnlockedStationaryId"},
+		{"mouseCursor", "MouseCursor"},
+		{"mouseStationaryTimer", "MouseStationaryTimer"},
+		{"mouseLastValidPos", "MouseLastValidPos"},
+		{"inputTextState", "InputTextState"},
+		{"inputTextLineIndex", "InputTextLineIndex"},
+		{"inputTextDeactivatedState", "InputTextDeactivatedState"},
+		{"inputTextPasswordFontBackupBaked", "InputTextPasswordFontBackupBaked"},
+		{"inputTextPasswordFontBackupFlags", "InputTextPasswordFontBackupFlags"},
+		{"tempInputId", "TempInputId"},
+		{"dataTypeZeroValue", "DataTypeZeroValue"},
+		{"beginMenuDepth", "BeginMenuDepth"},
+		{"beginComboDepth", "BeginComboDepth"},
+		{"colorEditOptions", "ColorEditOptions"},
+		{"colorEditCurrentID", "ColorEditCurrentID"},
+		{"colorEditSavedID", "ColorEditSavedID"},
+		{"colorEditSavedHue", "ColorEditSavedHue"},
+		{"colorEditSavedSat", "ColorEditSavedSat"},
+		{"colorEditSavedColor", "ColorEditSavedColor"},
+		{"colorPickerRef", "ColorPickerRef"},
+		{"comboPreviewData", "ComboPreviewData"},
+		{"windowResizeBorderExpectedRect", "WindowResizeBorderExpectedRect"},
+		{"windowResizeRelativeMode", "WindowResizeRelativeMode"},
+		{"scrollbarSeekMode", "ScrollbarSeekMode"},
+		{"scrollbarClickDeltaToGrabCenter", "ScrollbarClickDeltaToGrabCenter"},
+		{"sliderGrabClickOffset", "SliderGrabClickOffset"},
+		{"sliderCurrentAccum", "SliderCurrentAccum"},
+		{"sliderCurrentAccumDirty", "SliderCurrentAccumDirty"},
+		{"dragCurrentAccumDirty", "DragCurrentAccumDirty"},
+		{"dragCurrentAccum", "DragCurrentAccum"},
+		{"dragSpeedDefaultRatio", "DragSpeedDefaultRatio"},
+		{"disabledAlphaBackup", "DisabledAlphaBackup"},
+		{"disabledStackSize", "DisabledStackSize"},
+		{"tooltipOverrideCount", "TooltipOverrideCount"},
+		{"tooltipPreviousWindow", "TooltipPreviousWindow"},
+		{"clipboardHandlerData", "ClipboardHandlerData"},
+		{"menusIdSubmittedThisFrame", "MenusIdSubmittedThisFrame"},
+		{"typingSelectState", "TypingSelectState"},
+		{"platformImeData", "PlatformImeData"},
+		{"platformImeDataPrev", "PlatformImeDataPrev"},
+		{"userTextures", "UserTextures"},
+		{"dockContext", "DockContext"},
+		{"settingsLoaded", "SettingsLoaded"},
+		{"settingsDirtyTimer", "SettingsDirtyTimer"},
+		{"settingsIniData", "SettingsIniData"},
+		{"settingsHandlers", "SettingsHandlers"},
+		{"hooks", "Hooks"},
+		{"hookIdNext", "HookIdNext"},
+		{"localizationTable", "LocalizationTable"},
+		{"logEnabled", "LogEnabled"},
+		{"logFlags", "LogFlags"},
+		{"logWindow", "LogWindow"},
+		{"logBuffer", "LogBuffer"},
+		{"logNextPrefix", "LogNextPrefix"},
+		{"logNextSuffix", "LogNextSuffix"},
+		{"logLinePosY", "LogLinePosY"},
+		{"logLineFirstItem", "LogLineFirstItem"},
+		{"logDepthRef", "LogDepthRef"},
+		{"logDepthToExpand", "LogDepthToExpand"},
+		{"logDepthToExpandDefault", "LogDepthToExpandDefault"},
+		{"errorCallback", "ErrorCallback"},
+		{"errorCallbackUserData", "ErrorCallbackUserData"},
+		{"errorTooltipLockedPos", "ErrorTooltipLockedPos"},
+		{"errorFirst", "ErrorFirst"},
+		{"errorCountCurrentFrame", "ErrorCountCurrentFrame"},
+		{"stackSizesInNewFrame", "StackSizesInNewFrame"},
+		{"stackSizesInBeginForCurrentWindow", "StackSizesInBeginForCurrentWindow"},
+		{"debugDrawIdConflictsCount", "DebugDrawIdConflictsCount"},
+		{"debugLogFlags", "DebugLogFlags"},
+		{"debugLogBuf", "DebugLogBuf"},
+		{"debugLogIndex", "DebugLogIndex"},
+		{"debugLogSkippedErrors", "DebugLogSkippedErrors"},
+		{"debugLogAutoDisableFlags", "DebugLogAutoDisableFlags"},
+		{"debugLogAutoDisableFrames", "DebugLogAutoDisableFrames"},
+		{"debugLocateFrames", "DebugLocateFrames"},
+		{"debugBreakInLocateId", "DebugBreakInLocateId"},
+		{"debugBreakKeyChord", "DebugBreakKeyChord"},
+		{"debugBeginReturnValueCullDepth", "DebugBeginReturnValueCullDepth"},
+		{"debugItemPickerActive", "DebugItemPickerActive"},
+		{"debugItemPickerMouseButton", "DebugItemPickerMouseButton"},
+		{"debugItemPickerBreakId", "DebugItemPickerBreakId"},
+		{"debugFlashStyleColorTime", "DebugFlashStyleColorTime"},
+		{"debugFlashStyleColorBackup", "DebugFlashStyleColorBackup"},
+		{"debugMetricsConfig", "DebugMetricsConfig"},
+		{"debugIDStackTool", "DebugIDStackTool"},
+		{"debugAllocInfo", "DebugAllocInfo"},
+		{"debugHoveredDockNode", "DebugHoveredDockNode"},
+		{"framerateSecPerFrame", "FramerateSecPerFrame"},
+		{"framerateSecPerFrameIdx", "FramerateSecPerFrameIdx"},
+		{"framerateSecPerFrameCount", "FramerateSecPerFrameCount"},
+		{"framerateSecPerFrameAccum", "FramerateSecPerFrameAccum"},
+		{"wantCaptureMouseNextFrame", "WantCaptureMouseNextFrame"},
+		{"wantCaptureKeyboardNextFrame", "WantCaptureKeyboardNextFrame"},
+		{"wantTextInputNextFrame", "WantTextInputNextFrame"},
+		{"tempBuffer", "TempBuffer"},
+		{"tempKeychordName", "TempKeychordName"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DebugAllocInfo": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setTotalAllocCount", "SetTotalAllocCount"},
+		{"setTotalFreeCount", "SetTotalFreeCount"},
+		{"setLastEntriesIdx", "SetLastEntriesIdx"},
+		{"setLastEntriesBuf", "SetLastEntriesBuf"},
+		{"totalAllocCount", "TotalAllocCount"},
+		{"totalFreeCount", "TotalFreeCount"},
+		{"lastEntriesIdx", "LastEntriesIdx"},
+		{"lastEntriesBuf", "LastEntriesBuf"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DockContext": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setNodes", "SetNodes"},
+		{"setRequests", "SetRequests"},
+		{"setNodesSettings", "SetNodesSettings"},
+		{"setWantFullRebuild", "SetWantFullRebuild"},
+		{"nodes", "Nodes"},
+		{"requests", "Requests"},
+		{"nodesSettings", "NodesSettings"},
+		{"wantFullRebuild", "WantFullRebuild"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DockNode": {
+		{"internalIsCentralNode", "InternalIsCentralNode"},
+		{"internalIsDockSpace", "InternalIsDockSpace"},
+		{"internalIsEmpty", "InternalIsEmpty"},
+		{"internalIsFloatingNode", "InternalIsFloatingNode"},
+		{"internalIsHiddenTabBar", "InternalIsHiddenTabBar"},
+		{"internalIsLeafNode", "InternalIsLeafNode"},
+		{"internalIsNoTabBar", "InternalIsNoTabBar"},
+		{"internalIsRootNode", "InternalIsRootNode"},
+		{"internalIsSplitNode", "InternalIsSplitNode"},
+		{"internalRect", "InternalRect"},
+		{"internalSetLocalFlags", "InternalSetLocalFlags"},
+		{"internalUpdateMergedFlags", "InternalUpdateMergedFlags"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setID", "SetID"},
+		{"setSharedFlags", "SetSharedFlags"},
+		{"setLocalFlagsInWindows", "SetLocalFlagsInWindows"},
+		{"setMergedFlags", "SetMergedFlags"},
+		{"setState", "SetState"},
+		{"setParentNode", "SetParentNode"},
+		{"setChildNodes", "SetChildNodes"},
+		{"setTabBar", "SetTabBar"},
+		{"setPos", "SetPos"},
+		{"setSize", "SetSize"},
+		{"setSizeRef", "SetSizeRef"},
+		{"setSplitAxis", "SetSplitAxis"},
+		{"setWindowClass", "SetWindowClass"},
+		{"setLastBgColor", "SetLastBgColor"},
+		{"setHostWindow", "SetHostWindow"},
+		{"setVisibleWindow", "SetVisibleWindow"},
+		{"setCentralNode", "SetCentralNode"},
+		{"setOnlyNodeWithWindows", "SetOnlyNodeWithWindows"},
+		{"setCountNodeWithWindows", "SetCountNodeWithWindows"},
+		{"setLastFrameAlive", "SetLastFrameAlive"},
+		{"setLastFrameActive", "SetLastFrameActive"},
+		{"setLastFrameFocused", "SetLastFrameFocused"},
+		{"setLastFocusedNodeId", "SetLastFocusedNodeId"},
+		{"setSelectedTabId", "SetSelectedTabId"},
+		{"setWantCloseTabId", "SetWantCloseTabId"},
+		{"setRefViewportId", "SetRefViewportId"},
+		{"setAuthorityForPos", "SetAuthorityForPos"},
+		{"setAuthorityForSize", "SetAuthorityForSize"},
+		{"setAuthorityForViewport", "SetAuthorityForViewport"},
+		{"setIsVisible", "SetIsVisible"},
+		{"setIsFocused", "SetIsFocused"},
+		{"setIsBgDrawnThisFrame", "SetIsBgDrawnThisFrame"},
+		{"setHasCloseButton", "SetHasCloseButton"},
+		{"setHasWindowMenuButton", "SetHasWindowMenuButton"},
+		{"setHasCentralNodeChild", "SetHasCentralNodeChild"},
+		{"setWantCloseAll", "SetWantCloseAll"},
+		{"setWantLockSizeOnce", "SetWantLockSizeOnce"},
+		{"setWantMouseMove", "SetWantMouseMove"},
+		{"setWantHiddenTabBarUpdate", "SetWantHiddenTabBarUpdate"},
+		{"setWantHiddenTabBarToggle", "SetWantHiddenTabBarToggle"},
+		{"iD", "ID"},
+		{"sharedFlags", "SharedFlags"},
+		{"localFlags", "LocalFlags"},
+		{"localFlagsInWindows", "LocalFlagsInWindows"},
+		{"mergedFlags", "MergedFlags"},
+		{"state", "State"},
+		{"parentNode", "ParentNode"},
+		{"childNodes", "ChildNodes"},
+		{"windows", "Windows"},
+		{"tabBar", "TabBar"},
+		{"pos", "Pos"},
+		{"size", "Size"},
+		{"sizeRef", "SizeRef"},
+		{"splitAxis", "SplitAxis"},
+		{"windowClass", "WindowClass"},
+		{"lastBgColor", "LastBgColor"},
+		{"hostWindow", "HostWindow"},
+		{"visibleWindow", "VisibleWindow"},
+		{"centralNode", "CentralNode"},
+		{"onlyNodeWithWindows", "OnlyNodeWithWindows"},
+		{"countNodeWithWindows", "CountNodeWithWindows"},
+		{"lastFrameAlive", "LastFrameAlive"},
+		{"lastFrameActive", "LastFrameActive"},
+		{"lastFrameFocused", "LastFrameFocused"},
+		{"lastFocusedNodeId", "LastFocusedNodeId"},
+		{"selectedTabId", "SelectedTabId"},
+		{"wantCloseTabId", "WantCloseTabId"},
+		{"refViewportId", "RefViewportId"},
+		{"authorityForPos", "AuthorityForPos"},
+		{"authorityForSize", "AuthorityForSize"},
+		{"authorityForViewport", "AuthorityForViewport"},
+		{"isVisible", "IsVisible"},
+		{"isFocused", "IsFocused"},
+		{"isBgDrawnThisFrame", "IsBgDrawnThisFrame"},
+		{"hasCloseButton", "HasCloseButton"},
+		{"hasWindowMenuButton", "HasWindowMenuButton"},
+		{"hasCentralNodeChild", "HasCentralNodeChild"},
+		{"wantCloseAll", "WantCloseAll"},
+		{"wantLockSizeOnce", "WantLockSizeOnce"},
+		{"wantMouseMove", "WantMouseMove"},
+		{"wantHiddenTabBarUpdate", "WantHiddenTabBarUpdate"},
+		{"wantHiddenTabBarToggle", "WantHiddenTabBarToggle"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"ErrorRecoveryState": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setSizeOfWindowStack", "SetSizeOfWindowStack"},
+		{"setSizeOfIDStack", "SetSizeOfIDStack"},
+		{"setSizeOfTreeStack", "SetSizeOfTreeStack"},
+		{"setSizeOfColorStack", "SetSizeOfColorStack"},
+		{"setSizeOfStyleVarStack", "SetSizeOfStyleVarStack"},
+		{"setSizeOfFontStack", "SetSizeOfFontStack"},
+		{"setSizeOfFocusScopeStack", "SetSizeOfFocusScopeStack"},
+		{"setSizeOfGroupStack", "SetSizeOfGroupStack"},
+		{"setSizeOfItemFlagsStack", "SetSizeOfItemFlagsStack"},
+		{"setSizeOfBeginPopupStack", "SetSizeOfBeginPopupStack"},
+		{"setSizeOfDisabledStack", "SetSizeOfDisabledStack"},
+		{"sizeOfWindowStack", "SizeOfWindowStack"},
+		{"sizeOfIDStack", "SizeOfIDStack"},
+		{"sizeOfTreeStack", "SizeOfTreeStack"},
+		{"sizeOfColorStack", "SizeOfColorStack"},
+		{"sizeOfStyleVarStack", "SizeOfStyleVarStack"},
+		{"sizeOfFontStack", "SizeOfFontStack"},
+		{"sizeOfFocusScopeStack", "SizeOfFocusScopeStack"},
+		{"sizeOfGroupStack", "SizeOfGroupStack"},
+		{"sizeOfItemFlagsStack", "SizeOfItemFlagsStack"},
+		{"sizeOfBeginPopupStack", "SizeOfBeginPopupStack"},
+		{"sizeOfDisabledStack", "SizeOfDisabledStack"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"IDStackTool": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setLastActiveFrame", "SetLastActiveFrame"},
+		{"setStackLevel", "SetStackLevel"},
+		{"setQueryMainId", "SetQueryMainId"},
+		{"setResults", "SetResults"},
+		{"setQueryHookActive", "SetQueryHookActive"},
+		{"setOptHexEncodeNonAsciiChars", "SetOptHexEncodeNonAsciiChars"},
+		{"setOptCopyToClipboardOnCtrlC", "SetOptCopyToClipboardOnCtrlC"},
+		{"setCopyToClipboardLastTime", "SetCopyToClipboardLastTime"},
+		{"setResultPathsBuf", "SetResultPathsBuf"},
+		{"setResultTempBuf", "SetResultTempBuf"},
+		{"lastActiveFrame", "LastActiveFrame"},
+		{"stackLevel", "StackLevel"},
+		{"queryMainId", "QueryMainId"},
+		{"results", "Results"},
+		{"queryHookActive", "QueryHookActive"},
+		{"optHexEncodeNonAsciiChars", "OptHexEncodeNonAsciiChars"},
+		{"optCopyToClipboardOnCtrlC", "OptCopyToClipboardOnCtrlC"},
+		{"copyToClipboardLastTime", "CopyToClipboardLastTime"},
+		{"resultPathsBuf", "ResultPathsBuf"},
+		{"resultTempBuf", "ResultTempBuf"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"IO": {
+		{"addFocusEvent", "AddFocusEvent"},
+		{"addInputCharacter", "AddInputCharacter"},
+		{"addInputCharacterUTF16", "AddInputCharacterUTF16"},
+		{"addInputCharactersUTF8", "AddInputCharactersUTF8"},
+		{"addKeyAnalogEvent", "AddKeyAnalogEvent"},
+		{"addKeyEvent", "AddKeyEvent"},
+		{"addMouseButtonEvent", "AddMouseButtonEvent"},
+		{"addMousePosEvent", "AddMousePosEvent"},
+		{"addMouseSourceEvent", "AddMouseSourceEvent"},
+		{"addMouseViewportEvent", "AddMouseViewportEvent"},
+		{"addMouseWheelEvent", "AddMouseWheelEvent"},
+		{"clearEventsQueue", "ClearEventsQueue"},
+		{"clearInputKeys", "ClearInputKeys"},
+		{"clearInputMouse", "ClearInputMouse"},
+		{"setAppAcceptingEvents", "SetAppAcceptingEvents"},
+		{"setKeyEventNativeDataV", "SetKeyEventNativeDataV"},
+		{"destroy", "Destroy"},
+		{"setKeyEventNativeData", "SetKeyEventNativeData"},
+		{"setConfigFlags", "SetConfigFlags"},
+		{"setBackendFlags", "SetBackendFlags"},
+		{"setDisplaySize", "SetDisplaySize"},
+		{"setDisplayFramebufferScale", "SetDisplayFramebufferScale"},
+		{"setDeltaTime", "SetDeltaTime"},
+		{"setIniSavingRate", "SetIniSavingRate"},
+		{"setIniFilename", "SetIniFilename"},
+		{"setLogFilename", "SetLogFilename"},
+		{"setUserData", "SetUserData"},
+		{"setFonts", "SetFonts"},
+		{"setFontDefault", "SetFontDefault"},
+		{"setFontAllowUserScaling", "SetFontAllowUserScaling"},
+		{"setConfigNavSwapGamepadButtons", "SetConfigNavSwapGamepadButtons"},
+		{"setConfigNavMoveSetMousePos", "SetConfigNavMoveSetMousePos"},
+		{"setConfigNavCaptureKeyboard", "SetConfigNavCaptureKeyboard"},
+		{"setConfigNavEscapeClearFocusItem", "SetConfigNavEscapeClearFocusItem"},
+		{"setConfigNavEscapeClearFocusWindow", "SetConfigNavEscapeClearFocusWindow"},
+		{"setConfigNavCursorVisibleAuto", "SetConfigNavCursorVisibleAuto"},
+		{"setConfigNavCursorVisibleAlways", "SetConfigNavCursorVisibleAlways"},
+		{"setConfigDockingNoSplit", "SetConfigDockingNoSplit"},
+		{"setConfigDockingWithShift", "SetConfigDockingWithShift"},
+		{"setConfigDockingAlwaysTabBar", "SetConfigDockingAlwaysTabBar"},
+		{"setConfigDockingTransparentPayload", "SetConfigDockingTransparentPayload"},
+		{"setConfigViewportsNoAutoMerge", "SetConfigViewportsNoAutoMerge"},
+		{"setConfigViewportsNoTaskBarIcon", "SetConfigViewportsNoTaskBarIcon"},
+		{"setConfigViewportsNoDecoration", "SetConfigViewportsNoDecoration"},
+		{"setConfigViewportsNoDefaultParent", "SetConfigViewportsNoDefaultParent"},
+		{"setConfigViewportsPlatformFocusSetsImGuiFocus", "SetConfigViewportsPlatformFocusSetsImGuiFocus"},
+		{"setConfigDpiScaleFonts", "SetConfigDpiScaleFonts"},
+		{"setConfigDpiScaleViewports", "SetConfigDpiScaleViewports"},
+		{"setMouseDrawCursor", "SetMouseDrawCursor"},
+		{"setConfigMacOSXBehaviors", "SetConfigMacOSXBehaviors"},
+		{"setConfigInputTrickleEventQueue", "SetConfigInputTrickleEventQueue"},
+		{"setConfigInputTextCursorBlink", "SetConfigInputTextCursorBlink"},
+		{"setConfigInputTextEnterKeepActive", "SetConfigInputTextEnterKeepActive"},
+		{"setConfigDragClickToInputText", "SetConfigDragClickToInputText"},
+		{"setConfigWindowsResizeFromEdges", "SetConfigWindowsResizeFromEdges"},
+		{"setConfigWindowsMoveFromTitleBarOnly", "SetConfigWindowsMoveFromTitleBarOnly"},
+		{"setConfigWindowsCopyContentsWithCtrlC", "SetConfigWindowsCopyContentsWithCtrlC"},
+		{"setConfigScrollbarScrollByPage", "SetConfigScrollbarScrollByPage"},
+		{"setConfigMemoryCompactTimer", "SetConfigMemoryCompactTimer"},
+		{"setMouseDoubleClickTime", "SetMouseDoubleClickTime"},
+		{"setMouseDoubleClickMaxDist", "SetMouseDoubleClickMaxDist"},
+		{"setMouseDragThreshold", "SetMouseDragThreshold"},
+		{"setKeyRepeatDelay", "SetKeyRepeatDelay"},
+		{"setKeyRepeatRate", "SetKeyRepeatRate"},
+		{"setConfigErrorRecovery", "SetConfigErrorRecovery"},
+		{"setConfigErrorRecoveryEnableAssert", "SetConfigErrorRecoveryEnableAssert"},
+		{"setConfigErrorRecoveryEnableDebugLog", "SetConfigErrorRecoveryEnableDebugLog"},
+		{"setConfigErrorRecoveryEnableTooltip", "SetConfigErrorRecoveryEnableTooltip"},
+		{"setConfigDebugIsDebuggerPresent", "SetConfigDebugIsDebuggerPresent"},
+		{"setConfigDebugHighlightIdConflicts", "SetConfigDebugHighlightIdConflicts"},
+		{"setConfigDebugHighlightIdConflictsShowItemPicker", "SetConfigDebugHighlightIdConflictsShowItemPicker"},
+		{"setConfigDebugBeginReturnValueOnce", "SetConfigDebugBeginReturnValueOnce"},
+		{"setConfigDebugBeginReturnValueLoop", "SetConfigDebugBeginReturnValueLoop"},
+		{"setConfigDebugIgnoreFocusLoss", "SetConfigDebugIgnoreFocusLoss"},
+		{"setConfigDebugIniSettings", "SetConfigDebugIniSettings"},
+		{"setBackendPlatformName", "SetBackendPlatformName"},
+		{"setBackendRendererName", "SetBackendRendererName"},
+		{"setBackendPlatformUserData", "SetBackendPlatformUserData"},
+		{"setBackendRendererUserData", "SetBackendRendererUserData"},
+		{"setBackendLanguageUserData", "SetBackendLanguageUserData"},
+		{"setWantCaptureMouse", "SetWantCaptureMouse"},
+		{"setWantCaptureKeyboard", "SetWantCaptureKeyboard"},
+		{"setWantTextInput", "SetWantTextInput"},
+		{"setWantSetMousePos", "SetWantSetMousePos"},
+		{"setWantSaveIniSettings", "SetWantSaveIniSettings"},
+		{"setNavActive", "SetNavActive"},
+		{"setNavVisible", "SetNavVisible"},
+		{"setFramerate", "SetFramerate"},
+		{"setMetricsRenderVertices", "SetMetricsRenderVertices"},
+		{"setMetricsRenderIndices", "SetMetricsRenderIndices"},
+		{"setMetricsRenderWindows", "SetMetricsRenderWindows"},
+		{"setMetricsActiveWindows", "SetMetricsActiveWindows"},
+		{"setMouseDelta", "SetMouseDelta"},
+		{"setCtx", "SetCtx"},
+		{"setMousePos", "SetMousePos"},
+		{"setMouseDown", "SetMouseDown"},
+		{"setMouseWheel", "SetMouseWheel"},
+		{"setMouseWheelH", "SetMouseWheelH"},
+		{"setMouseSource", "SetMouseSource"},
+		{"setMouseHoveredViewport", "SetMouseHoveredViewport"},
+		{"setKeyCtrl", "SetKeyCtrl"},
+		{"setKeyShift", "SetKeyShift"},
+		{"setKeyAlt", "SetKeyAlt"},
+		{"setKeySuper", "SetKeySuper"},
+		{"setKeyMods", "SetKeyMods"},
+		{"setKeysData", "SetKeysData"},
+		{"setWantCaptureMouseUnlessPopupClose", "SetWantCaptureMouseUnlessPopupClose"},
+		{"setMousePosPrev", "SetMousePosPrev"},
+		{"setMouseClickedPos", "SetMouseClickedPos"},
+		{"setMouseClickedTime", "SetMouseClickedTime"},
+		{"setMouseClicked", "SetMouseClicked"},
+		{"setMouseDoubleClicked", "SetMouseDoubleClicked"},
+		{"setMouseClickedCount", "SetMouseClickedCount"},
+		{"setMouseClickedLastCount", "SetMouseClickedLastCount"},
+		{"setMouseReleased", "SetMouseReleased"},
+		{"setMouseReleasedTime", "SetMouseReleasedTime"},
+		{"setMouseDownOwned", "SetMouseDownOwned"},
+		{"setMouseDownOwnedUnlessPopupClose", "SetMouseDownOwnedUnlessPopupClose"},
+		{"setMouseWheelRequestAxisSwap", "SetMouseWheelRequestAxisSwap"},
+		{"setMouseCtrlLeftAsRightClick", "SetMouseCtrlLeftAsRightClick"},
+		{"setMouseDownDuration", "SetMouseDownDuration"},
+		{"setMouseDownDurationPrev", "SetMouseDownDurationPrev"},
+		{"setMouseDragMaxDistanceAbs", "SetMouseDragMaxDistanceAbs"},
+		{"setMouseDragMaxDistanceSqr", "SetMouseDragMaxDistanceSqr"},
+		{"setPenPressure", "SetPenPressure"},
+		{"setAppFocusLost", "SetAppFocusLost"},
+		{"setInputQueueSurrogate", "SetInputQueueSurrogate"},
+		{"setInputQueueCharacters", "SetInputQueueCharacters"},
+		{"configFlags", "ConfigFlags"},
+		{"backendFlags", "BackendFlags"},
+		{"displaySize", "DisplaySize"},
+		{"displayFramebufferScale", "DisplayFramebufferScale"},
+		{"deltaTime", "DeltaTime"},
+		{"iniSavingRate", "IniSavingRate"},
+		{"iniFilename", "IniFilename"},
+		{"logFilename", "LogFilename"},
+		{"userData", "UserData"},
+		{"fonts", "Fonts"},
+		{"fontDefault", "FontDefault"},
+		{"fontAllowUserScaling", "FontAllowUserScaling"},
+		{"configNavSwapGamepadButtons", "ConfigNavSwapGamepadButtons"},
+		{"configNavMoveSetMousePos", "ConfigNavMoveSetMousePos"},
+		{"configNavCaptureKeyboard", "ConfigNavCaptureKeyboard"},
+		{"configNavEscapeClearFocusItem", "ConfigNavEscapeClearFocusItem"},
+		{"configNavEscapeClearFocusWindow", "ConfigNavEscapeClearFocusWindow"},
+		{"configNavCursorVisibleAuto", "ConfigNavCursorVisibleAuto"},
+		{"configNavCursorVisibleAlways", "ConfigNavCursorVisibleAlways"},
+		{"configDockingNoSplit", "ConfigDockingNoSplit"},
+		{"configDockingWithShift", "ConfigDockingWithShift"},
+		{"configDockingAlwaysTabBar", "ConfigDockingAlwaysTabBar"},
+		{"configDockingTransparentPayload", "ConfigDockingTransparentPayload"},
+		{"configViewportsNoAutoMerge", "ConfigViewportsNoAutoMerge"},
+		{"configViewportsNoTaskBarIcon", "ConfigViewportsNoTaskBarIcon"},
+		{"configViewportsNoDecoration", "ConfigViewportsNoDecoration"},
+		{"configViewportsNoDefaultParent", "ConfigViewportsNoDefaultParent"},
+		{"configViewportsPlatformFocusSetsImGuiFocus", "ConfigViewportsPlatformFocusSetsImGuiFocus"},
+		{"configDpiScaleFonts", "ConfigDpiScaleFonts"},
+		{"configDpiScaleViewports", "ConfigDpiScaleViewports"},
+		{"mouseDrawCursor", "MouseDrawCursor"},
+		{"configMacOSXBehaviors", "ConfigMacOSXBehaviors"},
+		{"configInputTrickleEventQueue", "ConfigInputTrickleEventQueue"},
+		{"configInputTextCursorBlink", "ConfigInputTextCursorBlink"},
+		{"configInputTextEnterKeepActive", "ConfigInputTextEnterKeepActive"},
+		{"configDragClickToInputText", "ConfigDragClickToInputText"},
+		{"configWindowsResizeFromEdges", "ConfigWindowsResizeFromEdges"},
+		{"configWindowsMoveFromTitleBarOnly", "ConfigWindowsMoveFromTitleBarOnly"},
+		{"configWindowsCopyContentsWithCtrlC", "ConfigWindowsCopyContentsWithCtrlC"},
+		{"configScrollbarScrollByPage", "ConfigScrollbarScrollByPage"},
+		{"configMemoryCompactTimer", "ConfigMemoryCompactTimer"},
+		{"mouseDoubleClickTime", "MouseDoubleClickTime"},
+		{"mouseDoubleClickMaxDist", "MouseDoubleClickMaxDist"},
+		{"mouseDragThreshold", "MouseDragThreshold"},
+		{"keyRepeatDelay", "KeyRepeatDelay"},
+		{"keyRepeatRate", "KeyRepeatRate"},
+		{"configErrorRecovery", "ConfigErrorRecovery"},
+		{"configErrorRecoveryEnableAssert", "ConfigErrorRecoveryEnableAssert"},
+		{"configErrorRecoveryEnableDebugLog", "ConfigErrorRecoveryEnableDebugLog"},
+		{"configErrorRecoveryEnableTooltip", "ConfigErrorRecoveryEnableTooltip"},
+		{"configDebugIsDebuggerPresent", "ConfigDebugIsDebuggerPresent"},
+		{"configDebugHighlightIdConflicts", "ConfigDebugHighlightIdConflicts"},
+		{"configDebugHighlightIdConflictsShowItemPicker", "ConfigDebugHighlightIdConflictsShowItemPicker"},
+		{"configDebugBeginReturnValueOnce", "ConfigDebugBeginReturnValueOnce"},
+		{"configDebugBeginReturnValueLoop", "ConfigDebugBeginReturnValueLoop"},
+		{"configDebugIgnoreFocusLoss", "ConfigDebugIgnoreFocusLoss"},
+		{"configDebugIniSettings", "ConfigDebugIniSettings"},
+		{"backendPlatformName", "BackendPlatformName"},
+		{"backendRendererName", "BackendRendererName"},
+		{"backendPlatformUserData", "BackendPlatformUserData"},
+		{"backendRendererUserData", "BackendRendererUserData"},
+		{"backendLanguageUserData", "BackendLanguageUserData"},
+		{"wantCaptureMouse", "WantCaptureMouse"},
+		{"wantCaptureKeyboard", "WantCaptureKeyboard"},
+		{"wantTextInput", "WantTextInput"},
+		{"wantSetMousePos", "WantSetMousePos"},
+		{"wantSaveIniSettings", "WantSaveIniSettings"},
+		{"navActive", "NavActive"},
+		{"navVisible", "NavVisible"},
+		{"framerate", "Framerate"},
+		{"metricsRenderVertices", "MetricsRenderVertices"},
+		{"metricsRenderIndices", "MetricsRenderIndices"},
+		{"metricsRenderWindows", "MetricsRenderWindows"},
+		{"metricsActiveWindows", "MetricsActiveWindows"},
+		{"mouseDelta", "MouseDelta"},
+		{"ctx", "Ctx"},
+		{"mousePos", "MousePos"},
+		{"mouseDown", "MouseDown"},
+		{"mouseWheel", "MouseWheel"},
+		{"mouseWheelH", "MouseWheelH"},
+		{"mouseSource", "MouseSource"},
+		{"mouseHoveredViewport", "MouseHoveredViewport"},
+		{"keyCtrl", "KeyCtrl"},
+		{"keyShift", "KeyShift"},
+		{"keyAlt", "KeyAlt"},
+		{"keySuper", "KeySuper"},
+		{"keyMods", "KeyMods"},
+		{"keysData", "KeysData"},
+		{"wantCaptureMouseUnlessPopupClose", "WantCaptureMouseUnlessPopupClose"},
+		{"mousePosPrev", "MousePosPrev"},
+		{"mouseClickedPos", "MouseClickedPos"},
+		{"mouseClickedTime", "MouseClickedTime"},
+		{"mouseClicked", "MouseClicked"},
+		{"mouseDoubleClicked", "MouseDoubleClicked"},
+		{"mouseClickedCount", "MouseClickedCount"},
+		{"mouseClickedLastCount", "MouseClickedLastCount"},
+		{"mouseReleased", "MouseReleased"},
+		{"mouseReleasedTime", "MouseReleasedTime"},
+		{"mouseDownOwned", "MouseDownOwned"},
+		{"mouseDownOwnedUnlessPopupClose", "MouseDownOwnedUnlessPopupClose"},
+		{"mouseWheelRequestAxisSwap", "MouseWheelRequestAxisSwap"},
+		{"mouseCtrlLeftAsRightClick", "MouseCtrlLeftAsRightClick"},
+		{"mouseDownDuration", "MouseDownDuration"},
+		{"mouseDownDurationPrev", "MouseDownDurationPrev"},
+		{"mouseDragMaxDistanceAbs", "MouseDragMaxDistanceAbs"},
+		{"mouseDragMaxDistanceSqr", "MouseDragMaxDistanceSqr"},
+		{"penPressure", "PenPressure"},
+		{"appFocusLost", "AppFocusLost"},
+		{"appAcceptingEvents", "AppAcceptingEvents"},
+		{"inputQueueSurrogate", "InputQueueSurrogate"},
+		{"inputQueueCharacters", "InputQueueCharacters"},
+		{"setMouseButtonDown", "SetMouseButtonDown"},
+		{"addMouseWheelDelta", "AddMouseWheelDelta"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputEvent": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setType", "SetType"},
+		{"setSource", "SetSource"},
+		{"setEventId", "SetEventId"},
+		{"setAddedByTestEngine", "SetAddedByTestEngine"},
+		{"type", "Type"},
+		{"source", "Source"},
+		{"eventId", "EventId"},
+		{"addedByTestEngine", "AddedByTestEngine"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputTextCallbackData": {
+		{"clearSelection", "ClearSelection"},
+		{"deleteChars", "DeleteChars"},
+		{"hasSelection", "HasSelection"},
+		{"insertCharsV", "InsertCharsV"},
+		{"selectAll", "SelectAll"},
+		{"destroy", "Destroy"},
+		{"insertChars", "InsertChars"},
+		{"setCtx", "SetCtx"},
+		{"setEventFlag", "SetEventFlag"},
+		{"setFlags", "SetFlags"},
+		{"setUserData", "SetUserData"},
+		{"setEventChar", "SetEventChar"},
+		{"setEventKey", "SetEventKey"},
+		{"setBuf", "SetBuf"},
+		{"setBufTextLen", "SetBufTextLen"},
+		{"setBufSize", "SetBufSize"},
+		{"setBufDirty", "SetBufDirty"},
+		{"setCursorPos", "SetCursorPos"},
+		{"setSelectionStart", "SetSelectionStart"},
+		{"setSelectionEnd", "SetSelectionEnd"},
+		{"ctx", "Ctx"},
+		{"eventFlag", "EventFlag"},
+		{"flags", "Flags"},
+		{"userData", "UserData"},
+		{"eventChar", "EventChar"},
+		{"eventKey", "EventKey"},
+		{"buf", "Buf"},
+		{"bufTextLen", "BufTextLen"},
+		{"bufSize", "BufSize"},
+		{"bufDirty", "BufDirty"},
+		{"cursorPos", "CursorPos"},
+		{"selectionStart", "SelectionStart"},
+		{"selectionEnd", "SelectionEnd"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputTextDeactivatedState": {
+		{"internalClearFreeMemory", "InternalClearFreeMemory"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setID", "SetID"},
+		{"setTextA", "SetTextA"},
+		{"iD", "ID"},
+		{"textA", "TextA"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputTextState": {
+		{"internalClearFreeMemory", "InternalClearFreeMemory"},
+		{"internalClearSelection", "InternalClearSelection"},
+		{"internalClearText", "InternalClearText"},
+		{"internalCursorAnimReset", "InternalCursorAnimReset"},
+		{"internalCursorClamp", "InternalCursorClamp"},
+		{"internalCursorPos", "InternalCursorPos"},
+		{"internalPreferredOffsetX", "InternalPreferredOffsetX"},
+		{"internalSelectionEnd", "InternalSelectionEnd"},
+		{"internalSelectionStart", "InternalSelectionStart"},
+		{"internalHasSelection", "InternalHasSelection"},
+		{"internalOnCharPressed", "InternalOnCharPressed"},
+		{"internalOnKeyPressed", "InternalOnKeyPressed"},
+		{"internalReloadUserBufAndKeepSelection", "InternalReloadUserBufAndKeepSelection"},
+		{"internalReloadUserBufAndMoveToEnd", "InternalReloadUserBufAndMoveToEnd"},
+		{"internalReloadUserBufAndSelectAll", "InternalReloadUserBufAndSelectAll"},
+		{"internalSelectAll", "InternalSelectAll"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setCtx", "SetCtx"},
+		{"setFlags", "SetFlags"},
+		{"setID", "SetID"},
+		{"setTextLen", "SetTextLen"},
+		{"setTextSrc", "SetTextSrc"},
+		{"setTextA", "SetTextA"},
+		{"setTextToRevertTo", "SetTextToRevertTo"},
+		{"setCallbackTextBackup", "SetCallbackTextBackup"},
+		{"setBufCapacity", "SetBufCapacity"},
+		{"setScroll", "SetScroll"},
+		{"setLineCount", "SetLineCount"},
+		{"setWrapWidth", "SetWrapWidth"},
+		{"setCursorAnim", "SetCursorAnim"},
+		{"setCursorFollow", "SetCursorFollow"},
+		{"setCursorCenterY", "SetCursorCenterY"},
+		{"setSelectedAllMouseLock", "SetSelectedAllMouseLock"},
+		{"setEdited", "SetEdited"},
+		{"setWantReloadUserBuf", "SetWantReloadUserBuf"},
+		{"setLastMoveDirectionLR", "SetLastMoveDirectionLR"},
+		{"setReloadSelectionStart", "SetReloadSelectionStart"},
+		{"setReloadSelectionEnd", "SetReloadSelectionEnd"},
+		{"ctx", "Ctx"},
+		{"flags", "Flags"},
+		{"iD", "ID"},
+		{"textLen", "TextLen"},
+		{"textSrc", "TextSrc"},
+		{"textA", "TextA"},
+		{"textToRevertTo", "TextToRevertTo"},
+		{"callbackTextBackup", "CallbackTextBackup"},
+		{"bufCapacity", "BufCapacity"},
+		{"scroll", "Scroll"},
+		{"lineCount", "LineCount"},
+		{"wrapWidth", "WrapWidth"},
+		{"cursorAnim", "CursorAnim"},
+		{"cursorFollow", "CursorFollow"},
+		{"cursorCenterY", "CursorCenterY"},
+		{"selectedAllMouseLock", "SelectedAllMouseLock"},
+		{"edited", "Edited"},
+		{"wantReloadUserBuf", "WantReloadUserBuf"},
+		{"lastMoveDirectionLR", "LastMoveDirectionLR"},
+		{"reloadSelectionStart", "ReloadSelectionStart"},
+		{"reloadSelectionEnd", "ReloadSelectionEnd"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"KeyOwnerData": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setOwnerCurr", "SetOwnerCurr"},
+		{"setOwnerNext", "SetOwnerNext"},
+		{"setLockThisFrame", "SetLockThisFrame"},
+		{"setLockUntilRelease", "SetLockUntilRelease"},
+		{"ownerCurr", "OwnerCurr"},
+		{"ownerNext", "OwnerNext"},
+		{"lockThisFrame", "LockThisFrame"},
+		{"lockUntilRelease", "LockUntilRelease"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"KeyRoutingData": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setNextEntryIndex", "SetNextEntryIndex"},
+		{"setMods", "SetMods"},
+		{"setRoutingCurrScore", "SetRoutingCurrScore"},
+		{"setRoutingNextScore", "SetRoutingNextScore"},
+		{"setRoutingCurr", "SetRoutingCurr"},
+		{"setRoutingNext", "SetRoutingNext"},
+		{"nextEntryIndex", "NextEntryIndex"},
+		{"mods", "Mods"},
+		{"routingCurrScore", "RoutingCurrScore"},
+		{"routingNextScore", "RoutingNextScore"},
+		{"routingCurr", "RoutingCurr"},
+		{"routingNext", "RoutingNext"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"KeyRoutingTable": {
+		{"internalClear", "InternalClear"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setIndex", "SetIndex"},
+		{"setEntries", "SetEntries"},
+		{"setEntriesNext", "SetEntriesNext"},
+		{"index", "Index"},
+		{"entries", "Entries"},
+		{"entriesNext", "EntriesNext"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"LastItemData": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setID", "SetID"},
+		{"setItemFlags", "SetItemFlags"},
+		{"setStatusFlags", "SetStatusFlags"},
+		{"setRect", "SetRect"},
+		{"setNavRect", "SetNavRect"},
+		{"setDisplayRect", "SetDisplayRect"},
+		{"setClipRect", "SetClipRect"},
+		{"setShortcut", "SetShortcut"},
+		{"iD", "ID"},
+		{"itemFlags", "ItemFlags"},
+		{"statusFlags", "StatusFlags"},
+		{"rect", "Rect"},
+		{"navRect", "NavRect"},
+		{"displayRect", "DisplayRect"},
+		{"clipRect", "ClipRect"},
+		{"shortcut", "Shortcut"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"ListClipperData": {
+		{"internalReset", "InternalReset"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setListClipper", "SetListClipper"},
+		{"setLossynessOffset", "SetLossynessOffset"},
+		{"setStepNo", "SetStepNo"},
+		{"setItemsFrozen", "SetItemsFrozen"},
+		{"setRanges", "SetRanges"},
+		{"listClipper", "ListClipper"},
+		{"lossynessOffset", "LossynessOffset"},
+		{"stepNo", "StepNo"},
+		{"itemsFrozen", "ItemsFrozen"},
+		{"ranges", "Ranges"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"ListClipper": {
+		{"beginV", "BeginV"},
+		{"end", "End"},
+		{"includeItemByIndex", "IncludeItemByIndex"},
+		{"includeItemsByIndex", "IncludeItemsByIndex"},
+		{"seekCursorForItem", "SeekCursorForItem"},
+		{"step", "Step"},
+		{"destroy", "Destroy"},
+		{"begin", "Begin"},
+		{"setCtx", "SetCtx"},
+		{"setDisplayStart", "SetDisplayStart"},
+		{"setDisplayEnd", "SetDisplayEnd"},
+		{"setItemsCount", "SetItemsCount"},
+		{"setItemsHeight", "SetItemsHeight"},
+		{"setStartPosY", "SetStartPosY"},
+		{"setStartSeekOffsetY", "SetStartSeekOffsetY"},
+		{"setTempData", "SetTempData"},
+		{"setFlags", "SetFlags"},
+		{"ctx", "Ctx"},
+		{"displayStart", "DisplayStart"},
+		{"displayEnd", "DisplayEnd"},
+		{"itemsCount", "ItemsCount"},
+		{"itemsHeight", "ItemsHeight"},
+		{"startPosY", "StartPosY"},
+		{"startSeekOffsetY", "StartSeekOffsetY"},
+		{"tempData", "TempData"},
+		{"flags", "Flags"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"MenuColumns": {
+		{"internalCalcNextTotalWidth", "InternalCalcNextTotalWidth"},
+		{"internalDeclColumns", "InternalDeclColumns"},
+		{"internalUpdate", "InternalUpdate"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setTotalWidth", "SetTotalWidth"},
+		{"setNextTotalWidth", "SetNextTotalWidth"},
+		{"setSpacing", "SetSpacing"},
+		{"setOffsetIcon", "SetOffsetIcon"},
+		{"setOffsetLabel", "SetOffsetLabel"},
+		{"setOffsetShortcut", "SetOffsetShortcut"},
+		{"setOffsetMark", "SetOffsetMark"},
+		{"setWidths", "SetWidths"},
+		{"totalWidth", "TotalWidth"},
+		{"nextTotalWidth", "NextTotalWidth"},
+		{"spacing", "Spacing"},
+		{"offsetIcon", "OffsetIcon"},
+		{"offsetLabel", "OffsetLabel"},
+		{"offsetShortcut", "OffsetShortcut"},
+		{"offsetMark", "OffsetMark"},
+		{"widths", "Widths"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"MultiSelectState": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setWindow", "SetWindow"},
+		{"setID", "SetID"},
+		{"setLastFrameActive", "SetLastFrameActive"},
+		{"setLastSelectionSize", "SetLastSelectionSize"},
+		{"setRangeSelected", "SetRangeSelected"},
+		{"setNavIdSelected", "SetNavIdSelected"},
+		{"setRangeSrcItem", "SetRangeSrcItem"},
+		{"setNavIdItem", "SetNavIdItem"},
+		{"window", "Window"},
+		{"iD", "ID"},
+		{"lastFrameActive", "LastFrameActive"},
+		{"lastSelectionSize", "LastSelectionSize"},
+		{"rangeSelected", "RangeSelected"},
+		{"navIdSelected", "NavIdSelected"},
+		{"rangeSrcItem", "RangeSrcItem"},
+		{"navIdItem", "NavIdItem"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"MultiSelectTempData": {
+		{"internalClear", "InternalClear"},
+		{"internalClearIO", "InternalClearIO"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setIO", "SetIO"},
+		{"setStorage", "SetStorage"},
+		{"setFocusScopeId", "SetFocusScopeId"},
+		{"setFlags", "SetFlags"},
+		{"setScopeRectMin", "SetScopeRectMin"},
+		{"setBackupCursorMaxPos", "SetBackupCursorMaxPos"},
+		{"setLastSubmittedItem", "SetLastSubmittedItem"},
+		{"setBoxSelectId", "SetBoxSelectId"},
+		{"setKeyMods", "SetKeyMods"},
+		{"setLoopRequestSetAll", "SetLoopRequestSetAll"},
+		{"setIsEndIO", "SetIsEndIO"},
+		{"setIsFocused", "SetIsFocused"},
+		{"setIsKeyboardSetRange", "SetIsKeyboardSetRange"},
+		{"setNavIdPassedBy", "SetNavIdPassedBy"},
+		{"setRangeSrcPassedBy", "SetRangeSrcPassedBy"},
+		{"setRangeDstPassedBy", "SetRangeDstPassedBy"},
+		{"iO", "IO"},
+		{"storage", "Storage"},
+		{"focusScopeId", "FocusScopeId"},
+		{"flags", "Flags"},
+		{"scopeRectMin", "ScopeRectMin"},
+		{"backupCursorMaxPos", "BackupCursorMaxPos"},
+		{"lastSubmittedItem", "LastSubmittedItem"},
+		{"boxSelectId", "BoxSelectId"},
+		{"keyMods", "KeyMods"},
+		{"loopRequestSetAll", "LoopRequestSetAll"},
+		{"isEndIO", "IsEndIO"},
+		{"isFocused", "IsFocused"},
+		{"isKeyboardSetRange", "IsKeyboardSetRange"},
+		{"navIdPassedBy", "NavIdPassedBy"},
+		{"rangeSrcPassedBy", "RangeSrcPassedBy"},
+		{"rangeDstPassedBy", "RangeDstPassedBy"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"NavItemData": {
+		{"internalClear", "InternalClear"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setWindow", "SetWindow"},
+		{"setID", "SetID"},
+		{"setFocusScopeId", "SetFocusScopeId"},
+		{"setRectRel", "SetRectRel"},
+		{"setItemFlags", "SetItemFlags"},
+		{"setDistBox", "SetDistBox"},
+		{"setDistCenter", "SetDistCenter"},
+		{"setDistAxial", "SetDistAxial"},
+		{"setSelectionUserData", "SetSelectionUserData"},
+		{"window", "Window"},
+		{"iD", "ID"},
+		{"focusScopeId", "FocusScopeId"},
+		{"rectRel", "RectRel"},
+		{"itemFlags", "ItemFlags"},
+		{"distBox", "DistBox"},
+		{"distCenter", "DistCenter"},
+		{"distAxial", "DistAxial"},
+		{"selectionUserData", "SelectionUserData"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"NextItemData": {
+		{"internalClearFlags", "InternalClearFlags"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setHasFlags", "SetHasFlags"},
+		{"setItemFlags", "SetItemFlags"},
+		{"setFocusScopeId", "SetFocusScopeId"},
+		{"setSelectionUserData", "SetSelectionUserData"},
+		{"setWidth", "SetWidth"},
+		{"setShortcut", "SetShortcut"},
+		{"setShortcutFlags", "SetShortcutFlags"},
+		{"setOpenVal", "SetOpenVal"},
+		{"setOpenCond", "SetOpenCond"},
+		{"setRefVal", "SetRefVal"},
+		{"setStorageId", "SetStorageId"},
+		{"hasFlags", "HasFlags"},
+		{"itemFlags", "ItemFlags"},
+		{"focusScopeId", "FocusScopeId"},
+		{"selectionUserData", "SelectionUserData"},
+		{"width", "Width"},
+		{"shortcut", "Shortcut"},
+		{"shortcutFlags", "ShortcutFlags"},
+		{"openVal", "OpenVal"},
+		{"openCond", "OpenCond"},
+		{"refVal", "RefVal"},
+		{"storageId", "StorageId"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"NextWindowData": {
+		{"internalClearFlags", "InternalClearFlags"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setHasFlags", "SetHasFlags"},
+		{"setPosCond", "SetPosCond"},
+		{"setSizeCond", "SetSizeCond"},
+		{"setCollapsedCond", "SetCollapsedCond"},
+		{"setDockCond", "SetDockCond"},
+		{"setPosVal", "SetPosVal"},
+		{"setPosPivotVal", "SetPosPivotVal"},
+		{"setSizeVal", "SetSizeVal"},
+		{"setContentSizeVal", "SetContentSizeVal"},
+		{"setScrollVal", "SetScrollVal"},
+		{"setWindowFlags", "SetWindowFlags"},
+		{"setChildFlags", "SetChildFlags"},
+		{"setPosUndock", "SetPosUndock"},
+		{"setCollapsedVal", "SetCollapsedVal"},
+		{"setSizeConstraintRect", "SetSizeConstraintRect"},
+		{"setSizeCallback", "SetSizeCallback"},
+		{"setSizeCallbackUserData", "SetSizeCallbackUserData"},
+		{"setBgAlphaVal", "SetBgAlphaVal"},
+		{"setViewportId", "SetViewportId"},
+		{"setDockId", "SetDockId"},
+		{"setWindowClass", "SetWindowClass"},
+		{"setMenuBarOffsetMinVal", "SetMenuBarOffsetMinVal"},
+		{"setRefreshFlagsVal", "SetRefreshFlagsVal"},
+		{"hasFlags", "HasFlags"},
+		{"posCond", "PosCond"},
+		{"sizeCond", "SizeCond"},
+		{"collapsedCond", "CollapsedCond"},
+		{"dockCond", "DockCond"},
+		{"posVal", "PosVal"},
+		{"posPivotVal", "PosPivotVal"},
+		{"sizeVal", "SizeVal"},
+		{"contentSizeVal", "ContentSizeVal"},
+		{"scrollVal", "ScrollVal"},
+		{"windowFlags", "WindowFlags"},
+		{"childFlags", "ChildFlags"},
+		{"posUndock", "PosUndock"},
+		{"collapsedVal", "CollapsedVal"},
+		{"sizeConstraintRect", "SizeConstraintRect"},
+		{"sizeCallback", "SizeCallback"},
+		{"sizeCallbackUserData", "SizeCallbackUserData"},
+		{"bgAlphaVal", "BgAlphaVal"},
+		{"viewportId", "ViewportId"},
+		{"dockId", "DockId"},
+		{"windowClass", "WindowClass"},
+		{"menuBarOffsetMinVal", "MenuBarOffsetMinVal"},
+		{"refreshFlagsVal", "RefreshFlagsVal"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"OldColumnData": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setOffsetNorm", "SetOffsetNorm"},
+		{"setOffsetNormBeforeResize", "SetOffsetNormBeforeResize"},
+		{"setFlags", "SetFlags"},
+		{"setClipRect", "SetClipRect"},
+		{"offsetNorm", "OffsetNorm"},
+		{"offsetNormBeforeResize", "OffsetNormBeforeResize"},
+		{"flags", "Flags"},
+		{"clipRect", "ClipRect"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"OldColumns": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setID", "SetID"},
+		{"setFlags", "SetFlags"},
+		{"setIsFirstFrame", "SetIsFirstFrame"},
+		{"setIsBeingResized", "SetIsBeingResized"},
+		{"setCurrent", "SetCurrent"},
+		{"setCount", "SetCount"},
+		{"setOffMinX", "SetOffMinX"},
+		{"setOffMaxX", "SetOffMaxX"},
+		{"setLineMinY", "SetLineMinY"},
+		{"setLineMaxY", "SetLineMaxY"},
+		{"setHostCursorPosY", "SetHostCursorPosY"},
+		{"setHostCursorMaxPosX", "SetHostCursorMaxPosX"},
+		{"setHostInitialClipRect", "SetHostInitialClipRect"},
+		{"setHostBackupClipRect", "SetHostBackupClipRect"},
+		{"setHostBackupParentWorkRect", "SetHostBackupParentWorkRect"},
+		{"setColumns", "SetColumns"},
+		{"setSplitter", "SetSplitter"},
+		{"iD", "ID"},
+		{"flags", "Flags"},
+		{"isFirstFrame", "IsFirstFrame"},
+		{"isBeingResized", "IsBeingResized"},
+		{"current", "Current"},
+		{"count", "Count"},
+		{"offMinX", "OffMinX"},
+		{"offMaxX", "OffMaxX"},
+		{"lineMinY", "LineMinY"},
+		{"lineMaxY", "LineMaxY"},
+		{"hostCursorPosY", "HostCursorPosY"},
+		{"hostCursorMaxPosX", "HostCursorMaxPosX"},
+		{"hostInitialClipRect", "HostInitialClipRect"},
+		{"hostBackupClipRect", "HostBackupClipRect"},
+		{"hostBackupParentWorkRect", "HostBackupParentWorkRect"},
+		{"columns", "Columns"},
+		{"splitter", "Splitter"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"OnceUponAFrame": {
+		{"destroy", "Destroy"},
+		{"setRefFrame", "SetRefFrame"},
+		{"refFrame", "RefFrame"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Payload": {
+		{"clear", "Clear"},
+		{"isDataType", "IsDataType"},
+		{"isDelivery", "IsDelivery"},
+		{"isPreview", "IsPreview"},
+		{"destroy", "Destroy"},
+		{"setData", "SetData"},
+		{"setDataSize", "SetDataSize"},
+		{"setSourceId", "SetSourceId"},
+		{"setSourceParentId", "SetSourceParentId"},
+		{"setDataFrameCount", "SetDataFrameCount"},
+		{"setDataType", "SetDataType"},
+		{"setPreview", "SetPreview"},
+		{"setDelivery", "SetDelivery"},
+		{"data", "Data"},
+		{"dataSize", "DataSize"},
+		{"sourceId", "SourceId"},
+		{"sourceParentId", "SourceParentId"},
+		{"dataFrameCount", "DataFrameCount"},
+		{"dataType", "DataType"},
+		{"preview", "Preview"},
+		{"delivery", "Delivery"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"PlatformIO": {
+		{"clearPlatformHandlers", "ClearPlatformHandlers"},
+		{"clearRendererHandlers", "ClearRendererHandlers"},
+		{"destroy", "Destroy"},
+		{"setPlatformClipboardUserData", "SetPlatformClipboardUserData"},
+		{"setPlatformOpenInShellUserData", "SetPlatformOpenInShellUserData"},
+		{"setPlatformImeUserData", "SetPlatformImeUserData"},
+		{"setPlatformLocaleDecimalPoint", "SetPlatformLocaleDecimalPoint"},
+		{"setRendererTextureMaxWidth", "SetRendererTextureMaxWidth"},
+		{"setRendererTextureMaxHeight", "SetRendererTextureMaxHeight"},
+		{"setRendererRenderState", "SetRendererRenderState"},
+		{"setMonitors", "SetMonitors"},
+		{"platformClipboardUserData", "PlatformClipboardUserData"},
+		{"platformOpenInShellUserData", "PlatformOpenInShellUserData"},
+		{"platformImeUserData", "PlatformImeUserData"},
+		{"platformLocaleDecimalPoint", "PlatformLocaleDecimalPoint"},
+		{"rendererTextureMaxWidth", "RendererTextureMaxWidth"},
+		{"rendererTextureMaxHeight", "RendererTextureMaxHeight"},
+		{"rendererRenderState", "RendererRenderState"},
+		{"monitors", "Monitors"},
+		{"textures", "Textures"},
+		{"viewports", "Viewports"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"PlatformImeData": {
+		{"destroy", "Destroy"},
+		{"setWantVisible", "SetWantVisible"},
+		{"setWantTextInput", "SetWantTextInput"},
+		{"setInputPos", "SetInputPos"},
+		{"setInputLineHeight", "SetInputLineHeight"},
+		{"setViewportId", "SetViewportId"},
+		{"wantVisible", "WantVisible"},
+		{"wantTextInput", "WantTextInput"},
+		{"inputPos", "InputPos"},
+		{"inputLineHeight", "InputLineHeight"},
+		{"viewportId", "ViewportId"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"PlatformMonitor": {
+		{"destroy", "Destroy"},
+		{"setMainPos", "SetMainPos"},
+		{"setMainSize", "SetMainSize"},
+		{"setWorkPos", "SetWorkPos"},
+		{"setWorkSize", "SetWorkSize"},
+		{"setDpiScale", "SetDpiScale"},
+		{"setPlatformHandle", "SetPlatformHandle"},
+		{"mainPos", "MainPos"},
+		{"mainSize", "MainSize"},
+		{"workPos", "WorkPos"},
+		{"workSize", "WorkSize"},
+		{"dpiScale", "DpiScale"},
+		{"platformHandle", "PlatformHandle"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"PopupData": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setPopupId", "SetPopupId"},
+		{"setWindow", "SetWindow"},
+		{"setRestoreNavWindow", "SetRestoreNavWindow"},
+		{"setParentNavLayer", "SetParentNavLayer"},
+		{"setOpenFrameCount", "SetOpenFrameCount"},
+		{"setOpenParentId", "SetOpenParentId"},
+		{"setOpenPopupPos", "SetOpenPopupPos"},
+		{"setOpenMousePos", "SetOpenMousePos"},
+		{"popupId", "PopupId"},
+		{"window", "Window"},
+		{"restoreNavWindow", "RestoreNavWindow"},
+		{"parentNavLayer", "ParentNavLayer"},
+		{"openFrameCount", "OpenFrameCount"},
+		{"openParentId", "OpenParentId"},
+		{"openPopupPos", "OpenPopupPos"},
+		{"openMousePos", "OpenMousePos"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"PtrOrIndex": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setPtr", "SetPtr"},
+		{"setIndex", "SetIndex"},
+		{"ptr", "Ptr"},
+		{"index", "Index"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"SelectionBasicStorage": {
+		{"applyRequests", "ApplyRequests"},
+		{"clear", "Clear"},
+		{"contains", "Contains"},
+		{"storageIdFromIndex", "StorageIdFromIndex"},
+		{"setItemSelected", "SetItemSelected"},
+		{"swap", "Swap"},
+		{"destroy", "Destroy"},
+		{"setSize", "SetSize"},
+		{"setPreserveOrder", "SetPreserveOrder"},
+		{"setUserData", "SetUserData"},
+		{"setSelectionOrder", "SetSelectionOrder"},
+		{"setStorage", "SetStorage"},
+		{"size", "Size"},
+		{"preserveOrder", "PreserveOrder"},
+		{"userData", "UserData"},
+		{"selectionOrder", "SelectionOrder"},
+		{"storage", "Storage"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"SelectionExternalStorage": {
+		{"applyRequests", "ApplyRequests"},
+		{"destroy", "Destroy"},
+		{"setUserData", "SetUserData"},
+		{"userData", "UserData"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"SettingsHandler": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setTypeName", "SetTypeName"},
+		{"setTypeHash", "SetTypeHash"},
+		{"setUserData", "SetUserData"},
+		{"typeName", "TypeName"},
+		{"typeHash", "TypeHash"},
+		{"userData", "UserData"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"StackLevelInfo": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setID", "SetID"},
+		{"setQueryFrameCount", "SetQueryFrameCount"},
+		{"setQuerySuccess", "SetQuerySuccess"},
+		{"setDataType", "SetDataType"},
+		{"setDescOffset", "SetDescOffset"},
+		{"iD", "ID"},
+		{"queryFrameCount", "QueryFrameCount"},
+		{"querySuccess", "QuerySuccess"},
+		{"dataType", "DataType"},
+		{"descOffset", "DescOffset"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"StoragePair": {
+		{"destroy", "Destroy"},
+		{"setKey", "SetKey"},
+		{"key", "Key"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Storage": {
+		{"buildSortByKey", "BuildSortByKey"},
+		{"clear", "Clear"},
+		{"boolV", "BoolV"},
+		{"boolRefV", "BoolRefV"},
+		{"floatV", "FloatV"},
+		{"floatRefV", "FloatRefV"},
+		{"intV", "IntV"},
+		{"intRefV", "IntRefV"},
+		{"voidPtr", "VoidPtr"},
+		{"setAllInt", "SetAllInt"},
+		{"setBool", "SetBool"},
+		{"setFloat", "SetFloat"},
+		{"setInt", "SetInt"},
+		{"setVoidPtr", "SetVoidPtr"},
+		{"bool", "Bool"},
+		{"boolRef", "BoolRef"},
+		{"float", "Float"},
+		{"floatRef", "FloatRef"},
+		{"int", "Int"},
+		{"intRef", "IntRef"},
+		{"setData", "SetData"},
+		{"data", "Data"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"StyleMod": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setVarIdx", "SetVarIdx"},
+		{"varIdx", "VarIdx"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"StyleVarInfo": {
+		{"internalVarPtr", "InternalVarPtr"},
+		{"setCount", "SetCount"},
+		{"setDataType", "SetDataType"},
+		{"setOffset", "SetOffset"},
+		{"count", "Count"},
+		{"dataType", "DataType"},
+		{"offset", "Offset"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Style": {
+		{"scaleAllSizes", "ScaleAllSizes"},
+		{"destroy", "Destroy"},
+		{"setFontSizeBase", "SetFontSizeBase"},
+		{"setFontScaleMain", "SetFontScaleMain"},
+		{"setFontScaleDpi", "SetFontScaleDpi"},
+		{"setAlpha", "SetAlpha"},
+		{"setDisabledAlpha", "SetDisabledAlpha"},
+		{"setWindowPadding", "SetWindowPadding"},
+		{"setWindowRounding", "SetWindowRounding"},
+		{"setWindowBorderSize", "SetWindowBorderSize"},
+		{"setWindowBorderHoverPadding", "SetWindowBorderHoverPadding"},
+		{"setWindowMinSize", "SetWindowMinSize"},
+		{"setWindowTitleAlign", "SetWindowTitleAlign"},
+		{"setWindowMenuButtonPosition", "SetWindowMenuButtonPosition"},
+		{"setChildRounding", "SetChildRounding"},
+		{"setChildBorderSize", "SetChildBorderSize"},
+		{"setPopupRounding", "SetPopupRounding"},
+		{"setPopupBorderSize", "SetPopupBorderSize"},
+		{"setFramePadding", "SetFramePadding"},
+		{"setFrameRounding", "SetFrameRounding"},
+		{"setFrameBorderSize", "SetFrameBorderSize"},
+		{"setItemSpacing", "SetItemSpacing"},
+		{"setItemInnerSpacing", "SetItemInnerSpacing"},
+		{"setCellPadding", "SetCellPadding"},
+		{"setTouchExtraPadding", "SetTouchExtraPadding"},
+		{"setIndentSpacing", "SetIndentSpacing"},
+		{"setColumnsMinSpacing", "SetColumnsMinSpacing"},
+		{"setScrollbarSize", "SetScrollbarSize"},
+		{"setScrollbarRounding", "SetScrollbarRounding"},
+		{"setScrollbarPadding", "SetScrollbarPadding"},
+		{"setGrabMinSize", "SetGrabMinSize"},
+		{"setGrabRounding", "SetGrabRounding"},
+		{"setLogSliderDeadzone", "SetLogSliderDeadzone"},
+		{"setImageBorderSize", "SetImageBorderSize"},
+		{"setTabRounding", "SetTabRounding"},
+		{"setTabBorderSize", "SetTabBorderSize"},
+		{"setTabMinWidthBase", "SetTabMinWidthBase"},
+		{"setTabMinWidthShrink", "SetTabMinWidthShrink"},
+		{"setTabCloseButtonMinWidthSelected", "SetTabCloseButtonMinWidthSelected"},
+		{"setTabCloseButtonMinWidthUnselected", "SetTabCloseButtonMinWidthUnselected"},
+		{"setTabBarBorderSize", "SetTabBarBorderSize"},
+		{"setTabBarOverlineSize", "SetTabBarOverlineSize"},
+		{"setTableAngledHeadersAngle", "SetTableAngledHeadersAngle"},
+		{"setTableAngledHeadersTextAlign", "SetTableAngledHeadersTextAlign"},
+		{"setTreeLinesFlags", "SetTreeLinesFlags"},
+		{"setTreeLinesSize", "SetTreeLinesSize"},
+		{"setTreeLinesRounding", "SetTreeLinesRounding"},
+		{"setColorButtonPosition", "SetColorButtonPosition"},
+		{"setButtonTextAlign", "SetButtonTextAlign"},
+		{"setSelectableTextAlign", "SetSelectableTextAlign"},
+		{"setSeparatorTextBorderSize", "SetSeparatorTextBorderSize"},
+		{"setSeparatorTextAlign", "SetSeparatorTextAlign"},
+		{"setSeparatorTextPadding", "SetSeparatorTextPadding"},
+		{"setDisplayWindowPadding", "SetDisplayWindowPadding"},
+		{"setDisplaySafeAreaPadding", "SetDisplaySafeAreaPadding"},
+		{"setDockingNodeHasCloseButton", "SetDockingNodeHasCloseButton"},
+		{"setDockingSeparatorSize", "SetDockingSeparatorSize"},
+		{"setMouseCursorScale", "SetMouseCursorScale"},
+		{"setAntiAliasedLines", "SetAntiAliasedLines"},
+		{"setAntiAliasedLinesUseTex", "SetAntiAliasedLinesUseTex"},
+		{"setAntiAliasedFill", "SetAntiAliasedFill"},
+		{"setCurveTessellationTol", "SetCurveTessellationTol"},
+		{"setCircleTessellationMaxError", "SetCircleTessellationMaxError"},
+		{"setColors", "SetColors"},
+		{"setHoverStationaryDelay", "SetHoverStationaryDelay"},
+		{"setHoverDelayShort", "SetHoverDelayShort"},
+		{"setHoverDelayNormal", "SetHoverDelayNormal"},
+		{"setHoverFlagsForTooltipMouse", "SetHoverFlagsForTooltipMouse"},
+		{"setHoverFlagsForTooltipNav", "SetHoverFlagsForTooltipNav"},
+		{"setMainScale", "SetMainScale"},
+		{"setNextFrameFontSizeBase", "SetNextFrameFontSizeBase"},
+		{"fontSizeBase", "FontSizeBase"},
+		{"fontScaleMain", "FontScaleMain"},
+		{"fontScaleDpi", "FontScaleDpi"},
+		{"alpha", "Alpha"},
+		{"disabledAlpha", "DisabledAlpha"},
+		{"windowPadding", "WindowPadding"},
+		{"windowRounding", "WindowRounding"},
+		{"windowBorderSize", "WindowBorderSize"},
+		{"windowBorderHoverPadding", "WindowBorderHoverPadding"},
+		{"windowMinSize", "WindowMinSize"},
+		{"windowTitleAlign", "WindowTitleAlign"},
+		{"windowMenuButtonPosition", "WindowMenuButtonPosition"},
+		{"childRounding", "ChildRounding"},
+		{"childBorderSize", "ChildBorderSize"},
+		{"popupRounding", "PopupRounding"},
+		{"popupBorderSize", "PopupBorderSize"},
+		{"framePadding", "FramePadding"},
+		{"frameRounding", "FrameRounding"},
+		{"frameBorderSize", "FrameBorderSize"},
+		{"itemSpacing", "ItemSpacing"},
+		{"itemInnerSpacing", "ItemInnerSpacing"},
+		{"cellPadding", "CellPadding"},
+		{"touchExtraPadding", "TouchExtraPadding"},
+		{"indentSpacing", "IndentSpacing"},
+		{"columnsMinSpacing", "ColumnsMinSpacing"},
+		{"scrollbarSize", "ScrollbarSize"},
+		{"scrollbarRounding", "ScrollbarRounding"},
+		{"scrollbarPadding", "ScrollbarPadding"},
+		{"grabMinSize", "GrabMinSize"},
+		{"grabRounding", "GrabRounding"},
+		{"logSliderDeadzone", "LogSliderDeadzone"},
+		{"imageBorderSize", "ImageBorderSize"},
+		{"tabRounding", "TabRounding"},
+		{"tabBorderSize", "TabBorderSize"},
+		{"tabMinWidthBase", "TabMinWidthBase"},
+		{"tabMinWidthShrink", "TabMinWidthShrink"},
+		{"tabCloseButtonMinWidthSelected", "TabCloseButtonMinWidthSelected"},
+		{"tabCloseButtonMinWidthUnselected", "TabCloseButtonMinWidthUnselected"},
+		{"tabBarBorderSize", "TabBarBorderSize"},
+		{"tabBarOverlineSize", "TabBarOverlineSize"},
+		{"tableAngledHeadersAngle", "TableAngledHeadersAngle"},
+		{"tableAngledHeadersTextAlign", "TableAngledHeadersTextAlign"},
+		{"treeLinesFlags", "TreeLinesFlags"},
+		{"treeLinesSize", "TreeLinesSize"},
+		{"treeLinesRounding", "TreeLinesRounding"},
+		{"colorButtonPosition", "ColorButtonPosition"},
+		{"buttonTextAlign", "ButtonTextAlign"},
+		{"selectableTextAlign", "SelectableTextAlign"},
+		{"separatorTextBorderSize", "SeparatorTextBorderSize"},
+		{"separatorTextAlign", "SeparatorTextAlign"},
+		{"separatorTextPadding", "SeparatorTextPadding"},
+		{"displayWindowPadding", "DisplayWindowPadding"},
+		{"displaySafeAreaPadding", "DisplaySafeAreaPadding"},
+		{"dockingNodeHasCloseButton", "DockingNodeHasCloseButton"},
+		{"dockingSeparatorSize", "DockingSeparatorSize"},
+		{"mouseCursorScale", "MouseCursorScale"},
+		{"antiAliasedLines", "AntiAliasedLines"},
+		{"antiAliasedLinesUseTex", "AntiAliasedLinesUseTex"},
+		{"antiAliasedFill", "AntiAliasedFill"},
+		{"curveTessellationTol", "CurveTessellationTol"},
+		{"circleTessellationMaxError", "CircleTessellationMaxError"},
+		{"colors", "Colors"},
+		{"hoverStationaryDelay", "HoverStationaryDelay"},
+		{"hoverDelayShort", "HoverDelayShort"},
+		{"hoverDelayNormal", "HoverDelayNormal"},
+		{"hoverFlagsForTooltipMouse", "HoverFlagsForTooltipMouse"},
+		{"hoverFlagsForTooltipNav", "HoverFlagsForTooltipNav"},
+		{"mainScale", "MainScale"},
+		{"nextFrameFontSizeBase", "NextFrameFontSizeBase"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TabBar": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setWindow", "SetWindow"},
+		{"setTabs", "SetTabs"},
+		{"setFlags", "SetFlags"},
+		{"setID", "SetID"},
+		{"setSelectedTabId", "SetSelectedTabId"},
+		{"setNextSelectedTabId", "SetNextSelectedTabId"},
+		{"setVisibleTabId", "SetVisibleTabId"},
+		{"setCurrFrameVisible", "SetCurrFrameVisible"},
+		{"setPrevFrameVisible", "SetPrevFrameVisible"},
+		{"setBarRect", "SetBarRect"},
+		{"setBarRectPrevWidth", "SetBarRectPrevWidth"},
+		{"setCurrTabsContentsHeight", "SetCurrTabsContentsHeight"},
+		{"setPrevTabsContentsHeight", "SetPrevTabsContentsHeight"},
+		{"setWidthAllTabs", "SetWidthAllTabs"},
+		{"setWidthAllTabsIdeal", "SetWidthAllTabsIdeal"},
+		{"setScrollingAnim", "SetScrollingAnim"},
+		{"setScrollingTarget", "SetScrollingTarget"},
+		{"setScrollingTargetDistToVisibility", "SetScrollingTargetDistToVisibility"},
+		{"setScrollingSpeed", "SetScrollingSpeed"},
+		{"setScrollingRectMinX", "SetScrollingRectMinX"},
+		{"setScrollingRectMaxX", "SetScrollingRectMaxX"},
+		{"setSeparatorMinX", "SetSeparatorMinX"},
+		{"setSeparatorMaxX", "SetSeparatorMaxX"},
+		{"setReorderRequestTabId", "SetReorderRequestTabId"},
+		{"setReorderRequestOffset", "SetReorderRequestOffset"},
+		{"setBeginCount", "SetBeginCount"},
+		{"setWantLayout", "SetWantLayout"},
+		{"setVisibleTabWasSubmitted", "SetVisibleTabWasSubmitted"},
+		{"setTabsAddedNew", "SetTabsAddedNew"},
+		{"setScrollButtonEnabled", "SetScrollButtonEnabled"},
+		{"setTabsActiveCount", "SetTabsActiveCount"},
+		{"setLastTabItemIdx", "SetLastTabItemIdx"},
+		{"setItemSpacingY", "SetItemSpacingY"},
+		{"setFramePadding", "SetFramePadding"},
+		{"setBackupCursorPos", "SetBackupCursorPos"},
+		{"setTabsNames", "SetTabsNames"},
+		{"window", "Window"},
+		{"tabs", "Tabs"},
+		{"flags", "Flags"},
+		{"iD", "ID"},
+		{"selectedTabId", "SelectedTabId"},
+		{"nextSelectedTabId", "NextSelectedTabId"},
+		{"visibleTabId", "VisibleTabId"},
+		{"currFrameVisible", "CurrFrameVisible"},
+		{"prevFrameVisible", "PrevFrameVisible"},
+		{"barRect", "BarRect"},
+		{"barRectPrevWidth", "BarRectPrevWidth"},
+		{"currTabsContentsHeight", "CurrTabsContentsHeight"},
+		{"prevTabsContentsHeight", "PrevTabsContentsHeight"},
+		{"widthAllTabs", "WidthAllTabs"},
+		{"widthAllTabsIdeal", "WidthAllTabsIdeal"},
+		{"scrollingAnim", "ScrollingAnim"},
+		{"scrollingTarget", "ScrollingTarget"},
+		{"scrollingTargetDistToVisibility", "ScrollingTargetDistToVisibility"},
+		{"scrollingSpeed", "ScrollingSpeed"},
+		{"scrollingRectMinX", "ScrollingRectMinX"},
+		{"scrollingRectMaxX", "ScrollingRectMaxX"},
+		{"separatorMinX", "SeparatorMinX"},
+		{"separatorMaxX", "SeparatorMaxX"},
+		{"reorderRequestTabId", "ReorderRequestTabId"},
+		{"reorderRequestOffset", "ReorderRequestOffset"},
+		{"beginCount", "BeginCount"},
+		{"wantLayout", "WantLayout"},
+		{"visibleTabWasSubmitted", "VisibleTabWasSubmitted"},
+		{"tabsAddedNew", "TabsAddedNew"},
+		{"scrollButtonEnabled", "ScrollButtonEnabled"},
+		{"tabsActiveCount", "TabsActiveCount"},
+		{"lastTabItemIdx", "LastTabItemIdx"},
+		{"itemSpacingY", "ItemSpacingY"},
+		{"framePadding", "FramePadding"},
+		{"backupCursorPos", "BackupCursorPos"},
+		{"tabsNames", "TabsNames"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TabItem": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setID", "SetID"},
+		{"setFlags", "SetFlags"},
+		{"setWindow", "SetWindow"},
+		{"setLastFrameVisible", "SetLastFrameVisible"},
+		{"setLastFrameSelected", "SetLastFrameSelected"},
+		{"setOffset", "SetOffset"},
+		{"setWidth", "SetWidth"},
+		{"setContentWidth", "SetContentWidth"},
+		{"setRequestedWidth", "SetRequestedWidth"},
+		{"setNameOffset", "SetNameOffset"},
+		{"setBeginOrder", "SetBeginOrder"},
+		{"setIndexDuringLayout", "SetIndexDuringLayout"},
+		{"setWantClose", "SetWantClose"},
+		{"iD", "ID"},
+		{"flags", "Flags"},
+		{"window", "Window"},
+		{"lastFrameVisible", "LastFrameVisible"},
+		{"lastFrameSelected", "LastFrameSelected"},
+		{"offset", "Offset"},
+		{"width", "Width"},
+		{"contentWidth", "ContentWidth"},
+		{"requestedWidth", "RequestedWidth"},
+		{"nameOffset", "NameOffset"},
+		{"beginOrder", "BeginOrder"},
+		{"indexDuringLayout", "IndexDuringLayout"},
+		{"wantClose", "WantClose"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableColumnSettings": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setWidthOrWeight", "SetWidthOrWeight"},
+		{"setUserID", "SetUserID"},
+		{"setIndex", "SetIndex"},
+		{"setDisplayOrder", "SetDisplayOrder"},
+		{"setSortOrder", "SetSortOrder"},
+		{"setSortDirection", "SetSortDirection"},
+		{"setIsEnabled", "SetIsEnabled"},
+		{"setIsStretch", "SetIsStretch"},
+		{"widthOrWeight", "WidthOrWeight"},
+		{"userID", "UserID"},
+		{"index", "Index"},
+		{"displayOrder", "DisplayOrder"},
+		{"sortOrder", "SortOrder"},
+		{"sortDirection", "SortDirection"},
+		{"isEnabled", "IsEnabled"},
+		{"isStretch", "IsStretch"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableColumnSortSpecs": {
+		{"destroy", "Destroy"},
+		{"setColumnUserID", "SetColumnUserID"},
+		{"setColumnIndex", "SetColumnIndex"},
+		{"setSortOrder", "SetSortOrder"},
+		{"setSortDirection", "SetSortDirection"},
+		{"columnUserID", "ColumnUserID"},
+		{"columnIndex", "ColumnIndex"},
+		{"sortOrder", "SortOrder"},
+		{"sortDirection", "SortDirection"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableColumn": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setFlags", "SetFlags"},
+		{"setWidthGiven", "SetWidthGiven"},
+		{"setMinX", "SetMinX"},
+		{"setMaxX", "SetMaxX"},
+		{"setWidthRequest", "SetWidthRequest"},
+		{"setWidthAuto", "SetWidthAuto"},
+		{"setWidthMax", "SetWidthMax"},
+		{"setStretchWeight", "SetStretchWeight"},
+		{"setInitStretchWeightOrWidth", "SetInitStretchWeightOrWidth"},
+		{"setClipRect", "SetClipRect"},
+		{"setUserID", "SetUserID"},
+		{"setWorkMinX", "SetWorkMinX"},
+		{"setWorkMaxX", "SetWorkMaxX"},
+		{"setItemWidth", "SetItemWidth"},
+		{"setContentMaxXFrozen", "SetContentMaxXFrozen"},
+		{"setContentMaxXUnfrozen", "SetContentMaxXUnfrozen"},
+		{"setContentMaxXHeadersUsed", "SetContentMaxXHeadersUsed"},
+		{"setContentMaxXHeadersIdeal", "SetContentMaxXHeadersIdeal"},
+		{"setNameOffset", "SetNameOffset"},
+		{"setDisplayOrder", "SetDisplayOrder"},
+		{"setIndexWithinEnabledSet", "SetIndexWithinEnabledSet"},
+		{"setPrevEnabledColumn", "SetPrevEnabledColumn"},
+		{"setNextEnabledColumn", "SetNextEnabledColumn"},
+		{"setSortOrder", "SetSortOrder"},
+		{"setDrawChannelCurrent", "SetDrawChannelCurrent"},
+		{"setDrawChannelFrozen", "SetDrawChannelFrozen"},
+		{"setDrawChannelUnfrozen", "SetDrawChannelUnfrozen"},
+		{"setIsEnabled", "SetIsEnabled"},
+		{"setIsUserEnabled", "SetIsUserEnabled"},
+		{"setIsUserEnabledNextFrame", "SetIsUserEnabledNextFrame"},
+		{"setIsVisibleX", "SetIsVisibleX"},
+		{"setIsVisibleY", "SetIsVisibleY"},
+		{"setIsRequestOutput", "SetIsRequestOutput"},
+		{"setIsSkipItems", "SetIsSkipItems"},
+		{"setIsPreserveWidthAuto", "SetIsPreserveWidthAuto"},
+		{"setNavLayerCurrent", "SetNavLayerCurrent"},
+		{"setAutoFitQueue", "SetAutoFitQueue"},
+		{"setCannotSkipItemsQueue", "SetCannotSkipItemsQueue"},
+		{"setSortDirection", "SetSortDirection"},
+		{"setSortDirectionsAvailCount", "SetSortDirectionsAvailCount"},
+		{"setSortDirectionsAvailMask", "SetSortDirectionsAvailMask"},
+		{"setSortDirectionsAvailList", "SetSortDirectionsAvailList"},
+		{"flags", "Flags"},
+		{"widthGiven", "WidthGiven"},
+		{"minX", "MinX"},
+		{"maxX", "MaxX"},
+		{"widthRequest", "WidthRequest"},
+		{"widthAuto", "WidthAuto"},
+		{"widthMax", "WidthMax"},
+		{"stretchWeight", "StretchWeight"},
+		{"initStretchWeightOrWidth", "InitStretchWeightOrWidth"},
+		{"clipRect", "ClipRect"},
+		{"userID", "UserID"},
+		{"workMinX", "WorkMinX"},
+		{"workMaxX", "WorkMaxX"},
+		{"itemWidth", "ItemWidth"},
+		{"contentMaxXFrozen", "ContentMaxXFrozen"},
+		{"contentMaxXUnfrozen", "ContentMaxXUnfrozen"},
+		{"contentMaxXHeadersUsed", "ContentMaxXHeadersUsed"},
+		{"contentMaxXHeadersIdeal", "ContentMaxXHeadersIdeal"},
+		{"nameOffset", "NameOffset"},
+		{"displayOrder", "DisplayOrder"},
+		{"indexWithinEnabledSet", "IndexWithinEnabledSet"},
+		{"prevEnabledColumn", "PrevEnabledColumn"},
+		{"nextEnabledColumn", "NextEnabledColumn"},
+		{"sortOrder", "SortOrder"},
+		{"drawChannelCurrent", "DrawChannelCurrent"},
+		{"drawChannelFrozen", "DrawChannelFrozen"},
+		{"drawChannelUnfrozen", "DrawChannelUnfrozen"},
+		{"isEnabled", "IsEnabled"},
+		{"isUserEnabled", "IsUserEnabled"},
+		{"isUserEnabledNextFrame", "IsUserEnabledNextFrame"},
+		{"isVisibleX", "IsVisibleX"},
+		{"isVisibleY", "IsVisibleY"},
+		{"isRequestOutput", "IsRequestOutput"},
+		{"isSkipItems", "IsSkipItems"},
+		{"isPreserveWidthAuto", "IsPreserveWidthAuto"},
+		{"navLayerCurrent", "NavLayerCurrent"},
+		{"autoFitQueue", "AutoFitQueue"},
+		{"cannotSkipItemsQueue", "CannotSkipItemsQueue"},
+		{"sortDirection", "SortDirection"},
+		{"sortDirectionsAvailCount", "SortDirectionsAvailCount"},
+		{"sortDirectionsAvailMask", "SortDirectionsAvailMask"},
+		{"sortDirectionsAvailList", "SortDirectionsAvailList"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableInstanceData": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setTableInstanceID", "SetTableInstanceID"},
+		{"setLastOuterHeight", "SetLastOuterHeight"},
+		{"setLastTopHeadersRowHeight", "SetLastTopHeadersRowHeight"},
+		{"setLastFrozenHeight", "SetLastFrozenHeight"},
+		{"setHoveredRowLast", "SetHoveredRowLast"},
+		{"setHoveredRowNext", "SetHoveredRowNext"},
+		{"tableInstanceID", "TableInstanceID"},
+		{"lastOuterHeight", "LastOuterHeight"},
+		{"lastTopHeadersRowHeight", "LastTopHeadersRowHeight"},
+		{"lastFrozenHeight", "LastFrozenHeight"},
+		{"hoveredRowLast", "HoveredRowLast"},
+		{"hoveredRowNext", "HoveredRowNext"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableSettings": {
+		{"internalColumnSettings", "InternalColumnSettings"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setID", "SetID"},
+		{"setSaveFlags", "SetSaveFlags"},
+		{"setRefScale", "SetRefScale"},
+		{"setColumnsCount", "SetColumnsCount"},
+		{"setColumnsCountMax", "SetColumnsCountMax"},
+		{"setWantApply", "SetWantApply"},
+		{"iD", "ID"},
+		{"saveFlags", "SaveFlags"},
+		{"refScale", "RefScale"},
+		{"columnsCount", "ColumnsCount"},
+		{"columnsCountMax", "ColumnsCountMax"},
+		{"wantApply", "WantApply"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableSortSpecs": {
+		{"destroy", "Destroy"},
+		{"setSpecs", "SetSpecs"},
+		{"setSpecsCount", "SetSpecsCount"},
+		{"setSpecsDirty", "SetSpecsDirty"},
+		{"specs", "Specs"},
+		{"specsCount", "SpecsCount"},
+		{"specsDirty", "SpecsDirty"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableTempData": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setTableIndex", "SetTableIndex"},
+		{"setLastTimeActive", "SetLastTimeActive"},
+		{"setAngledHeadersExtraWidth", "SetAngledHeadersExtraWidth"},
+		{"setAngledHeadersRequests", "SetAngledHeadersRequests"},
+		{"setUserOuterSize", "SetUserOuterSize"},
+		{"setDrawSplitter", "SetDrawSplitter"},
+		{"setHostBackupWorkRect", "SetHostBackupWorkRect"},
+		{"setHostBackupParentWorkRect", "SetHostBackupParentWorkRect"},
+		{"setHostBackupPrevLineSize", "SetHostBackupPrevLineSize"},
+		{"setHostBackupCurrLineSize", "SetHostBackupCurrLineSize"},
+		{"setHostBackupCursorMaxPos", "SetHostBackupCursorMaxPos"},
+		{"setHostBackupColumnsOffset", "SetHostBackupColumnsOffset"},
+		{"setHostBackupItemWidth", "SetHostBackupItemWidth"},
+		{"setHostBackupItemWidthStackSize", "SetHostBackupItemWidthStackSize"},
+		{"tableIndex", "TableIndex"},
+		{"lastTimeActive", "LastTimeActive"},
+		{"angledHeadersExtraWidth", "AngledHeadersExtraWidth"},
+		{"angledHeadersRequests", "AngledHeadersRequests"},
+		{"userOuterSize", "UserOuterSize"},
+		{"drawSplitter", "DrawSplitter"},
+		{"hostBackupWorkRect", "HostBackupWorkRect"},
+		{"hostBackupParentWorkRect", "HostBackupParentWorkRect"},
+		{"hostBackupPrevLineSize", "HostBackupPrevLineSize"},
+		{"hostBackupCurrLineSize", "HostBackupCurrLineSize"},
+		{"hostBackupCursorMaxPos", "HostBackupCursorMaxPos"},
+		{"hostBackupColumnsOffset", "HostBackupColumnsOffset"},
+		{"hostBackupItemWidth", "HostBackupItemWidth"},
+		{"hostBackupItemWidthStackSize", "HostBackupItemWidthStackSize"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Table": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setID", "SetID"},
+		{"setFlags", "SetFlags"},
+		{"setRawData", "SetRawData"},
+		{"setTempData", "SetTempData"},
+		{"setEnabledMaskByDisplayOrder", "SetEnabledMaskByDisplayOrder"},
+		{"setEnabledMaskByIndex", "SetEnabledMaskByIndex"},
+		{"setVisibleMaskByIndex", "SetVisibleMaskByIndex"},
+		{"setSettingsLoadedFlags", "SetSettingsLoadedFlags"},
+		{"setSettingsOffset", "SetSettingsOffset"},
+		{"setLastFrameActive", "SetLastFrameActive"},
+		{"setColumnsCount", "SetColumnsCount"},
+		{"setCurrentRow", "SetCurrentRow"},
+		{"setCurrentColumn", "SetCurrentColumn"},
+		{"setInstanceCurrent", "SetInstanceCurrent"},
+		{"setInstanceInteracted", "SetInstanceInteracted"},
+		{"setRowPosY1", "SetRowPosY1"},
+		{"setRowPosY2", "SetRowPosY2"},
+		{"setRowMinHeight", "SetRowMinHeight"},
+		{"setRowCellPaddingY", "SetRowCellPaddingY"},
+		{"setRowTextBaseline", "SetRowTextBaseline"},
+		{"setRowIndentOffsetX", "SetRowIndentOffsetX"},
+		{"setRowFlags", "SetRowFlags"},
+		{"setLastRowFlags", "SetLastRowFlags"},
+		{"setRowBgColorCounter", "SetRowBgColorCounter"},
+		{"setRowBgColor", "SetRowBgColor"},
+		{"setBorderColorStrong", "SetBorderColorStrong"},
+		{"setBorderColorLight", "SetBorderColorLight"},
+		{"setBorderX1", "SetBorderX1"},
+		{"setBorderX2", "SetBorderX2"},
+		{"setHostIndentX", "SetHostIndentX"},
+		{"setMinColumnWidth", "SetMinColumnWidth"},
+		{"setOuterPaddingX", "SetOuterPaddingX"},
+		{"setCellPaddingX", "SetCellPaddingX"},
+		{"setCellSpacingX1", "SetCellSpacingX1"},
+		{"setCellSpacingX2", "SetCellSpacingX2"},
+		{"setInnerWidth", "SetInnerWidth"},
+		{"setColumnsGivenWidth", "SetColumnsGivenWidth"},
+		{"setColumnsAutoFitWidth", "SetColumnsAutoFitWidth"},
+		{"setColumnsStretchSumWeights", "SetColumnsStretchSumWeights"},
+		{"setResizedColumnNextWidth", "SetResizedColumnNextWidth"},
+		{"setResizeLockMinContentsX2", "SetResizeLockMinContentsX2"},
+		{"setRefScale", "SetRefScale"},
+		{"setAngledHeadersHeight", "SetAngledHeadersHeight"},
+		{"setAngledHeadersSlope", "SetAngledHeadersSlope"},
+		{"setOuterRect", "SetOuterRect"},
+		{"setInnerRect", "SetInnerRect"},
+		{"setWorkRect", "SetWorkRect"},
+		{"setInnerClipRect", "SetInnerClipRect"},
+		{"setBgClipRect", "SetBgClipRect"},
+		{"setBg0ClipRectForDrawCmd", "SetBg0ClipRectForDrawCmd"},
+		{"setBg2ClipRectForDrawCmd", "SetBg2ClipRectForDrawCmd"},
+		{"setHostClipRect", "SetHostClipRect"},
+		{"setHostBackupInnerClipRect", "SetHostBackupInnerClipRect"},
+		{"setOuterWindow", "SetOuterWindow"},
+		{"setInnerWindow", "SetInnerWindow"},
+		{"setColumnsNames", "SetColumnsNames"},
+		{"setDrawSplitter", "SetDrawSplitter"},
+		{"setInstanceDataFirst", "SetInstanceDataFirst"},
+		{"setInstanceDataExtra", "SetInstanceDataExtra"},
+		{"setSortSpecsSingle", "SetSortSpecsSingle"},
+		{"setSortSpecsMulti", "SetSortSpecsMulti"},
+		{"setSortSpecs", "SetSortSpecs"},
+		{"setSortSpecsCount", "SetSortSpecsCount"},
+		{"setColumnsEnabledCount", "SetColumnsEnabledCount"},
+		{"setColumnsEnabledFixedCount", "SetColumnsEnabledFixedCount"},
+		{"setDeclColumnsCount", "SetDeclColumnsCount"},
+		{"setAngledHeadersCount", "SetAngledHeadersCount"},
+		{"setHoveredColumnBody", "SetHoveredColumnBody"},
+		{"setHoveredColumnBorder", "SetHoveredColumnBorder"},
+		{"setHighlightColumnHeader", "SetHighlightColumnHeader"},
+		{"setAutoFitSingleColumn", "SetAutoFitSingleColumn"},
+		{"setResizedColumn", "SetResizedColumn"},
+		{"setLastResizedColumn", "SetLastResizedColumn"},
+		{"setHeldHeaderColumn", "SetHeldHeaderColumn"},
+		{"setReorderColumn", "SetReorderColumn"},
+		{"setReorderColumnDir", "SetReorderColumnDir"},
+		{"setLeftMostEnabledColumn", "SetLeftMostEnabledColumn"},
+		{"setRightMostEnabledColumn", "SetRightMostEnabledColumn"},
+		{"setLeftMostStretchedColumn", "SetLeftMostStretchedColumn"},
+		{"setRightMostStretchedColumn", "SetRightMostStretchedColumn"},
+		{"setContextPopupColumn", "SetContextPopupColumn"},
+		{"setFreezeRowsRequest", "SetFreezeRowsRequest"},
+		{"setFreezeRowsCount", "SetFreezeRowsCount"},
+		{"setFreezeColumnsRequest", "SetFreezeColumnsRequest"},
+		{"setFreezeColumnsCount", "SetFreezeColumnsCount"},
+		{"setRowCellDataCurrent", "SetRowCellDataCurrent"},
+		{"setDummyDrawChannel", "SetDummyDrawChannel"},
+		{"setBg2DrawChannelCurrent", "SetBg2DrawChannelCurrent"},
+		{"setBg2DrawChannelUnfrozen", "SetBg2DrawChannelUnfrozen"},
+		{"setNavLayer", "SetNavLayer"},
+		{"setIsLayoutLocked", "SetIsLayoutLocked"},
+		{"setIsInsideRow", "SetIsInsideRow"},
+		{"setIsInitializing", "SetIsInitializing"},
+		{"setIsSortSpecsDirty", "SetIsSortSpecsDirty"},
+		{"setIsUsingHeaders", "SetIsUsingHeaders"},
+		{"setIsContextPopupOpen", "SetIsContextPopupOpen"},
+		{"setDisableDefaultContextMenu", "SetDisableDefaultContextMenu"},
+		{"setIsSettingsRequestLoad", "SetIsSettingsRequestLoad"},
+		{"setIsSettingsDirty", "SetIsSettingsDirty"},
+		{"setIsDefaultDisplayOrder", "SetIsDefaultDisplayOrder"},
+		{"setIsResetAllRequest", "SetIsResetAllRequest"},
+		{"setIsResetDisplayOrderRequest", "SetIsResetDisplayOrderRequest"},
+		{"setIsUnfrozenRows", "SetIsUnfrozenRows"},
+		{"setIsDefaultSizingPolicy", "SetIsDefaultSizingPolicy"},
+		{"setIsActiveIdAliveBeforeTable", "SetIsActiveIdAliveBeforeTable"},
+		{"setIsActiveIdInTable", "SetIsActiveIdInTable"},
+		{"setHasScrollbarYCurr", "SetHasScrollbarYCurr"},
+		{"setHasScrollbarYPrev", "SetHasScrollbarYPrev"},
+		{"setMemoryCompacted", "SetMemoryCompacted"},
+		{"setHostSkipItems", "SetHostSkipItems"},
+		{"iD", "ID"},
+		{"flags", "Flags"},
+		{"rawData", "RawData"},
+		{"tempData", "TempData"},
+		{"enabledMaskByDisplayOrder", "EnabledMaskByDisplayOrder"},
+		{"enabledMaskByIndex", "EnabledMaskByIndex"},
+		{"visibleMaskByIndex", "VisibleMaskByIndex"},
+		{"settingsLoadedFlags", "SettingsLoadedFlags"},
+		{"settingsOffset", "SettingsOffset"},
+		{"lastFrameActive", "LastFrameActive"},
+		{"columnsCount", "ColumnsCount"},
+		{"currentRow", "CurrentRow"},
+		{"currentColumn", "CurrentColumn"},
+		{"instanceCurrent", "InstanceCurrent"},
+		{"instanceInteracted", "InstanceInteracted"},
+		{"rowPosY1", "RowPosY1"},
+		{"rowPosY2", "RowPosY2"},
+		{"rowMinHeight", "RowMinHeight"},
+		{"rowCellPaddingY", "RowCellPaddingY"},
+		{"rowTextBaseline", "RowTextBaseline"},
+		{"rowIndentOffsetX", "RowIndentOffsetX"},
+		{"rowFlags", "RowFlags"},
+		{"lastRowFlags", "LastRowFlags"},
+		{"rowBgColorCounter", "RowBgColorCounter"},
+		{"rowBgColor", "RowBgColor"},
+		{"borderColorStrong", "BorderColorStrong"},
+		{"borderColorLight", "BorderColorLight"},
+		{"borderX1", "BorderX1"},
+		{"borderX2", "BorderX2"},
+		{"hostIndentX", "HostIndentX"},
+		{"minColumnWidth", "MinColumnWidth"},
+		{"outerPaddingX", "OuterPaddingX"},
+		{"cellPaddingX", "CellPaddingX"},
+		{"cellSpacingX1", "CellSpacingX1"},
+		{"cellSpacingX2", "CellSpacingX2"},
+		{"innerWidth", "InnerWidth"},
+		{"columnsGivenWidth", "ColumnsGivenWidth"},
+		{"columnsAutoFitWidth", "ColumnsAutoFitWidth"},
+		{"columnsStretchSumWeights", "ColumnsStretchSumWeights"},
+		{"resizedColumnNextWidth", "ResizedColumnNextWidth"},
+		{"resizeLockMinContentsX2", "ResizeLockMinContentsX2"},
+		{"refScale", "RefScale"},
+		{"angledHeadersHeight", "AngledHeadersHeight"},
+		{"angledHeadersSlope", "AngledHeadersSlope"},
+		{"outerRect", "OuterRect"},
+		{"innerRect", "InnerRect"},
+		{"workRect", "WorkRect"},
+		{"innerClipRect", "InnerClipRect"},
+		{"bgClipRect", "BgClipRect"},
+		{"bg0ClipRectForDrawCmd", "Bg0ClipRectForDrawCmd"},
+		{"bg2ClipRectForDrawCmd", "Bg2ClipRectForDrawCmd"},
+		{"hostClipRect", "HostClipRect"},
+		{"hostBackupInnerClipRect", "HostBackupInnerClipRect"},
+		{"outerWindow", "OuterWindow"},
+		{"innerWindow", "InnerWindow"},
+		{"columnsNames", "ColumnsNames"},
+		{"drawSplitter", "DrawSplitter"},
+		{"instanceDataFirst", "InstanceDataFirst"},
+		{"instanceDataExtra", "InstanceDataExtra"},
+		{"sortSpecsSingle", "SortSpecsSingle"},
+		{"sortSpecsMulti", "SortSpecsMulti"},
+		{"sortSpecs", "SortSpecs"},
+		{"sortSpecsCount", "SortSpecsCount"},
+		{"columnsEnabledCount", "ColumnsEnabledCount"},
+		{"columnsEnabledFixedCount", "ColumnsEnabledFixedCount"},
+		{"declColumnsCount", "DeclColumnsCount"},
+		{"angledHeadersCount", "AngledHeadersCount"},
+		{"hoveredColumnBody", "HoveredColumnBody"},
+		{"hoveredColumnBorder", "HoveredColumnBorder"},
+		{"highlightColumnHeader", "HighlightColumnHeader"},
+		{"autoFitSingleColumn", "AutoFitSingleColumn"},
+		{"resizedColumn", "ResizedColumn"},
+		{"lastResizedColumn", "LastResizedColumn"},
+		{"heldHeaderColumn", "HeldHeaderColumn"},
+		{"reorderColumn", "ReorderColumn"},
+		{"reorderColumnDir", "ReorderColumnDir"},
+		{"leftMostEnabledColumn", "LeftMostEnabledColumn"},
+		{"rightMostEnabledColumn", "RightMostEnabledColumn"},
+		{"leftMostStretchedColumn", "LeftMostStretchedColumn"},
+		{"rightMostStretchedColumn", "RightMostStretchedColumn"},
+		{"contextPopupColumn", "ContextPopupColumn"},
+		{"freezeRowsRequest", "FreezeRowsRequest"},
+		{"freezeRowsCount", "FreezeRowsCount"},
+		{"freezeColumnsRequest", "FreezeColumnsRequest"},
+		{"freezeColumnsCount", "FreezeColumnsCount"},
+		{"rowCellDataCurrent", "RowCellDataCurrent"},
+		{"dummyDrawChannel", "DummyDrawChannel"},
+		{"bg2DrawChannelCurrent", "Bg2DrawChannelCurrent"},
+		{"bg2DrawChannelUnfrozen", "Bg2DrawChannelUnfrozen"},
+		{"navLayer", "NavLayer"},
+		{"isLayoutLocked", "IsLayoutLocked"},
+		{"isInsideRow", "IsInsideRow"},
+		{"isInitializing", "IsInitializing"},
+		{"isSortSpecsDirty", "IsSortSpecsDirty"},
+		{"isUsingHeaders", "IsUsingHeaders"},
+		{"isContextPopupOpen", "IsContextPopupOpen"},
+		{"disableDefaultContextMenu", "DisableDefaultContextMenu"},
+		{"isSettingsRequestLoad", "IsSettingsRequestLoad"},
+		{"isSettingsDirty", "IsSettingsDirty"},
+		{"isDefaultDisplayOrder", "IsDefaultDisplayOrder"},
+		{"isResetAllRequest", "IsResetAllRequest"},
+		{"isResetDisplayOrderRequest", "IsResetDisplayOrderRequest"},
+		{"isUnfrozenRows", "IsUnfrozenRows"},
+		{"isDefaultSizingPolicy", "IsDefaultSizingPolicy"},
+		{"isActiveIdAliveBeforeTable", "IsActiveIdAliveBeforeTable"},
+		{"isActiveIdInTable", "IsActiveIdInTable"},
+		{"hasScrollbarYCurr", "HasScrollbarYCurr"},
+		{"hasScrollbarYPrev", "HasScrollbarYPrev"},
+		{"memoryCompacted", "MemoryCompacted"},
+		{"hostSkipItems", "HostSkipItems"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TextBuffer": {
+		{"appendV", "AppendV"},
+		{"begin", "Begin"},
+		{"cstr", "Cstr"},
+		{"clear", "Clear"},
+		{"destroy", "Destroy"},
+		{"empty", "Empty"},
+		{"end", "End"},
+		{"reserve", "Reserve"},
+		{"resize", "Resize"},
+		{"size", "Size"},
+		{"append", "Append"},
+		{"setBuf", "SetBuf"},
+		{"buf", "Buf"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TextFilter": {
+		{"build", "Build"},
+		{"clear", "Clear"},
+		{"drawV", "DrawV"},
+		{"isActive", "IsActive"},
+		{"passFilterV", "PassFilterV"},
+		{"destroy", "Destroy"},
+		{"draw", "Draw"},
+		{"passFilter", "PassFilter"},
+		{"setInputBuf", "SetInputBuf"},
+		{"setFilters", "SetFilters"},
+		{"setCountGrep", "SetCountGrep"},
+		{"inputBuf", "InputBuf"},
+		{"filters", "Filters"},
+		{"countGrep", "CountGrep"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TextIndex": {
+		{"internalAppend", "InternalAppend"},
+		{"internalClear", "InternalClear"},
+		{"internalGetlinebegin", "InternalGetlinebegin"},
+		{"internalGetlineend", "InternalGetlineend"},
+		{"internalSize", "InternalSize"},
+		{"setOffsets", "SetOffsets"},
+		{"setEndOffset", "SetEndOffset"},
+		{"offsets", "Offsets"},
+		{"endOffset", "EndOffset"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TextRange": {
+		{"destroy", "Destroy"},
+		{"empty", "Empty"},
+		{"setB", "SetB"},
+		{"setE", "SetE"},
+		{"b", "B"},
+		{"e", "E"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TypingSelectState": {
+		{"internalClear", "InternalClear"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setRequest", "SetRequest"},
+		{"setSearchBuffer", "SetSearchBuffer"},
+		{"setFocusScope", "SetFocusScope"},
+		{"setLastRequestFrame", "SetLastRequestFrame"},
+		{"setLastRequestTime", "SetLastRequestTime"},
+		{"setSingleCharModeLock", "SetSingleCharModeLock"},
+		{"request", "Request"},
+		{"searchBuffer", "SearchBuffer"},
+		{"focusScope", "FocusScope"},
+		{"lastRequestFrame", "LastRequestFrame"},
+		{"lastRequestTime", "LastRequestTime"},
+		{"singleCharModeLock", "SingleCharModeLock"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"ViewportP": {
+		{"internalCalcWorkRectPos", "InternalCalcWorkRectPos"},
+		{"internalCalcWorkRectSize", "InternalCalcWorkRectSize"},
+		{"internalClearRequestFlags", "InternalClearRequestFlags"},
+		{"internalBuildWorkRect", "InternalBuildWorkRect"},
+		{"internalMainRect", "InternalMainRect"},
+		{"internalWorkRect", "InternalWorkRect"},
+		{"internalUpdateWorkRect", "InternalUpdateWorkRect"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setImGuiViewport", "SetImGuiViewport"},
+		{"setWindow", "SetWindow"},
+		{"setIdx", "SetIdx"},
+		{"setLastFrameActive", "SetLastFrameActive"},
+		{"setLastFocusedStampCount", "SetLastFocusedStampCount"},
+		{"setLastNameHash", "SetLastNameHash"},
+		{"setLastPos", "SetLastPos"},
+		{"setLastSize", "SetLastSize"},
+		{"setAlpha", "SetAlpha"},
+		{"setLastAlpha", "SetLastAlpha"},
+		{"setLastFocusedHadNavWindow", "SetLastFocusedHadNavWindow"},
+		{"setPlatformMonitor", "SetPlatformMonitor"},
+		{"setBgFgDrawListsLastFrame", "SetBgFgDrawListsLastFrame"},
+		{"setBgFgDrawLists", "SetBgFgDrawLists"},
+		{"setDrawDataP", "SetDrawDataP"},
+		{"setDrawDataBuilder", "SetDrawDataBuilder"},
+		{"setLastPlatformPos", "SetLastPlatformPos"},
+		{"setLastPlatformSize", "SetLastPlatformSize"},
+		{"setLastRendererSize", "SetLastRendererSize"},
+		{"setWorkInsetMin", "SetWorkInsetMin"},
+		{"setWorkInsetMax", "SetWorkInsetMax"},
+		{"setBuildWorkInsetMin", "SetBuildWorkInsetMin"},
+		{"setBuildWorkInsetMax", "SetBuildWorkInsetMax"},
+		{"imGuiViewport", "ImGuiViewport"},
+		{"window", "Window"},
+		{"idx", "Idx"},
+		{"lastFrameActive", "LastFrameActive"},
+		{"lastFocusedStampCount", "LastFocusedStampCount"},
+		{"lastNameHash", "LastNameHash"},
+		{"lastPos", "LastPos"},
+		{"lastSize", "LastSize"},
+		{"alpha", "Alpha"},
+		{"lastAlpha", "LastAlpha"},
+		{"lastFocusedHadNavWindow", "LastFocusedHadNavWindow"},
+		{"platformMonitor", "PlatformMonitor"},
+		{"bgFgDrawListsLastFrame", "BgFgDrawListsLastFrame"},
+		{"bgFgDrawLists", "BgFgDrawLists"},
+		{"drawDataP", "DrawDataP"},
+		{"drawDataBuilder", "DrawDataBuilder"},
+		{"lastPlatformPos", "LastPlatformPos"},
+		{"lastPlatformSize", "LastPlatformSize"},
+		{"lastRendererSize", "LastRendererSize"},
+		{"workInsetMin", "WorkInsetMin"},
+		{"workInsetMax", "WorkInsetMax"},
+		{"buildWorkInsetMin", "BuildWorkInsetMin"},
+		{"buildWorkInsetMax", "BuildWorkInsetMax"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Viewport": {
+		{"center", "Center"},
+		{"workCenter", "WorkCenter"},
+		{"destroy", "Destroy"},
+		{"setID", "SetID"},
+		{"setFlags", "SetFlags"},
+		{"setPos", "SetPos"},
+		{"setSize", "SetSize"},
+		{"setFramebufferScale", "SetFramebufferScale"},
+		{"setWorkPos", "SetWorkPos"},
+		{"setWorkSize", "SetWorkSize"},
+		{"setDpiScale", "SetDpiScale"},
+		{"setParentViewportId", "SetParentViewportId"},
+		{"setParentViewport", "SetParentViewport"},
+		{"setDrawData", "SetDrawData"},
+		{"setRendererUserData", "SetRendererUserData"},
+		{"setPlatformUserData", "SetPlatformUserData"},
+		{"setPlatformHandle", "SetPlatformHandle"},
+		{"setPlatformHandleRaw", "SetPlatformHandleRaw"},
+		{"setPlatformWindowCreated", "SetPlatformWindowCreated"},
+		{"setPlatformRequestMove", "SetPlatformRequestMove"},
+		{"setPlatformRequestResize", "SetPlatformRequestResize"},
+		{"setPlatformRequestClose", "SetPlatformRequestClose"},
+		{"iD", "ID"},
+		{"flags", "Flags"},
+		{"pos", "Pos"},
+		{"size", "Size"},
+		{"framebufferScale", "FramebufferScale"},
+		{"workPos", "WorkPos"},
+		{"workSize", "WorkSize"},
+		{"dpiScale", "DpiScale"},
+		{"parentViewportId", "ParentViewportId"},
+		{"parentViewport", "ParentViewport"},
+		{"drawData", "DrawData"},
+		{"rendererUserData", "RendererUserData"},
+		{"platformUserData", "PlatformUserData"},
+		{"platformHandle", "PlatformHandle"},
+		{"platformHandleRaw", "PlatformHandleRaw"},
+		{"platformWindowCreated", "PlatformWindowCreated"},
+		{"platformRequestMove", "PlatformRequestMove"},
+		{"platformRequestResize", "PlatformRequestResize"},
+		{"platformRequestClose", "PlatformRequestClose"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"WindowClass": {
+		{"destroy", "Destroy"},
+		{"setClassId", "SetClassId"},
+		{"setParentViewportId", "SetParentViewportId"},
+		{"setFocusRouteParentWindowId", "SetFocusRouteParentWindowId"},
+		{"setViewportFlagsOverrideSet", "SetViewportFlagsOverrideSet"},
+		{"setViewportFlagsOverrideClear", "SetViewportFlagsOverrideClear"},
+		{"setTabItemFlagsOverrideSet", "SetTabItemFlagsOverrideSet"},
+		{"setDockNodeFlagsOverrideSet", "SetDockNodeFlagsOverrideSet"},
+		{"setDockingAlwaysTabBar", "SetDockingAlwaysTabBar"},
+		{"setDockingAllowUnclassed", "SetDockingAllowUnclassed"},
+		{"classId", "ClassId"},
+		{"parentViewportId", "ParentViewportId"},
+		{"focusRouteParentWindowId", "FocusRouteParentWindowId"},
+		{"viewportFlagsOverrideSet", "ViewportFlagsOverrideSet"},
+		{"viewportFlagsOverrideClear", "ViewportFlagsOverrideClear"},
+		{"tabItemFlagsOverrideSet", "TabItemFlagsOverrideSet"},
+		{"dockNodeFlagsOverrideSet", "DockNodeFlagsOverrideSet"},
+		{"dockingAlwaysTabBar", "DockingAlwaysTabBar"},
+		{"dockingAllowUnclassed", "DockingAllowUnclassed"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"WindowSettings": {
+		{"internalName", "InternalName"},
+		{"internalDestroy", "InternalDestroy"},
+		{"setID", "SetID"},
+		{"setViewportId", "SetViewportId"},
+		{"setDockId", "SetDockId"},
+		{"setClassId", "SetClassId"},
+		{"setDockOrder", "SetDockOrder"},
+		{"setCollapsed", "SetCollapsed"},
+		{"setIsChild", "SetIsChild"},
+		{"setWantApply", "SetWantApply"},
+		{"setWantDelete", "SetWantDelete"},
+		{"iD", "ID"},
+		{"viewportId", "ViewportId"},
+		{"dockId", "DockId"},
+		{"classId", "ClassId"},
+		{"dockOrder", "DockOrder"},
+		{"collapsed", "Collapsed"},
+		{"isChild", "IsChild"},
+		{"wantApply", "WantApply"},
+		{"wantDelete", "WantDelete"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Window": {
+		{"internalIDFromPos", "InternalIDFromPos"},
+		{"internalIDFromRectangle", "InternalIDFromRectangle"},
+		{"internalIDInt", "InternalIDInt"},
+		{"internalIDPtr", "InternalIDPtr"},
+		{"internalIDStrV", "InternalIDStrV"},
+		{"internalMenuBarRect", "InternalMenuBarRect"},
+		{"internalRect", "InternalRect"},
+		{"internalTitleBarRect", "InternalTitleBarRect"},
+		{"internalDestroy", "InternalDestroy"},
+		{"internalIDStr", "InternalIDStr"},
+		{"setCtx", "SetCtx"},
+		{"setName", "SetName"},
+		{"setID", "SetID"},
+		{"setFlags", "SetFlags"},
+		{"setFlagsPreviousFrame", "SetFlagsPreviousFrame"},
+		{"setChildFlags", "SetChildFlags"},
+		{"setWindowClass", "SetWindowClass"},
+		{"setViewport", "SetViewport"},
+		{"setViewportId", "SetViewportId"},
+		{"setViewportPos", "SetViewportPos"},
+		{"setViewportAllowPlatformMonitorExtend", "SetViewportAllowPlatformMonitorExtend"},
+		{"setPos", "SetPos"},
+		{"setSize", "SetSize"},
+		{"setSizeFull", "SetSizeFull"},
+		{"setContentSize", "SetContentSize"},
+		{"setContentSizeIdeal", "SetContentSizeIdeal"},
+		{"setContentSizeExplicit", "SetContentSizeExplicit"},
+		{"setWindowPadding", "SetWindowPadding"},
+		{"setWindowRounding", "SetWindowRounding"},
+		{"setWindowBorderSize", "SetWindowBorderSize"},
+		{"setTitleBarHeight", "SetTitleBarHeight"},
+		{"setMenuBarHeight", "SetMenuBarHeight"},
+		{"setDecoOuterSizeX1", "SetDecoOuterSizeX1"},
+		{"setDecoOuterSizeY1", "SetDecoOuterSizeY1"},
+		{"setDecoOuterSizeX2", "SetDecoOuterSizeX2"},
+		{"setDecoOuterSizeY2", "SetDecoOuterSizeY2"},
+		{"setDecoInnerSizeX1", "SetDecoInnerSizeX1"},
+		{"setDecoInnerSizeY1", "SetDecoInnerSizeY1"},
+		{"setNameBufLen", "SetNameBufLen"},
+		{"setMoveId", "SetMoveId"},
+		{"setTabId", "SetTabId"},
+		{"setChildId", "SetChildId"},
+		{"setPopupId", "SetPopupId"},
+		{"setScroll", "SetScroll"},
+		{"setScrollMax", "SetScrollMax"},
+		{"setScrollTarget", "SetScrollTarget"},
+		{"setScrollTargetCenterRatio", "SetScrollTargetCenterRatio"},
+		{"setScrollTargetEdgeSnapDist", "SetScrollTargetEdgeSnapDist"},
+		{"setScrollbarSizes", "SetScrollbarSizes"},
+		{"setScrollbarX", "SetScrollbarX"},
+		{"setScrollbarY", "SetScrollbarY"},
+		{"setScrollbarXStabilizeEnabled", "SetScrollbarXStabilizeEnabled"},
+		{"setScrollbarXStabilizeToggledHistory", "SetScrollbarXStabilizeToggledHistory"},
+		{"setViewportOwned", "SetViewportOwned"},
+		{"setActive", "SetActive"},
+		{"setWasActive", "SetWasActive"},
+		{"setWriteAccessed", "SetWriteAccessed"},
+		{"setCollapsed", "SetCollapsed"},
+		{"setWantCollapseToggle", "SetWantCollapseToggle"},
+		{"setSkipItems", "SetSkipItems"},
+		{"setSkipRefresh", "SetSkipRefresh"},
+		{"setAppearing", "SetAppearing"},
+		{"setHidden", "SetHidden"},
+		{"setIsFallbackWindow", "SetIsFallbackWindow"},
+		{"setIsExplicitChild", "SetIsExplicitChild"},
+		{"setHasCloseButton", "SetHasCloseButton"},
+		{"setBeginCount", "SetBeginCount"},
+		{"setBeginCountPreviousFrame", "SetBeginCountPreviousFrame"},
+		{"setBeginOrderWithinParent", "SetBeginOrderWithinParent"},
+		{"setBeginOrderWithinContext", "SetBeginOrderWithinContext"},
+		{"setFocusOrder", "SetFocusOrder"},
+		{"setAutoFitFramesX", "SetAutoFitFramesX"},
+		{"setAutoFitFramesY", "SetAutoFitFramesY"},
+		{"setAutoFitOnlyGrows", "SetAutoFitOnlyGrows"},
+		{"setAutoPosLastDirection", "SetAutoPosLastDirection"},
+		{"setHiddenFramesCanSkipItems", "SetHiddenFramesCanSkipItems"},
+		{"setHiddenFramesCannotSkipItems", "SetHiddenFramesCannotSkipItems"},
+		{"setHiddenFramesForRenderOnly", "SetHiddenFramesForRenderOnly"},
+		{"setDisableInputsFrames", "SetDisableInputsFrames"},
+		{"setSetWindowPosAllowFlags", "SetSetWindowPosAllowFlags"},
+		{"setSetWindowSizeAllowFlags", "SetSetWindowSizeAllowFlags"},
+		{"setSetWindowCollapsedAllowFlags", "SetSetWindowCollapsedAllowFlags"},
+		{"setSetWindowDockAllowFlags", "SetSetWindowDockAllowFlags"},
+		{"setSetWindowPosVal", "SetSetWindowPosVal"},
+		{"setSetWindowPosPivot", "SetSetWindowPosPivot"},
+		{"setIDStack", "SetIDStack"},
+		{"setDC", "SetDC"},
+		{"setOuterRectClipped", "SetOuterRectClipped"},
+		{"setInnerRect", "SetInnerRect"},
+		{"setInnerClipRect", "SetInnerClipRect"},
+		{"setWorkRect", "SetWorkRect"},
+		{"setParentWorkRect", "SetParentWorkRect"},
+		{"setClipRect", "SetClipRect"},
+		{"setContentRegionRect", "SetContentRegionRect"},
+		{"setLastFrameActive", "SetLastFrameActive"},
+		{"setLastFrameJustFocused", "SetLastFrameJustFocused"},
+		{"setLastTimeActive", "SetLastTimeActive"},
+		{"setItemWidthDefault", "SetItemWidthDefault"},
+		{"setStateStorage", "SetStateStorage"},
+		{"setColumnsStorage", "SetColumnsStorage"},
+		{"setFontWindowScale", "SetFontWindowScale"},
+		{"setFontWindowScaleParents", "SetFontWindowScaleParents"},
+		{"setFontRefSize", "SetFontRefSize"},
+		{"setSettingsOffset", "SetSettingsOffset"},
+		{"setDrawList", "SetDrawList"},
+		{"setDrawListInst", "SetDrawListInst"},
+		{"setParentWindow", "SetParentWindow"},
+		{"setParentWindowInBeginStack", "SetParentWindowInBeginStack"},
+		{"setRootWindow", "SetRootWindow"},
+		{"setRootWindowPopupTree", "SetRootWindowPopupTree"},
+		{"setRootWindowDockTree", "SetRootWindowDockTree"},
+		{"setRootWindowForTitleBarHighlight", "SetRootWindowForTitleBarHighlight"},
+		{"setRootWindowForNav", "SetRootWindowForNav"},
+		{"setParentWindowForFocusRoute", "SetParentWindowForFocusRoute"},
+		{"setNavLastChildNavWindow", "SetNavLastChildNavWindow"},
+		{"setNavLastIds", "SetNavLastIds"},
+		{"setNavRectRel", "SetNavRectRel"},
+		{"setNavPreferredScoringPosRel", "SetNavPreferredScoringPosRel"},
+		{"setNavRootFocusScopeId", "SetNavRootFocusScopeId"},
+		{"setMemoryDrawListIdxCapacity", "SetMemoryDrawListIdxCapacity"},
+		{"setMemoryDrawListVtxCapacity", "SetMemoryDrawListVtxCapacity"},
+		{"setMemoryCompacted", "SetMemoryCompacted"},
+		{"setDockIsActive", "SetDockIsActive"},
+		{"setDockNodeIsVisible", "SetDockNodeIsVisible"},
+		{"setDockTabIsVisible", "SetDockTabIsVisible"},
+		{"setDockTabWantClose", "SetDockTabWantClose"},
+		{"setDockOrder", "SetDockOrder"},
+		{"setDockStyle", "SetDockStyle"},
+		{"setDockNode", "SetDockNode"},
+		{"setDockNodeAsHost", "SetDockNodeAsHost"},
+		{"setDockId", "SetDockId"},
+		{"ctx", "Ctx"},
+		{"name", "Name"},
+		{"iD", "ID"},
+		{"flags", "Flags"},
+		{"flagsPreviousFrame", "FlagsPreviousFrame"},
+		{"childFlags", "ChildFlags"},
+		{"windowClass", "WindowClass"},
+		{"viewport", "Viewport"},
+		{"viewportId", "ViewportId"},
+		{"viewportPos", "ViewportPos"},
+		{"viewportAllowPlatformMonitorExtend", "ViewportAllowPlatformMonitorExtend"},
+		{"pos", "Pos"},
+		{"size", "Size"},
+		{"sizeFull", "SizeFull"},
+		{"contentSize", "ContentSize"},
+		{"contentSizeIdeal", "ContentSizeIdeal"},
+		{"contentSizeExplicit", "ContentSizeExplicit"},
+		{"windowPadding", "WindowPadding"},
+		{"windowRounding", "WindowRounding"},
+		{"windowBorderSize", "WindowBorderSize"},
+		{"titleBarHeight", "TitleBarHeight"},
+		{"menuBarHeight", "MenuBarHeight"},
+		{"decoOuterSizeX1", "DecoOuterSizeX1"},
+		{"decoOuterSizeY1", "DecoOuterSizeY1"},
+		{"decoOuterSizeX2", "DecoOuterSizeX2"},
+		{"decoOuterSizeY2", "DecoOuterSizeY2"},
+		{"decoInnerSizeX1", "DecoInnerSizeX1"},
+		{"decoInnerSizeY1", "DecoInnerSizeY1"},
+		{"nameBufLen", "NameBufLen"},
+		{"moveId", "MoveId"},
+		{"tabId", "TabId"},
+		{"childId", "ChildId"},
+		{"popupId", "PopupId"},
+		{"scroll", "Scroll"},
+		{"scrollMax", "ScrollMax"},
+		{"scrollTarget", "ScrollTarget"},
+		{"scrollTargetCenterRatio", "ScrollTargetCenterRatio"},
+		{"scrollTargetEdgeSnapDist", "ScrollTargetEdgeSnapDist"},
+		{"scrollbarSizes", "ScrollbarSizes"},
+		{"scrollbarX", "ScrollbarX"},
+		{"scrollbarY", "ScrollbarY"},
+		{"scrollbarXStabilizeEnabled", "ScrollbarXStabilizeEnabled"},
+		{"scrollbarXStabilizeToggledHistory", "ScrollbarXStabilizeToggledHistory"},
+		{"viewportOwned", "ViewportOwned"},
+		{"active", "Active"},
+		{"wasActive", "WasActive"},
+		{"writeAccessed", "WriteAccessed"},
+		{"collapsed", "Collapsed"},
+		{"wantCollapseToggle", "WantCollapseToggle"},
+		{"skipItems", "SkipItems"},
+		{"skipRefresh", "SkipRefresh"},
+		{"appearing", "Appearing"},
+		{"hidden", "Hidden"},
+		{"isFallbackWindow", "IsFallbackWindow"},
+		{"isExplicitChild", "IsExplicitChild"},
+		{"hasCloseButton", "HasCloseButton"},
+		{"beginCount", "BeginCount"},
+		{"beginCountPreviousFrame", "BeginCountPreviousFrame"},
+		{"beginOrderWithinParent", "BeginOrderWithinParent"},
+		{"beginOrderWithinContext", "BeginOrderWithinContext"},
+		{"focusOrder", "FocusOrder"},
+		{"autoFitFramesX", "AutoFitFramesX"},
+		{"autoFitFramesY", "AutoFitFramesY"},
+		{"autoFitOnlyGrows", "AutoFitOnlyGrows"},
+		{"autoPosLastDirection", "AutoPosLastDirection"},
+		{"hiddenFramesCanSkipItems", "HiddenFramesCanSkipItems"},
+		{"hiddenFramesCannotSkipItems", "HiddenFramesCannotSkipItems"},
+		{"hiddenFramesForRenderOnly", "HiddenFramesForRenderOnly"},
+		{"disableInputsFrames", "DisableInputsFrames"},
+		{"setWindowPosAllowFlags", "SetWindowPosAllowFlags"},
+		{"setWindowSizeAllowFlags", "SetWindowSizeAllowFlags"},
+		{"setWindowCollapsedAllowFlags", "SetWindowCollapsedAllowFlags"},
+		{"setWindowDockAllowFlags", "SetWindowDockAllowFlags"},
+		{"setWindowPosVal", "SetWindowPosVal"},
+		{"setWindowPosPivot", "SetWindowPosPivot"},
+		{"iDStack", "IDStack"},
+		{"dC", "DC"},
+		{"outerRectClipped", "OuterRectClipped"},
+		{"innerRect", "InnerRect"},
+		{"innerClipRect", "InnerClipRect"},
+		{"workRect", "WorkRect"},
+		{"parentWorkRect", "ParentWorkRect"},
+		{"clipRect", "ClipRect"},
+		{"contentRegionRect", "ContentRegionRect"},
+		{"lastFrameActive", "LastFrameActive"},
+		{"lastFrameJustFocused", "LastFrameJustFocused"},
+		{"lastTimeActive", "LastTimeActive"},
+		{"itemWidthDefault", "ItemWidthDefault"},
+		{"stateStorage", "StateStorage"},
+		{"columnsStorage", "ColumnsStorage"},
+		{"fontWindowScale", "FontWindowScale"},
+		{"fontWindowScaleParents", "FontWindowScaleParents"},
+		{"fontRefSize", "FontRefSize"},
+		{"settingsOffset", "SettingsOffset"},
+		{"drawList", "DrawList"},
+		{"drawListInst", "DrawListInst"},
+		{"parentWindow", "ParentWindow"},
+		{"parentWindowInBeginStack", "ParentWindowInBeginStack"},
+		{"rootWindow", "RootWindow"},
+		{"rootWindowPopupTree", "RootWindowPopupTree"},
+		{"rootWindowDockTree", "RootWindowDockTree"},
+		{"rootWindowForTitleBarHighlight", "RootWindowForTitleBarHighlight"},
+		{"rootWindowForNav", "RootWindowForNav"},
+		{"parentWindowForFocusRoute", "ParentWindowForFocusRoute"},
+		{"navLastChildNavWindow", "NavLastChildNavWindow"},
+		{"navLastIds", "NavLastIds"},
+		{"navRectRel", "NavRectRel"},
+		{"navPreferredScoringPosRel", "NavPreferredScoringPosRel"},
+		{"navRootFocusScopeId", "NavRootFocusScopeId"},
+		{"memoryDrawListIdxCapacity", "MemoryDrawListIdxCapacity"},
+		{"memoryDrawListVtxCapacity", "MemoryDrawListVtxCapacity"},
+		{"memoryCompacted", "MemoryCompacted"},
+		{"dockIsActive", "DockIsActive"},
+		{"dockNodeIsVisible", "DockNodeIsVisible"},
+		{"dockTabIsVisible", "DockTabIsVisible"},
+		{"dockTabWantClose", "DockTabWantClose"},
+		{"dockOrder", "DockOrder"},
+		{"dockStyle", "DockStyle"},
+		{"dockNode", "DockNode"},
+		{"dockNodeAsHost", "DockNodeAsHost"},
+		{"dockId", "DockId"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TextureData": {
+		{"create", "Create"},
+		{"destroyPixels", "DestroyPixels"},
+		{"pitch", "Pitch"},
+		{"pixels", "Pixels"},
+		{"pixelsAt", "PixelsAt"},
+		{"sizeInBytes", "SizeInBytes"},
+		{"texID", "TexID"},
+		{"texRef", "TexRef"},
+		{"setStatus", "SetStatus"},
+		{"setTexID", "SetTexID"},
+		{"destroy", "Destroy"},
+		{"setUniqueID", "SetUniqueID"},
+		{"setBackendUserData", "SetBackendUserData"},
+		{"setFormat", "SetFormat"},
+		{"setWidth", "SetWidth"},
+		{"setHeight", "SetHeight"},
+		{"setBytesPerPixel", "SetBytesPerPixel"},
+		{"setPixels", "SetPixels"},
+		{"setUsedRect", "SetUsedRect"},
+		{"setUpdateRect", "SetUpdateRect"},
+		{"setUpdates", "SetUpdates"},
+		{"setUnusedFrames", "SetUnusedFrames"},
+		{"setRefCount", "SetRefCount"},
+		{"setUseColors", "SetUseColors"},
+		{"setWantDestroyNextFrame", "SetWantDestroyNextFrame"},
+		{"uniqueID", "UniqueID"},
+		{"status", "Status"},
+		{"backendUserData", "BackendUserData"},
+		{"format", "Format"},
+		{"width", "Width"},
+		{"height", "Height"},
+		{"bytesPerPixel", "BytesPerPixel"},
+		{"usedRect", "UsedRect"},
+		{"updateRect", "UpdateRect"},
+		{"updates", "Updates"},
+		{"unusedFrames", "UnusedFrames"},
+		{"refCount", "RefCount"},
+		{"useColors", "UseColors"},
+		{"wantDestroyNextFrame", "WantDestroyNextFrame"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TextureRef": {
+		{"texID", "TexID"},
+		{"destroy", "Destroy"},
+		{"setTexData", "SetTexData"},
+		{"setTexID", "SetTexID"},
+		{"texData", "TexData"},
+		{"getTexID", "GetTexID"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Vec1": {
+		{"internalDestroy", "InternalDestroy"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Vec2i": {
+		{"internalDestroy", "InternalDestroy"},
+		{"setX", "SetX"},
+		{"setY", "SetY"},
+		{"x", "X"},
+		{"y", "Y"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DrawChannel": {
+		{"setCmdBuffer", "SetCmdBuffer"},
+		{"setIdxBuffer", "SetIdxBuffer"},
+		{"cmdBuffer", "CmdBuffer"},
+		{"idxBuffer", "IdxBuffer"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DrawCmdHeader": {
+		{"setClipRect", "SetClipRect"},
+		{"setTexRef", "SetTexRef"},
+		{"setVtxOffset", "SetVtxOffset"},
+		{"clipRect", "ClipRect"},
+		{"texRef", "TexRef"},
+		{"vtxOffset", "VtxOffset"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DrawVert": {
+		{"setPos", "SetPos"},
+		{"setUv", "SetUv"},
+		{"setCol", "SetCol"},
+		{"pos", "Pos"},
+		{"uv", "Uv"},
+		{"col", "Col"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontAtlasPostProcessData": {
+		{"setFontAtlas", "SetFontAtlas"},
+		{"setFont", "SetFont"},
+		{"setFontSrc", "SetFontSrc"},
+		{"setFontBaked", "SetFontBaked"},
+		{"setGlyph", "SetGlyph"},
+		{"setPixels", "SetPixels"},
+		{"setFormat", "SetFormat"},
+		{"setPitch", "SetPitch"},
+		{"setWidth", "SetWidth"},
+		{"setHeight", "SetHeight"},
+		{"fontAtlas", "FontAtlas"},
+		{"font", "Font"},
+		{"fontSrc", "FontSrc"},
+		{"fontBaked", "FontBaked"},
+		{"glyph", "Glyph"},
+		{"pixels", "Pixels"},
+		{"format", "Format"},
+		{"pitch", "Pitch"},
+		{"width", "Width"},
+		{"height", "Height"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontAtlasRectEntry": {
+		{"setTargetIndex", "SetTargetIndex"},
+		{"setGeneration", "SetGeneration"},
+		{"setIsUsed", "SetIsUsed"},
+		{"targetIndex", "TargetIndex"},
+		{"generation", "Generation"},
+		{"isUsed", "IsUsed"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontStackData": {
+		{"setFont", "SetFont"},
+		{"setFontSizeBeforeScaling", "SetFontSizeBeforeScaling"},
+		{"setFontSizeAfterScaling", "SetFontSizeAfterScaling"},
+		{"font", "Font"},
+		{"fontSizeBeforeScaling", "FontSizeBeforeScaling"},
+		{"fontSizeAfterScaling", "FontSizeAfterScaling"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"ColorMod": {
+		{"setCol", "SetCol"},
+		{"setBackupValue", "SetBackupValue"},
+		{"col", "Col"},
+		{"backupValue", "BackupValue"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DataTypeInfo": {
+		{"setSize", "SetSize"},
+		{"setName", "SetName"},
+		{"setPrintFmt", "SetPrintFmt"},
+		{"setScanFmt", "SetScanFmt"},
+		{"size", "Size"},
+		{"name", "Name"},
+		{"printFmt", "PrintFmt"},
+		{"scanFmt", "ScanFmt"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DataTypeStorage": {
+		{"setData", "SetData"},
+		{"data", "Data"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DeactivatedItemData": {
+		{"setID", "SetID"},
+		{"setElapseFrame", "SetElapseFrame"},
+		{"setHasBeenEditedBefore", "SetHasBeenEditedBefore"},
+		{"setIsAlive", "SetIsAlive"},
+		{"iD", "ID"},
+		{"elapseFrame", "ElapseFrame"},
+		{"hasBeenEditedBefore", "HasBeenEditedBefore"},
+		{"isAlive", "IsAlive"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DebugAllocEntry": {
+		{"setFrameCount", "SetFrameCount"},
+		{"setAllocCount", "SetAllocCount"},
+		{"setFreeCount", "SetFreeCount"},
+		{"frameCount", "FrameCount"},
+		{"allocCount", "AllocCount"},
+		{"freeCount", "FreeCount"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FocusScopeData": {
+		{"setID", "SetID"},
+		{"setWindowID", "SetWindowID"},
+		{"iD", "ID"},
+		{"windowID", "WindowID"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"GroupData": {
+		{"setWindowID", "SetWindowID"},
+		{"setBackupCursorPos", "SetBackupCursorPos"},
+		{"setBackupCursorMaxPos", "SetBackupCursorMaxPos"},
+		{"setBackupCursorPosPrevLine", "SetBackupCursorPosPrevLine"},
+		{"setBackupIndent", "SetBackupIndent"},
+		{"setBackupGroupOffset", "SetBackupGroupOffset"},
+		{"setBackupCurrLineSize", "SetBackupCurrLineSize"},
+		{"setBackupCurrLineTextBaseOffset", "SetBackupCurrLineTextBaseOffset"},
+		{"setBackupActiveIdIsAlive", "SetBackupActiveIdIsAlive"},
+		{"setBackupDeactivatedIdIsAlive", "SetBackupDeactivatedIdIsAlive"},
+		{"setBackupHoveredIdIsAlive", "SetBackupHoveredIdIsAlive"},
+		{"setBackupIsSameLine", "SetBackupIsSameLine"},
+		{"setEmitItem", "SetEmitItem"},
+		{"windowID", "WindowID"},
+		{"backupCursorPos", "BackupCursorPos"},
+		{"backupCursorMaxPos", "BackupCursorMaxPos"},
+		{"backupCursorPosPrevLine", "BackupCursorPosPrevLine"},
+		{"backupIndent", "BackupIndent"},
+		{"backupGroupOffset", "BackupGroupOffset"},
+		{"backupCurrLineSize", "BackupCurrLineSize"},
+		{"backupCurrLineTextBaseOffset", "BackupCurrLineTextBaseOffset"},
+		{"backupActiveIdIsAlive", "BackupActiveIdIsAlive"},
+		{"backupDeactivatedIdIsAlive", "BackupDeactivatedIdIsAlive"},
+		{"backupHoveredIdIsAlive", "BackupHoveredIdIsAlive"},
+		{"backupIsSameLine", "BackupIsSameLine"},
+		{"emitItem", "EmitItem"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputEventAppFocused": {
+		{"setFocused", "SetFocused"},
+		{"focused", "Focused"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputEventKey": {
+		{"setKey", "SetKey"},
+		{"setDown", "SetDown"},
+		{"setAnalogValue", "SetAnalogValue"},
+		{"key", "Key"},
+		{"down", "Down"},
+		{"analogValue", "AnalogValue"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputEventMouseButton": {
+		{"setButton", "SetButton"},
+		{"setDown", "SetDown"},
+		{"setMouseSource", "SetMouseSource"},
+		{"button", "Button"},
+		{"down", "Down"},
+		{"mouseSource", "MouseSource"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputEventMousePos": {
+		{"setPosX", "SetPosX"},
+		{"setPosY", "SetPosY"},
+		{"setMouseSource", "SetMouseSource"},
+		{"posX", "PosX"},
+		{"posY", "PosY"},
+		{"mouseSource", "MouseSource"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputEventMouseViewport": {
+		{"setHoveredViewportID", "SetHoveredViewportID"},
+		{"hoveredViewportID", "HoveredViewportID"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputEventMouseWheel": {
+		{"setWheelX", "SetWheelX"},
+		{"setWheelY", "SetWheelY"},
+		{"setMouseSource", "SetMouseSource"},
+		{"wheelX", "WheelX"},
+		{"wheelY", "WheelY"},
+		{"mouseSource", "MouseSource"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputEventText": {
+		{"setChar", "SetChar"},
+		{"char", "Char"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"KeyData": {
+		{"setDown", "SetDown"},
+		{"setDownDuration", "SetDownDuration"},
+		{"setDownDurationPrev", "SetDownDurationPrev"},
+		{"setAnalogValue", "SetAnalogValue"},
+		{"down", "Down"},
+		{"downDuration", "DownDuration"},
+		{"downDurationPrev", "DownDurationPrev"},
+		{"analogValue", "AnalogValue"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"ListClipperRange": {
+		{"setMin", "SetMin"},
+		{"setMax", "SetMax"},
+		{"setPosToIndexConvert", "SetPosToIndexConvert"},
+		{"setPosToIndexOffsetMin", "SetPosToIndexOffsetMin"},
+		{"setPosToIndexOffsetMax", "SetPosToIndexOffsetMax"},
+		{"min", "Min"},
+		{"max", "Max"},
+		{"posToIndexConvert", "PosToIndexConvert"},
+		{"posToIndexOffsetMin", "PosToIndexOffsetMin"},
+		{"posToIndexOffsetMax", "PosToIndexOffsetMax"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"LocEntry": {
+		{"setKey", "SetKey"},
+		{"setText", "SetText"},
+		{"key", "Key"},
+		{"text", "Text"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"MetricsConfig": {
+		{"setShowDebugLog", "SetShowDebugLog"},
+		{"setShowIDStackTool", "SetShowIDStackTool"},
+		{"setShowWindowsRects", "SetShowWindowsRects"},
+		{"setShowWindowsBeginOrder", "SetShowWindowsBeginOrder"},
+		{"setShowTablesRects", "SetShowTablesRects"},
+		{"setShowDrawCmdMesh", "SetShowDrawCmdMesh"},
+		{"setShowDrawCmdBoundingBoxes", "SetShowDrawCmdBoundingBoxes"},
+		{"setShowTextEncodingViewer", "SetShowTextEncodingViewer"},
+		{"setShowTextureUsedRect", "SetShowTextureUsedRect"},
+		{"setShowDockingNodes", "SetShowDockingNodes"},
+		{"setShowWindowsRectsType", "SetShowWindowsRectsType"},
+		{"setShowTablesRectsType", "SetShowTablesRectsType"},
+		{"setHighlightMonitorIdx", "SetHighlightMonitorIdx"},
+		{"setHighlightViewportID", "SetHighlightViewportID"},
+		{"setShowFontPreview", "SetShowFontPreview"},
+		{"showDebugLog", "ShowDebugLog"},
+		{"showIDStackTool", "ShowIDStackTool"},
+		{"showWindowsRects", "ShowWindowsRects"},
+		{"showWindowsBeginOrder", "ShowWindowsBeginOrder"},
+		{"showTablesRects", "ShowTablesRects"},
+		{"showDrawCmdMesh", "ShowDrawCmdMesh"},
+		{"showDrawCmdBoundingBoxes", "ShowDrawCmdBoundingBoxes"},
+		{"showTextEncodingViewer", "ShowTextEncodingViewer"},
+		{"showTextureUsedRect", "ShowTextureUsedRect"},
+		{"showDockingNodes", "ShowDockingNodes"},
+		{"showWindowsRectsType", "ShowWindowsRectsType"},
+		{"showTablesRectsType", "ShowTablesRectsType"},
+		{"highlightMonitorIdx", "HighlightMonitorIdx"},
+		{"highlightViewportID", "HighlightViewportID"},
+		{"showFontPreview", "ShowFontPreview"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"MultiSelectIO": {
+		{"setRequests", "SetRequests"},
+		{"setRangeSrcItem", "SetRangeSrcItem"},
+		{"setNavIdItem", "SetNavIdItem"},
+		{"setNavIdSelected", "SetNavIdSelected"},
+		{"setRangeSrcReset", "SetRangeSrcReset"},
+		{"setItemsCount", "SetItemsCount"},
+		{"requests", "Requests"},
+		{"rangeSrcItem", "RangeSrcItem"},
+		{"navIdItem", "NavIdItem"},
+		{"navIdSelected", "NavIdSelected"},
+		{"rangeSrcReset", "RangeSrcReset"},
+		{"itemsCount", "ItemsCount"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"SelectionRequest": {
+		{"setType", "SetType"},
+		{"setSelected", "SetSelected"},
+		{"setRangeDirection", "SetRangeDirection"},
+		{"setRangeFirstItem", "SetRangeFirstItem"},
+		{"setRangeLastItem", "SetRangeLastItem"},
+		{"type", "Type"},
+		{"selected", "Selected"},
+		{"rangeDirection", "RangeDirection"},
+		{"rangeFirstItem", "RangeFirstItem"},
+		{"rangeLastItem", "RangeLastItem"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"ShrinkWidthItem": {
+		{"setIndex", "SetIndex"},
+		{"setWidth", "SetWidth"},
+		{"setInitialWidth", "SetInitialWidth"},
+		{"index", "Index"},
+		{"width", "Width"},
+		{"initialWidth", "InitialWidth"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"SizeCallbackData": {
+		{"setUserData", "SetUserData"},
+		{"setPos", "SetPos"},
+		{"setCurrentSize", "SetCurrentSize"},
+		{"setDesiredSize", "SetDesiredSize"},
+		{"userData", "UserData"},
+		{"pos", "Pos"},
+		{"currentSize", "CurrentSize"},
+		{"desiredSize", "DesiredSize"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableCellData": {
+		{"setBgColor", "SetBgColor"},
+		{"setColumn", "SetColumn"},
+		{"bgColor", "BgColor"},
+		{"column", "Column"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableHeaderData": {
+		{"setIndex", "SetIndex"},
+		{"setTextColor", "SetTextColor"},
+		{"setBgColor0", "SetBgColor0"},
+		{"setBgColor1", "SetBgColor1"},
+		{"index", "Index"},
+		{"textColor", "TextColor"},
+		{"bgColor0", "BgColor0"},
+		{"bgColor1", "BgColor1"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TreeNodeStackData": {
+		{"setID", "SetID"},
+		{"setTreeFlags", "SetTreeFlags"},
+		{"setItemFlags", "SetItemFlags"},
+		{"setNavRect", "SetNavRect"},
+		{"setDrawLinesX1", "SetDrawLinesX1"},
+		{"setDrawLinesToNodesY2", "SetDrawLinesToNodesY2"},
+		{"setDrawLinesTableColumn", "SetDrawLinesTableColumn"},
+		{"iD", "ID"},
+		{"treeFlags", "TreeFlags"},
+		{"itemFlags", "ItemFlags"},
+		{"navRect", "NavRect"},
+		{"drawLinesX1", "DrawLinesX1"},
+		{"drawLinesToNodesY2", "DrawLinesToNodesY2"},
+		{"drawLinesTableColumn", "DrawLinesTableColumn"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TypingSelectRequest": {
+		{"setFlags", "SetFlags"},
+		{"setSearchBufferLen", "SetSearchBufferLen"},
+		{"setSearchBuffer", "SetSearchBuffer"},
+		{"setSelectRequest", "SetSelectRequest"},
+		{"setSingleCharMode", "SetSingleCharMode"},
+		{"setSingleCharSize", "SetSingleCharSize"},
+		{"flags", "Flags"},
+		{"searchBufferLen", "SearchBufferLen"},
+		{"searchBuffer", "SearchBuffer"},
+		{"selectRequest", "SelectRequest"},
+		{"singleCharMode", "SingleCharMode"},
+		{"singleCharSize", "SingleCharSize"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"WindowDockStyle": {
+		{"setColors", "SetColors"},
+		{"colors", "Colors"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"WindowStackData": {
+		{"setWindow", "SetWindow"},
+		{"setParentLastItemDataBackup", "SetParentLastItemDataBackup"},
+		{"setStackSizesInBegin", "SetStackSizesInBegin"},
+		{"setDisabledOverrideReenable", "SetDisabledOverrideReenable"},
+		{"setDisabledOverrideReenableAlphaBackup", "SetDisabledOverrideReenableAlphaBackup"},
+		{"window", "Window"},
+		{"parentLastItemDataBackup", "ParentLastItemDataBackup"},
+		{"stackSizesInBegin", "StackSizesInBegin"},
+		{"disabledOverrideReenable", "DisabledOverrideReenable"},
+		{"disabledOverrideReenableAlphaBackup", "DisabledOverrideReenableAlphaBackup"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"WindowTempData": {
+		{"setCursorPos", "SetCursorPos"},
+		{"setCursorPosPrevLine", "SetCursorPosPrevLine"},
+		{"setCursorStartPos", "SetCursorStartPos"},
+		{"setCursorMaxPos", "SetCursorMaxPos"},
+		{"setIdealMaxPos", "SetIdealMaxPos"},
+		{"setCurrLineSize", "SetCurrLineSize"},
+		{"setPrevLineSize", "SetPrevLineSize"},
+		{"setCurrLineTextBaseOffset", "SetCurrLineTextBaseOffset"},
+		{"setPrevLineTextBaseOffset", "SetPrevLineTextBaseOffset"},
+		{"setIsSameLine", "SetIsSameLine"},
+		{"setIsSetPos", "SetIsSetPos"},
+		{"setIndent", "SetIndent"},
+		{"setColumnsOffset", "SetColumnsOffset"},
+		{"setGroupOffset", "SetGroupOffset"},
+		{"setCursorStartPosLossyness", "SetCursorStartPosLossyness"},
+		{"setNavLayerCurrent", "SetNavLayerCurrent"},
+		{"setNavLayersActiveMask", "SetNavLayersActiveMask"},
+		{"setNavLayersActiveMaskNext", "SetNavLayersActiveMaskNext"},
+		{"setNavIsScrollPushableX", "SetNavIsScrollPushableX"},
+		{"setNavHideHighlightOneFrame", "SetNavHideHighlightOneFrame"},
+		{"setNavWindowHasScrollY", "SetNavWindowHasScrollY"},
+		{"setMenuBarAppending", "SetMenuBarAppending"},
+		{"setMenuBarOffset", "SetMenuBarOffset"},
+		{"setMenuColumns", "SetMenuColumns"},
+		{"setTreeDepth", "SetTreeDepth"},
+		{"setTreeHasStackDataDepthMask", "SetTreeHasStackDataDepthMask"},
+		{"setTreeRecordsClippedNodesY2Mask", "SetTreeRecordsClippedNodesY2Mask"},
+		{"setStateStorage", "SetStateStorage"},
+		{"setCurrentColumns", "SetCurrentColumns"},
+		{"setCurrentTableIdx", "SetCurrentTableIdx"},
+		{"setLayoutType", "SetLayoutType"},
+		{"setParentLayoutType", "SetParentLayoutType"},
+		{"setModalDimBgColor", "SetModalDimBgColor"},
+		{"setWindowItemStatusFlags", "SetWindowItemStatusFlags"},
+		{"setChildItemStatusFlags", "SetChildItemStatusFlags"},
+		{"setDockTabItemStatusFlags", "SetDockTabItemStatusFlags"},
+		{"setDockTabItemRect", "SetDockTabItemRect"},
+		{"setItemWidth", "SetItemWidth"},
+		{"setTextWrapPos", "SetTextWrapPos"},
+		{"setItemWidthStack", "SetItemWidthStack"},
+		{"setTextWrapPosStack", "SetTextWrapPosStack"},
+		{"cursorPos", "CursorPos"},
+		{"cursorPosPrevLine", "CursorPosPrevLine"},
+		{"cursorStartPos", "CursorStartPos"},
+		{"cursorMaxPos", "CursorMaxPos"},
+		{"idealMaxPos", "IdealMaxPos"},
+		{"currLineSize", "CurrLineSize"},
+		{"prevLineSize", "PrevLineSize"},
+		{"currLineTextBaseOffset", "CurrLineTextBaseOffset"},
+		{"prevLineTextBaseOffset", "PrevLineTextBaseOffset"},
+		{"isSameLine", "IsSameLine"},
+		{"isSetPos", "IsSetPos"},
+		{"indent", "Indent"},
+		{"columnsOffset", "ColumnsOffset"},
+		{"groupOffset", "GroupOffset"},
+		{"cursorStartPosLossyness", "CursorStartPosLossyness"},
+		{"navLayerCurrent", "NavLayerCurrent"},
+		{"navLayersActiveMask", "NavLayersActiveMask"},
+		{"navLayersActiveMaskNext", "NavLayersActiveMaskNext"},
+		{"navIsScrollPushableX", "NavIsScrollPushableX"},
+		{"navHideHighlightOneFrame", "NavHideHighlightOneFrame"},
+		{"navWindowHasScrollY", "NavWindowHasScrollY"},
+		{"menuBarAppending", "MenuBarAppending"},
+		{"menuBarOffset", "MenuBarOffset"},
+		{"menuColumns", "MenuColumns"},
+		{"treeDepth", "TreeDepth"},
+		{"treeHasStackDataDepthMask", "TreeHasStackDataDepthMask"},
+		{"treeRecordsClippedNodesY2Mask", "TreeRecordsClippedNodesY2Mask"},
+		{"childWindows", "ChildWindows"},
+		{"stateStorage", "StateStorage"},
+		{"currentColumns", "CurrentColumns"},
+		{"currentTableIdx", "CurrentTableIdx"},
+		{"layoutType", "LayoutType"},
+		{"parentLayoutType", "ParentLayoutType"},
+		{"modalDimBgColor", "ModalDimBgColor"},
+		{"windowItemStatusFlags", "WindowItemStatusFlags"},
+		{"childItemStatusFlags", "ChildItemStatusFlags"},
+		{"dockTabItemStatusFlags", "DockTabItemStatusFlags"},
+		{"dockTabItemRect", "DockTabItemRect"},
+		{"itemWidth", "ItemWidth"},
+		{"textWrapPos", "TextWrapPos"},
+		{"itemWidthStack", "ItemWidthStack"},
+		{"textWrapPosStack", "TextWrapPosStack"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TextureRect": {
+		{"setX", "SetX"},
+		{"setY", "SetY"},
+		{"setW", "SetW"},
+		{"setH", "SetH"},
+		{"x", "X"},
+		{"y", "Y"},
+		{"w", "W"},
+		{"h", "H"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"stbrpcontextopaque": {
+		{"contextopaqueGetData", "ContextopaqueGetData"},
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Texture": {
+		{"delete", "Delete"},
+	},
+	"BitArrayForNamedKeys": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"BitArrayPtr": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DrawIdx": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"FontAtlasRectId": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"DockNodeSettings": {
+		{"handle", "Handle"},
+	},
+	"DockRequest": {
+		{"handle", "Handle"},
+	},
+	"ID": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"InputTextDeactivateData": {
+		{"handle", "Handle"},
+	},
+	"KeyChord": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"KeyRoutingIndex": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"SelectionUserData": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableColumnIdx": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TableColumnsSettings": {
+		{"handle", "Handle"},
+	},
+	"TableDrawChannelIdx": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"PoolIdx": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"TextureID": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Wchar16": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"Wchar32": {
+		{"handle", "Handle"},
+		{"c", "C"},
+	},
+	"STBTexteditState": {
+		{"handle", "Handle"},
+	},
+	"stbrpnode": {
+		{"handle", "Handle"},
+	},
+	"GlyphRange": {
+		{"handle", "Handle"},
+		{"destroy", "Destroy"},
+		{"data", "Data"},
+	},
+}
+
+func registerImguiReflectBridgeLua(engine model.Engine, imguiObj *lua.LTable) {
+	state := engine.GetState()
+	for _, entry := range imguiReflectFuncs {
+		if imguiObj.RawGetString(entry.name) == lua.LNil {
+			imguiObj.RawSetString(entry.name, state.NewFunction(bindImguiLuaFunc(entry.fn)))
+		}
+	}
+	for _, entry := range imguiReflectGenericFromCFuncs {
+		if imguiObj.RawGetString(entry.name) == lua.LNil {
+			imguiObj.RawSetString(entry.name, state.NewFunction(bindImguiLuaFunc(reflect.ValueOf(entry.fn))))
+		}
+	}
+	for _, entry := range imguiReflectGenericFromCFuncs {
+		engine.RegisterMethod("imgui."+entry.name, entry.label, entry.fn, true)
+	}
+	engine.RegisterMethod("imgui.setAssertHandler", "ImGui.SetAssertHandler", imgui.SetAssertHandler, true)
+	engine.RegisterMethod("imgui.init", "ImGui.Init", imgui.Init, true)
+	engine.RegisterMethod("imgui.run", "ImGui.Run", imgui.Run, true)
+	engine.RegisterMethod("imgui.close", "ImGui.Close", imgui.Close, true)
+	engine.RegisterMethod("imgui.newDrawCallbackFromC", "ImGui.NewDrawCallbackFromC", imgui.NewDrawCallbackFromC, true)
+	engine.RegisterMethod("imgui.clearDrawCallbackPool", "ImGui.ClearDrawCallbackPool", imgui.ClearDrawCallbackPool, true)
+	engine.RegisterMethod("imgui.newContextHookCallbackFromC", "ImGui.NewContextHookCallbackFromC", imgui.NewContextHookCallbackFromC, true)
+	engine.RegisterMethod("imgui.clearContextHookCallbackPool", "ImGui.ClearContextHookCallbackPool", imgui.ClearContextHookCallbackPool, true)
+	engine.RegisterMethod("imgui.newErrorCallbackFromC", "ImGui.NewErrorCallbackFromC", imgui.NewErrorCallbackFromC, true)
+	engine.RegisterMethod("imgui.clearErrorCallbackPool", "ImGui.ClearErrorCallbackPool", imgui.ClearErrorCallbackPool, true)
+	engine.RegisterMethod("imgui.newMemAllocFuncFromC", "ImGui.NewMemAllocFuncFromC", imgui.NewMemAllocFuncFromC, true)
+	engine.RegisterMethod("imgui.clearMemAllocFuncPool", "ImGui.ClearMemAllocFuncPool", imgui.ClearMemAllocFuncPool, true)
+	engine.RegisterMethod("imgui.newMemFreeFuncFromC", "ImGui.NewMemFreeFuncFromC", imgui.NewMemFreeFuncFromC, true)
+	engine.RegisterMethod("imgui.clearMemFreeFuncPool", "ImGui.ClearMemFreeFuncPool", imgui.ClearMemFreeFuncPool, true)
+	engine.RegisterMethod("imgui.newSizeCallbackFromC", "ImGui.NewSizeCallbackFromC", imgui.NewSizeCallbackFromC, true)
+	engine.RegisterMethod("imgui.clearSizeCallbackPool", "ImGui.ClearSizeCallbackPool", imgui.ClearSizeCallbackPool, true)
+	engine.RegisterMethod("imgui.newVec2", "ImGui.NewVec2", imgui.NewVec2, true)
+	engine.RegisterMethod("imgui.newVec4", "ImGui.NewVec4", imgui.NewVec4, true)
+	engine.RegisterMethod("imgui.newColor", "ImGui.NewColor", imgui.NewColor, true)
+	engine.RegisterMethod("imgui.newColorFromPacked", "ImGui.NewColorFromPacked", imgui.NewColorFromPacked, true)
+	engine.RegisterMethod("imgui.newColorFromColor", "ImGui.NewColorFromColor", imgui.NewColorFromColor, true)
+	engine.RegisterMethod("imgui.colorHSVV", "ImGui.ColorHSVV", imgui.ColorHSVV, true)
+	engine.RegisterMethod("imgui.newDrawCmd", "ImGui.NewDrawCmd", imgui.NewDrawCmd, true)
+	engine.RegisterMethod("imgui.internalNewDrawDataBuilder", "ImGui.InternalNewDrawDataBuilder", imgui.InternalNewDrawDataBuilder, true)
+	engine.RegisterMethod("imgui.newDrawData", "ImGui.NewDrawData", imgui.NewDrawData, true)
+	engine.RegisterMethod("imgui.internalNewDrawListSharedData", "ImGui.InternalNewDrawListSharedData", imgui.InternalNewDrawListSharedData, true)
+	engine.RegisterMethod("imgui.newDrawListSplitter", "ImGui.NewDrawListSplitter", imgui.NewDrawListSplitter, true)
+	engine.RegisterMethod("imgui.newDrawList", "ImGui.NewDrawList", imgui.NewDrawList, true)
+	engine.RegisterMethod("imgui.internalNewFontAtlasBuilder", "ImGui.InternalNewFontAtlasBuilder", imgui.InternalNewFontAtlasBuilder, true)
+	engine.RegisterMethod("imgui.newFontAtlasRect", "ImGui.NewFontAtlasRect", imgui.NewFontAtlasRect, true)
+	engine.RegisterMethod("imgui.newFontAtlas", "ImGui.NewFontAtlas", imgui.NewFontAtlas, true)
+	engine.RegisterMethod("imgui.newFontBaked", "ImGui.NewFontBaked", imgui.NewFontBaked, true)
+	engine.RegisterMethod("imgui.newFontConfig", "ImGui.NewFontConfig", imgui.NewFontConfig, true)
+	engine.RegisterMethod("imgui.newFontGlyphRangesBuilder", "ImGui.NewFontGlyphRangesBuilder", imgui.NewFontGlyphRangesBuilder, true)
+	engine.RegisterMethod("imgui.newFontGlyph", "ImGui.NewFontGlyph", imgui.NewFontGlyph, true)
+	engine.RegisterMethod("imgui.internalNewFontLoader", "ImGui.InternalNewFontLoader", imgui.InternalNewFontLoader, true)
+	engine.RegisterMethod("imgui.newFont", "ImGui.NewFont", imgui.NewFont, true)
+	engine.RegisterMethod("imgui.internalNewBoxSelectState", "ImGui.InternalNewBoxSelectState", imgui.InternalNewBoxSelectState, true)
+	engine.RegisterMethod("imgui.internalNewComboPreviewData", "ImGui.InternalNewComboPreviewData", imgui.InternalNewComboPreviewData, true)
+	engine.RegisterMethod("imgui.internalNewContextHook", "ImGui.InternalNewContextHook", imgui.InternalNewContextHook, true)
+	engine.RegisterMethod("imgui.internalNewContext", "ImGui.InternalNewContext", imgui.InternalNewContext, true)
+	engine.RegisterMethod("imgui.internalNewDebugAllocInfo", "ImGui.InternalNewDebugAllocInfo", imgui.InternalNewDebugAllocInfo, true)
+	engine.RegisterMethod("imgui.internalNewDockContext", "ImGui.InternalNewDockContext", imgui.InternalNewDockContext, true)
+	engine.RegisterMethod("imgui.internalNewDockNode", "ImGui.InternalNewDockNode", imgui.InternalNewDockNode, true)
+	engine.RegisterMethod("imgui.internalNewErrorRecoveryState", "ImGui.InternalNewErrorRecoveryState", imgui.InternalNewErrorRecoveryState, true)
+	engine.RegisterMethod("imgui.internalNewIDStackTool", "ImGui.InternalNewIDStackTool", imgui.InternalNewIDStackTool, true)
+	engine.RegisterMethod("imgui.newIO", "ImGui.NewIO", imgui.NewIO, true)
+	engine.RegisterMethod("imgui.internalNewInputEvent", "ImGui.InternalNewInputEvent", imgui.InternalNewInputEvent, true)
+	engine.RegisterMethod("imgui.newInputTextCallbackData", "ImGui.NewInputTextCallbackData", imgui.NewInputTextCallbackData, true)
+	engine.RegisterMethod("imgui.internalNewInputTextDeactivatedState", "ImGui.InternalNewInputTextDeactivatedState", imgui.InternalNewInputTextDeactivatedState, true)
+	engine.RegisterMethod("imgui.internalNewInputTextState", "ImGui.InternalNewInputTextState", imgui.InternalNewInputTextState, true)
+	engine.RegisterMethod("imgui.internalNewKeyOwnerData", "ImGui.InternalNewKeyOwnerData", imgui.InternalNewKeyOwnerData, true)
+	engine.RegisterMethod("imgui.internalNewKeyRoutingData", "ImGui.InternalNewKeyRoutingData", imgui.InternalNewKeyRoutingData, true)
+	engine.RegisterMethod("imgui.internalNewKeyRoutingTable", "ImGui.InternalNewKeyRoutingTable", imgui.InternalNewKeyRoutingTable, true)
+	engine.RegisterMethod("imgui.internalNewLastItemData", "ImGui.InternalNewLastItemData", imgui.InternalNewLastItemData, true)
+	engine.RegisterMethod("imgui.internalNewListClipperData", "ImGui.InternalNewListClipperData", imgui.InternalNewListClipperData, true)
+	engine.RegisterMethod("imgui.internalListClipperRangeFromIndices", "ImGui.InternalListClipperRangeFromIndices", imgui.InternalListClipperRangeFromIndices, true)
+	engine.RegisterMethod("imgui.internalListClipperRangeFromPositions", "ImGui.InternalListClipperRangeFromPositions", imgui.InternalListClipperRangeFromPositions, true)
+	engine.RegisterMethod("imgui.newListClipper", "ImGui.NewListClipper", imgui.NewListClipper, true)
+	engine.RegisterMethod("imgui.internalNewMenuColumns", "ImGui.InternalNewMenuColumns", imgui.InternalNewMenuColumns, true)
+	engine.RegisterMethod("imgui.internalNewMultiSelectState", "ImGui.InternalNewMultiSelectState", imgui.InternalNewMultiSelectState, true)
+	engine.RegisterMethod("imgui.internalNewMultiSelectTempData", "ImGui.InternalNewMultiSelectTempData", imgui.InternalNewMultiSelectTempData, true)
+	engine.RegisterMethod("imgui.internalNewNavItemData", "ImGui.InternalNewNavItemData", imgui.InternalNewNavItemData, true)
+	engine.RegisterMethod("imgui.internalNewNextItemData", "ImGui.InternalNewNextItemData", imgui.InternalNewNextItemData, true)
+	engine.RegisterMethod("imgui.internalNewNextWindowData", "ImGui.InternalNewNextWindowData", imgui.InternalNewNextWindowData, true)
+	engine.RegisterMethod("imgui.internalNewOldColumnData", "ImGui.InternalNewOldColumnData", imgui.InternalNewOldColumnData, true)
+	engine.RegisterMethod("imgui.internalNewOldColumns", "ImGui.InternalNewOldColumns", imgui.InternalNewOldColumns, true)
+	engine.RegisterMethod("imgui.newOnceUponAFrame", "ImGui.NewOnceUponAFrame", imgui.NewOnceUponAFrame, true)
+	engine.RegisterMethod("imgui.newPayload", "ImGui.NewPayload", imgui.NewPayload, true)
+	engine.RegisterMethod("imgui.newPlatformIO", "ImGui.NewPlatformIO", imgui.NewPlatformIO, true)
+	engine.RegisterMethod("imgui.newPlatformImeData", "ImGui.NewPlatformImeData", imgui.NewPlatformImeData, true)
+	engine.RegisterMethod("imgui.newPlatformMonitor", "ImGui.NewPlatformMonitor", imgui.NewPlatformMonitor, true)
+	engine.RegisterMethod("imgui.internalNewPopupData", "ImGui.InternalNewPopupData", imgui.InternalNewPopupData, true)
+	engine.RegisterMethod("imgui.internalNewPtrOrIndexInt", "ImGui.InternalNewPtrOrIndexInt", imgui.InternalNewPtrOrIndexInt, true)
+	engine.RegisterMethod("imgui.internalNewPtrOrIndexPtr", "ImGui.InternalNewPtrOrIndexPtr", imgui.InternalNewPtrOrIndexPtr, true)
+	engine.RegisterMethod("imgui.newSelectionBasicStorage", "ImGui.NewSelectionBasicStorage", imgui.NewSelectionBasicStorage, true)
+	engine.RegisterMethod("imgui.newSelectionExternalStorage", "ImGui.NewSelectionExternalStorage", imgui.NewSelectionExternalStorage, true)
+	engine.RegisterMethod("imgui.internalNewSettingsHandler", "ImGui.InternalNewSettingsHandler", imgui.InternalNewSettingsHandler, true)
+	engine.RegisterMethod("imgui.internalNewStackLevelInfo", "ImGui.InternalNewStackLevelInfo", imgui.InternalNewStackLevelInfo, true)
+	engine.RegisterMethod("imgui.newStoragePairFloat", "ImGui.NewStoragePairFloat", imgui.NewStoragePairFloat, true)
+	engine.RegisterMethod("imgui.newStoragePairInt", "ImGui.NewStoragePairInt", imgui.NewStoragePairInt, true)
+	engine.RegisterMethod("imgui.newStoragePairPtr", "ImGui.NewStoragePairPtr", imgui.NewStoragePairPtr, true)
+	engine.RegisterMethod("imgui.internalNewStyleModFloat", "ImGui.InternalNewStyleModFloat", imgui.InternalNewStyleModFloat, true)
+	engine.RegisterMethod("imgui.internalNewStyleModInt", "ImGui.InternalNewStyleModInt", imgui.InternalNewStyleModInt, true)
+	engine.RegisterMethod("imgui.internalNewStyleModVec2", "ImGui.InternalNewStyleModVec2", imgui.InternalNewStyleModVec2, true)
+	engine.RegisterMethod("imgui.newStyle", "ImGui.NewStyle", imgui.NewStyle, true)
+	engine.RegisterMethod("imgui.internalNewTabBar", "ImGui.InternalNewTabBar", imgui.InternalNewTabBar, true)
+	engine.RegisterMethod("imgui.internalNewTabItem", "ImGui.InternalNewTabItem", imgui.InternalNewTabItem, true)
+	engine.RegisterMethod("imgui.internalNewTableColumnSettings", "ImGui.InternalNewTableColumnSettings", imgui.InternalNewTableColumnSettings, true)
+	engine.RegisterMethod("imgui.newTableColumnSortSpecs", "ImGui.NewTableColumnSortSpecs", imgui.NewTableColumnSortSpecs, true)
+	engine.RegisterMethod("imgui.internalNewTableColumn", "ImGui.InternalNewTableColumn", imgui.InternalNewTableColumn, true)
+	engine.RegisterMethod("imgui.internalNewTableInstanceData", "ImGui.InternalNewTableInstanceData", imgui.InternalNewTableInstanceData, true)
+	engine.RegisterMethod("imgui.internalNewTableSettings", "ImGui.InternalNewTableSettings", imgui.InternalNewTableSettings, true)
+	engine.RegisterMethod("imgui.newTableSortSpecs", "ImGui.NewTableSortSpecs", imgui.NewTableSortSpecs, true)
+	engine.RegisterMethod("imgui.internalNewTableTempData", "ImGui.InternalNewTableTempData", imgui.InternalNewTableTempData, true)
+	engine.RegisterMethod("imgui.internalNewTable", "ImGui.InternalNewTable", imgui.InternalNewTable, true)
+	engine.RegisterMethod("imgui.newTextBuffer", "ImGui.NewTextBuffer", imgui.NewTextBuffer, true)
+	engine.RegisterMethod("imgui.newTextFilter", "ImGui.NewTextFilter", imgui.NewTextFilter, true)
+	engine.RegisterMethod("imgui.newTextRangeNil", "ImGui.NewTextRangeNil", imgui.NewTextRangeNil, true)
+	engine.RegisterMethod("imgui.newTextRangeStr", "ImGui.NewTextRangeStr", imgui.NewTextRangeStr, true)
+	engine.RegisterMethod("imgui.internalNewTypingSelectState", "ImGui.InternalNewTypingSelectState", imgui.InternalNewTypingSelectState, true)
+	engine.RegisterMethod("imgui.internalNewViewportP", "ImGui.InternalNewViewportP", imgui.InternalNewViewportP, true)
+	engine.RegisterMethod("imgui.newViewport", "ImGui.NewViewport", imgui.NewViewport, true)
+	engine.RegisterMethod("imgui.newWindowClass", "ImGui.NewWindowClass", imgui.NewWindowClass, true)
+	engine.RegisterMethod("imgui.internalNewWindowSettings", "ImGui.InternalNewWindowSettings", imgui.InternalNewWindowSettings, true)
+	engine.RegisterMethod("imgui.internalNewWindow", "ImGui.InternalNewWindow", imgui.InternalNewWindow, true)
+	engine.RegisterMethod("imgui.newTextureData", "ImGui.NewTextureData", imgui.NewTextureData, true)
+	engine.RegisterMethod("imgui.newTextureRefNil", "ImGui.NewTextureRefNil", imgui.NewTextureRefNil, true)
+	engine.RegisterMethod("imgui.newTextureRefTextureID", "ImGui.NewTextureRefTextureID", imgui.NewTextureRefTextureID, true)
+	engine.RegisterMethod("imgui.internalNewVec1Float", "ImGui.InternalNewVec1Float", imgui.InternalNewVec1Float, true)
+	engine.RegisterMethod("imgui.internalNewVec1Nil", "ImGui.InternalNewVec1Nil", imgui.InternalNewVec1Nil, true)
+	engine.RegisterMethod("imgui.internalNewVec2iInt", "ImGui.InternalNewVec2iInt", imgui.InternalNewVec2iInt, true)
+	engine.RegisterMethod("imgui.internalNewVec2iNil", "ImGui.InternalNewVec2iNil", imgui.InternalNewVec2iNil, true)
+	engine.RegisterMethod("imgui.newVec4Float", "ImGui.NewVec4Float", imgui.NewVec4Float, true)
+	engine.RegisterMethod("imgui.newVec4Nil", "ImGui.NewVec4Nil", imgui.NewVec4Nil, true)
+	engine.RegisterMethod("imgui.acceptDragDropPayloadV", "ImGui.AcceptDragDropPayloadV", imgui.AcceptDragDropPayloadV, true)
+	engine.RegisterMethod("imgui.internalActivateItemByID", "ImGui.InternalActivateItemByID", imgui.InternalActivateItemByID, true)
+	engine.RegisterMethod("imgui.internalAddContextHook", "ImGui.InternalAddContextHook", imgui.InternalAddContextHook, true)
+	engine.RegisterMethod("imgui.internalAddSettingsHandler", "ImGui.InternalAddSettingsHandler", imgui.InternalAddSettingsHandler, true)
+	engine.RegisterMethod("imgui.alignTextToFramePadding", "ImGui.AlignTextToFramePadding", imgui.AlignTextToFramePadding, true)
+	engine.RegisterMethod("imgui.arrowButton", "ImGui.ArrowButton", imgui.ArrowButton, true)
+	engine.RegisterMethod("imgui.internalArrowButtonExV", "ImGui.InternalArrowButtonExV", imgui.InternalArrowButtonExV, true)
+	engine.RegisterMethod("imgui.beginV", "ImGui.BeginV", imgui.BeginV, true)
+	engine.RegisterMethod("imgui.internalBeginBoxSelect", "ImGui.InternalBeginBoxSelect", imgui.InternalBeginBoxSelect, true)
+	engine.RegisterMethod("imgui.internalBeginChildEx", "ImGui.InternalBeginChildEx", imgui.InternalBeginChildEx, true)
+	engine.RegisterMethod("imgui.beginChildIDV", "ImGui.BeginChildIDV", imgui.BeginChildIDV, true)
+	engine.RegisterMethod("imgui.beginChildStrV", "ImGui.BeginChildStrV", imgui.BeginChildStrV, true)
+	engine.RegisterMethod("imgui.internalBeginColumnsV", "ImGui.InternalBeginColumnsV", imgui.InternalBeginColumnsV, true)
+	engine.RegisterMethod("imgui.beginComboV", "ImGui.BeginComboV", imgui.BeginComboV, true)
+	engine.RegisterMethod("imgui.internalBeginComboPopup", "ImGui.InternalBeginComboPopup", imgui.InternalBeginComboPopup, true)
+	engine.RegisterMethod("imgui.internalBeginComboPreview", "ImGui.InternalBeginComboPreview", imgui.InternalBeginComboPreview, true)
+	engine.RegisterMethod("imgui.beginDisabledV", "ImGui.BeginDisabledV", imgui.BeginDisabledV, true)
+	engine.RegisterMethod("imgui.internalBeginDisabledOverrideReenable", "ImGui.InternalBeginDisabledOverrideReenable", imgui.InternalBeginDisabledOverrideReenable, true)
+	engine.RegisterMethod("imgui.internalBeginDockableDragDropSource", "ImGui.InternalBeginDockableDragDropSource", imgui.InternalBeginDockableDragDropSource, true)
+	engine.RegisterMethod("imgui.internalBeginDockableDragDropTarget", "ImGui.InternalBeginDockableDragDropTarget", imgui.InternalBeginDockableDragDropTarget, true)
+	engine.RegisterMethod("imgui.internalBeginDocked", "ImGui.InternalBeginDocked", imgui.InternalBeginDocked, true)
+	engine.RegisterMethod("imgui.beginDragDropSourceV", "ImGui.BeginDragDropSourceV", imgui.BeginDragDropSourceV, true)
+	engine.RegisterMethod("imgui.beginDragDropTarget", "ImGui.BeginDragDropTarget", imgui.BeginDragDropTarget, true)
+	engine.RegisterMethod("imgui.internalBeginDragDropTargetCustom", "ImGui.InternalBeginDragDropTargetCustom", imgui.InternalBeginDragDropTargetCustom, true)
+	engine.RegisterMethod("imgui.internalBeginDragDropTargetViewportV", "ImGui.InternalBeginDragDropTargetViewportV", imgui.InternalBeginDragDropTargetViewportV, true)
+	engine.RegisterMethod("imgui.internalBeginErrorTooltip", "ImGui.InternalBeginErrorTooltip", imgui.InternalBeginErrorTooltip, true)
+	engine.RegisterMethod("imgui.beginGroup", "ImGui.BeginGroup", imgui.BeginGroup, true)
+	engine.RegisterMethod("imgui.beginItemTooltip", "ImGui.BeginItemTooltip", imgui.BeginItemTooltip, true)
+	engine.RegisterMethod("imgui.beginListBoxV", "ImGui.BeginListBoxV", imgui.BeginListBoxV, true)
+	engine.RegisterMethod("imgui.beginMainMenuBar", "ImGui.BeginMainMenuBar", imgui.BeginMainMenuBar, true)
+	engine.RegisterMethod("imgui.beginMenuV", "ImGui.BeginMenuV", imgui.BeginMenuV, true)
+	engine.RegisterMethod("imgui.beginMenuBar", "ImGui.BeginMenuBar", imgui.BeginMenuBar, true)
+	engine.RegisterMethod("imgui.internalBeginMenuExV", "ImGui.InternalBeginMenuExV", imgui.InternalBeginMenuExV, true)
+	engine.RegisterMethod("imgui.beginMultiSelectV", "ImGui.BeginMultiSelectV", imgui.BeginMultiSelectV, true)
+	engine.RegisterMethod("imgui.beginPopupV", "ImGui.BeginPopupV", imgui.BeginPopupV, true)
+	engine.RegisterMethod("imgui.beginPopupContextItemV", "ImGui.BeginPopupContextItemV", imgui.BeginPopupContextItemV, true)
+	engine.RegisterMethod("imgui.beginPopupContextVoidV", "ImGui.BeginPopupContextVoidV", imgui.BeginPopupContextVoidV, true)
+	engine.RegisterMethod("imgui.beginPopupContextWindowV", "ImGui.BeginPopupContextWindowV", imgui.BeginPopupContextWindowV, true)
+	engine.RegisterMethod("imgui.internalBeginPopupEx", "ImGui.InternalBeginPopupEx", imgui.InternalBeginPopupEx, true)
+	engine.RegisterMethod("imgui.internalBeginPopupMenuEx", "ImGui.InternalBeginPopupMenuEx", imgui.InternalBeginPopupMenuEx, true)
+	engine.RegisterMethod("imgui.beginPopupModalV", "ImGui.BeginPopupModalV", imgui.BeginPopupModalV, true)
+	engine.RegisterMethod("imgui.beginTabBarV", "ImGui.BeginTabBarV", imgui.BeginTabBarV, true)
+	engine.RegisterMethod("imgui.internalBeginTabBarEx", "ImGui.InternalBeginTabBarEx", imgui.InternalBeginTabBarEx, true)
+	engine.RegisterMethod("imgui.beginTabItemV", "ImGui.BeginTabItemV", imgui.BeginTabItemV, true)
+	engine.RegisterMethod("imgui.beginTableV", "ImGui.BeginTableV", imgui.BeginTableV, true)
+	engine.RegisterMethod("imgui.internalBeginTableExV", "ImGui.InternalBeginTableExV", imgui.InternalBeginTableExV, true)
+	engine.RegisterMethod("imgui.beginTooltip", "ImGui.BeginTooltip", imgui.BeginTooltip, true)
+	engine.RegisterMethod("imgui.internalBeginTooltipEx", "ImGui.InternalBeginTooltipEx", imgui.InternalBeginTooltipEx, true)
+	engine.RegisterMethod("imgui.internalBeginTooltipHidden", "ImGui.InternalBeginTooltipHidden", imgui.InternalBeginTooltipHidden, true)
+	engine.RegisterMethod("imgui.internalBeginViewportSideBar", "ImGui.InternalBeginViewportSideBar", imgui.InternalBeginViewportSideBar, true)
+	engine.RegisterMethod("imgui.internalBringWindowToDisplayBack", "ImGui.InternalBringWindowToDisplayBack", imgui.InternalBringWindowToDisplayBack, true)
+	engine.RegisterMethod("imgui.internalBringWindowToDisplayBehind", "ImGui.InternalBringWindowToDisplayBehind", imgui.InternalBringWindowToDisplayBehind, true)
+	engine.RegisterMethod("imgui.internalBringWindowToDisplayFront", "ImGui.InternalBringWindowToDisplayFront", imgui.InternalBringWindowToDisplayFront, true)
+	engine.RegisterMethod("imgui.internalBringWindowToFocusFront", "ImGui.InternalBringWindowToFocusFront", imgui.InternalBringWindowToFocusFront, true)
+	engine.RegisterMethod("imgui.bullet", "ImGui.Bullet", imgui.Bullet, true)
+	engine.RegisterMethod("imgui.bulletText", "ImGui.BulletText", imgui.BulletText, true)
+	engine.RegisterMethod("imgui.buttonV", "ImGui.ButtonV", imgui.ButtonV, true)
+	engine.RegisterMethod("imgui.internalButtonBehaviorV", "ImGui.InternalButtonBehaviorV", imgui.InternalButtonBehaviorV, true)
+	engine.RegisterMethod("imgui.internalButtonExV", "ImGui.InternalButtonExV", imgui.InternalButtonExV, true)
+	engine.RegisterMethod("imgui.internalCalcClipRectVisibleItemsY", "ImGui.InternalCalcClipRectVisibleItemsY", imgui.InternalCalcClipRectVisibleItemsY, true)
+	engine.RegisterMethod("imgui.internalCalcItemSize", "ImGui.InternalCalcItemSize", imgui.InternalCalcItemSize, true)
+	engine.RegisterMethod("imgui.calcItemWidth", "ImGui.CalcItemWidth", imgui.CalcItemWidth, true)
+	engine.RegisterMethod("imgui.internalCalcRoundingFlagsForRectInRect", "ImGui.InternalCalcRoundingFlagsForRectInRect", imgui.InternalCalcRoundingFlagsForRectInRect, true)
+	engine.RegisterMethod("imgui.calcTextSizeV", "ImGui.CalcTextSizeV", imgui.CalcTextSizeV, true)
+	engine.RegisterMethod("imgui.internalCalcTypematicRepeatAmount", "ImGui.InternalCalcTypematicRepeatAmount", imgui.InternalCalcTypematicRepeatAmount, true)
+	engine.RegisterMethod("imgui.internalCalcWindowNextAutoFitSize", "ImGui.InternalCalcWindowNextAutoFitSize", imgui.InternalCalcWindowNextAutoFitSize, true)
+	engine.RegisterMethod("imgui.internalCalcWrapWidthForPos", "ImGui.InternalCalcWrapWidthForPos", imgui.InternalCalcWrapWidthForPos, true)
+	engine.RegisterMethod("imgui.internalCallContextHooks", "ImGui.InternalCallContextHooks", imgui.InternalCallContextHooks, true)
+	engine.RegisterMethod("imgui.checkbox", "ImGui.Checkbox", imgui.Checkbox, true)
+	engine.RegisterMethod("imgui.checkboxFlagsIntPtr", "ImGui.CheckboxFlagsIntPtr", imgui.CheckboxFlagsIntPtr, true)
+	engine.RegisterMethod("imgui.internalCheckboxFlagsS64Ptr", "ImGui.InternalCheckboxFlagsS64Ptr", imgui.InternalCheckboxFlagsS64Ptr, true)
+	engine.RegisterMethod("imgui.internalCheckboxFlagsU64Ptr", "ImGui.InternalCheckboxFlagsU64Ptr", imgui.InternalCheckboxFlagsU64Ptr, true)
+	engine.RegisterMethod("imgui.checkboxFlagsUintPtr", "ImGui.CheckboxFlagsUintPtr", imgui.CheckboxFlagsUintPtr, true)
+	engine.RegisterMethod("imgui.internalClearActiveID", "ImGui.InternalClearActiveID", imgui.InternalClearActiveID, true)
+	engine.RegisterMethod("imgui.internalClearDragDrop", "ImGui.InternalClearDragDrop", imgui.InternalClearDragDrop, true)
+	engine.RegisterMethod("imgui.internalClearIniSettings", "ImGui.InternalClearIniSettings", imgui.InternalClearIniSettings, true)
+	engine.RegisterMethod("imgui.internalClearWindowSettings", "ImGui.InternalClearWindowSettings", imgui.InternalClearWindowSettings, true)
+	engine.RegisterMethod("imgui.internalCloseButton", "ImGui.InternalCloseButton", imgui.InternalCloseButton, true)
+	engine.RegisterMethod("imgui.closeCurrentPopup", "ImGui.CloseCurrentPopup", imgui.CloseCurrentPopup, true)
+	engine.RegisterMethod("imgui.internalClosePopupToLevel", "ImGui.InternalClosePopupToLevel", imgui.InternalClosePopupToLevel, true)
+	engine.RegisterMethod("imgui.internalClosePopupsExceptModals", "ImGui.InternalClosePopupsExceptModals", imgui.InternalClosePopupsExceptModals, true)
+	engine.RegisterMethod("imgui.internalClosePopupsOverWindow", "ImGui.InternalClosePopupsOverWindow", imgui.InternalClosePopupsOverWindow, true)
+	engine.RegisterMethod("imgui.internalCollapseButton", "ImGui.InternalCollapseButton", imgui.InternalCollapseButton, true)
+	engine.RegisterMethod("imgui.collapsingHeaderBoolPtrV", "ImGui.CollapsingHeaderBoolPtrV", imgui.CollapsingHeaderBoolPtrV, true)
+	engine.RegisterMethod("imgui.collapsingHeaderTreeNodeFlagsV", "ImGui.CollapsingHeaderTreeNodeFlagsV", imgui.CollapsingHeaderTreeNodeFlagsV, true)
+	engine.RegisterMethod("imgui.colorButtonV", "ImGui.ColorButtonV", imgui.ColorButtonV, true)
+	engine.RegisterMethod("imgui.colorConvertFloat4ToU32", "ImGui.ColorConvertFloat4ToU32", imgui.ColorConvertFloat4ToU32, true)
+	engine.RegisterMethod("imgui.colorConvertHSVtoRGB", "ImGui.ColorConvertHSVtoRGB", imgui.ColorConvertHSVtoRGB, true)
+	engine.RegisterMethod("imgui.colorConvertRGBtoHSV", "ImGui.ColorConvertRGBtoHSV", imgui.ColorConvertRGBtoHSV, true)
+	engine.RegisterMethod("imgui.colorConvertU32ToFloat4", "ImGui.ColorConvertU32ToFloat4", imgui.ColorConvertU32ToFloat4, true)
+	engine.RegisterMethod("imgui.colorEdit3V", "ImGui.ColorEdit3V", imgui.ColorEdit3V, true)
+	engine.RegisterMethod("imgui.colorEdit4V", "ImGui.ColorEdit4V", imgui.ColorEdit4V, true)
+	engine.RegisterMethod("imgui.internalColorEditOptionsPopup", "ImGui.InternalColorEditOptionsPopup", imgui.InternalColorEditOptionsPopup, true)
+	engine.RegisterMethod("imgui.colorPicker3V", "ImGui.ColorPicker3V", imgui.ColorPicker3V, true)
+	engine.RegisterMethod("imgui.colorPicker4V", "ImGui.ColorPicker4V", imgui.ColorPicker4V, true)
+	engine.RegisterMethod("imgui.internalColorPickerOptionsPopup", "ImGui.InternalColorPickerOptionsPopup", imgui.InternalColorPickerOptionsPopup, true)
+	engine.RegisterMethod("imgui.internalColorTooltip", "ImGui.InternalColorTooltip", imgui.InternalColorTooltip, true)
+	engine.RegisterMethod("imgui.columnsV", "ImGui.ColumnsV", imgui.ColumnsV, true)
+	engine.RegisterMethod("imgui.comboStrV", "ImGui.ComboStrV", imgui.ComboStrV, true)
+	engine.RegisterMethod("imgui.comboStrarrV", "ImGui.ComboStrarrV", imgui.ComboStrarrV, true)
+	engine.RegisterMethod("imgui.internalConvertSingleModFlagToKey", "ImGui.InternalConvertSingleModFlagToKey", imgui.InternalConvertSingleModFlagToKey, true)
+	engine.RegisterMethod("imgui.createContextV", "ImGui.CreateContextV", imgui.CreateContextV, true)
+	engine.RegisterMethod("imgui.internalCreateNewWindowSettings", "ImGui.InternalCreateNewWindowSettings", imgui.InternalCreateNewWindowSettings, true)
+	engine.RegisterMethod("imgui.internalDataTypeApplyFromTextV", "ImGui.InternalDataTypeApplyFromTextV", imgui.InternalDataTypeApplyFromTextV, true)
+	engine.RegisterMethod("imgui.internalDataTypeApplyOp", "ImGui.InternalDataTypeApplyOp", imgui.InternalDataTypeApplyOp, true)
+	engine.RegisterMethod("imgui.internalDataTypeClamp", "ImGui.InternalDataTypeClamp", imgui.InternalDataTypeClamp, true)
+	engine.RegisterMethod("imgui.internalDataTypeCompare", "ImGui.InternalDataTypeCompare", imgui.InternalDataTypeCompare, true)
+	engine.RegisterMethod("imgui.internalDataTypeFormatString", "ImGui.InternalDataTypeFormatString", imgui.InternalDataTypeFormatString, true)
+	engine.RegisterMethod("imgui.internalDataTypeGetInfo", "ImGui.InternalDataTypeGetInfo", imgui.InternalDataTypeGetInfo, true)
+	engine.RegisterMethod("imgui.internalDataTypeIsZero", "ImGui.InternalDataTypeIsZero", imgui.InternalDataTypeIsZero, true)
+	engine.RegisterMethod("imgui.internalDebugAllocHook", "ImGui.InternalDebugAllocHook", imgui.InternalDebugAllocHook, true)
+	engine.RegisterMethod("imgui.internalDebugBreakButton", "ImGui.InternalDebugBreakButton", imgui.InternalDebugBreakButton, true)
+	engine.RegisterMethod("imgui.internalDebugBreakButtonTooltip", "ImGui.InternalDebugBreakButtonTooltip", imgui.InternalDebugBreakButtonTooltip, true)
+	engine.RegisterMethod("imgui.internalDebugBreakClearData", "ImGui.InternalDebugBreakClearData", imgui.InternalDebugBreakClearData, true)
+	engine.RegisterMethod("imgui.debugCheckVersionAndDataLayout", "ImGui.DebugCheckVersionAndDataLayout", imgui.DebugCheckVersionAndDataLayout, true)
+	engine.RegisterMethod("imgui.internalDebugDrawCursorPosV", "ImGui.InternalDebugDrawCursorPosV", imgui.InternalDebugDrawCursorPosV, true)
+	engine.RegisterMethod("imgui.internalDebugDrawItemRectV", "ImGui.InternalDebugDrawItemRectV", imgui.InternalDebugDrawItemRectV, true)
+	engine.RegisterMethod("imgui.internalDebugDrawLineExtentsV", "ImGui.InternalDebugDrawLineExtentsV", imgui.InternalDebugDrawLineExtentsV, true)
+	engine.RegisterMethod("imgui.debugFlashStyleColor", "ImGui.DebugFlashStyleColor", imgui.DebugFlashStyleColor, true)
+	engine.RegisterMethod("imgui.internalDebugHookIdInfo", "ImGui.InternalDebugHookIdInfo", imgui.InternalDebugHookIdInfo, true)
+	engine.RegisterMethod("imgui.internalDebugLocateItem", "ImGui.InternalDebugLocateItem", imgui.InternalDebugLocateItem, true)
+	engine.RegisterMethod("imgui.internalDebugLocateItemOnHover", "ImGui.InternalDebugLocateItemOnHover", imgui.InternalDebugLocateItemOnHover, true)
+	engine.RegisterMethod("imgui.internalDebugLocateItemResolveWithLastItem", "ImGui.InternalDebugLocateItemResolveWithLastItem", imgui.InternalDebugLocateItemResolveWithLastItem, true)
+	engine.RegisterMethod("imgui.debugLog", "ImGui.DebugLog", imgui.DebugLog, true)
+	engine.RegisterMethod("imgui.internalDebugNodeColumns", "ImGui.InternalDebugNodeColumns", imgui.InternalDebugNodeColumns, true)
+	engine.RegisterMethod("imgui.internalDebugNodeDockNode", "ImGui.InternalDebugNodeDockNode", imgui.InternalDebugNodeDockNode, true)
+	engine.RegisterMethod("imgui.internalDebugNodeDrawCmdShowMeshAndBoundingBox", "ImGui.InternalDebugNodeDrawCmdShowMeshAndBoundingBox", imgui.InternalDebugNodeDrawCmdShowMeshAndBoundingBox, true)
+	engine.RegisterMethod("imgui.internalDebugNodeDrawList", "ImGui.InternalDebugNodeDrawList", imgui.InternalDebugNodeDrawList, true)
+	engine.RegisterMethod("imgui.internalDebugNodeFont", "ImGui.InternalDebugNodeFont", imgui.InternalDebugNodeFont, true)
+	engine.RegisterMethod("imgui.internalDebugNodeFontGlyph", "ImGui.InternalDebugNodeFontGlyph", imgui.InternalDebugNodeFontGlyph, true)
+	engine.RegisterMethod("imgui.internalDebugNodeFontGlyphesForSrcMask", "ImGui.InternalDebugNodeFontGlyphesForSrcMask", imgui.InternalDebugNodeFontGlyphesForSrcMask, true)
+	engine.RegisterMethod("imgui.internalDebugNodeInputTextState", "ImGui.InternalDebugNodeInputTextState", imgui.InternalDebugNodeInputTextState, true)
+	engine.RegisterMethod("imgui.internalDebugNodeMultiSelectState", "ImGui.InternalDebugNodeMultiSelectState", imgui.InternalDebugNodeMultiSelectState, true)
+	engine.RegisterMethod("imgui.internalDebugNodePlatformMonitor", "ImGui.InternalDebugNodePlatformMonitor", imgui.InternalDebugNodePlatformMonitor, true)
+	engine.RegisterMethod("imgui.internalDebugNodeStorage", "ImGui.InternalDebugNodeStorage", imgui.InternalDebugNodeStorage, true)
+	engine.RegisterMethod("imgui.internalDebugNodeTabBar", "ImGui.InternalDebugNodeTabBar", imgui.InternalDebugNodeTabBar, true)
+	engine.RegisterMethod("imgui.internalDebugNodeTable", "ImGui.InternalDebugNodeTable", imgui.InternalDebugNodeTable, true)
+	engine.RegisterMethod("imgui.internalDebugNodeTableSettings", "ImGui.InternalDebugNodeTableSettings", imgui.InternalDebugNodeTableSettings, true)
+	engine.RegisterMethod("imgui.internalDebugNodeTextureV", "ImGui.InternalDebugNodeTextureV", imgui.InternalDebugNodeTextureV, true)
+	engine.RegisterMethod("imgui.internalDebugNodeTypingSelectState", "ImGui.InternalDebugNodeTypingSelectState", imgui.InternalDebugNodeTypingSelectState, true)
+	engine.RegisterMethod("imgui.internalDebugNodeViewport", "ImGui.InternalDebugNodeViewport", imgui.InternalDebugNodeViewport, true)
+	engine.RegisterMethod("imgui.internalDebugNodeWindow", "ImGui.InternalDebugNodeWindow", imgui.InternalDebugNodeWindow, true)
+	engine.RegisterMethod("imgui.internalDebugNodeWindowSettings", "ImGui.InternalDebugNodeWindowSettings", imgui.InternalDebugNodeWindowSettings, true)
+	engine.RegisterMethod("imgui.internalDebugRenderKeyboardPreview", "ImGui.InternalDebugRenderKeyboardPreview", imgui.InternalDebugRenderKeyboardPreview, true)
+	engine.RegisterMethod("imgui.internalDebugRenderViewportThumbnail", "ImGui.InternalDebugRenderViewportThumbnail", imgui.InternalDebugRenderViewportThumbnail, true)
+	engine.RegisterMethod("imgui.debugStartItemPicker", "ImGui.DebugStartItemPicker", imgui.DebugStartItemPicker, true)
+	engine.RegisterMethod("imgui.debugTextEncoding", "ImGui.DebugTextEncoding", imgui.DebugTextEncoding, true)
+	engine.RegisterMethod("imgui.internalDebugTextUnformattedWithLocateItem", "ImGui.InternalDebugTextUnformattedWithLocateItem", imgui.InternalDebugTextUnformattedWithLocateItem, true)
+	engine.RegisterMethod("imgui.destroyContextV", "ImGui.DestroyContextV", imgui.DestroyContextV, true)
+	engine.RegisterMethod("imgui.internalDestroyPlatformWindow", "ImGui.InternalDestroyPlatformWindow", imgui.InternalDestroyPlatformWindow, true)
+	engine.RegisterMethod("imgui.destroyPlatformWindows", "ImGui.DestroyPlatformWindows", imgui.DestroyPlatformWindows, true)
+	engine.RegisterMethod("imgui.internalDockBuilderAddNodeV", "ImGui.InternalDockBuilderAddNodeV", imgui.InternalDockBuilderAddNodeV, true)
+	engine.RegisterMethod("imgui.internalDockBuilderCopyWindowSettings", "ImGui.InternalDockBuilderCopyWindowSettings", imgui.InternalDockBuilderCopyWindowSettings, true)
+	engine.RegisterMethod("imgui.internalDockBuilderDockWindow", "ImGui.InternalDockBuilderDockWindow", imgui.InternalDockBuilderDockWindow, true)
+	engine.RegisterMethod("imgui.internalDockBuilderFinish", "ImGui.InternalDockBuilderFinish", imgui.InternalDockBuilderFinish, true)
+	engine.RegisterMethod("imgui.internalDockBuilderGetCentralNode", "ImGui.InternalDockBuilderGetCentralNode", imgui.InternalDockBuilderGetCentralNode, true)
+	engine.RegisterMethod("imgui.internalDockBuilderGetNode", "ImGui.InternalDockBuilderGetNode", imgui.InternalDockBuilderGetNode, true)
+	engine.RegisterMethod("imgui.internalDockBuilderRemoveNode", "ImGui.InternalDockBuilderRemoveNode", imgui.InternalDockBuilderRemoveNode, true)
+	engine.RegisterMethod("imgui.internalDockBuilderRemoveNodeChildNodes", "ImGui.InternalDockBuilderRemoveNodeChildNodes", imgui.InternalDockBuilderRemoveNodeChildNodes, true)
+	engine.RegisterMethod("imgui.internalDockBuilderRemoveNodeDockedWindowsV", "ImGui.InternalDockBuilderRemoveNodeDockedWindowsV", imgui.InternalDockBuilderRemoveNodeDockedWindowsV, true)
+	engine.RegisterMethod("imgui.internalDockBuilderSetNodePos", "ImGui.InternalDockBuilderSetNodePos", imgui.InternalDockBuilderSetNodePos, true)
+	engine.RegisterMethod("imgui.internalDockBuilderSetNodeSize", "ImGui.InternalDockBuilderSetNodeSize", imgui.InternalDockBuilderSetNodeSize, true)
+	engine.RegisterMethod("imgui.internalDockBuilderSplitNode", "ImGui.InternalDockBuilderSplitNode", imgui.InternalDockBuilderSplitNode, true)
+	engine.RegisterMethod("imgui.internalDockContextCalcDropPosForDocking", "ImGui.InternalDockContextCalcDropPosForDocking", imgui.InternalDockContextCalcDropPosForDocking, true)
+	engine.RegisterMethod("imgui.internalDockContextClearNodes", "ImGui.InternalDockContextClearNodes", imgui.InternalDockContextClearNodes, true)
+	engine.RegisterMethod("imgui.internalDockContextEndFrame", "ImGui.InternalDockContextEndFrame", imgui.InternalDockContextEndFrame, true)
+	engine.RegisterMethod("imgui.internalDockContextFindNodeByID", "ImGui.InternalDockContextFindNodeByID", imgui.InternalDockContextFindNodeByID, true)
+	engine.RegisterMethod("imgui.internalDockContextGenNodeID", "ImGui.InternalDockContextGenNodeID", imgui.InternalDockContextGenNodeID, true)
+	engine.RegisterMethod("imgui.internalDockContextInitialize", "ImGui.InternalDockContextInitialize", imgui.InternalDockContextInitialize, true)
+	engine.RegisterMethod("imgui.internalDockContextNewFrameUpdateDocking", "ImGui.InternalDockContextNewFrameUpdateDocking", imgui.InternalDockContextNewFrameUpdateDocking, true)
+	engine.RegisterMethod("imgui.internalDockContextNewFrameUpdateUndocking", "ImGui.InternalDockContextNewFrameUpdateUndocking", imgui.InternalDockContextNewFrameUpdateUndocking, true)
+	engine.RegisterMethod("imgui.internalDockContextProcessUndockNode", "ImGui.InternalDockContextProcessUndockNode", imgui.InternalDockContextProcessUndockNode, true)
+	engine.RegisterMethod("imgui.internalDockContextProcessUndockWindowV", "ImGui.InternalDockContextProcessUndockWindowV", imgui.InternalDockContextProcessUndockWindowV, true)
+	engine.RegisterMethod("imgui.internalDockContextQueueDock", "ImGui.InternalDockContextQueueDock", imgui.InternalDockContextQueueDock, true)
+	engine.RegisterMethod("imgui.internalDockContextQueueUndockNode", "ImGui.InternalDockContextQueueUndockNode", imgui.InternalDockContextQueueUndockNode, true)
+	engine.RegisterMethod("imgui.internalDockContextQueueUndockWindow", "ImGui.InternalDockContextQueueUndockWindow", imgui.InternalDockContextQueueUndockWindow, true)
+	engine.RegisterMethod("imgui.internalDockContextRebuildNodes", "ImGui.InternalDockContextRebuildNodes", imgui.InternalDockContextRebuildNodes, true)
+	engine.RegisterMethod("imgui.internalDockContextShutdown", "ImGui.InternalDockContextShutdown", imgui.InternalDockContextShutdown, true)
+	engine.RegisterMethod("imgui.internalDockNodeBeginAmendTabBar", "ImGui.InternalDockNodeBeginAmendTabBar", imgui.InternalDockNodeBeginAmendTabBar, true)
+	engine.RegisterMethod("imgui.internalDockNodeEndAmendTabBar", "ImGui.InternalDockNodeEndAmendTabBar", imgui.InternalDockNodeEndAmendTabBar, true)
+	engine.RegisterMethod("imgui.internalDockNodeGetDepth", "ImGui.InternalDockNodeGetDepth", imgui.InternalDockNodeGetDepth, true)
+	engine.RegisterMethod("imgui.internalDockNodeGetRootNode", "ImGui.InternalDockNodeGetRootNode", imgui.InternalDockNodeGetRootNode, true)
+	engine.RegisterMethod("imgui.internalDockNodeGetWindowMenuButtonId", "ImGui.InternalDockNodeGetWindowMenuButtonId", imgui.InternalDockNodeGetWindowMenuButtonId, true)
+	engine.RegisterMethod("imgui.internalDockNodeIsInHierarchyOf", "ImGui.InternalDockNodeIsInHierarchyOf", imgui.InternalDockNodeIsInHierarchyOf, true)
+	engine.RegisterMethod("imgui.internalDockNodeWindowMenuHandlerDefault", "ImGui.InternalDockNodeWindowMenuHandlerDefault", imgui.InternalDockNodeWindowMenuHandlerDefault, true)
+	engine.RegisterMethod("imgui.dockSpaceV", "ImGui.DockSpaceV", imgui.DockSpaceV, true)
+	engine.RegisterMethod("imgui.dockSpaceOverViewportV", "ImGui.DockSpaceOverViewportV", imgui.DockSpaceOverViewportV, true)
+	engine.RegisterMethod("imgui.internalDragBehavior", "ImGui.InternalDragBehavior", imgui.InternalDragBehavior, true)
+	engine.RegisterMethod("imgui.dragFloatV", "ImGui.DragFloatV", imgui.DragFloatV, true)
+	engine.RegisterMethod("imgui.dragFloat2V", "ImGui.DragFloat2V", imgui.DragFloat2V, true)
+	engine.RegisterMethod("imgui.dragFloat3V", "ImGui.DragFloat3V", imgui.DragFloat3V, true)
+	engine.RegisterMethod("imgui.dragFloat4V", "ImGui.DragFloat4V", imgui.DragFloat4V, true)
+	engine.RegisterMethod("imgui.dragFloatRange2V", "ImGui.DragFloatRange2V", imgui.DragFloatRange2V, true)
+	engine.RegisterMethod("imgui.dragIntV", "ImGui.DragIntV", imgui.DragIntV, true)
+	engine.RegisterMethod("imgui.dragInt2V", "ImGui.DragInt2V", imgui.DragInt2V, true)
+	engine.RegisterMethod("imgui.dragInt3V", "ImGui.DragInt3V", imgui.DragInt3V, true)
+	engine.RegisterMethod("imgui.dragInt4V", "ImGui.DragInt4V", imgui.DragInt4V, true)
+	engine.RegisterMethod("imgui.dragIntRange2V", "ImGui.DragIntRange2V", imgui.DragIntRange2V, true)
+	engine.RegisterMethod("imgui.dragScalarV", "ImGui.DragScalarV", imgui.DragScalarV, true)
+	engine.RegisterMethod("imgui.dragScalarNV", "ImGui.DragScalarNV", imgui.DragScalarNV, true)
+	engine.RegisterMethod("imgui.dummy", "ImGui.Dummy", imgui.Dummy, true)
+	engine.RegisterMethod("imgui.end", "ImGui.End", imgui.End, true)
+	engine.RegisterMethod("imgui.internalEndBoxSelect", "ImGui.InternalEndBoxSelect", imgui.InternalEndBoxSelect, true)
+	engine.RegisterMethod("imgui.endChild", "ImGui.EndChild", imgui.EndChild, true)
+	engine.RegisterMethod("imgui.internalEndColumns", "ImGui.InternalEndColumns", imgui.InternalEndColumns, true)
+	engine.RegisterMethod("imgui.endCombo", "ImGui.EndCombo", imgui.EndCombo, true)
+	engine.RegisterMethod("imgui.internalEndComboPreview", "ImGui.InternalEndComboPreview", imgui.InternalEndComboPreview, true)
+	engine.RegisterMethod("imgui.endDisabled", "ImGui.EndDisabled", imgui.EndDisabled, true)
+	engine.RegisterMethod("imgui.internalEndDisabledOverrideReenable", "ImGui.InternalEndDisabledOverrideReenable", imgui.InternalEndDisabledOverrideReenable, true)
+	engine.RegisterMethod("imgui.endDragDropSource", "ImGui.EndDragDropSource", imgui.EndDragDropSource, true)
+	engine.RegisterMethod("imgui.endDragDropTarget", "ImGui.EndDragDropTarget", imgui.EndDragDropTarget, true)
+	engine.RegisterMethod("imgui.internalEndErrorTooltip", "ImGui.InternalEndErrorTooltip", imgui.InternalEndErrorTooltip, true)
+	engine.RegisterMethod("imgui.endFrame", "ImGui.EndFrame", imgui.EndFrame, true)
+	engine.RegisterMethod("imgui.endGroup", "ImGui.EndGroup", imgui.EndGroup, true)
+	engine.RegisterMethod("imgui.endListBox", "ImGui.EndListBox", imgui.EndListBox, true)
+	engine.RegisterMethod("imgui.endMainMenuBar", "ImGui.EndMainMenuBar", imgui.EndMainMenuBar, true)
+	engine.RegisterMethod("imgui.endMenu", "ImGui.EndMenu", imgui.EndMenu, true)
+	engine.RegisterMethod("imgui.endMenuBar", "ImGui.EndMenuBar", imgui.EndMenuBar, true)
+	engine.RegisterMethod("imgui.endMultiSelect", "ImGui.EndMultiSelect", imgui.EndMultiSelect, true)
+	engine.RegisterMethod("imgui.endPopup", "ImGui.EndPopup", imgui.EndPopup, true)
+	engine.RegisterMethod("imgui.endTabBar", "ImGui.EndTabBar", imgui.EndTabBar, true)
+	engine.RegisterMethod("imgui.endTabItem", "ImGui.EndTabItem", imgui.EndTabItem, true)
+	engine.RegisterMethod("imgui.endTable", "ImGui.EndTable", imgui.EndTable, true)
+	engine.RegisterMethod("imgui.endTooltip", "ImGui.EndTooltip", imgui.EndTooltip, true)
+	engine.RegisterMethod("imgui.internalErrorCheckEndFrameFinalizeErrorTooltip", "ImGui.InternalErrorCheckEndFrameFinalizeErrorTooltip", imgui.InternalErrorCheckEndFrameFinalizeErrorTooltip, true)
+	engine.RegisterMethod("imgui.internalErrorCheckUsingSetCursorPosToExtendParentBoundaries", "ImGui.InternalErrorCheckUsingSetCursorPosToExtendParentBoundaries", imgui.InternalErrorCheckUsingSetCursorPosToExtendParentBoundaries, true)
+	engine.RegisterMethod("imgui.internalErrorLog", "ImGui.InternalErrorLog", imgui.InternalErrorLog, true)
+	engine.RegisterMethod("imgui.internalErrorRecoveryStoreState", "ImGui.InternalErrorRecoveryStoreState", imgui.InternalErrorRecoveryStoreState, true)
+	engine.RegisterMethod("imgui.internalErrorRecoveryTryToRecoverState", "ImGui.InternalErrorRecoveryTryToRecoverState", imgui.InternalErrorRecoveryTryToRecoverState, true)
+	engine.RegisterMethod("imgui.internalErrorRecoveryTryToRecoverWindowState", "ImGui.InternalErrorRecoveryTryToRecoverWindowState", imgui.InternalErrorRecoveryTryToRecoverWindowState, true)
+	engine.RegisterMethod("imgui.internalFindBestWindowPosForPopup", "ImGui.InternalFindBestWindowPosForPopup", imgui.InternalFindBestWindowPosForPopup, true)
+	engine.RegisterMethod("imgui.internalFindBestWindowPosForPopupEx", "ImGui.InternalFindBestWindowPosForPopupEx", imgui.InternalFindBestWindowPosForPopupEx, true)
+	engine.RegisterMethod("imgui.internalFindBlockingModal", "ImGui.InternalFindBlockingModal", imgui.InternalFindBlockingModal, true)
+	engine.RegisterMethod("imgui.internalFindBottomMostVisibleWindowWithinBeginStack", "ImGui.InternalFindBottomMostVisibleWindowWithinBeginStack", imgui.InternalFindBottomMostVisibleWindowWithinBeginStack, true)
+	engine.RegisterMethod("imgui.internalFindHoveredViewportFromPlatformWindowStack", "ImGui.InternalFindHoveredViewportFromPlatformWindowStack", imgui.InternalFindHoveredViewportFromPlatformWindowStack, true)
+	engine.RegisterMethod("imgui.internalFindOrCreateColumns", "ImGui.InternalFindOrCreateColumns", imgui.InternalFindOrCreateColumns, true)
+	engine.RegisterMethod("imgui.internalFindRenderedTextEndV", "ImGui.InternalFindRenderedTextEndV", imgui.InternalFindRenderedTextEndV, true)
+	engine.RegisterMethod("imgui.internalFindSettingsHandler", "ImGui.InternalFindSettingsHandler", imgui.InternalFindSettingsHandler, true)
+	engine.RegisterMethod("imgui.findViewportByID", "ImGui.FindViewportByID", imgui.FindViewportByID, true)
+	engine.RegisterMethod("imgui.findViewportByPlatformHandle", "ImGui.FindViewportByPlatformHandle", imgui.FindViewportByPlatformHandle, true)
+	engine.RegisterMethod("imgui.internalFindWindowByID", "ImGui.InternalFindWindowByID", imgui.InternalFindWindowByID, true)
+	engine.RegisterMethod("imgui.internalFindWindowByName", "ImGui.InternalFindWindowByName", imgui.InternalFindWindowByName, true)
+	engine.RegisterMethod("imgui.internalFindWindowDisplayIndex", "ImGui.InternalFindWindowDisplayIndex", imgui.InternalFindWindowDisplayIndex, true)
+	engine.RegisterMethod("imgui.internalFindWindowSettingsByID", "ImGui.InternalFindWindowSettingsByID", imgui.InternalFindWindowSettingsByID, true)
+	engine.RegisterMethod("imgui.internalFindWindowSettingsByWindow", "ImGui.InternalFindWindowSettingsByWindow", imgui.InternalFindWindowSettingsByWindow, true)
+	engine.RegisterMethod("imgui.internalFixupKeyChord", "ImGui.InternalFixupKeyChord", imgui.InternalFixupKeyChord, true)
+	engine.RegisterMethod("imgui.internalFocusItem", "ImGui.InternalFocusItem", imgui.InternalFocusItem, true)
+	engine.RegisterMethod("imgui.internalFocusTopMostWindowUnderOne", "ImGui.InternalFocusTopMostWindowUnderOne", imgui.InternalFocusTopMostWindowUnderOne, true)
+	engine.RegisterMethod("imgui.internalFocusWindowV", "ImGui.InternalFocusWindowV", imgui.InternalFocusWindowV, true)
+	engine.RegisterMethod("imgui.internalGcAwakeTransientWindowBuffers", "ImGui.InternalGcAwakeTransientWindowBuffers", imgui.InternalGcAwakeTransientWindowBuffers, true)
+	engine.RegisterMethod("imgui.internalGcCompactTransientMiscBuffers", "ImGui.InternalGcCompactTransientMiscBuffers", imgui.InternalGcCompactTransientMiscBuffers, true)
+	engine.RegisterMethod("imgui.internalGcCompactTransientWindowBuffers", "ImGui.InternalGcCompactTransientWindowBuffers", imgui.InternalGcCompactTransientWindowBuffers, true)
+	engine.RegisterMethod("imgui.internalActiveID", "ImGui.InternalActiveID", imgui.InternalActiveID, true)
+	engine.RegisterMethod("imgui.backgroundDrawListV", "ImGui.BackgroundDrawListV", imgui.BackgroundDrawListV, true)
+	engine.RegisterMethod("imgui.internalBoxSelectState", "ImGui.InternalBoxSelectState", imgui.InternalBoxSelectState, true)
+	engine.RegisterMethod("imgui.clipboardText", "ImGui.ClipboardText", imgui.ClipboardText, true)
+	engine.RegisterMethod("imgui.colorU32ColV", "ImGui.ColorU32ColV", imgui.ColorU32ColV, true)
+	engine.RegisterMethod("imgui.colorU32U32V", "ImGui.ColorU32U32V", imgui.ColorU32U32V, true)
+	engine.RegisterMethod("imgui.colorU32Vec4", "ImGui.ColorU32Vec4", imgui.ColorU32Vec4, true)
+	engine.RegisterMethod("imgui.columnIndex", "ImGui.ColumnIndex", imgui.ColumnIndex, true)
+	engine.RegisterMethod("imgui.internalColumnNormFromOffset", "ImGui.InternalColumnNormFromOffset", imgui.InternalColumnNormFromOffset, true)
+	engine.RegisterMethod("imgui.columnOffsetV", "ImGui.ColumnOffsetV", imgui.ColumnOffsetV, true)
+	engine.RegisterMethod("imgui.internalColumnOffsetFromNorm", "ImGui.InternalColumnOffsetFromNorm", imgui.InternalColumnOffsetFromNorm, true)
+	engine.RegisterMethod("imgui.columnWidthV", "ImGui.ColumnWidthV", imgui.ColumnWidthV, true)
+	engine.RegisterMethod("imgui.columnsCount", "ImGui.ColumnsCount", imgui.ColumnsCount, true)
+	engine.RegisterMethod("imgui.internalColumnsID", "ImGui.InternalColumnsID", imgui.InternalColumnsID, true)
+	engine.RegisterMethod("imgui.contentRegionAvail", "ImGui.ContentRegionAvail", imgui.ContentRegionAvail, true)
+	engine.RegisterMethod("imgui.currentContext", "ImGui.CurrentContext", imgui.CurrentContext, true)
+	engine.RegisterMethod("imgui.internalCurrentFocusScope", "ImGui.InternalCurrentFocusScope", imgui.InternalCurrentFocusScope, true)
+	engine.RegisterMethod("imgui.internalCurrentTabBar", "ImGui.InternalCurrentTabBar", imgui.InternalCurrentTabBar, true)
+	engine.RegisterMethod("imgui.internalCurrentTable", "ImGui.InternalCurrentTable", imgui.InternalCurrentTable, true)
+	engine.RegisterMethod("imgui.internalCurrentWindow", "ImGui.InternalCurrentWindow", imgui.InternalCurrentWindow, true)
+	engine.RegisterMethod("imgui.internalCurrentWindowRead", "ImGui.InternalCurrentWindowRead", imgui.InternalCurrentWindowRead, true)
+	engine.RegisterMethod("imgui.cursorPos", "ImGui.CursorPos", imgui.CursorPos, true)
+	engine.RegisterMethod("imgui.cursorPosX", "ImGui.CursorPosX", imgui.CursorPosX, true)
+	engine.RegisterMethod("imgui.cursorPosY", "ImGui.CursorPosY", imgui.CursorPosY, true)
+	engine.RegisterMethod("imgui.cursorScreenPos", "ImGui.CursorScreenPos", imgui.CursorScreenPos, true)
+	engine.RegisterMethod("imgui.cursorStartPos", "ImGui.CursorStartPos", imgui.CursorStartPos, true)
+	engine.RegisterMethod("imgui.internalDefaultFont", "ImGui.InternalDefaultFont", imgui.InternalDefaultFont, true)
+	engine.RegisterMethod("imgui.dragDropPayload", "ImGui.DragDropPayload", imgui.DragDropPayload, true)
+	engine.RegisterMethod("imgui.currentDrawData", "ImGui.CurrentDrawData", imgui.CurrentDrawData, true)
+	engine.RegisterMethod("imgui.currentDrawListSharedData", "ImGui.CurrentDrawListSharedData", imgui.CurrentDrawListSharedData, true)
+	engine.RegisterMethod("imgui.internalFocusID", "ImGui.InternalFocusID", imgui.InternalFocusID, true)
+	engine.RegisterMethod("imgui.currentFont", "ImGui.CurrentFont", imgui.CurrentFont, true)
+	engine.RegisterMethod("imgui.getFontBaked", "ImGui.GetFontBaked", imgui.GetFontBaked, true)
+	engine.RegisterMethod("imgui.internalFontRasterizerDensity", "ImGui.InternalFontRasterizerDensity", imgui.InternalFontRasterizerDensity, true)
+	engine.RegisterMethod("imgui.fontSize", "ImGui.FontSize", imgui.FontSize, true)
+	engine.RegisterMethod("imgui.fontTexUvWhitePixel", "ImGui.FontTexUvWhitePixel", imgui.FontTexUvWhitePixel, true)
+	engine.RegisterMethod("imgui.foregroundDrawListViewportPtrV", "ImGui.ForegroundDrawListViewportPtrV", imgui.ForegroundDrawListViewportPtrV, true)
+	engine.RegisterMethod("imgui.internalForegroundDrawListWindowPtr", "ImGui.InternalForegroundDrawListWindowPtr", imgui.InternalForegroundDrawListWindowPtr, true)
+	engine.RegisterMethod("imgui.frameCount", "ImGui.FrameCount", imgui.FrameCount, true)
+	engine.RegisterMethod("imgui.frameHeight", "ImGui.FrameHeight", imgui.FrameHeight, true)
+	engine.RegisterMethod("imgui.frameHeightWithSpacing", "ImGui.FrameHeightWithSpacing", imgui.FrameHeightWithSpacing, true)
+	engine.RegisterMethod("imgui.internalHoveredID", "ImGui.InternalHoveredID", imgui.InternalHoveredID, true)
+	engine.RegisterMethod("imgui.internalIDWithSeedInt", "ImGui.InternalIDWithSeedInt", imgui.InternalIDWithSeedInt, true)
+	engine.RegisterMethod("imgui.internalIDWithSeedStr", "ImGui.InternalIDWithSeedStr", imgui.InternalIDWithSeedStr, true)
+	engine.RegisterMethod("imgui.iDInt", "ImGui.IDInt", imgui.IDInt, true)
+	engine.RegisterMethod("imgui.iDPtr", "ImGui.IDPtr", imgui.IDPtr, true)
+	engine.RegisterMethod("imgui.iDStr", "ImGui.IDStr", imgui.IDStr, true)
+	engine.RegisterMethod("imgui.iDStrStr", "ImGui.IDStrStr", imgui.IDStrStr, true)
+	engine.RegisterMethod("imgui.internalIOContextPtr", "ImGui.InternalIOContextPtr", imgui.InternalIOContextPtr, true)
+	engine.RegisterMethod("imgui.currentIO", "ImGui.CurrentIO", imgui.CurrentIO, true)
+	engine.RegisterMethod("imgui.internalInputTextState", "ImGui.InternalInputTextState", imgui.InternalInputTextState, true)
+	engine.RegisterMethod("imgui.internalItemFlags", "ImGui.InternalItemFlags", imgui.InternalItemFlags, true)
+	engine.RegisterMethod("imgui.itemID", "ImGui.ItemID", imgui.ItemID, true)
+	engine.RegisterMethod("imgui.itemRectMax", "ImGui.ItemRectMax", imgui.ItemRectMax, true)
+	engine.RegisterMethod("imgui.itemRectMin", "ImGui.ItemRectMin", imgui.ItemRectMin, true)
+	engine.RegisterMethod("imgui.itemRectSize", "ImGui.ItemRectSize", imgui.ItemRectSize, true)
+	engine.RegisterMethod("imgui.internalItemStatusFlags", "ImGui.InternalItemStatusFlags", imgui.InternalItemStatusFlags, true)
+	engine.RegisterMethod("imgui.internalKeyChordName", "ImGui.InternalKeyChordName", imgui.InternalKeyChordName, true)
+	engine.RegisterMethod("imgui.internalKeyDataContextPtr", "ImGui.InternalKeyDataContextPtr", imgui.InternalKeyDataContextPtr, true)
+	engine.RegisterMethod("imgui.internalKeyDataKey", "ImGui.InternalKeyDataKey", imgui.InternalKeyDataKey, true)
+	engine.RegisterMethod("imgui.internalKeyMagnitude2d", "ImGui.InternalKeyMagnitude2d", imgui.InternalKeyMagnitude2d, true)
+	engine.RegisterMethod("imgui.keyName", "ImGui.KeyName", imgui.KeyName, true)
+	engine.RegisterMethod("imgui.internalKeyOwner", "ImGui.InternalKeyOwner", imgui.InternalKeyOwner, true)
+	engine.RegisterMethod("imgui.internalKeyOwnerData", "ImGui.InternalKeyOwnerData", imgui.InternalKeyOwnerData, true)
+	engine.RegisterMethod("imgui.keyPressedAmount", "ImGui.KeyPressedAmount", imgui.KeyPressedAmount, true)
+	engine.RegisterMethod("imgui.mainViewport", "ImGui.MainViewport", imgui.MainViewport, true)
+	engine.RegisterMethod("imgui.mouseClickedCount", "ImGui.MouseClickedCount", imgui.MouseClickedCount, true)
+	engine.RegisterMethod("imgui.currentMouseCursor", "ImGui.CurrentMouseCursor", imgui.CurrentMouseCursor, true)
+	engine.RegisterMethod("imgui.mouseDragDeltaV", "ImGui.MouseDragDeltaV", imgui.MouseDragDeltaV, true)
+	engine.RegisterMethod("imgui.mousePos", "ImGui.MousePos", imgui.MousePos, true)
+	engine.RegisterMethod("imgui.mousePosOnOpeningCurrentPopup", "ImGui.MousePosOnOpeningCurrentPopup", imgui.MousePosOnOpeningCurrentPopup, true)
+	engine.RegisterMethod("imgui.internalMultiSelectState", "ImGui.InternalMultiSelectState", imgui.InternalMultiSelectState, true)
+	engine.RegisterMethod("imgui.internalNavTweakPressedAmount", "ImGui.InternalNavTweakPressedAmount", imgui.InternalNavTweakPressedAmount, true)
+	engine.RegisterMethod("imgui.internalPlatformIOContextPtr", "ImGui.InternalPlatformIOContextPtr", imgui.InternalPlatformIOContextPtr, true)
+	engine.RegisterMethod("imgui.currentPlatformIO", "ImGui.CurrentPlatformIO", imgui.CurrentPlatformIO, true)
+	engine.RegisterMethod("imgui.internalPopupAllowedExtentRect", "ImGui.InternalPopupAllowedExtentRect", imgui.InternalPopupAllowedExtentRect, true)
+	engine.RegisterMethod("imgui.internalRoundedFontSize", "ImGui.InternalRoundedFontSize", imgui.InternalRoundedFontSize, true)
+	engine.RegisterMethod("imgui.scrollMaxX", "ImGui.ScrollMaxX", imgui.ScrollMaxX, true)
+	engine.RegisterMethod("imgui.scrollMaxY", "ImGui.ScrollMaxY", imgui.ScrollMaxY, true)
+	engine.RegisterMethod("imgui.scrollX", "ImGui.ScrollX", imgui.ScrollX, true)
+	engine.RegisterMethod("imgui.scrollY", "ImGui.ScrollY", imgui.ScrollY, true)
+	engine.RegisterMethod("imgui.internalShortcutRoutingData", "ImGui.InternalShortcutRoutingData", imgui.InternalShortcutRoutingData, true)
+	engine.RegisterMethod("imgui.stateStorage", "ImGui.StateStorage", imgui.StateStorage, true)
+	engine.RegisterMethod("imgui.currentStyle", "ImGui.CurrentStyle", imgui.CurrentStyle, true)
+	engine.RegisterMethod("imgui.styleColorName", "ImGui.StyleColorName", imgui.StyleColorName, true)
+	engine.RegisterMethod("imgui.styleColorVec4", "ImGui.StyleColorVec4", imgui.StyleColorVec4, true)
+	engine.RegisterMethod("imgui.internalStyleVarInfo", "ImGui.InternalStyleVarInfo", imgui.InternalStyleVarInfo, true)
+	engine.RegisterMethod("imgui.textLineHeight", "ImGui.TextLineHeight", imgui.TextLineHeight, true)
+	engine.RegisterMethod("imgui.textLineHeightWithSpacing", "ImGui.TextLineHeightWithSpacing", imgui.TextLineHeightWithSpacing, true)
+	engine.RegisterMethod("imgui.time", "ImGui.Time", imgui.Time, true)
+	engine.RegisterMethod("imgui.internalTopMostAndVisiblePopupModal", "ImGui.InternalTopMostAndVisiblePopupModal", imgui.InternalTopMostAndVisiblePopupModal, true)
+	engine.RegisterMethod("imgui.internalTopMostPopupModal", "ImGui.InternalTopMostPopupModal", imgui.InternalTopMostPopupModal, true)
+	engine.RegisterMethod("imgui.treeNodeToLabelSpacing", "ImGui.TreeNodeToLabelSpacing", imgui.TreeNodeToLabelSpacing, true)
+	engine.RegisterMethod("imgui.internalTypematicRepeatRate", "ImGui.InternalTypematicRepeatRate", imgui.InternalTypematicRepeatRate, true)
+	engine.RegisterMethod("imgui.internalTypingSelectRequestV", "ImGui.InternalTypingSelectRequestV", imgui.InternalTypingSelectRequestV, true)
+	engine.RegisterMethod("imgui.version", "ImGui.Version", imgui.Version, true)
+	engine.RegisterMethod("imgui.internalViewportPlatformMonitor", "ImGui.InternalViewportPlatformMonitor", imgui.InternalViewportPlatformMonitor, true)
+	engine.RegisterMethod("imgui.internalWindowAlwaysWantOwnTabBar", "ImGui.InternalWindowAlwaysWantOwnTabBar", imgui.InternalWindowAlwaysWantOwnTabBar, true)
+	engine.RegisterMethod("imgui.windowDockID", "ImGui.WindowDockID", imgui.WindowDockID, true)
+	engine.RegisterMethod("imgui.internalWindowDockNode", "ImGui.InternalWindowDockNode", imgui.InternalWindowDockNode, true)
+	engine.RegisterMethod("imgui.windowDpiScale", "ImGui.WindowDpiScale", imgui.WindowDpiScale, true)
+	engine.RegisterMethod("imgui.windowDrawList", "ImGui.WindowDrawList", imgui.WindowDrawList, true)
+	engine.RegisterMethod("imgui.windowHeight", "ImGui.WindowHeight", imgui.WindowHeight, true)
+	engine.RegisterMethod("imgui.windowPos", "ImGui.WindowPos", imgui.WindowPos, true)
+	engine.RegisterMethod("imgui.internalWindowResizeBorderID", "ImGui.InternalWindowResizeBorderID", imgui.InternalWindowResizeBorderID, true)
+	engine.RegisterMethod("imgui.internalWindowResizeCornerID", "ImGui.InternalWindowResizeCornerID", imgui.InternalWindowResizeCornerID, true)
+	engine.RegisterMethod("imgui.internalWindowScrollbarID", "ImGui.InternalWindowScrollbarID", imgui.InternalWindowScrollbarID, true)
+	engine.RegisterMethod("imgui.internalWindowScrollbarRect", "ImGui.InternalWindowScrollbarRect", imgui.InternalWindowScrollbarRect, true)
+	engine.RegisterMethod("imgui.windowSize", "ImGui.WindowSize", imgui.WindowSize, true)
+	engine.RegisterMethod("imgui.windowViewport", "ImGui.WindowViewport", imgui.WindowViewport, true)
+	engine.RegisterMethod("imgui.windowWidth", "ImGui.WindowWidth", imgui.WindowWidth, true)
+	engine.RegisterMethod("imgui.internalImAbsFloat", "ImGui.InternalImAbsFloat", imgui.InternalImAbsFloat, true)
+	engine.RegisterMethod("imgui.internalImAbsInt", "ImGui.InternalImAbsInt", imgui.InternalImAbsInt, true)
+	engine.RegisterMethod("imgui.internalImAbsDouble", "ImGui.InternalImAbsDouble", imgui.InternalImAbsDouble, true)
+	engine.RegisterMethod("imgui.internalImAlphaBlendColors", "ImGui.InternalImAlphaBlendColors", imgui.InternalImAlphaBlendColors, true)
+	engine.RegisterMethod("imgui.internalImBezierCubicCalc", "ImGui.InternalImBezierCubicCalc", imgui.InternalImBezierCubicCalc, true)
+	engine.RegisterMethod("imgui.internalImBezierCubicClosestPoint", "ImGui.InternalImBezierCubicClosestPoint", imgui.InternalImBezierCubicClosestPoint, true)
+	engine.RegisterMethod("imgui.internalImBezierCubicClosestPointCasteljau", "ImGui.InternalImBezierCubicClosestPointCasteljau", imgui.InternalImBezierCubicClosestPointCasteljau, true)
+	engine.RegisterMethod("imgui.internalImBezierQuadraticCalc", "ImGui.InternalImBezierQuadraticCalc", imgui.InternalImBezierQuadraticCalc, true)
+	engine.RegisterMethod("imgui.internalImBitArrayClearAllBits", "ImGui.InternalImBitArrayClearAllBits", imgui.InternalImBitArrayClearAllBits, true)
+	engine.RegisterMethod("imgui.internalImBitArrayClearBit", "ImGui.InternalImBitArrayClearBit", imgui.InternalImBitArrayClearBit, true)
+	engine.RegisterMethod("imgui.internalImBitArrayGetStorageSizeInBytes", "ImGui.InternalImBitArrayGetStorageSizeInBytes", imgui.InternalImBitArrayGetStorageSizeInBytes, true)
+	engine.RegisterMethod("imgui.internalImBitArraySetBit", "ImGui.InternalImBitArraySetBit", imgui.InternalImBitArraySetBit, true)
+	engine.RegisterMethod("imgui.internalImBitArraySetBitRange", "ImGui.InternalImBitArraySetBitRange", imgui.InternalImBitArraySetBitRange, true)
+	engine.RegisterMethod("imgui.internalImBitArrayTestBit", "ImGui.InternalImBitArrayTestBit", imgui.InternalImBitArrayTestBit, true)
+	engine.RegisterMethod("imgui.internalImCharIsBlankA", "ImGui.InternalImCharIsBlankA", imgui.InternalImCharIsBlankA, true)
+	engine.RegisterMethod("imgui.internalImCharIsBlankW", "ImGui.InternalImCharIsBlankW", imgui.InternalImCharIsBlankW, true)
+	engine.RegisterMethod("imgui.internalImCharIsXdigitA", "ImGui.InternalImCharIsXdigitA", imgui.InternalImCharIsXdigitA, true)
+	engine.RegisterMethod("imgui.internalImClamp", "ImGui.InternalImClamp", imgui.InternalImClamp, true)
+	engine.RegisterMethod("imgui.internalImCountSetBits", "ImGui.InternalImCountSetBits", imgui.InternalImCountSetBits, true)
+	engine.RegisterMethod("imgui.internalImDot", "ImGui.InternalImDot", imgui.InternalImDot, true)
+	engine.RegisterMethod("imgui.internalImExponentialMovingAverage", "ImGui.InternalImExponentialMovingAverage", imgui.InternalImExponentialMovingAverage, true)
+	engine.RegisterMethod("imgui.internalImFileLoadToMemoryV", "ImGui.InternalImFileLoadToMemoryV", imgui.InternalImFileLoadToMemoryV, true)
+	engine.RegisterMethod("imgui.internalImFloorFloat", "ImGui.InternalImFloorFloat", imgui.InternalImFloorFloat, true)
+	engine.RegisterMethod("imgui.internalImFloorVec2", "ImGui.InternalImFloorVec2", imgui.InternalImFloorVec2, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasAddDrawListSharedData", "ImGui.InternalImFontAtlasAddDrawListSharedData", imgui.InternalImFontAtlasAddDrawListSharedData, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBakedAdd", "ImGui.InternalImFontAtlasBakedAdd", imgui.InternalImFontAtlasBakedAdd, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBakedAddFontGlyph", "ImGui.InternalImFontAtlasBakedAddFontGlyph", imgui.InternalImFontAtlasBakedAddFontGlyph, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBakedAddFontGlyphAdvancedX", "ImGui.InternalImFontAtlasBakedAddFontGlyphAdvancedX", imgui.InternalImFontAtlasBakedAddFontGlyphAdvancedX, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBakedDiscard", "ImGui.InternalImFontAtlasBakedDiscard", imgui.InternalImFontAtlasBakedDiscard, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBakedDiscardFontGlyph", "ImGui.InternalImFontAtlasBakedDiscardFontGlyph", imgui.InternalImFontAtlasBakedDiscardFontGlyph, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBakedGetClosestMatch", "ImGui.InternalImFontAtlasBakedGetClosestMatch", imgui.InternalImFontAtlasBakedGetClosestMatch, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBakedGetId", "ImGui.InternalImFontAtlasBakedGetId", imgui.InternalImFontAtlasBakedGetId, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBakedGetOrAdd", "ImGui.InternalImFontAtlasBakedGetOrAdd", imgui.InternalImFontAtlasBakedGetOrAdd, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBakedSetFontGlyphBitmap", "ImGui.InternalImFontAtlasBakedSetFontGlyphBitmap", imgui.InternalImFontAtlasBakedSetFontGlyphBitmap, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildClear", "ImGui.InternalImFontAtlasBuildClear", imgui.InternalImFontAtlasBuildClear, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildDestroy", "ImGui.InternalImFontAtlasBuildDestroy", imgui.InternalImFontAtlasBuildDestroy, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildDiscardBakes", "ImGui.InternalImFontAtlasBuildDiscardBakes", imgui.InternalImFontAtlasBuildDiscardBakes, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildGetOversampleFactors", "ImGui.InternalImFontAtlasBuildGetOversampleFactors", imgui.InternalImFontAtlasBuildGetOversampleFactors, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildInit", "ImGui.InternalImFontAtlasBuildInit", imgui.InternalImFontAtlasBuildInit, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildLegacyPreloadAllGlyphRanges", "ImGui.InternalImFontAtlasBuildLegacyPreloadAllGlyphRanges", imgui.InternalImFontAtlasBuildLegacyPreloadAllGlyphRanges, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildMain", "ImGui.InternalImFontAtlasBuildMain", imgui.InternalImFontAtlasBuildMain, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildRenderBitmapFromString", "ImGui.InternalImFontAtlasBuildRenderBitmapFromString", imgui.InternalImFontAtlasBuildRenderBitmapFromString, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildSetupFontLoader", "ImGui.InternalImFontAtlasBuildSetupFontLoader", imgui.InternalImFontAtlasBuildSetupFontLoader, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildSetupFontSpecialGlyphs", "ImGui.InternalImFontAtlasBuildSetupFontSpecialGlyphs", imgui.InternalImFontAtlasBuildSetupFontSpecialGlyphs, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasBuildUpdatePointers", "ImGui.InternalImFontAtlasBuildUpdatePointers", imgui.InternalImFontAtlasBuildUpdatePointers, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasDebugLogTextureRequests", "ImGui.InternalImFontAtlasDebugLogTextureRequests", imgui.InternalImFontAtlasDebugLogTextureRequests, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasFontDestroyOutput", "ImGui.InternalImFontAtlasFontDestroyOutput", imgui.InternalImFontAtlasFontDestroyOutput, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasFontDestroySourceData", "ImGui.InternalImFontAtlasFontDestroySourceData", imgui.InternalImFontAtlasFontDestroySourceData, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasFontDiscardBakes", "ImGui.InternalImFontAtlasFontDiscardBakes", imgui.InternalImFontAtlasFontDiscardBakes, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasFontInitOutput", "ImGui.InternalImFontAtlasFontInitOutput", imgui.InternalImFontAtlasFontInitOutput, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasFontSourceAddToFont", "ImGui.InternalImFontAtlasFontSourceAddToFont", imgui.InternalImFontAtlasFontSourceAddToFont, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasFontSourceInit", "ImGui.InternalImFontAtlasFontSourceInit", imgui.InternalImFontAtlasFontSourceInit, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasGetFontLoaderForStbTruetype", "ImGui.InternalImFontAtlasGetFontLoaderForStbTruetype", imgui.InternalImFontAtlasGetFontLoaderForStbTruetype, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasGetMouseCursorTexData", "ImGui.InternalImFontAtlasGetMouseCursorTexData", imgui.InternalImFontAtlasGetMouseCursorTexData, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasPackAddRectV", "ImGui.InternalImFontAtlasPackAddRectV", imgui.InternalImFontAtlasPackAddRectV, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasPackDiscardRect", "ImGui.InternalImFontAtlasPackDiscardRect", imgui.InternalImFontAtlasPackDiscardRect, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasPackGetRect", "ImGui.InternalImFontAtlasPackGetRect", imgui.InternalImFontAtlasPackGetRect, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasPackGetRectSafe", "ImGui.InternalImFontAtlasPackGetRectSafe", imgui.InternalImFontAtlasPackGetRectSafe, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasPackInit", "ImGui.InternalImFontAtlasPackInit", imgui.InternalImFontAtlasPackInit, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasRectIdGetGeneration", "ImGui.InternalImFontAtlasRectIdGetGeneration", imgui.InternalImFontAtlasRectIdGetGeneration, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasRectIdGetIndex", "ImGui.InternalImFontAtlasRectIdGetIndex", imgui.InternalImFontAtlasRectIdGetIndex, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasRectIdMake", "ImGui.InternalImFontAtlasRectIdMake", imgui.InternalImFontAtlasRectIdMake, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasRemoveDrawListSharedData", "ImGui.InternalImFontAtlasRemoveDrawListSharedData", imgui.InternalImFontAtlasRemoveDrawListSharedData, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureAdd", "ImGui.InternalImFontAtlasTextureAdd", imgui.InternalImFontAtlasTextureAdd, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureBlockConvert", "ImGui.InternalImFontAtlasTextureBlockConvert", imgui.InternalImFontAtlasTextureBlockConvert, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureBlockCopy", "ImGui.InternalImFontAtlasTextureBlockCopy", imgui.InternalImFontAtlasTextureBlockCopy, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureBlockFill", "ImGui.InternalImFontAtlasTextureBlockFill", imgui.InternalImFontAtlasTextureBlockFill, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureBlockPostProcess", "ImGui.InternalImFontAtlasTextureBlockPostProcess", imgui.InternalImFontAtlasTextureBlockPostProcess, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureBlockPostProcessMultiply", "ImGui.InternalImFontAtlasTextureBlockPostProcessMultiply", imgui.InternalImFontAtlasTextureBlockPostProcessMultiply, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureBlockQueueUpload", "ImGui.InternalImFontAtlasTextureBlockQueueUpload", imgui.InternalImFontAtlasTextureBlockQueueUpload, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureCompact", "ImGui.InternalImFontAtlasTextureCompact", imgui.InternalImFontAtlasTextureCompact, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureGetSizeEstimate", "ImGui.InternalImFontAtlasTextureGetSizeEstimate", imgui.InternalImFontAtlasTextureGetSizeEstimate, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureGrowV", "ImGui.InternalImFontAtlasTextureGrowV", imgui.InternalImFontAtlasTextureGrowV, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureMakeSpace", "ImGui.InternalImFontAtlasTextureMakeSpace", imgui.InternalImFontAtlasTextureMakeSpace, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureRepack", "ImGui.InternalImFontAtlasTextureRepack", imgui.InternalImFontAtlasTextureRepack, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasUpdateDrawListsSharedData", "ImGui.InternalImFontAtlasUpdateDrawListsSharedData", imgui.InternalImFontAtlasUpdateDrawListsSharedData, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasUpdateDrawListsTextures", "ImGui.InternalImFontAtlasUpdateDrawListsTextures", imgui.InternalImFontAtlasUpdateDrawListsTextures, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasUpdateNewFrame", "ImGui.InternalImFontAtlasUpdateNewFrame", imgui.InternalImFontAtlasUpdateNewFrame, true)
+	engine.RegisterMethod("imgui.internalImFontCalcTextSizeEx", "ImGui.InternalImFontCalcTextSizeEx", imgui.InternalImFontCalcTextSizeEx, true)
+	engine.RegisterMethod("imgui.internalImFontCalcWordWrapPositionExV", "ImGui.InternalImFontCalcWordWrapPositionExV", imgui.InternalImFontCalcWordWrapPositionExV, true)
+	engine.RegisterMethod("imgui.internalImFormatString", "ImGui.InternalImFormatString", imgui.InternalImFormatString, true)
+	engine.RegisterMethod("imgui.internalImFormatStringToTempBuffer", "ImGui.InternalImFormatStringToTempBuffer", imgui.InternalImFormatStringToTempBuffer, true)
+	engine.RegisterMethod("imgui.internalImHashDataV", "ImGui.InternalImHashDataV", imgui.InternalImHashDataV, true)
+	engine.RegisterMethod("imgui.internalImHashSkipUncontributingPrefix", "ImGui.InternalImHashSkipUncontributingPrefix", imgui.InternalImHashSkipUncontributingPrefix, true)
+	engine.RegisterMethod("imgui.internalImHashStrV", "ImGui.InternalImHashStrV", imgui.InternalImHashStrV, true)
+	engine.RegisterMethod("imgui.internalImInvLength", "ImGui.InternalImInvLength", imgui.InternalImInvLength, true)
+	engine.RegisterMethod("imgui.internalImIsFloatAboveGuaranteedIntegerPrecision", "ImGui.InternalImIsFloatAboveGuaranteedIntegerPrecision", imgui.InternalImIsFloatAboveGuaranteedIntegerPrecision, true)
+	engine.RegisterMethod("imgui.internalImIsPowerOfTwoInt", "ImGui.InternalImIsPowerOfTwoInt", imgui.InternalImIsPowerOfTwoInt, true)
+	engine.RegisterMethod("imgui.internalImIsPowerOfTwoU64", "ImGui.InternalImIsPowerOfTwoU64", imgui.InternalImIsPowerOfTwoU64, true)
+	engine.RegisterMethod("imgui.internalImLengthSqrVec2", "ImGui.InternalImLengthSqrVec2", imgui.InternalImLengthSqrVec2, true)
+	engine.RegisterMethod("imgui.internalImLengthSqrVec4", "ImGui.InternalImLengthSqrVec4", imgui.InternalImLengthSqrVec4, true)
+	engine.RegisterMethod("imgui.internalImLerpVec2Float", "ImGui.InternalImLerpVec2Float", imgui.InternalImLerpVec2Float, true)
+	engine.RegisterMethod("imgui.internalImLerpVec2Vec2", "ImGui.InternalImLerpVec2Vec2", imgui.InternalImLerpVec2Vec2, true)
+	engine.RegisterMethod("imgui.internalImLerpVec4", "ImGui.InternalImLerpVec4", imgui.InternalImLerpVec4, true)
+	engine.RegisterMethod("imgui.internalImLineClosestPoint", "ImGui.InternalImLineClosestPoint", imgui.InternalImLineClosestPoint, true)
+	engine.RegisterMethod("imgui.internalImLinearRemapClamp", "ImGui.InternalImLinearRemapClamp", imgui.InternalImLinearRemapClamp, true)
+	engine.RegisterMethod("imgui.internalImLinearSweep", "ImGui.InternalImLinearSweep", imgui.InternalImLinearSweep, true)
+	engine.RegisterMethod("imgui.internalImLogFloat", "ImGui.InternalImLogFloat", imgui.InternalImLogFloat, true)
+	engine.RegisterMethod("imgui.internalImLogDouble", "ImGui.InternalImLogDouble", imgui.InternalImLogDouble, true)
+	engine.RegisterMethod("imgui.internalImLowerBound", "ImGui.InternalImLowerBound", imgui.InternalImLowerBound, true)
+	engine.RegisterMethod("imgui.internalImMax", "ImGui.InternalImMax", imgui.InternalImMax, true)
+	engine.RegisterMethod("imgui.internalImMemdup", "ImGui.InternalImMemdup", imgui.InternalImMemdup, true)
+	engine.RegisterMethod("imgui.internalImMin", "ImGui.InternalImMin", imgui.InternalImMin, true)
+	engine.RegisterMethod("imgui.internalImModPositive", "ImGui.InternalImModPositive", imgui.InternalImModPositive, true)
+	engine.RegisterMethod("imgui.internalImMul", "ImGui.InternalImMul", imgui.InternalImMul, true)
+	engine.RegisterMethod("imgui.internalImParseFormatFindEnd", "ImGui.InternalImParseFormatFindEnd", imgui.InternalImParseFormatFindEnd, true)
+	engine.RegisterMethod("imgui.internalImParseFormatFindStart", "ImGui.InternalImParseFormatFindStart", imgui.InternalImParseFormatFindStart, true)
+	engine.RegisterMethod("imgui.internalImParseFormatPrecision", "ImGui.InternalImParseFormatPrecision", imgui.InternalImParseFormatPrecision, true)
+	engine.RegisterMethod("imgui.internalImParseFormatSanitizeForPrinting", "ImGui.InternalImParseFormatSanitizeForPrinting", imgui.InternalImParseFormatSanitizeForPrinting, true)
+	engine.RegisterMethod("imgui.internalImParseFormatSanitizeForScanning", "ImGui.InternalImParseFormatSanitizeForScanning", imgui.InternalImParseFormatSanitizeForScanning, true)
+	engine.RegisterMethod("imgui.internalImParseFormatTrimDecorations", "ImGui.InternalImParseFormatTrimDecorations", imgui.InternalImParseFormatTrimDecorations, true)
+	engine.RegisterMethod("imgui.internalImPowFloat", "ImGui.InternalImPowFloat", imgui.InternalImPowFloat, true)
+	engine.RegisterMethod("imgui.internalImPowDouble", "ImGui.InternalImPowDouble", imgui.InternalImPowDouble, true)
+	engine.RegisterMethod("imgui.internalImRotate", "ImGui.InternalImRotate", imgui.InternalImRotate, true)
+	engine.RegisterMethod("imgui.internalImRound64", "ImGui.InternalImRound64", imgui.InternalImRound64, true)
+	engine.RegisterMethod("imgui.internalImRsqrtFloat", "ImGui.InternalImRsqrtFloat", imgui.InternalImRsqrtFloat, true)
+	engine.RegisterMethod("imgui.internalImRsqrtDouble", "ImGui.InternalImRsqrtDouble", imgui.InternalImRsqrtDouble, true)
+	engine.RegisterMethod("imgui.internalImSaturate", "ImGui.InternalImSaturate", imgui.InternalImSaturate, true)
+	engine.RegisterMethod("imgui.internalImSignFloat", "ImGui.InternalImSignFloat", imgui.InternalImSignFloat, true)
+	engine.RegisterMethod("imgui.internalImSignDouble", "ImGui.InternalImSignDouble", imgui.InternalImSignDouble, true)
+	engine.RegisterMethod("imgui.internalImStrSkipBlank", "ImGui.InternalImStrSkipBlank", imgui.InternalImStrSkipBlank, true)
+	engine.RegisterMethod("imgui.internalImStrTrimBlanks", "ImGui.InternalImStrTrimBlanks", imgui.InternalImStrTrimBlanks, true)
+	engine.RegisterMethod("imgui.internalImStrbol", "ImGui.InternalImStrbol", imgui.InternalImStrbol, true)
+	engine.RegisterMethod("imgui.internalImStrchrRange", "ImGui.InternalImStrchrRange", imgui.InternalImStrchrRange, true)
+	engine.RegisterMethod("imgui.internalImStrdup", "ImGui.InternalImStrdup", imgui.InternalImStrdup, true)
+	engine.RegisterMethod("imgui.internalImStrdupcpy", "ImGui.InternalImStrdupcpy", imgui.InternalImStrdupcpy, true)
+	engine.RegisterMethod("imgui.internalImStreolRange", "ImGui.InternalImStreolRange", imgui.InternalImStreolRange, true)
+	engine.RegisterMethod("imgui.internalImStricmp", "ImGui.InternalImStricmp", imgui.InternalImStricmp, true)
+	engine.RegisterMethod("imgui.internalImStristr", "ImGui.InternalImStristr", imgui.InternalImStristr, true)
+	engine.RegisterMethod("imgui.internalImStrlenW", "ImGui.InternalImStrlenW", imgui.InternalImStrlenW, true)
+	engine.RegisterMethod("imgui.internalImStrncpy", "ImGui.InternalImStrncpy", imgui.InternalImStrncpy, true)
+	engine.RegisterMethod("imgui.internalImStrnicmp", "ImGui.InternalImStrnicmp", imgui.InternalImStrnicmp, true)
+	engine.RegisterMethod("imgui.internalImTextCalcWordWrapNextLineStartV", "ImGui.InternalImTextCalcWordWrapNextLineStartV", imgui.InternalImTextCalcWordWrapNextLineStartV, true)
+	engine.RegisterMethod("imgui.internalImTextCharFromUtf8", "ImGui.InternalImTextCharFromUtf8", imgui.InternalImTextCharFromUtf8, true)
+	engine.RegisterMethod("imgui.internalImTextCharToUtf8", "ImGui.InternalImTextCharToUtf8", imgui.InternalImTextCharToUtf8, true)
+	engine.RegisterMethod("imgui.internalImTextCountCharsFromUtf8", "ImGui.InternalImTextCountCharsFromUtf8", imgui.InternalImTextCountCharsFromUtf8, true)
+	engine.RegisterMethod("imgui.internalImTextCountLines", "ImGui.InternalImTextCountLines", imgui.InternalImTextCountLines, true)
+	engine.RegisterMethod("imgui.internalImTextCountUtf8BytesFromChar", "ImGui.InternalImTextCountUtf8BytesFromChar", imgui.InternalImTextCountUtf8BytesFromChar, true)
+	engine.RegisterMethod("imgui.internalImTextCountUtf8BytesFromStr", "ImGui.InternalImTextCountUtf8BytesFromStr", imgui.InternalImTextCountUtf8BytesFromStr, true)
+	engine.RegisterMethod("imgui.internalImTextFindPreviousUtf8Codepoint", "ImGui.InternalImTextFindPreviousUtf8Codepoint", imgui.InternalImTextFindPreviousUtf8Codepoint, true)
+	engine.RegisterMethod("imgui.internalImTextStrFromUtf8V", "ImGui.InternalImTextStrFromUtf8V", imgui.InternalImTextStrFromUtf8V, true)
+	engine.RegisterMethod("imgui.internalImTextStrToUtf8", "ImGui.InternalImTextStrToUtf8", imgui.InternalImTextStrToUtf8, true)
+	engine.RegisterMethod("imgui.internalImTextureDataGetFormatBytesPerPixel", "ImGui.InternalImTextureDataGetFormatBytesPerPixel", imgui.InternalImTextureDataGetFormatBytesPerPixel, true)
+	engine.RegisterMethod("imgui.internalImTextureDataGetFormatName", "ImGui.InternalImTextureDataGetFormatName", imgui.InternalImTextureDataGetFormatName, true)
+	engine.RegisterMethod("imgui.internalImTextureDataGetStatusName", "ImGui.InternalImTextureDataGetStatusName", imgui.InternalImTextureDataGetStatusName, true)
+	engine.RegisterMethod("imgui.internalImToUpper", "ImGui.InternalImToUpper", imgui.InternalImToUpper, true)
+	engine.RegisterMethod("imgui.internalImTriangleArea", "ImGui.InternalImTriangleArea", imgui.InternalImTriangleArea, true)
+	engine.RegisterMethod("imgui.internalImTriangleBarycentricCoords", "ImGui.InternalImTriangleBarycentricCoords", imgui.InternalImTriangleBarycentricCoords, true)
+	engine.RegisterMethod("imgui.internalImTriangleClosestPoint", "ImGui.InternalImTriangleClosestPoint", imgui.InternalImTriangleClosestPoint, true)
+	engine.RegisterMethod("imgui.internalImTriangleContainsPoint", "ImGui.InternalImTriangleContainsPoint", imgui.InternalImTriangleContainsPoint, true)
+	engine.RegisterMethod("imgui.internalImTriangleIsClockwise", "ImGui.InternalImTriangleIsClockwise", imgui.InternalImTriangleIsClockwise, true)
+	engine.RegisterMethod("imgui.internalImTrunc64", "ImGui.InternalImTrunc64", imgui.InternalImTrunc64, true)
+	engine.RegisterMethod("imgui.internalImTruncFloat", "ImGui.InternalImTruncFloat", imgui.InternalImTruncFloat, true)
+	engine.RegisterMethod("imgui.internalImTruncVec2", "ImGui.InternalImTruncVec2", imgui.InternalImTruncVec2, true)
+	engine.RegisterMethod("imgui.internalImUpperPowerOfTwo", "ImGui.InternalImUpperPowerOfTwo", imgui.InternalImUpperPowerOfTwo, true)
+	engine.RegisterMethod("imgui.imageV", "ImGui.ImageV", imgui.ImageV, true)
+	engine.RegisterMethod("imgui.imageButtonV", "ImGui.ImageButtonV", imgui.ImageButtonV, true)
+	engine.RegisterMethod("imgui.internalImageButtonExV", "ImGui.InternalImageButtonExV", imgui.InternalImageButtonExV, true)
+	engine.RegisterMethod("imgui.imageWithBgV", "ImGui.ImageWithBgV", imgui.ImageWithBgV, true)
+	engine.RegisterMethod("imgui.indentV", "ImGui.IndentV", imgui.IndentV, true)
+	engine.RegisterMethod("imgui.internalInitialize", "ImGui.InternalInitialize", imgui.InternalInitialize, true)
+	engine.RegisterMethod("imgui.inputDoubleV", "ImGui.InputDoubleV", imgui.InputDoubleV, true)
+	engine.RegisterMethod("imgui.inputFloatV", "ImGui.InputFloatV", imgui.InputFloatV, true)
+	engine.RegisterMethod("imgui.inputFloat2V", "ImGui.InputFloat2V", imgui.InputFloat2V, true)
+	engine.RegisterMethod("imgui.inputFloat3V", "ImGui.InputFloat3V", imgui.InputFloat3V, true)
+	engine.RegisterMethod("imgui.inputFloat4V", "ImGui.InputFloat4V", imgui.InputFloat4V, true)
+	engine.RegisterMethod("imgui.inputIntV", "ImGui.InputIntV", imgui.InputIntV, true)
+	engine.RegisterMethod("imgui.inputInt2V", "ImGui.InputInt2V", imgui.InputInt2V, true)
+	engine.RegisterMethod("imgui.inputInt3V", "ImGui.InputInt3V", imgui.InputInt3V, true)
+	engine.RegisterMethod("imgui.inputInt4V", "ImGui.InputInt4V", imgui.InputInt4V, true)
+	engine.RegisterMethod("imgui.inputScalarV", "ImGui.InputScalarV", imgui.InputScalarV, true)
+	engine.RegisterMethod("imgui.inputScalarNV", "ImGui.InputScalarNV", imgui.InputScalarNV, true)
+	engine.RegisterMethod("imgui.internalInputTextDeactivateHook", "ImGui.InternalInputTextDeactivateHook", imgui.InternalInputTextDeactivateHook, true)
+	engine.RegisterMethod("imgui.invisibleButtonV", "ImGui.InvisibleButtonV", imgui.InvisibleButtonV, true)
+	engine.RegisterMethod("imgui.internalIsActiveIdUsingNavDir", "ImGui.InternalIsActiveIdUsingNavDir", imgui.InternalIsActiveIdUsingNavDir, true)
+	engine.RegisterMethod("imgui.internalIsAliasKey", "ImGui.InternalIsAliasKey", imgui.InternalIsAliasKey, true)
+	engine.RegisterMethod("imgui.isAnyItemActive", "ImGui.IsAnyItemActive", imgui.IsAnyItemActive, true)
+	engine.RegisterMethod("imgui.isAnyItemFocused", "ImGui.IsAnyItemFocused", imgui.IsAnyItemFocused, true)
+	engine.RegisterMethod("imgui.isAnyItemHovered", "ImGui.IsAnyItemHovered", imgui.IsAnyItemHovered, true)
+	engine.RegisterMethod("imgui.isAnyMouseDown", "ImGui.IsAnyMouseDown", imgui.IsAnyMouseDown, true)
+	engine.RegisterMethod("imgui.internalIsClippedEx", "ImGui.InternalIsClippedEx", imgui.InternalIsClippedEx, true)
+	engine.RegisterMethod("imgui.internalIsDragDropActive", "ImGui.InternalIsDragDropActive", imgui.InternalIsDragDropActive, true)
+	engine.RegisterMethod("imgui.internalIsDragDropPayloadBeingAccepted", "ImGui.InternalIsDragDropPayloadBeingAccepted", imgui.InternalIsDragDropPayloadBeingAccepted, true)
+	engine.RegisterMethod("imgui.internalIsGamepadKey", "ImGui.InternalIsGamepadKey", imgui.InternalIsGamepadKey, true)
+	engine.RegisterMethod("imgui.isItemActivated", "ImGui.IsItemActivated", imgui.IsItemActivated, true)
+	engine.RegisterMethod("imgui.isItemActive", "ImGui.IsItemActive", imgui.IsItemActive, true)
+	engine.RegisterMethod("imgui.internalIsItemActiveAsInputText", "ImGui.InternalIsItemActiveAsInputText", imgui.InternalIsItemActiveAsInputText, true)
+	engine.RegisterMethod("imgui.isItemClickedV", "ImGui.IsItemClickedV", imgui.IsItemClickedV, true)
+	engine.RegisterMethod("imgui.isItemDeactivated", "ImGui.IsItemDeactivated", imgui.IsItemDeactivated, true)
+	engine.RegisterMethod("imgui.isItemDeactivatedAfterEdit", "ImGui.IsItemDeactivatedAfterEdit", imgui.IsItemDeactivatedAfterEdit, true)
+	engine.RegisterMethod("imgui.isItemEdited", "ImGui.IsItemEdited", imgui.IsItemEdited, true)
+	engine.RegisterMethod("imgui.isItemFocused", "ImGui.IsItemFocused", imgui.IsItemFocused, true)
+	engine.RegisterMethod("imgui.isItemHoveredV", "ImGui.IsItemHoveredV", imgui.IsItemHoveredV, true)
+	engine.RegisterMethod("imgui.isItemToggledOpen", "ImGui.IsItemToggledOpen", imgui.IsItemToggledOpen, true)
+	engine.RegisterMethod("imgui.isItemToggledSelection", "ImGui.IsItemToggledSelection", imgui.IsItemToggledSelection, true)
+	engine.RegisterMethod("imgui.isItemVisible", "ImGui.IsItemVisible", imgui.IsItemVisible, true)
+	engine.RegisterMethod("imgui.internalIsKeyChordPressedInputFlagsV", "ImGui.InternalIsKeyChordPressedInputFlagsV", imgui.InternalIsKeyChordPressedInputFlagsV, true)
+	engine.RegisterMethod("imgui.isKeyChordPressed", "ImGui.IsKeyChordPressed", imgui.IsKeyChordPressed, true)
+	engine.RegisterMethod("imgui.internalIsKeyDownID", "ImGui.InternalIsKeyDownID", imgui.InternalIsKeyDownID, true)
+	engine.RegisterMethod("imgui.isKeyDown", "ImGui.IsKeyDown", imgui.IsKeyDown, true)
+	engine.RegisterMethod("imgui.isKeyPressedBoolV", "ImGui.IsKeyPressedBoolV", imgui.IsKeyPressedBoolV, true)
+	engine.RegisterMethod("imgui.internalIsKeyPressedInputFlagsV", "ImGui.InternalIsKeyPressedInputFlagsV", imgui.InternalIsKeyPressedInputFlagsV, true)
+	engine.RegisterMethod("imgui.internalIsKeyReleasedID", "ImGui.InternalIsKeyReleasedID", imgui.InternalIsKeyReleasedID, true)
+	engine.RegisterMethod("imgui.isKeyReleased", "ImGui.IsKeyReleased", imgui.IsKeyReleased, true)
+	engine.RegisterMethod("imgui.internalIsKeyboardKey", "ImGui.InternalIsKeyboardKey", imgui.InternalIsKeyboardKey, true)
+	engine.RegisterMethod("imgui.internalIsLRModKey", "ImGui.InternalIsLRModKey", imgui.InternalIsLRModKey, true)
+	engine.RegisterMethod("imgui.internalIsLegacyKey", "ImGui.InternalIsLegacyKey", imgui.InternalIsLegacyKey, true)
+	engine.RegisterMethod("imgui.isMouseClickedBoolV", "ImGui.IsMouseClickedBoolV", imgui.IsMouseClickedBoolV, true)
+	engine.RegisterMethod("imgui.internalIsMouseClickedInputFlagsV", "ImGui.InternalIsMouseClickedInputFlagsV", imgui.InternalIsMouseClickedInputFlagsV, true)
+	engine.RegisterMethod("imgui.internalIsMouseDoubleClickedID", "ImGui.InternalIsMouseDoubleClickedID", imgui.InternalIsMouseDoubleClickedID, true)
+	engine.RegisterMethod("imgui.isMouseDoubleClicked", "ImGui.IsMouseDoubleClicked", imgui.IsMouseDoubleClicked, true)
+	engine.RegisterMethod("imgui.internalIsMouseDownID", "ImGui.InternalIsMouseDownID", imgui.InternalIsMouseDownID, true)
+	engine.RegisterMethod("imgui.isMouseDown", "ImGui.IsMouseDown", imgui.IsMouseDown, true)
+	engine.RegisterMethod("imgui.internalIsMouseDragPastThresholdV", "ImGui.InternalIsMouseDragPastThresholdV", imgui.InternalIsMouseDragPastThresholdV, true)
+	engine.RegisterMethod("imgui.isMouseDraggingV", "ImGui.IsMouseDraggingV", imgui.IsMouseDraggingV, true)
+	engine.RegisterMethod("imgui.isMouseHoveringRectV", "ImGui.IsMouseHoveringRectV", imgui.IsMouseHoveringRectV, true)
+	engine.RegisterMethod("imgui.internalIsMouseKey", "ImGui.InternalIsMouseKey", imgui.InternalIsMouseKey, true)
+	engine.RegisterMethod("imgui.isMousePosValidV", "ImGui.IsMousePosValidV", imgui.IsMousePosValidV, true)
+	engine.RegisterMethod("imgui.isMouseReleasedWithDelay", "ImGui.IsMouseReleasedWithDelay", imgui.IsMouseReleasedWithDelay, true)
+	engine.RegisterMethod("imgui.internalIsMouseReleasedID", "ImGui.InternalIsMouseReleasedID", imgui.InternalIsMouseReleasedID, true)
+	engine.RegisterMethod("imgui.isMouseReleased", "ImGui.IsMouseReleased", imgui.IsMouseReleased, true)
+	engine.RegisterMethod("imgui.internalIsNamedKey", "ImGui.InternalIsNamedKey", imgui.InternalIsNamedKey, true)
+	engine.RegisterMethod("imgui.internalIsNamedKeyOrMod", "ImGui.InternalIsNamedKeyOrMod", imgui.InternalIsNamedKeyOrMod, true)
+	engine.RegisterMethod("imgui.internalIsPopupOpenID", "ImGui.InternalIsPopupOpenID", imgui.InternalIsPopupOpenID, true)
+	engine.RegisterMethod("imgui.isPopupOpenStrV", "ImGui.IsPopupOpenStrV", imgui.IsPopupOpenStrV, true)
+	engine.RegisterMethod("imgui.isRectVisible", "ImGui.IsRectVisible", imgui.IsRectVisible, true)
+	engine.RegisterMethod("imgui.isRectVisibleVec2", "ImGui.IsRectVisibleVec2", imgui.IsRectVisibleVec2, true)
+	engine.RegisterMethod("imgui.internalIsWindowAbove", "ImGui.InternalIsWindowAbove", imgui.InternalIsWindowAbove, true)
+	engine.RegisterMethod("imgui.isWindowAppearing", "ImGui.IsWindowAppearing", imgui.IsWindowAppearing, true)
+	engine.RegisterMethod("imgui.internalIsWindowChildOf", "ImGui.InternalIsWindowChildOf", imgui.InternalIsWindowChildOf, true)
+	engine.RegisterMethod("imgui.isWindowCollapsed", "ImGui.IsWindowCollapsed", imgui.IsWindowCollapsed, true)
+	engine.RegisterMethod("imgui.internalIsWindowContentHoverableV", "ImGui.InternalIsWindowContentHoverableV", imgui.InternalIsWindowContentHoverableV, true)
+	engine.RegisterMethod("imgui.isWindowDocked", "ImGui.IsWindowDocked", imgui.IsWindowDocked, true)
+	engine.RegisterMethod("imgui.isWindowFocusedV", "ImGui.IsWindowFocusedV", imgui.IsWindowFocusedV, true)
+	engine.RegisterMethod("imgui.isWindowHoveredV", "ImGui.IsWindowHoveredV", imgui.IsWindowHoveredV, true)
+	engine.RegisterMethod("imgui.internalIsWindowNavFocusable", "ImGui.InternalIsWindowNavFocusable", imgui.InternalIsWindowNavFocusable, true)
+	engine.RegisterMethod("imgui.internalIsWindowWithinBeginStackOf", "ImGui.InternalIsWindowWithinBeginStackOf", imgui.InternalIsWindowWithinBeginStackOf, true)
+	engine.RegisterMethod("imgui.internalItemAddV", "ImGui.InternalItemAddV", imgui.InternalItemAddV, true)
+	engine.RegisterMethod("imgui.internalItemHoverable", "ImGui.InternalItemHoverable", imgui.InternalItemHoverable, true)
+	engine.RegisterMethod("imgui.internalItemSizeRectV", "ImGui.InternalItemSizeRectV", imgui.InternalItemSizeRectV, true)
+	engine.RegisterMethod("imgui.internalItemSizeVec2V", "ImGui.InternalItemSizeVec2V", imgui.InternalItemSizeVec2V, true)
+	engine.RegisterMethod("imgui.internalKeepAliveID", "ImGui.InternalKeepAliveID", imgui.InternalKeepAliveID, true)
+	engine.RegisterMethod("imgui.labelText", "ImGui.LabelText", imgui.LabelText, true)
+	engine.RegisterMethod("imgui.listBoxStrarrV", "ImGui.ListBoxStrarrV", imgui.ListBoxStrarrV, true)
+	engine.RegisterMethod("imgui.loadIniSettingsFromDisk", "ImGui.LoadIniSettingsFromDisk", imgui.LoadIniSettingsFromDisk, true)
+	engine.RegisterMethod("imgui.loadIniSettingsFromMemoryV", "ImGui.LoadIniSettingsFromMemoryV", imgui.LoadIniSettingsFromMemoryV, true)
+	engine.RegisterMethod("imgui.internalLocalizeGetMsg", "ImGui.InternalLocalizeGetMsg", imgui.InternalLocalizeGetMsg, true)
+	engine.RegisterMethod("imgui.internalLocalizeRegisterEntries", "ImGui.InternalLocalizeRegisterEntries", imgui.InternalLocalizeRegisterEntries, true)
+	engine.RegisterMethod("imgui.internalLogBegin", "ImGui.InternalLogBegin", imgui.InternalLogBegin, true)
+	engine.RegisterMethod("imgui.logButtons", "ImGui.LogButtons", imgui.LogButtons, true)
+	engine.RegisterMethod("imgui.logFinish", "ImGui.LogFinish", imgui.LogFinish, true)
+	engine.RegisterMethod("imgui.internalLogRenderedTextV", "ImGui.InternalLogRenderedTextV", imgui.InternalLogRenderedTextV, true)
+	engine.RegisterMethod("imgui.internalLogSetNextTextDecoration", "ImGui.InternalLogSetNextTextDecoration", imgui.InternalLogSetNextTextDecoration, true)
+	engine.RegisterMethod("imgui.logText", "ImGui.LogText", imgui.LogText, true)
+	engine.RegisterMethod("imgui.internalLogToBufferV", "ImGui.InternalLogToBufferV", imgui.InternalLogToBufferV, true)
+	engine.RegisterMethod("imgui.logToClipboardV", "ImGui.LogToClipboardV", imgui.LogToClipboardV, true)
+	engine.RegisterMethod("imgui.logToFileV", "ImGui.LogToFileV", imgui.LogToFileV, true)
+	engine.RegisterMethod("imgui.logToTTYV", "ImGui.LogToTTYV", imgui.LogToTTYV, true)
+	engine.RegisterMethod("imgui.internalMarkIniSettingsDirty", "ImGui.InternalMarkIniSettingsDirty", imgui.InternalMarkIniSettingsDirty, true)
+	engine.RegisterMethod("imgui.internalMarkIniSettingsDirtyWindowPtr", "ImGui.InternalMarkIniSettingsDirtyWindowPtr", imgui.InternalMarkIniSettingsDirtyWindowPtr, true)
+	engine.RegisterMethod("imgui.internalMarkItemEdited", "ImGui.InternalMarkItemEdited", imgui.InternalMarkItemEdited, true)
+	engine.RegisterMethod("imgui.memAlloc", "ImGui.MemAlloc", imgui.MemAlloc, true)
+	engine.RegisterMethod("imgui.memFree", "ImGui.MemFree", imgui.MemFree, true)
+	engine.RegisterMethod("imgui.internalMenuItemExV", "ImGui.InternalMenuItemExV", imgui.InternalMenuItemExV, true)
+	engine.RegisterMethod("imgui.menuItemBoolV", "ImGui.MenuItemBoolV", imgui.MenuItemBoolV, true)
+	engine.RegisterMethod("imgui.menuItemBoolPtrV", "ImGui.MenuItemBoolPtrV", imgui.MenuItemBoolPtrV, true)
+	engine.RegisterMethod("imgui.internalMouseButtonToKey", "ImGui.InternalMouseButtonToKey", imgui.InternalMouseButtonToKey, true)
+	engine.RegisterMethod("imgui.internalMultiSelectAddSetAll", "ImGui.InternalMultiSelectAddSetAll", imgui.InternalMultiSelectAddSetAll, true)
+	engine.RegisterMethod("imgui.internalMultiSelectAddSetRange", "ImGui.InternalMultiSelectAddSetRange", imgui.InternalMultiSelectAddSetRange, true)
+	engine.RegisterMethod("imgui.internalMultiSelectItemFooter", "ImGui.InternalMultiSelectItemFooter", imgui.InternalMultiSelectItemFooter, true)
+	engine.RegisterMethod("imgui.internalMultiSelectItemHeader", "ImGui.InternalMultiSelectItemHeader", imgui.InternalMultiSelectItemHeader, true)
+	engine.RegisterMethod("imgui.internalNavClearPreferredPosForAxis", "ImGui.InternalNavClearPreferredPosForAxis", imgui.InternalNavClearPreferredPosForAxis, true)
+	engine.RegisterMethod("imgui.internalNavHighlightActivated", "ImGui.InternalNavHighlightActivated", imgui.InternalNavHighlightActivated, true)
+	engine.RegisterMethod("imgui.internalNavInitRequestApplyResult", "ImGui.InternalNavInitRequestApplyResult", imgui.InternalNavInitRequestApplyResult, true)
+	engine.RegisterMethod("imgui.internalNavInitWindow", "ImGui.InternalNavInitWindow", imgui.InternalNavInitWindow, true)
+	engine.RegisterMethod("imgui.internalNavMoveRequestApplyResult", "ImGui.InternalNavMoveRequestApplyResult", imgui.InternalNavMoveRequestApplyResult, true)
+	engine.RegisterMethod("imgui.internalNavMoveRequestButNoResultYet", "ImGui.InternalNavMoveRequestButNoResultYet", imgui.InternalNavMoveRequestButNoResultYet, true)
+	engine.RegisterMethod("imgui.internalNavMoveRequestCancel", "ImGui.InternalNavMoveRequestCancel", imgui.InternalNavMoveRequestCancel, true)
+	engine.RegisterMethod("imgui.internalNavMoveRequestForward", "ImGui.InternalNavMoveRequestForward", imgui.InternalNavMoveRequestForward, true)
+	engine.RegisterMethod("imgui.internalNavMoveRequestResolveWithLastItem", "ImGui.InternalNavMoveRequestResolveWithLastItem", imgui.InternalNavMoveRequestResolveWithLastItem, true)
+	engine.RegisterMethod("imgui.internalNavMoveRequestResolveWithPastTreeNode", "ImGui.InternalNavMoveRequestResolveWithPastTreeNode", imgui.InternalNavMoveRequestResolveWithPastTreeNode, true)
+	engine.RegisterMethod("imgui.internalNavMoveRequestSubmit", "ImGui.InternalNavMoveRequestSubmit", imgui.InternalNavMoveRequestSubmit, true)
+	engine.RegisterMethod("imgui.internalNavMoveRequestTryWrapping", "ImGui.InternalNavMoveRequestTryWrapping", imgui.InternalNavMoveRequestTryWrapping, true)
+	engine.RegisterMethod("imgui.internalNavUpdateCurrentWindowIsScrollPushableX", "ImGui.InternalNavUpdateCurrentWindowIsScrollPushableX", imgui.InternalNavUpdateCurrentWindowIsScrollPushableX, true)
+	engine.RegisterMethod("imgui.newFrame", "ImGui.NewFrame", imgui.NewFrame, true)
+	engine.RegisterMethod("imgui.newLine", "ImGui.NewLine", imgui.NewLine, true)
+	engine.RegisterMethod("imgui.nextColumn", "ImGui.NextColumn", imgui.NextColumn, true)
+	engine.RegisterMethod("imgui.internalOpenPopupExV", "ImGui.InternalOpenPopupExV", imgui.InternalOpenPopupExV, true)
+	engine.RegisterMethod("imgui.openPopupOnItemClickV", "ImGui.OpenPopupOnItemClickV", imgui.OpenPopupOnItemClickV, true)
+	engine.RegisterMethod("imgui.openPopupIDV", "ImGui.OpenPopupIDV", imgui.OpenPopupIDV, true)
+	engine.RegisterMethod("imgui.openPopupStrV", "ImGui.OpenPopupStrV", imgui.OpenPopupStrV, true)
+	engine.RegisterMethod("imgui.plotHistogramFloatPtrV", "ImGui.PlotHistogramFloatPtrV", imgui.PlotHistogramFloatPtrV, true)
+	engine.RegisterMethod("imgui.plotLinesFloatPtrV", "ImGui.PlotLinesFloatPtrV", imgui.PlotLinesFloatPtrV, true)
+	engine.RegisterMethod("imgui.popClipRect", "ImGui.PopClipRect", imgui.PopClipRect, true)
+	engine.RegisterMethod("imgui.internalPopColumnsBackground", "ImGui.InternalPopColumnsBackground", imgui.InternalPopColumnsBackground, true)
+	engine.RegisterMethod("imgui.internalPopFocusScope", "ImGui.InternalPopFocusScope", imgui.InternalPopFocusScope, true)
+	engine.RegisterMethod("imgui.popFont", "ImGui.PopFont", imgui.PopFont, true)
+	engine.RegisterMethod("imgui.popID", "ImGui.PopID", imgui.PopID, true)
+	engine.RegisterMethod("imgui.popItemFlag", "ImGui.PopItemFlag", imgui.PopItemFlag, true)
+	engine.RegisterMethod("imgui.popItemWidth", "ImGui.PopItemWidth", imgui.PopItemWidth, true)
+	engine.RegisterMethod("imgui.internalPopPasswordFont", "ImGui.InternalPopPasswordFont", imgui.InternalPopPasswordFont, true)
+	engine.RegisterMethod("imgui.popStyleColorV", "ImGui.PopStyleColorV", imgui.PopStyleColorV, true)
+	engine.RegisterMethod("imgui.popStyleVarV", "ImGui.PopStyleVarV", imgui.PopStyleVarV, true)
+	engine.RegisterMethod("imgui.popTextWrapPos", "ImGui.PopTextWrapPos", imgui.PopTextWrapPos, true)
+	engine.RegisterMethod("imgui.progressBarV", "ImGui.ProgressBarV", imgui.ProgressBarV, true)
+	engine.RegisterMethod("imgui.pushClipRect", "ImGui.PushClipRect", imgui.PushClipRect, true)
+	engine.RegisterMethod("imgui.internalPushColumnClipRect", "ImGui.InternalPushColumnClipRect", imgui.InternalPushColumnClipRect, true)
+	engine.RegisterMethod("imgui.internalPushColumnsBackground", "ImGui.InternalPushColumnsBackground", imgui.InternalPushColumnsBackground, true)
+	engine.RegisterMethod("imgui.internalPushFocusScope", "ImGui.InternalPushFocusScope", imgui.InternalPushFocusScope, true)
+	engine.RegisterMethod("imgui.pushFont", "ImGui.PushFont", imgui.PushFont, true)
+	engine.RegisterMethod("imgui.pushIDInt", "ImGui.PushIDInt", imgui.PushIDInt, true)
+	engine.RegisterMethod("imgui.pushIDPtr", "ImGui.PushIDPtr", imgui.PushIDPtr, true)
+	engine.RegisterMethod("imgui.pushIDStr", "ImGui.PushIDStr", imgui.PushIDStr, true)
+	engine.RegisterMethod("imgui.pushIDStrStr", "ImGui.PushIDStrStr", imgui.PushIDStrStr, true)
+	engine.RegisterMethod("imgui.pushItemFlag", "ImGui.PushItemFlag", imgui.PushItemFlag, true)
+	engine.RegisterMethod("imgui.pushItemWidth", "ImGui.PushItemWidth", imgui.PushItemWidth, true)
+	engine.RegisterMethod("imgui.internalPushMultiItemsWidths", "ImGui.InternalPushMultiItemsWidths", imgui.InternalPushMultiItemsWidths, true)
+	engine.RegisterMethod("imgui.internalPushOverrideID", "ImGui.InternalPushOverrideID", imgui.InternalPushOverrideID, true)
+	engine.RegisterMethod("imgui.internalPushPasswordFont", "ImGui.InternalPushPasswordFont", imgui.InternalPushPasswordFont, true)
+	engine.RegisterMethod("imgui.pushStyleColorU32", "ImGui.PushStyleColorU32", imgui.PushStyleColorU32, true)
+	engine.RegisterMethod("imgui.pushStyleColorVec4", "ImGui.PushStyleColorVec4", imgui.PushStyleColorVec4, true)
+	engine.RegisterMethod("imgui.pushStyleVarX", "ImGui.PushStyleVarX", imgui.PushStyleVarX, true)
+	engine.RegisterMethod("imgui.pushStyleVarY", "ImGui.PushStyleVarY", imgui.PushStyleVarY, true)
+	engine.RegisterMethod("imgui.pushStyleVarFloat", "ImGui.PushStyleVarFloat", imgui.PushStyleVarFloat, true)
+	engine.RegisterMethod("imgui.pushStyleVarVec2", "ImGui.PushStyleVarVec2", imgui.PushStyleVarVec2, true)
+	engine.RegisterMethod("imgui.pushTextWrapPosV", "ImGui.PushTextWrapPosV", imgui.PushTextWrapPosV, true)
+	engine.RegisterMethod("imgui.radioButtonBool", "ImGui.RadioButtonBool", imgui.RadioButtonBool, true)
+	engine.RegisterMethod("imgui.radioButtonIntPtr", "ImGui.RadioButtonIntPtr", imgui.RadioButtonIntPtr, true)
+	engine.RegisterMethod("imgui.internalRegisterFontAtlas", "ImGui.InternalRegisterFontAtlas", imgui.InternalRegisterFontAtlas, true)
+	engine.RegisterMethod("imgui.internalRegisterUserTexture", "ImGui.InternalRegisterUserTexture", imgui.InternalRegisterUserTexture, true)
+	engine.RegisterMethod("imgui.internalRemoveContextHook", "ImGui.InternalRemoveContextHook", imgui.InternalRemoveContextHook, true)
+	engine.RegisterMethod("imgui.internalRemoveSettingsHandler", "ImGui.InternalRemoveSettingsHandler", imgui.InternalRemoveSettingsHandler, true)
+	engine.RegisterMethod("imgui.render", "ImGui.Render", imgui.Render, true)
+	engine.RegisterMethod("imgui.internalRenderArrowV", "ImGui.InternalRenderArrowV", imgui.InternalRenderArrowV, true)
+	engine.RegisterMethod("imgui.internalRenderArrowDockMenu", "ImGui.InternalRenderArrowDockMenu", imgui.InternalRenderArrowDockMenu, true)
+	engine.RegisterMethod("imgui.internalRenderArrowPointingAt", "ImGui.InternalRenderArrowPointingAt", imgui.InternalRenderArrowPointingAt, true)
+	engine.RegisterMethod("imgui.internalRenderBullet", "ImGui.InternalRenderBullet", imgui.InternalRenderBullet, true)
+	engine.RegisterMethod("imgui.internalRenderCheckMark", "ImGui.InternalRenderCheckMark", imgui.InternalRenderCheckMark, true)
+	engine.RegisterMethod("imgui.internalRenderColorRectWithAlphaCheckerboardV", "ImGui.InternalRenderColorRectWithAlphaCheckerboardV", imgui.InternalRenderColorRectWithAlphaCheckerboardV, true)
+	engine.RegisterMethod("imgui.internalRenderDragDropTargetRectEx", "ImGui.InternalRenderDragDropTargetRectEx", imgui.InternalRenderDragDropTargetRectEx, true)
+	engine.RegisterMethod("imgui.internalRenderDragDropTargetRectForItem", "ImGui.InternalRenderDragDropTargetRectForItem", imgui.InternalRenderDragDropTargetRectForItem, true)
+	engine.RegisterMethod("imgui.internalRenderFrameV", "ImGui.InternalRenderFrameV", imgui.InternalRenderFrameV, true)
+	engine.RegisterMethod("imgui.internalRenderFrameBorderV", "ImGui.InternalRenderFrameBorderV", imgui.InternalRenderFrameBorderV, true)
+	engine.RegisterMethod("imgui.internalRenderMouseCursor", "ImGui.InternalRenderMouseCursor", imgui.InternalRenderMouseCursor, true)
+	engine.RegisterMethod("imgui.internalRenderNavCursorV", "ImGui.InternalRenderNavCursorV", imgui.InternalRenderNavCursorV, true)
+	engine.RegisterMethod("imgui.renderPlatformWindowsDefaultV", "ImGui.RenderPlatformWindowsDefaultV", imgui.RenderPlatformWindowsDefaultV, true)
+	engine.RegisterMethod("imgui.internalRenderRectFilledRangeH", "ImGui.InternalRenderRectFilledRangeH", imgui.InternalRenderRectFilledRangeH, true)
+	engine.RegisterMethod("imgui.internalRenderRectFilledWithHole", "ImGui.InternalRenderRectFilledWithHole", imgui.InternalRenderRectFilledWithHole, true)
+	engine.RegisterMethod("imgui.internalRenderTextV", "ImGui.InternalRenderTextV", imgui.InternalRenderTextV, true)
+	engine.RegisterMethod("imgui.internalRenderTextClippedV", "ImGui.InternalRenderTextClippedV", imgui.InternalRenderTextClippedV, true)
+	engine.RegisterMethod("imgui.internalRenderTextClippedExV", "ImGui.InternalRenderTextClippedExV", imgui.InternalRenderTextClippedExV, true)
+	engine.RegisterMethod("imgui.internalRenderTextEllipsis", "ImGui.InternalRenderTextEllipsis", imgui.InternalRenderTextEllipsis, true)
+	engine.RegisterMethod("imgui.internalRenderTextWrapped", "ImGui.InternalRenderTextWrapped", imgui.InternalRenderTextWrapped, true)
+	engine.RegisterMethod("imgui.resetMouseDragDeltaV", "ImGui.ResetMouseDragDeltaV", imgui.ResetMouseDragDeltaV, true)
+	engine.RegisterMethod("imgui.sameLineV", "ImGui.SameLineV", imgui.SameLineV, true)
+	engine.RegisterMethod("imgui.saveIniSettingsToDisk", "ImGui.SaveIniSettingsToDisk", imgui.SaveIniSettingsToDisk, true)
+	engine.RegisterMethod("imgui.saveIniSettingsToMemoryV", "ImGui.SaveIniSettingsToMemoryV", imgui.SaveIniSettingsToMemoryV, true)
+	engine.RegisterMethod("imgui.internalScaleWindowsInViewport", "ImGui.InternalScaleWindowsInViewport", imgui.InternalScaleWindowsInViewport, true)
+	engine.RegisterMethod("imgui.internalScrollToBringRectIntoView", "ImGui.InternalScrollToBringRectIntoView", imgui.InternalScrollToBringRectIntoView, true)
+	engine.RegisterMethod("imgui.internalScrollToItemV", "ImGui.InternalScrollToItemV", imgui.InternalScrollToItemV, true)
+	engine.RegisterMethod("imgui.internalScrollToRectV", "ImGui.InternalScrollToRectV", imgui.InternalScrollToRectV, true)
+	engine.RegisterMethod("imgui.internalScrollToRectExV", "ImGui.InternalScrollToRectExV", imgui.InternalScrollToRectExV, true)
+	engine.RegisterMethod("imgui.internalScrollbar", "ImGui.InternalScrollbar", imgui.InternalScrollbar, true)
+	engine.RegisterMethod("imgui.internalScrollbarExV", "ImGui.InternalScrollbarExV", imgui.InternalScrollbarExV, true)
+	engine.RegisterMethod("imgui.selectableBoolV", "ImGui.SelectableBoolV", imgui.SelectableBoolV, true)
+	engine.RegisterMethod("imgui.selectableBoolPtrV", "ImGui.SelectableBoolPtrV", imgui.SelectableBoolPtrV, true)
+	engine.RegisterMethod("imgui.separator", "ImGui.Separator", imgui.Separator, true)
+	engine.RegisterMethod("imgui.internalSeparatorExV", "ImGui.InternalSeparatorExV", imgui.InternalSeparatorExV, true)
+	engine.RegisterMethod("imgui.separatorText", "ImGui.SeparatorText", imgui.SeparatorText, true)
+	engine.RegisterMethod("imgui.drawRect", "ImGui.DrawRect", imgui.DrawRect, true)
+	engine.RegisterMethod("imgui.internalSeparatorTextEx", "ImGui.InternalSeparatorTextEx", imgui.InternalSeparatorTextEx, true)
+	engine.RegisterMethod("imgui.internalSetActiveID", "ImGui.InternalSetActiveID", imgui.InternalSetActiveID, true)
+	engine.RegisterMethod("imgui.internalSetActiveIdUsingAllKeyboardKeys", "ImGui.InternalSetActiveIdUsingAllKeyboardKeys", imgui.InternalSetActiveIdUsingAllKeyboardKeys, true)
+	engine.RegisterMethod("imgui.setAllocatorFunctionsV", "ImGui.SetAllocatorFunctionsV", imgui.SetAllocatorFunctionsV, true)
+	engine.RegisterMethod("imgui.setClipboardText", "ImGui.SetClipboardText", imgui.SetClipboardText, true)
+	engine.RegisterMethod("imgui.setColorEditOptions", "ImGui.SetColorEditOptions", imgui.SetColorEditOptions, true)
+	engine.RegisterMethod("imgui.setColumnOffset", "ImGui.SetColumnOffset", imgui.SetColumnOffset, true)
+	engine.RegisterMethod("imgui.setColumnWidth", "ImGui.SetColumnWidth", imgui.SetColumnWidth, true)
+	engine.RegisterMethod("imgui.setCurrentContext", "ImGui.SetCurrentContext", imgui.SetCurrentContext, true)
+	engine.RegisterMethod("imgui.internalSetCurrentFont", "ImGui.InternalSetCurrentFont", imgui.InternalSetCurrentFont, true)
+	engine.RegisterMethod("imgui.internalSetCurrentViewport", "ImGui.InternalSetCurrentViewport", imgui.InternalSetCurrentViewport, true)
+	engine.RegisterMethod("imgui.setCursorPos", "ImGui.SetCursorPos", imgui.SetCursorPos, true)
+	engine.RegisterMethod("imgui.setCursorPosX", "ImGui.SetCursorPosX", imgui.SetCursorPosX, true)
+	engine.RegisterMethod("imgui.setCursorPosY", "ImGui.SetCursorPosY", imgui.SetCursorPosY, true)
+	engine.RegisterMethod("imgui.setCursorScreenPos", "ImGui.SetCursorScreenPos", imgui.SetCursorScreenPos, true)
+	engine.RegisterMethod("imgui.setDragDropPayloadV", "ImGui.SetDragDropPayloadV", imgui.SetDragDropPayloadV, true)
+	engine.RegisterMethod("imgui.internalSetFocusID", "ImGui.InternalSetFocusID", imgui.InternalSetFocusID, true)
+	engine.RegisterMethod("imgui.internalSetFontRasterizerDensity", "ImGui.InternalSetFontRasterizerDensity", imgui.InternalSetFontRasterizerDensity, true)
+	engine.RegisterMethod("imgui.internalSetHoveredID", "ImGui.InternalSetHoveredID", imgui.InternalSetHoveredID, true)
+	engine.RegisterMethod("imgui.setItemDefaultFocus", "ImGui.SetItemDefaultFocus", imgui.SetItemDefaultFocus, true)
+	engine.RegisterMethod("imgui.internalSetItemKeyOwnerInputFlags", "ImGui.InternalSetItemKeyOwnerInputFlags", imgui.InternalSetItemKeyOwnerInputFlags, true)
+	engine.RegisterMethod("imgui.setItemKeyOwner", "ImGui.SetItemKeyOwner", imgui.SetItemKeyOwner, true)
+	engine.RegisterMethod("imgui.setItemTooltip", "ImGui.SetItemTooltip", imgui.SetItemTooltip, true)
+	engine.RegisterMethod("imgui.internalSetKeyOwnerV", "ImGui.InternalSetKeyOwnerV", imgui.InternalSetKeyOwnerV, true)
+	engine.RegisterMethod("imgui.internalSetKeyOwnersForKeyChordV", "ImGui.InternalSetKeyOwnersForKeyChordV", imgui.InternalSetKeyOwnersForKeyChordV, true)
+	engine.RegisterMethod("imgui.setKeyboardFocusHereV", "ImGui.SetKeyboardFocusHereV", imgui.SetKeyboardFocusHereV, true)
+	engine.RegisterMethod("imgui.internalSetLastItemData", "ImGui.InternalSetLastItemData", imgui.InternalSetLastItemData, true)
+	engine.RegisterMethod("imgui.setMouseCursor", "ImGui.SetMouseCursor", imgui.SetMouseCursor, true)
+	engine.RegisterMethod("imgui.setNavCursorVisible", "ImGui.SetNavCursorVisible", imgui.SetNavCursorVisible, true)
+	engine.RegisterMethod("imgui.internalSetNavCursorVisibleAfterMove", "ImGui.InternalSetNavCursorVisibleAfterMove", imgui.InternalSetNavCursorVisibleAfterMove, true)
+	engine.RegisterMethod("imgui.internalSetNavFocusScope", "ImGui.InternalSetNavFocusScope", imgui.InternalSetNavFocusScope, true)
+	engine.RegisterMethod("imgui.internalSetNavID", "ImGui.InternalSetNavID", imgui.InternalSetNavID, true)
+	engine.RegisterMethod("imgui.internalSetNavWindow", "ImGui.InternalSetNavWindow", imgui.InternalSetNavWindow, true)
+	engine.RegisterMethod("imgui.setNextFrameWantCaptureKeyboard", "ImGui.SetNextFrameWantCaptureKeyboard", imgui.SetNextFrameWantCaptureKeyboard, true)
+	engine.RegisterMethod("imgui.setNextFrameWantCaptureMouse", "ImGui.SetNextFrameWantCaptureMouse", imgui.SetNextFrameWantCaptureMouse, true)
+	engine.RegisterMethod("imgui.setNextItemAllowOverlap", "ImGui.SetNextItemAllowOverlap", imgui.SetNextItemAllowOverlap, true)
+	engine.RegisterMethod("imgui.setNextItemOpenV", "ImGui.SetNextItemOpenV", imgui.SetNextItemOpenV, true)
+	engine.RegisterMethod("imgui.internalSetNextItemRefVal", "ImGui.InternalSetNextItemRefVal", imgui.InternalSetNextItemRefVal, true)
+	engine.RegisterMethod("imgui.setNextItemSelectionUserData", "ImGui.SetNextItemSelectionUserData", imgui.SetNextItemSelectionUserData, true)
+	engine.RegisterMethod("imgui.setNextItemShortcutV", "ImGui.SetNextItemShortcutV", imgui.SetNextItemShortcutV, true)
+	engine.RegisterMethod("imgui.setNextItemStorageID", "ImGui.SetNextItemStorageID", imgui.SetNextItemStorageID, true)
+	engine.RegisterMethod("imgui.setNextItemWidth", "ImGui.SetNextItemWidth", imgui.SetNextItemWidth, true)
+	engine.RegisterMethod("imgui.setNextWindowBgAlpha", "ImGui.SetNextWindowBgAlpha", imgui.SetNextWindowBgAlpha, true)
+	engine.RegisterMethod("imgui.setNextWindowClass", "ImGui.SetNextWindowClass", imgui.SetNextWindowClass, true)
+	engine.RegisterMethod("imgui.setNextWindowCollapsedV", "ImGui.SetNextWindowCollapsedV", imgui.SetNextWindowCollapsedV, true)
+	engine.RegisterMethod("imgui.setNextWindowContentSize", "ImGui.SetNextWindowContentSize", imgui.SetNextWindowContentSize, true)
+	engine.RegisterMethod("imgui.setNextWindowDockIDV", "ImGui.SetNextWindowDockIDV", imgui.SetNextWindowDockIDV, true)
+	engine.RegisterMethod("imgui.setNextWindowFocus", "ImGui.SetNextWindowFocus", imgui.SetNextWindowFocus, true)
+	engine.RegisterMethod("imgui.setNextWindowPosV", "ImGui.SetNextWindowPosV", imgui.SetNextWindowPosV, true)
+	engine.RegisterMethod("imgui.internalSetNextWindowRefreshPolicy", "ImGui.InternalSetNextWindowRefreshPolicy", imgui.InternalSetNextWindowRefreshPolicy, true)
+	engine.RegisterMethod("imgui.setNextWindowScroll", "ImGui.SetNextWindowScroll", imgui.SetNextWindowScroll, true)
+	engine.RegisterMethod("imgui.setNextWindowSizeV", "ImGui.SetNextWindowSizeV", imgui.SetNextWindowSizeV, true)
+	engine.RegisterMethod("imgui.setNextWindowSizeConstraintsV", "ImGui.SetNextWindowSizeConstraintsV", imgui.SetNextWindowSizeConstraintsV, true)
+	engine.RegisterMethod("imgui.setNextWindowViewport", "ImGui.SetNextWindowViewport", imgui.SetNextWindowViewport, true)
+	engine.RegisterMethod("imgui.setScrollFromPosXFloatV", "ImGui.SetScrollFromPosXFloatV", imgui.SetScrollFromPosXFloatV, true)
+	engine.RegisterMethod("imgui.internalSetScrollFromPosXWindowPtr", "ImGui.InternalSetScrollFromPosXWindowPtr", imgui.InternalSetScrollFromPosXWindowPtr, true)
+	engine.RegisterMethod("imgui.setScrollFromPosYFloatV", "ImGui.SetScrollFromPosYFloatV", imgui.SetScrollFromPosYFloatV, true)
+	engine.RegisterMethod("imgui.internalSetScrollFromPosYWindowPtr", "ImGui.InternalSetScrollFromPosYWindowPtr", imgui.InternalSetScrollFromPosYWindowPtr, true)
+	engine.RegisterMethod("imgui.setScrollHereXV", "ImGui.SetScrollHereXV", imgui.SetScrollHereXV, true)
+	engine.RegisterMethod("imgui.setScrollHereYV", "ImGui.SetScrollHereYV", imgui.SetScrollHereYV, true)
+	engine.RegisterMethod("imgui.setScrollXFloat", "ImGui.SetScrollXFloat", imgui.SetScrollXFloat, true)
+	engine.RegisterMethod("imgui.internalSetScrollXWindowPtr", "ImGui.InternalSetScrollXWindowPtr", imgui.InternalSetScrollXWindowPtr, true)
+	engine.RegisterMethod("imgui.setScrollYFloat", "ImGui.SetScrollYFloat", imgui.SetScrollYFloat, true)
+	engine.RegisterMethod("imgui.internalSetScrollYWindowPtr", "ImGui.InternalSetScrollYWindowPtr", imgui.InternalSetScrollYWindowPtr, true)
+	engine.RegisterMethod("imgui.internalSetShortcutRouting", "ImGui.InternalSetShortcutRouting", imgui.InternalSetShortcutRouting, true)
+	engine.RegisterMethod("imgui.setStateStorage", "ImGui.SetStateStorage", imgui.SetStateStorage, true)
+	engine.RegisterMethod("imgui.setTabItemClosed", "ImGui.SetTabItemClosed", imgui.SetTabItemClosed, true)
+	engine.RegisterMethod("imgui.setTooltip", "ImGui.SetTooltip", imgui.SetTooltip, true)
+	engine.RegisterMethod("imgui.internalSetWindowClipRectBeforeSetChannel", "ImGui.InternalSetWindowClipRectBeforeSetChannel", imgui.InternalSetWindowClipRectBeforeSetChannel, true)
+	engine.RegisterMethod("imgui.setWindowCollapsedBoolV", "ImGui.SetWindowCollapsedBoolV", imgui.SetWindowCollapsedBoolV, true)
+	engine.RegisterMethod("imgui.setWindowCollapsedStrV", "ImGui.SetWindowCollapsedStrV", imgui.SetWindowCollapsedStrV, true)
+	engine.RegisterMethod("imgui.internalSetWindowCollapsedWindowPtrV", "ImGui.InternalSetWindowCollapsedWindowPtrV", imgui.InternalSetWindowCollapsedWindowPtrV, true)
+	engine.RegisterMethod("imgui.internalSetWindowDock", "ImGui.InternalSetWindowDock", imgui.InternalSetWindowDock, true)
+	engine.RegisterMethod("imgui.setWindowFocus", "ImGui.SetWindowFocus", imgui.SetWindowFocus, true)
+	engine.RegisterMethod("imgui.setWindowFocusStr", "ImGui.SetWindowFocusStr", imgui.SetWindowFocusStr, true)
+	engine.RegisterMethod("imgui.setWindowFontScale", "ImGui.SetWindowFontScale", imgui.SetWindowFontScale, true)
+	engine.RegisterMethod("imgui.internalSetWindowHiddenAndSkipItemsForCurrentFrame", "ImGui.InternalSetWindowHiddenAndSkipItemsForCurrentFrame", imgui.InternalSetWindowHiddenAndSkipItemsForCurrentFrame, true)
+	engine.RegisterMethod("imgui.internalSetWindowHitTestHole", "ImGui.InternalSetWindowHitTestHole", imgui.InternalSetWindowHitTestHole, true)
+	engine.RegisterMethod("imgui.internalSetWindowParentWindowForFocusRoute", "ImGui.InternalSetWindowParentWindowForFocusRoute", imgui.InternalSetWindowParentWindowForFocusRoute, true)
+	engine.RegisterMethod("imgui.setWindowPosStrV", "ImGui.SetWindowPosStrV", imgui.SetWindowPosStrV, true)
+	engine.RegisterMethod("imgui.setWindowPosVec2V", "ImGui.SetWindowPosVec2V", imgui.SetWindowPosVec2V, true)
+	engine.RegisterMethod("imgui.internalSetWindowPosWindowPtrV", "ImGui.InternalSetWindowPosWindowPtrV", imgui.InternalSetWindowPosWindowPtrV, true)
+	engine.RegisterMethod("imgui.setWindowSizeStrV", "ImGui.SetWindowSizeStrV", imgui.SetWindowSizeStrV, true)
+	engine.RegisterMethod("imgui.setWindowSizeVec2V", "ImGui.SetWindowSizeVec2V", imgui.SetWindowSizeVec2V, true)
+	engine.RegisterMethod("imgui.internalSetWindowSizeWindowPtrV", "ImGui.InternalSetWindowSizeWindowPtrV", imgui.InternalSetWindowSizeWindowPtrV, true)
+	engine.RegisterMethod("imgui.internalSetWindowViewport", "ImGui.InternalSetWindowViewport", imgui.InternalSetWindowViewport, true)
+	engine.RegisterMethod("imgui.internalShadeVertsLinearColorGradientKeepAlpha", "ImGui.InternalShadeVertsLinearColorGradientKeepAlpha", imgui.InternalShadeVertsLinearColorGradientKeepAlpha, true)
+	engine.RegisterMethod("imgui.internalShadeVertsLinearUV", "ImGui.InternalShadeVertsLinearUV", imgui.InternalShadeVertsLinearUV, true)
+	engine.RegisterMethod("imgui.internalShadeVertsTransformPos", "ImGui.InternalShadeVertsTransformPos", imgui.InternalShadeVertsTransformPos, true)
+	engine.RegisterMethod("imgui.internalShortcutID", "ImGui.InternalShortcutID", imgui.InternalShortcutID, true)
+	engine.RegisterMethod("imgui.shortcutNilV", "ImGui.ShortcutNilV", imgui.ShortcutNilV, true)
+	engine.RegisterMethod("imgui.showAboutWindowV", "ImGui.ShowAboutWindowV", imgui.ShowAboutWindowV, true)
+	engine.RegisterMethod("imgui.showDebugLogWindowV", "ImGui.ShowDebugLogWindowV", imgui.ShowDebugLogWindowV, true)
+	engine.RegisterMethod("imgui.showDemoWindowV", "ImGui.ShowDemoWindowV", imgui.ShowDemoWindowV, true)
+	engine.RegisterMethod("imgui.internalShowFontAtlas", "ImGui.InternalShowFontAtlas", imgui.InternalShowFontAtlas, true)
+	engine.RegisterMethod("imgui.showFontSelector", "ImGui.ShowFontSelector", imgui.ShowFontSelector, true)
+	engine.RegisterMethod("imgui.showIDStackToolWindowV", "ImGui.ShowIDStackToolWindowV", imgui.ShowIDStackToolWindowV, true)
+	engine.RegisterMethod("imgui.showMetricsWindowV", "ImGui.ShowMetricsWindowV", imgui.ShowMetricsWindowV, true)
+	engine.RegisterMethod("imgui.showStyleEditorV", "ImGui.ShowStyleEditorV", imgui.ShowStyleEditorV, true)
+	engine.RegisterMethod("imgui.showStyleSelector", "ImGui.ShowStyleSelector", imgui.ShowStyleSelector, true)
+	engine.RegisterMethod("imgui.showUserGuide", "ImGui.ShowUserGuide", imgui.ShowUserGuide, true)
+	engine.RegisterMethod("imgui.internalShrinkWidths", "ImGui.InternalShrinkWidths", imgui.InternalShrinkWidths, true)
+	engine.RegisterMethod("imgui.internalShutdown", "ImGui.InternalShutdown", imgui.InternalShutdown, true)
+	engine.RegisterMethod("imgui.sliderAngleV", "ImGui.SliderAngleV", imgui.SliderAngleV, true)
+	engine.RegisterMethod("imgui.internalSliderBehavior", "ImGui.InternalSliderBehavior", imgui.InternalSliderBehavior, true)
+	engine.RegisterMethod("imgui.sliderFloatV", "ImGui.SliderFloatV", imgui.SliderFloatV, true)
+	engine.RegisterMethod("imgui.sliderFloat2V", "ImGui.SliderFloat2V", imgui.SliderFloat2V, true)
+	engine.RegisterMethod("imgui.sliderFloat3V", "ImGui.SliderFloat3V", imgui.SliderFloat3V, true)
+	engine.RegisterMethod("imgui.sliderFloat4V", "ImGui.SliderFloat4V", imgui.SliderFloat4V, true)
+	engine.RegisterMethod("imgui.sliderIntV", "ImGui.SliderIntV", imgui.SliderIntV, true)
+	engine.RegisterMethod("imgui.sliderInt2V", "ImGui.SliderInt2V", imgui.SliderInt2V, true)
+	engine.RegisterMethod("imgui.sliderInt3V", "ImGui.SliderInt3V", imgui.SliderInt3V, true)
+	engine.RegisterMethod("imgui.sliderInt4V", "ImGui.SliderInt4V", imgui.SliderInt4V, true)
+	engine.RegisterMethod("imgui.sliderScalarV", "ImGui.SliderScalarV", imgui.SliderScalarV, true)
+	engine.RegisterMethod("imgui.sliderScalarNV", "ImGui.SliderScalarNV", imgui.SliderScalarNV, true)
+	engine.RegisterMethod("imgui.smallButton", "ImGui.SmallButton", imgui.SmallButton, true)
+	engine.RegisterMethod("imgui.spacing", "ImGui.Spacing", imgui.Spacing, true)
+	engine.RegisterMethod("imgui.internalSplitterBehaviorV", "ImGui.InternalSplitterBehaviorV", imgui.InternalSplitterBehaviorV, true)
+	engine.RegisterMethod("imgui.internalStartMouseMovingWindow", "ImGui.InternalStartMouseMovingWindow", imgui.InternalStartMouseMovingWindow, true)
+	engine.RegisterMethod("imgui.internalStartMouseMovingWindowOrNode", "ImGui.InternalStartMouseMovingWindowOrNode", imgui.InternalStartMouseMovingWindowOrNode, true)
+	engine.RegisterMethod("imgui.internalStopMouseMovingWindow", "ImGui.InternalStopMouseMovingWindow", imgui.InternalStopMouseMovingWindow, true)
+	engine.RegisterMethod("imgui.styleColorsClassicV", "ImGui.StyleColorsClassicV", imgui.StyleColorsClassicV, true)
+	engine.RegisterMethod("imgui.styleColorsDarkV", "ImGui.StyleColorsDarkV", imgui.StyleColorsDarkV, true)
+	engine.RegisterMethod("imgui.styleColorsLightV", "ImGui.StyleColorsLightV", imgui.StyleColorsLightV, true)
+	engine.RegisterMethod("imgui.internalTabBarAddTab", "ImGui.InternalTabBarAddTab", imgui.InternalTabBarAddTab, true)
+	engine.RegisterMethod("imgui.internalTabBarCloseTab", "ImGui.InternalTabBarCloseTab", imgui.InternalTabBarCloseTab, true)
+	engine.RegisterMethod("imgui.internalTabBarFindByID", "ImGui.InternalTabBarFindByID", imgui.InternalTabBarFindByID, true)
+	engine.RegisterMethod("imgui.internalTabBarFindMostRecentlySelectedTabForActiveWindow", "ImGui.InternalTabBarFindMostRecentlySelectedTabForActiveWindow", imgui.InternalTabBarFindMostRecentlySelectedTabForActiveWindow, true)
+	engine.RegisterMethod("imgui.internalTabBarFindTabByID", "ImGui.InternalTabBarFindTabByID", imgui.InternalTabBarFindTabByID, true)
+	engine.RegisterMethod("imgui.internalTabBarFindTabByOrder", "ImGui.InternalTabBarFindTabByOrder", imgui.InternalTabBarFindTabByOrder, true)
+	engine.RegisterMethod("imgui.internalTabBarGetCurrentTab", "ImGui.InternalTabBarGetCurrentTab", imgui.InternalTabBarGetCurrentTab, true)
+	engine.RegisterMethod("imgui.internalTabBarGetTabName", "ImGui.InternalTabBarGetTabName", imgui.InternalTabBarGetTabName, true)
+	engine.RegisterMethod("imgui.internalTabBarGetTabOrder", "ImGui.InternalTabBarGetTabOrder", imgui.InternalTabBarGetTabOrder, true)
+	engine.RegisterMethod("imgui.internalTabBarProcessReorder", "ImGui.InternalTabBarProcessReorder", imgui.InternalTabBarProcessReorder, true)
+	engine.RegisterMethod("imgui.internalTabBarQueueFocusStr", "ImGui.InternalTabBarQueueFocusStr", imgui.InternalTabBarQueueFocusStr, true)
+	engine.RegisterMethod("imgui.internalTabBarQueueFocusTabItemPtr", "ImGui.InternalTabBarQueueFocusTabItemPtr", imgui.InternalTabBarQueueFocusTabItemPtr, true)
+	engine.RegisterMethod("imgui.internalTabBarQueueReorder", "ImGui.InternalTabBarQueueReorder", imgui.InternalTabBarQueueReorder, true)
+	engine.RegisterMethod("imgui.internalTabBarQueueReorderFromMousePos", "ImGui.InternalTabBarQueueReorderFromMousePos", imgui.InternalTabBarQueueReorderFromMousePos, true)
+	engine.RegisterMethod("imgui.internalTabBarRemove", "ImGui.InternalTabBarRemove", imgui.InternalTabBarRemove, true)
+	engine.RegisterMethod("imgui.internalTabBarRemoveTab", "ImGui.InternalTabBarRemoveTab", imgui.InternalTabBarRemoveTab, true)
+	engine.RegisterMethod("imgui.internalTabItemBackground", "ImGui.InternalTabItemBackground", imgui.InternalTabItemBackground, true)
+	engine.RegisterMethod("imgui.tabItemButtonV", "ImGui.TabItemButtonV", imgui.TabItemButtonV, true)
+	engine.RegisterMethod("imgui.internalTabItemCalcSizeStr", "ImGui.InternalTabItemCalcSizeStr", imgui.InternalTabItemCalcSizeStr, true)
+	engine.RegisterMethod("imgui.internalTabItemCalcSizeWindowPtr", "ImGui.InternalTabItemCalcSizeWindowPtr", imgui.InternalTabItemCalcSizeWindowPtr, true)
+	engine.RegisterMethod("imgui.internalTabItemEx", "ImGui.InternalTabItemEx", imgui.InternalTabItemEx, true)
+	engine.RegisterMethod("imgui.internalTabItemLabelAndCloseButton", "ImGui.InternalTabItemLabelAndCloseButton", imgui.InternalTabItemLabelAndCloseButton, true)
+	engine.RegisterMethod("imgui.internalTabItemSpacing", "ImGui.InternalTabItemSpacing", imgui.InternalTabItemSpacing, true)
+	engine.RegisterMethod("imgui.tableAngledHeadersRow", "ImGui.TableAngledHeadersRow", imgui.TableAngledHeadersRow, true)
+	engine.RegisterMethod("imgui.internalTableAngledHeadersRowEx", "ImGui.InternalTableAngledHeadersRowEx", imgui.InternalTableAngledHeadersRowEx, true)
+	engine.RegisterMethod("imgui.internalTableBeginApplyRequests", "ImGui.InternalTableBeginApplyRequests", imgui.InternalTableBeginApplyRequests, true)
+	engine.RegisterMethod("imgui.internalTableBeginCell", "ImGui.InternalTableBeginCell", imgui.InternalTableBeginCell, true)
+	engine.RegisterMethod("imgui.internalTableBeginContextMenuPopup", "ImGui.InternalTableBeginContextMenuPopup", imgui.InternalTableBeginContextMenuPopup, true)
+	engine.RegisterMethod("imgui.internalTableBeginInitMemory", "ImGui.InternalTableBeginInitMemory", imgui.InternalTableBeginInitMemory, true)
+	engine.RegisterMethod("imgui.internalTableBeginRow", "ImGui.InternalTableBeginRow", imgui.InternalTableBeginRow, true)
+	engine.RegisterMethod("imgui.internalTableCalcMaxColumnWidth", "ImGui.InternalTableCalcMaxColumnWidth", imgui.InternalTableCalcMaxColumnWidth, true)
+	engine.RegisterMethod("imgui.internalTableDrawBorders", "ImGui.InternalTableDrawBorders", imgui.InternalTableDrawBorders, true)
+	engine.RegisterMethod("imgui.internalTableDrawDefaultContextMenu", "ImGui.InternalTableDrawDefaultContextMenu", imgui.InternalTableDrawDefaultContextMenu, true)
+	engine.RegisterMethod("imgui.internalTableEndCell", "ImGui.InternalTableEndCell", imgui.InternalTableEndCell, true)
+	engine.RegisterMethod("imgui.internalTableEndRow", "ImGui.InternalTableEndRow", imgui.InternalTableEndRow, true)
+	engine.RegisterMethod("imgui.internalTableFindByID", "ImGui.InternalTableFindByID", imgui.InternalTableFindByID, true)
+	engine.RegisterMethod("imgui.internalTableFixColumnSortDirection", "ImGui.InternalTableFixColumnSortDirection", imgui.InternalTableFixColumnSortDirection, true)
+	engine.RegisterMethod("imgui.internalTableGcCompactSettings", "ImGui.InternalTableGcCompactSettings", imgui.InternalTableGcCompactSettings, true)
+	engine.RegisterMethod("imgui.internalTableGcCompactTransientBuffersTablePtr", "ImGui.InternalTableGcCompactTransientBuffersTablePtr", imgui.InternalTableGcCompactTransientBuffersTablePtr, true)
+	engine.RegisterMethod("imgui.internalTableGcCompactTransientBuffersTableTempDataPtr", "ImGui.InternalTableGcCompactTransientBuffersTableTempDataPtr", imgui.InternalTableGcCompactTransientBuffersTableTempDataPtr, true)
+	engine.RegisterMethod("imgui.internalTableGetBoundSettings", "ImGui.InternalTableGetBoundSettings", imgui.InternalTableGetBoundSettings, true)
+	engine.RegisterMethod("imgui.internalTableGetCellBgRect", "ImGui.InternalTableGetCellBgRect", imgui.InternalTableGetCellBgRect, true)
+	engine.RegisterMethod("imgui.tableGetColumnCount", "ImGui.TableGetColumnCount", imgui.TableGetColumnCount, true)
+	engine.RegisterMethod("imgui.tableGetColumnFlagsV", "ImGui.TableGetColumnFlagsV", imgui.TableGetColumnFlagsV, true)
+	engine.RegisterMethod("imgui.tableGetColumnIndex", "ImGui.TableGetColumnIndex", imgui.TableGetColumnIndex, true)
+	engine.RegisterMethod("imgui.tableGetColumnNameIntV", "ImGui.TableGetColumnNameIntV", imgui.TableGetColumnNameIntV, true)
+	engine.RegisterMethod("imgui.internalTableGetColumnNameTablePtr", "ImGui.InternalTableGetColumnNameTablePtr", imgui.InternalTableGetColumnNameTablePtr, true)
+	engine.RegisterMethod("imgui.internalTableGetColumnNextSortDirection", "ImGui.InternalTableGetColumnNextSortDirection", imgui.InternalTableGetColumnNextSortDirection, true)
+	engine.RegisterMethod("imgui.internalTableGetColumnResizeIDV", "ImGui.InternalTableGetColumnResizeIDV", imgui.InternalTableGetColumnResizeIDV, true)
+	engine.RegisterMethod("imgui.internalTableGetColumnWidthAuto", "ImGui.InternalTableGetColumnWidthAuto", imgui.InternalTableGetColumnWidthAuto, true)
+	engine.RegisterMethod("imgui.internalTableGetHeaderAngledMaxLabelWidth", "ImGui.InternalTableGetHeaderAngledMaxLabelWidth", imgui.InternalTableGetHeaderAngledMaxLabelWidth, true)
+	engine.RegisterMethod("imgui.internalTableGetHeaderRowHeight", "ImGui.InternalTableGetHeaderRowHeight", imgui.InternalTableGetHeaderRowHeight, true)
+	engine.RegisterMethod("imgui.tableGetHoveredColumn", "ImGui.TableGetHoveredColumn", imgui.TableGetHoveredColumn, true)
+	engine.RegisterMethod("imgui.internalTableGetHoveredRow", "ImGui.InternalTableGetHoveredRow", imgui.InternalTableGetHoveredRow, true)
+	engine.RegisterMethod("imgui.internalTableGetInstanceData", "ImGui.InternalTableGetInstanceData", imgui.InternalTableGetInstanceData, true)
+	engine.RegisterMethod("imgui.internalTableGetInstanceID", "ImGui.InternalTableGetInstanceID", imgui.InternalTableGetInstanceID, true)
+	engine.RegisterMethod("imgui.tableGetRowIndex", "ImGui.TableGetRowIndex", imgui.TableGetRowIndex, true)
+	engine.RegisterMethod("imgui.tableGetSortSpecs", "ImGui.TableGetSortSpecs", imgui.TableGetSortSpecs, true)
+	engine.RegisterMethod("imgui.tableHeader", "ImGui.TableHeader", imgui.TableHeader, true)
+	engine.RegisterMethod("imgui.tableHeadersRow", "ImGui.TableHeadersRow", imgui.TableHeadersRow, true)
+	engine.RegisterMethod("imgui.internalTableLoadSettings", "ImGui.InternalTableLoadSettings", imgui.InternalTableLoadSettings, true)
+	engine.RegisterMethod("imgui.internalTableMergeDrawChannels", "ImGui.InternalTableMergeDrawChannels", imgui.InternalTableMergeDrawChannels, true)
+	engine.RegisterMethod("imgui.tableNextColumn", "ImGui.TableNextColumn", imgui.TableNextColumn, true)
+	engine.RegisterMethod("imgui.tableNextRowV", "ImGui.TableNextRowV", imgui.TableNextRowV, true)
+	engine.RegisterMethod("imgui.internalTableOpenContextMenuV", "ImGui.InternalTableOpenContextMenuV", imgui.InternalTableOpenContextMenuV, true)
+	engine.RegisterMethod("imgui.internalTablePopBackgroundChannel", "ImGui.InternalTablePopBackgroundChannel", imgui.InternalTablePopBackgroundChannel, true)
+	engine.RegisterMethod("imgui.internalTablePopColumnChannel", "ImGui.InternalTablePopColumnChannel", imgui.InternalTablePopColumnChannel, true)
+	engine.RegisterMethod("imgui.internalTablePushBackgroundChannel", "ImGui.InternalTablePushBackgroundChannel", imgui.InternalTablePushBackgroundChannel, true)
+	engine.RegisterMethod("imgui.internalTablePushColumnChannel", "ImGui.InternalTablePushColumnChannel", imgui.InternalTablePushColumnChannel, true)
+	engine.RegisterMethod("imgui.internalTableRemove", "ImGui.InternalTableRemove", imgui.InternalTableRemove, true)
+	engine.RegisterMethod("imgui.internalTableResetSettings", "ImGui.InternalTableResetSettings", imgui.InternalTableResetSettings, true)
+	engine.RegisterMethod("imgui.internalTableSaveSettings", "ImGui.InternalTableSaveSettings", imgui.InternalTableSaveSettings, true)
+	engine.RegisterMethod("imgui.tableSetBgColorV", "ImGui.TableSetBgColorV", imgui.TableSetBgColorV, true)
+	engine.RegisterMethod("imgui.tableSetColumnEnabled", "ImGui.TableSetColumnEnabled", imgui.TableSetColumnEnabled, true)
+	engine.RegisterMethod("imgui.tableSetColumnIndex", "ImGui.TableSetColumnIndex", imgui.TableSetColumnIndex, true)
+	engine.RegisterMethod("imgui.internalTableSetColumnSortDirection", "ImGui.InternalTableSetColumnSortDirection", imgui.InternalTableSetColumnSortDirection, true)
+	engine.RegisterMethod("imgui.internalTableSetColumnWidth", "ImGui.InternalTableSetColumnWidth", imgui.InternalTableSetColumnWidth, true)
+	engine.RegisterMethod("imgui.internalTableSetColumnWidthAutoAll", "ImGui.InternalTableSetColumnWidthAutoAll", imgui.InternalTableSetColumnWidthAutoAll, true)
+	engine.RegisterMethod("imgui.internalTableSetColumnWidthAutoSingle", "ImGui.InternalTableSetColumnWidthAutoSingle", imgui.InternalTableSetColumnWidthAutoSingle, true)
+	engine.RegisterMethod("imgui.internalTableSettingsAddSettingsHandler", "ImGui.InternalTableSettingsAddSettingsHandler", imgui.InternalTableSettingsAddSettingsHandler, true)
+	engine.RegisterMethod("imgui.internalTableSettingsCreate", "ImGui.InternalTableSettingsCreate", imgui.InternalTableSettingsCreate, true)
+	engine.RegisterMethod("imgui.internalTableSettingsFindByID", "ImGui.InternalTableSettingsFindByID", imgui.InternalTableSettingsFindByID, true)
+	engine.RegisterMethod("imgui.tableSetupColumnV", "ImGui.TableSetupColumnV", imgui.TableSetupColumnV, true)
+	engine.RegisterMethod("imgui.internalTableSetupDrawChannels", "ImGui.InternalTableSetupDrawChannels", imgui.InternalTableSetupDrawChannels, true)
+	engine.RegisterMethod("imgui.tableSetupScrollFreeze", "ImGui.TableSetupScrollFreeze", imgui.TableSetupScrollFreeze, true)
+	engine.RegisterMethod("imgui.internalTableSortSpecsBuild", "ImGui.InternalTableSortSpecsBuild", imgui.InternalTableSortSpecsBuild, true)
+	engine.RegisterMethod("imgui.internalTableSortSpecsSanitize", "ImGui.InternalTableSortSpecsSanitize", imgui.InternalTableSortSpecsSanitize, true)
+	engine.RegisterMethod("imgui.internalTableUpdateBorders", "ImGui.InternalTableUpdateBorders", imgui.InternalTableUpdateBorders, true)
+	engine.RegisterMethod("imgui.internalTableUpdateColumnsWeightFromWidth", "ImGui.InternalTableUpdateColumnsWeightFromWidth", imgui.InternalTableUpdateColumnsWeightFromWidth, true)
+	engine.RegisterMethod("imgui.internalTableUpdateLayout", "ImGui.InternalTableUpdateLayout", imgui.InternalTableUpdateLayout, true)
+	engine.RegisterMethod("imgui.internalTeleportMousePos", "ImGui.InternalTeleportMousePos", imgui.InternalTeleportMousePos, true)
+	engine.RegisterMethod("imgui.internalTempInputIsActive", "ImGui.InternalTempInputIsActive", imgui.InternalTempInputIsActive, true)
+	engine.RegisterMethod("imgui.internalTempInputScalarV", "ImGui.InternalTempInputScalarV", imgui.InternalTempInputScalarV, true)
+	engine.RegisterMethod("imgui.internalTempInputText", "ImGui.InternalTempInputText", imgui.InternalTempInputText, true)
+	engine.RegisterMethod("imgui.internalTestKeyOwner", "ImGui.InternalTestKeyOwner", imgui.InternalTestKeyOwner, true)
+	engine.RegisterMethod("imgui.internalTestShortcutRouting", "ImGui.InternalTestShortcutRouting", imgui.InternalTestShortcutRouting, true)
+	engine.RegisterMethod("imgui.text", "ImGui.Text", imgui.Text, true)
+	engine.RegisterMethod("imgui.internalTextAligned", "ImGui.InternalTextAligned", imgui.InternalTextAligned, true)
+	engine.RegisterMethod("imgui.textColored", "ImGui.TextColored", imgui.TextColored, true)
+	engine.RegisterMethod("imgui.textDisabled", "ImGui.TextDisabled", imgui.TextDisabled, true)
+	engine.RegisterMethod("imgui.internalTextExV", "ImGui.InternalTextExV", imgui.InternalTextExV, true)
+	engine.RegisterMethod("imgui.textLink", "ImGui.TextLink", imgui.TextLink, true)
+	engine.RegisterMethod("imgui.textLinkOpenURLV", "ImGui.TextLinkOpenURLV", imgui.TextLinkOpenURLV, true)
+	engine.RegisterMethod("imgui.textUnformattedV", "ImGui.TextUnformattedV", imgui.TextUnformattedV, true)
+	engine.RegisterMethod("imgui.textWrapped", "ImGui.TextWrapped", imgui.TextWrapped, true)
+	engine.RegisterMethod("imgui.internalTranslateWindowsInViewport", "ImGui.InternalTranslateWindowsInViewport", imgui.InternalTranslateWindowsInViewport, true)
+	engine.RegisterMethod("imgui.internalTreeNodeBehaviorV", "ImGui.InternalTreeNodeBehaviorV", imgui.InternalTreeNodeBehaviorV, true)
+	engine.RegisterMethod("imgui.internalTreeNodeDrawLineToChildNode", "ImGui.InternalTreeNodeDrawLineToChildNode", imgui.InternalTreeNodeDrawLineToChildNode, true)
+	engine.RegisterMethod("imgui.internalTreeNodeDrawLineToTreePop", "ImGui.InternalTreeNodeDrawLineToTreePop", imgui.InternalTreeNodeDrawLineToTreePop, true)
+	engine.RegisterMethod("imgui.treeNodeExPtr", "ImGui.TreeNodeExPtr", imgui.TreeNodeExPtr, true)
+	engine.RegisterMethod("imgui.treeNodeExStrV", "ImGui.TreeNodeExStrV", imgui.TreeNodeExStrV, true)
+	engine.RegisterMethod("imgui.treeNodeExStrStr", "ImGui.TreeNodeExStrStr", imgui.TreeNodeExStrStr, true)
+	engine.RegisterMethod("imgui.internalTreeNodeGetOpen", "ImGui.InternalTreeNodeGetOpen", imgui.InternalTreeNodeGetOpen, true)
+	engine.RegisterMethod("imgui.internalTreeNodeSetOpen", "ImGui.InternalTreeNodeSetOpen", imgui.InternalTreeNodeSetOpen, true)
+	engine.RegisterMethod("imgui.internalTreeNodeUpdateNextOpen", "ImGui.InternalTreeNodeUpdateNextOpen", imgui.InternalTreeNodeUpdateNextOpen, true)
+	engine.RegisterMethod("imgui.treeNodePtr", "ImGui.TreeNodePtr", imgui.TreeNodePtr, true)
+	engine.RegisterMethod("imgui.treeNodeStr", "ImGui.TreeNodeStr", imgui.TreeNodeStr, true)
+	engine.RegisterMethod("imgui.treeNodeStrStr", "ImGui.TreeNodeStrStr", imgui.TreeNodeStrStr, true)
+	engine.RegisterMethod("imgui.treePop", "ImGui.TreePop", imgui.TreePop, true)
+	engine.RegisterMethod("imgui.internalTreePushOverrideID", "ImGui.InternalTreePushOverrideID", imgui.InternalTreePushOverrideID, true)
+	engine.RegisterMethod("imgui.treePushPtr", "ImGui.TreePushPtr", imgui.TreePushPtr, true)
+	engine.RegisterMethod("imgui.treePushStr", "ImGui.TreePushStr", imgui.TreePushStr, true)
+	engine.RegisterMethod("imgui.unindentV", "ImGui.UnindentV", imgui.UnindentV, true)
+	engine.RegisterMethod("imgui.internalUnregisterFontAtlas", "ImGui.InternalUnregisterFontAtlas", imgui.InternalUnregisterFontAtlas, true)
+	engine.RegisterMethod("imgui.internalUnregisterUserTexture", "ImGui.InternalUnregisterUserTexture", imgui.InternalUnregisterUserTexture, true)
+	engine.RegisterMethod("imgui.internalUpdateCurrentFontSize", "ImGui.InternalUpdateCurrentFontSize", imgui.InternalUpdateCurrentFontSize, true)
+	engine.RegisterMethod("imgui.internalUpdateHoveredWindowAndCaptureFlags", "ImGui.InternalUpdateHoveredWindowAndCaptureFlags", imgui.InternalUpdateHoveredWindowAndCaptureFlags, true)
+	engine.RegisterMethod("imgui.internalUpdateInputEvents", "ImGui.InternalUpdateInputEvents", imgui.InternalUpdateInputEvents, true)
+	engine.RegisterMethod("imgui.internalUpdateMouseMovingWindowEndFrame", "ImGui.InternalUpdateMouseMovingWindowEndFrame", imgui.InternalUpdateMouseMovingWindowEndFrame, true)
+	engine.RegisterMethod("imgui.internalUpdateMouseMovingWindowNewFrame", "ImGui.InternalUpdateMouseMovingWindowNewFrame", imgui.InternalUpdateMouseMovingWindowNewFrame, true)
+	engine.RegisterMethod("imgui.updatePlatformWindows", "ImGui.UpdatePlatformWindows", imgui.UpdatePlatformWindows, true)
+	engine.RegisterMethod("imgui.internalUpdateWindowParentAndRootLinks", "ImGui.InternalUpdateWindowParentAndRootLinks", imgui.InternalUpdateWindowParentAndRootLinks, true)
+	engine.RegisterMethod("imgui.internalUpdateWindowSkipRefresh", "ImGui.InternalUpdateWindowSkipRefresh", imgui.InternalUpdateWindowSkipRefresh, true)
+	engine.RegisterMethod("imgui.vSliderFloatV", "ImGui.VSliderFloatV", imgui.VSliderFloatV, true)
+	engine.RegisterMethod("imgui.vSliderIntV", "ImGui.VSliderIntV", imgui.VSliderIntV, true)
+	engine.RegisterMethod("imgui.vSliderScalarV", "ImGui.VSliderScalarV", imgui.VSliderScalarV, true)
+	engine.RegisterMethod("imgui.valueBool", "ImGui.ValueBool", imgui.ValueBool, true)
+	engine.RegisterMethod("imgui.valueFloatV", "ImGui.ValueFloatV", imgui.ValueFloatV, true)
+	engine.RegisterMethod("imgui.valueInt", "ImGui.ValueInt", imgui.ValueInt, true)
+	engine.RegisterMethod("imgui.valueUint", "ImGui.ValueUint", imgui.ValueUint, true)
+	engine.RegisterMethod("imgui.internalWindowPosAbsToRel", "ImGui.InternalWindowPosAbsToRel", imgui.InternalWindowPosAbsToRel, true)
+	engine.RegisterMethod("imgui.internalWindowPosRelToAbs", "ImGui.InternalWindowPosRelToAbs", imgui.InternalWindowPosRelToAbs, true)
+	engine.RegisterMethod("imgui.internalWindowRectAbsToRel", "ImGui.InternalWindowRectAbsToRel", imgui.InternalWindowRectAbsToRel, true)
+	engine.RegisterMethod("imgui.internalWindowRectRelToAbs", "ImGui.InternalWindowRectRelToAbs", imgui.InternalWindowRectRelToAbs, true)
+	engine.RegisterMethod("imgui.colorHSV", "ImGui.ColorHSV", imgui.ColorHSV, true)
+	engine.RegisterMethod("imgui.acceptDragDropPayload", "ImGui.AcceptDragDropPayload", imgui.AcceptDragDropPayload, true)
+	engine.RegisterMethod("imgui.internalArrowButtonEx", "ImGui.InternalArrowButtonEx", imgui.InternalArrowButtonEx, true)
+	engine.RegisterMethod("imgui.begin", "ImGui.Begin", imgui.Begin, true)
+	engine.RegisterMethod("imgui.beginChildID", "ImGui.BeginChildID", imgui.BeginChildID, true)
+	engine.RegisterMethod("imgui.beginChildStr", "ImGui.BeginChildStr", imgui.BeginChildStr, true)
+	engine.RegisterMethod("imgui.internalBeginColumns", "ImGui.InternalBeginColumns", imgui.InternalBeginColumns, true)
+	engine.RegisterMethod("imgui.beginCombo", "ImGui.BeginCombo", imgui.BeginCombo, true)
+	engine.RegisterMethod("imgui.beginDisabled", "ImGui.BeginDisabled", imgui.BeginDisabled, true)
+	engine.RegisterMethod("imgui.beginDragDropSource", "ImGui.BeginDragDropSource", imgui.BeginDragDropSource, true)
+	engine.RegisterMethod("imgui.internalBeginDragDropTargetViewport", "ImGui.InternalBeginDragDropTargetViewport", imgui.InternalBeginDragDropTargetViewport, true)
+	engine.RegisterMethod("imgui.beginListBox", "ImGui.BeginListBox", imgui.BeginListBox, true)
+	engine.RegisterMethod("imgui.beginMenu", "ImGui.BeginMenu", imgui.BeginMenu, true)
+	engine.RegisterMethod("imgui.internalBeginMenuEx", "ImGui.InternalBeginMenuEx", imgui.InternalBeginMenuEx, true)
+	engine.RegisterMethod("imgui.beginMultiSelect", "ImGui.BeginMultiSelect", imgui.BeginMultiSelect, true)
+	engine.RegisterMethod("imgui.beginPopup", "ImGui.BeginPopup", imgui.BeginPopup, true)
+	engine.RegisterMethod("imgui.beginPopupContextItem", "ImGui.BeginPopupContextItem", imgui.BeginPopupContextItem, true)
+	engine.RegisterMethod("imgui.beginPopupContextVoid", "ImGui.BeginPopupContextVoid", imgui.BeginPopupContextVoid, true)
+	engine.RegisterMethod("imgui.beginPopupContextWindow", "ImGui.BeginPopupContextWindow", imgui.BeginPopupContextWindow, true)
+	engine.RegisterMethod("imgui.beginPopupModal", "ImGui.BeginPopupModal", imgui.BeginPopupModal, true)
+	engine.RegisterMethod("imgui.beginTabBar", "ImGui.BeginTabBar", imgui.BeginTabBar, true)
+	engine.RegisterMethod("imgui.beginTabItem", "ImGui.BeginTabItem", imgui.BeginTabItem, true)
+	engine.RegisterMethod("imgui.beginTable", "ImGui.BeginTable", imgui.BeginTable, true)
+	engine.RegisterMethod("imgui.internalBeginTableEx", "ImGui.InternalBeginTableEx", imgui.InternalBeginTableEx, true)
+	engine.RegisterMethod("imgui.button", "ImGui.Button", imgui.Button, true)
+	engine.RegisterMethod("imgui.internalButtonBehavior", "ImGui.InternalButtonBehavior", imgui.InternalButtonBehavior, true)
+	engine.RegisterMethod("imgui.internalButtonEx", "ImGui.InternalButtonEx", imgui.InternalButtonEx, true)
+	engine.RegisterMethod("imgui.calcTextSize", "ImGui.CalcTextSize", imgui.CalcTextSize, true)
+	engine.RegisterMethod("imgui.collapsingHeaderBoolPtr", "ImGui.CollapsingHeaderBoolPtr", imgui.CollapsingHeaderBoolPtr, true)
+	engine.RegisterMethod("imgui.collapsingHeaderTreeNodeFlags", "ImGui.CollapsingHeaderTreeNodeFlags", imgui.CollapsingHeaderTreeNodeFlags, true)
+	engine.RegisterMethod("imgui.colorButton", "ImGui.ColorButton", imgui.ColorButton, true)
+	engine.RegisterMethod("imgui.colorEdit3", "ImGui.ColorEdit3", imgui.ColorEdit3, true)
+	engine.RegisterMethod("imgui.colorEdit4", "ImGui.ColorEdit4", imgui.ColorEdit4, true)
+	engine.RegisterMethod("imgui.colorPicker3", "ImGui.ColorPicker3", imgui.ColorPicker3, true)
+	engine.RegisterMethod("imgui.colorPicker4", "ImGui.ColorPicker4", imgui.ColorPicker4, true)
+	engine.RegisterMethod("imgui.columns", "ImGui.Columns", imgui.Columns, true)
+	engine.RegisterMethod("imgui.comboStr", "ImGui.ComboStr", imgui.ComboStr, true)
+	engine.RegisterMethod("imgui.comboStrarr", "ImGui.ComboStrarr", imgui.ComboStrarr, true)
+	engine.RegisterMethod("imgui.createContext", "ImGui.CreateContext", imgui.CreateContext, true)
+	engine.RegisterMethod("imgui.internalDataTypeApplyFromText", "ImGui.InternalDataTypeApplyFromText", imgui.InternalDataTypeApplyFromText, true)
+	engine.RegisterMethod("imgui.internalDebugDrawCursorPos", "ImGui.InternalDebugDrawCursorPos", imgui.InternalDebugDrawCursorPos, true)
+	engine.RegisterMethod("imgui.internalDebugDrawItemRect", "ImGui.InternalDebugDrawItemRect", imgui.InternalDebugDrawItemRect, true)
+	engine.RegisterMethod("imgui.internalDebugDrawLineExtents", "ImGui.InternalDebugDrawLineExtents", imgui.InternalDebugDrawLineExtents, true)
+	engine.RegisterMethod("imgui.internalDebugNodeTexture", "ImGui.InternalDebugNodeTexture", imgui.InternalDebugNodeTexture, true)
+	engine.RegisterMethod("imgui.destroyContext", "ImGui.DestroyContext", imgui.DestroyContext, true)
+	engine.RegisterMethod("imgui.internalDockBuilderAddNode", "ImGui.InternalDockBuilderAddNode", imgui.InternalDockBuilderAddNode, true)
+	engine.RegisterMethod("imgui.internalDockBuilderRemoveNodeDockedWindows", "ImGui.InternalDockBuilderRemoveNodeDockedWindows", imgui.InternalDockBuilderRemoveNodeDockedWindows, true)
+	engine.RegisterMethod("imgui.internalDockContextProcessUndockWindow", "ImGui.InternalDockContextProcessUndockWindow", imgui.InternalDockContextProcessUndockWindow, true)
+	engine.RegisterMethod("imgui.dockSpace", "ImGui.DockSpace", imgui.DockSpace, true)
+	engine.RegisterMethod("imgui.dockSpaceOverViewport", "ImGui.DockSpaceOverViewport", imgui.DockSpaceOverViewport, true)
+	engine.RegisterMethod("imgui.dragFloat", "ImGui.DragFloat", imgui.DragFloat, true)
+	engine.RegisterMethod("imgui.dragFloat2", "ImGui.DragFloat2", imgui.DragFloat2, true)
+	engine.RegisterMethod("imgui.dragFloat3", "ImGui.DragFloat3", imgui.DragFloat3, true)
+	engine.RegisterMethod("imgui.dragFloat4", "ImGui.DragFloat4", imgui.DragFloat4, true)
+	engine.RegisterMethod("imgui.dragFloatRange2", "ImGui.DragFloatRange2", imgui.DragFloatRange2, true)
+	engine.RegisterMethod("imgui.dragInt", "ImGui.DragInt", imgui.DragInt, true)
+	engine.RegisterMethod("imgui.dragInt2", "ImGui.DragInt2", imgui.DragInt2, true)
+	engine.RegisterMethod("imgui.dragInt3", "ImGui.DragInt3", imgui.DragInt3, true)
+	engine.RegisterMethod("imgui.dragInt4", "ImGui.DragInt4", imgui.DragInt4, true)
+	engine.RegisterMethod("imgui.dragIntRange2", "ImGui.DragIntRange2", imgui.DragIntRange2, true)
+	engine.RegisterMethod("imgui.dragScalar", "ImGui.DragScalar", imgui.DragScalar, true)
+	engine.RegisterMethod("imgui.dragScalarN", "ImGui.DragScalarN", imgui.DragScalarN, true)
+	engine.RegisterMethod("imgui.internalFindRenderedTextEnd", "ImGui.InternalFindRenderedTextEnd", imgui.InternalFindRenderedTextEnd, true)
+	engine.RegisterMethod("imgui.internalFocusWindow", "ImGui.InternalFocusWindow", imgui.InternalFocusWindow, true)
+	engine.RegisterMethod("imgui.backgroundDrawList", "ImGui.BackgroundDrawList", imgui.BackgroundDrawList, true)
+	engine.RegisterMethod("imgui.colorU32Col", "ImGui.ColorU32Col", imgui.ColorU32Col, true)
+	engine.RegisterMethod("imgui.colorU32U32", "ImGui.ColorU32U32", imgui.ColorU32U32, true)
+	engine.RegisterMethod("imgui.columnOffset", "ImGui.ColumnOffset", imgui.ColumnOffset, true)
+	engine.RegisterMethod("imgui.columnWidth", "ImGui.ColumnWidth", imgui.ColumnWidth, true)
+	engine.RegisterMethod("imgui.foregroundDrawListViewportPtr", "ImGui.ForegroundDrawListViewportPtr", imgui.ForegroundDrawListViewportPtr, true)
+	engine.RegisterMethod("imgui.mouseDragDelta", "ImGui.MouseDragDelta", imgui.MouseDragDelta, true)
+	engine.RegisterMethod("imgui.internalTypingSelectRequest", "ImGui.InternalTypingSelectRequest", imgui.InternalTypingSelectRequest, true)
+	engine.RegisterMethod("imgui.internalImFileLoadToMemory", "ImGui.InternalImFileLoadToMemory", imgui.InternalImFileLoadToMemory, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasPackAddRect", "ImGui.InternalImFontAtlasPackAddRect", imgui.InternalImFontAtlasPackAddRect, true)
+	engine.RegisterMethod("imgui.internalImFontAtlasTextureGrow", "ImGui.InternalImFontAtlasTextureGrow", imgui.InternalImFontAtlasTextureGrow, true)
+	engine.RegisterMethod("imgui.internalImFontCalcWordWrapPositionEx", "ImGui.InternalImFontCalcWordWrapPositionEx", imgui.InternalImFontCalcWordWrapPositionEx, true)
+	engine.RegisterMethod("imgui.internalImHashData", "ImGui.InternalImHashData", imgui.InternalImHashData, true)
+	engine.RegisterMethod("imgui.internalImHashStr", "ImGui.InternalImHashStr", imgui.InternalImHashStr, true)
+	engine.RegisterMethod("imgui.internalImTextCalcWordWrapNextLineStart", "ImGui.InternalImTextCalcWordWrapNextLineStart", imgui.InternalImTextCalcWordWrapNextLineStart, true)
+	engine.RegisterMethod("imgui.internalImTextStrFromUtf8", "ImGui.InternalImTextStrFromUtf8", imgui.InternalImTextStrFromUtf8, true)
+	engine.RegisterMethod("imgui.image", "ImGui.Image", imgui.Image, true)
+	engine.RegisterMethod("imgui.imageButton", "ImGui.ImageButton", imgui.ImageButton, true)
+	engine.RegisterMethod("imgui.internalImageButtonEx", "ImGui.InternalImageButtonEx", imgui.InternalImageButtonEx, true)
+	engine.RegisterMethod("imgui.imageWithBg", "ImGui.ImageWithBg", imgui.ImageWithBg, true)
+	engine.RegisterMethod("imgui.indent", "ImGui.Indent", imgui.Indent, true)
+	engine.RegisterMethod("imgui.inputDouble", "ImGui.InputDouble", imgui.InputDouble, true)
+	engine.RegisterMethod("imgui.inputFloat", "ImGui.InputFloat", imgui.InputFloat, true)
+	engine.RegisterMethod("imgui.inputFloat2", "ImGui.InputFloat2", imgui.InputFloat2, true)
+	engine.RegisterMethod("imgui.inputFloat3", "ImGui.InputFloat3", imgui.InputFloat3, true)
+	engine.RegisterMethod("imgui.inputFloat4", "ImGui.InputFloat4", imgui.InputFloat4, true)
+	engine.RegisterMethod("imgui.inputInt", "ImGui.InputInt", imgui.InputInt, true)
+	engine.RegisterMethod("imgui.inputInt2", "ImGui.InputInt2", imgui.InputInt2, true)
+	engine.RegisterMethod("imgui.inputInt3", "ImGui.InputInt3", imgui.InputInt3, true)
+	engine.RegisterMethod("imgui.inputInt4", "ImGui.InputInt4", imgui.InputInt4, true)
+	engine.RegisterMethod("imgui.inputScalar", "ImGui.InputScalar", imgui.InputScalar, true)
+	engine.RegisterMethod("imgui.inputScalarN", "ImGui.InputScalarN", imgui.InputScalarN, true)
+	engine.RegisterMethod("imgui.internalInputTextEx", "ImGui.InternalInputTextEx", imgui.InternalInputTextEx, true)
+	engine.RegisterMethod("imgui.invisibleButton", "ImGui.InvisibleButton", imgui.InvisibleButton, true)
+	engine.RegisterMethod("imgui.isItemClicked", "ImGui.IsItemClicked", imgui.IsItemClicked, true)
+	engine.RegisterMethod("imgui.isItemHovered", "ImGui.IsItemHovered", imgui.IsItemHovered, true)
+	engine.RegisterMethod("imgui.internalIsKeyChordPressedInputFlags", "ImGui.InternalIsKeyChordPressedInputFlags", imgui.InternalIsKeyChordPressedInputFlags, true)
+	engine.RegisterMethod("imgui.isKeyPressedBool", "ImGui.IsKeyPressedBool", imgui.IsKeyPressedBool, true)
+	engine.RegisterMethod("imgui.internalIsKeyPressedInputFlags", "ImGui.InternalIsKeyPressedInputFlags", imgui.InternalIsKeyPressedInputFlags, true)
+	engine.RegisterMethod("imgui.isMouseClickedBool", "ImGui.IsMouseClickedBool", imgui.IsMouseClickedBool, true)
+	engine.RegisterMethod("imgui.internalIsMouseClickedInputFlags", "ImGui.InternalIsMouseClickedInputFlags", imgui.InternalIsMouseClickedInputFlags, true)
+	engine.RegisterMethod("imgui.internalIsMouseDragPastThreshold", "ImGui.InternalIsMouseDragPastThreshold", imgui.InternalIsMouseDragPastThreshold, true)
+	engine.RegisterMethod("imgui.isMouseDragging", "ImGui.IsMouseDragging", imgui.IsMouseDragging, true)
+	engine.RegisterMethod("imgui.isMouseHoveringRect", "ImGui.IsMouseHoveringRect", imgui.IsMouseHoveringRect, true)
+	engine.RegisterMethod("imgui.isMousePosValid", "ImGui.IsMousePosValid", imgui.IsMousePosValid, true)
+	engine.RegisterMethod("imgui.isPopupOpenStr", "ImGui.IsPopupOpenStr", imgui.IsPopupOpenStr, true)
+	engine.RegisterMethod("imgui.internalIsWindowContentHoverable", "ImGui.InternalIsWindowContentHoverable", imgui.InternalIsWindowContentHoverable, true)
+	engine.RegisterMethod("imgui.isWindowFocused", "ImGui.IsWindowFocused", imgui.IsWindowFocused, true)
+	engine.RegisterMethod("imgui.isWindowHovered", "ImGui.IsWindowHovered", imgui.IsWindowHovered, true)
+	engine.RegisterMethod("imgui.internalItemAdd", "ImGui.InternalItemAdd", imgui.InternalItemAdd, true)
+	engine.RegisterMethod("imgui.internalItemSizeRect", "ImGui.InternalItemSizeRect", imgui.InternalItemSizeRect, true)
+	engine.RegisterMethod("imgui.internalItemSizeVec2", "ImGui.InternalItemSizeVec2", imgui.InternalItemSizeVec2, true)
+	engine.RegisterMethod("imgui.listBoxStrarr", "ImGui.ListBoxStrarr", imgui.ListBoxStrarr, true)
+	engine.RegisterMethod("imgui.loadIniSettingsFromMemory", "ImGui.LoadIniSettingsFromMemory", imgui.LoadIniSettingsFromMemory, true)
+	engine.RegisterMethod("imgui.internalLogRenderedText", "ImGui.InternalLogRenderedText", imgui.InternalLogRenderedText, true)
+	engine.RegisterMethod("imgui.internalLogToBuffer", "ImGui.InternalLogToBuffer", imgui.InternalLogToBuffer, true)
+	engine.RegisterMethod("imgui.logToClipboard", "ImGui.LogToClipboard", imgui.LogToClipboard, true)
+	engine.RegisterMethod("imgui.logToFile", "ImGui.LogToFile", imgui.LogToFile, true)
+	engine.RegisterMethod("imgui.logToTTY", "ImGui.LogToTTY", imgui.LogToTTY, true)
+	engine.RegisterMethod("imgui.internalMenuItemEx", "ImGui.InternalMenuItemEx", imgui.InternalMenuItemEx, true)
+	engine.RegisterMethod("imgui.menuItemBool", "ImGui.MenuItemBool", imgui.MenuItemBool, true)
+	engine.RegisterMethod("imgui.menuItemBoolPtr", "ImGui.MenuItemBoolPtr", imgui.MenuItemBoolPtr, true)
+	engine.RegisterMethod("imgui.internalOpenPopupEx", "ImGui.InternalOpenPopupEx", imgui.InternalOpenPopupEx, true)
+	engine.RegisterMethod("imgui.openPopupOnItemClick", "ImGui.OpenPopupOnItemClick", imgui.OpenPopupOnItemClick, true)
+	engine.RegisterMethod("imgui.openPopupID", "ImGui.OpenPopupID", imgui.OpenPopupID, true)
+	engine.RegisterMethod("imgui.openPopupStr", "ImGui.OpenPopupStr", imgui.OpenPopupStr, true)
+	engine.RegisterMethod("imgui.plotHistogramFloatPtr", "ImGui.PlotHistogramFloatPtr", imgui.PlotHistogramFloatPtr, true)
+	engine.RegisterMethod("imgui.plotLinesFloatPtr", "ImGui.PlotLinesFloatPtr", imgui.PlotLinesFloatPtr, true)
+	engine.RegisterMethod("imgui.popStyleColor", "ImGui.PopStyleColor", imgui.PopStyleColor, true)
+	engine.RegisterMethod("imgui.popStyleVar", "ImGui.PopStyleVar", imgui.PopStyleVar, true)
+	engine.RegisterMethod("imgui.progressBar", "ImGui.ProgressBar", imgui.ProgressBar, true)
+	engine.RegisterMethod("imgui.pushTextWrapPos", "ImGui.PushTextWrapPos", imgui.PushTextWrapPos, true)
+	engine.RegisterMethod("imgui.internalRenderArrow", "ImGui.InternalRenderArrow", imgui.InternalRenderArrow, true)
+	engine.RegisterMethod("imgui.internalRenderColorRectWithAlphaCheckerboard", "ImGui.InternalRenderColorRectWithAlphaCheckerboard", imgui.InternalRenderColorRectWithAlphaCheckerboard, true)
+	engine.RegisterMethod("imgui.internalRenderFrame", "ImGui.InternalRenderFrame", imgui.InternalRenderFrame, true)
+	engine.RegisterMethod("imgui.internalRenderFrameBorder", "ImGui.InternalRenderFrameBorder", imgui.InternalRenderFrameBorder, true)
+	engine.RegisterMethod("imgui.internalRenderNavCursor", "ImGui.InternalRenderNavCursor", imgui.InternalRenderNavCursor, true)
+	engine.RegisterMethod("imgui.renderPlatformWindowsDefault", "ImGui.RenderPlatformWindowsDefault", imgui.RenderPlatformWindowsDefault, true)
+	engine.RegisterMethod("imgui.internalRenderText", "ImGui.InternalRenderText", imgui.InternalRenderText, true)
+	engine.RegisterMethod("imgui.internalRenderTextClipped", "ImGui.InternalRenderTextClipped", imgui.InternalRenderTextClipped, true)
+	engine.RegisterMethod("imgui.internalRenderTextClippedEx", "ImGui.InternalRenderTextClippedEx", imgui.InternalRenderTextClippedEx, true)
+	engine.RegisterMethod("imgui.resetMouseDragDelta", "ImGui.ResetMouseDragDelta", imgui.ResetMouseDragDelta, true)
+	engine.RegisterMethod("imgui.sameLine", "ImGui.SameLine", imgui.SameLine, true)
+	engine.RegisterMethod("imgui.saveIniSettingsToMemory", "ImGui.SaveIniSettingsToMemory", imgui.SaveIniSettingsToMemory, true)
+	engine.RegisterMethod("imgui.internalScrollToItem", "ImGui.InternalScrollToItem", imgui.InternalScrollToItem, true)
+	engine.RegisterMethod("imgui.internalScrollToRect", "ImGui.InternalScrollToRect", imgui.InternalScrollToRect, true)
+	engine.RegisterMethod("imgui.internalScrollToRectEx", "ImGui.InternalScrollToRectEx", imgui.InternalScrollToRectEx, true)
+	engine.RegisterMethod("imgui.internalScrollbarEx", "ImGui.InternalScrollbarEx", imgui.InternalScrollbarEx, true)
+	engine.RegisterMethod("imgui.selectableBool", "ImGui.SelectableBool", imgui.SelectableBool, true)
+	engine.RegisterMethod("imgui.selectableBoolPtr", "ImGui.SelectableBoolPtr", imgui.SelectableBoolPtr, true)
+	engine.RegisterMethod("imgui.internalSeparatorEx", "ImGui.InternalSeparatorEx", imgui.InternalSeparatorEx, true)
+	engine.RegisterMethod("imgui.setAllocatorFunctions", "ImGui.SetAllocatorFunctions", imgui.SetAllocatorFunctions, true)
+	engine.RegisterMethod("imgui.setDragDropPayload", "ImGui.SetDragDropPayload", imgui.SetDragDropPayload, true)
+	engine.RegisterMethod("imgui.internalSetKeyOwner", "ImGui.InternalSetKeyOwner", imgui.InternalSetKeyOwner, true)
+	engine.RegisterMethod("imgui.internalSetKeyOwnersForKeyChord", "ImGui.InternalSetKeyOwnersForKeyChord", imgui.InternalSetKeyOwnersForKeyChord, true)
+	engine.RegisterMethod("imgui.setKeyboardFocusHere", "ImGui.SetKeyboardFocusHere", imgui.SetKeyboardFocusHere, true)
+	engine.RegisterMethod("imgui.setNextItemOpen", "ImGui.SetNextItemOpen", imgui.SetNextItemOpen, true)
+	engine.RegisterMethod("imgui.setNextItemShortcut", "ImGui.SetNextItemShortcut", imgui.SetNextItemShortcut, true)
+	engine.RegisterMethod("imgui.setNextWindowCollapsed", "ImGui.SetNextWindowCollapsed", imgui.SetNextWindowCollapsed, true)
+	engine.RegisterMethod("imgui.setNextWindowDockID", "ImGui.SetNextWindowDockID", imgui.SetNextWindowDockID, true)
+	engine.RegisterMethod("imgui.setNextWindowPos", "ImGui.SetNextWindowPos", imgui.SetNextWindowPos, true)
+	engine.RegisterMethod("imgui.setNextWindowSize", "ImGui.SetNextWindowSize", imgui.SetNextWindowSize, true)
+	engine.RegisterMethod("imgui.setNextWindowSizeConstraints", "ImGui.SetNextWindowSizeConstraints", imgui.SetNextWindowSizeConstraints, true)
+	engine.RegisterMethod("imgui.setScrollFromPosXFloat", "ImGui.SetScrollFromPosXFloat", imgui.SetScrollFromPosXFloat, true)
+	engine.RegisterMethod("imgui.setScrollFromPosYFloat", "ImGui.SetScrollFromPosYFloat", imgui.SetScrollFromPosYFloat, true)
+	engine.RegisterMethod("imgui.setScrollHereX", "ImGui.SetScrollHereX", imgui.SetScrollHereX, true)
+	engine.RegisterMethod("imgui.setScrollHereY", "ImGui.SetScrollHereY", imgui.SetScrollHereY, true)
+	engine.RegisterMethod("imgui.setWindowCollapsedBool", "ImGui.SetWindowCollapsedBool", imgui.SetWindowCollapsedBool, true)
+	engine.RegisterMethod("imgui.setWindowCollapsedStr", "ImGui.SetWindowCollapsedStr", imgui.SetWindowCollapsedStr, true)
+	engine.RegisterMethod("imgui.internalSetWindowCollapsedWindowPtr", "ImGui.InternalSetWindowCollapsedWindowPtr", imgui.InternalSetWindowCollapsedWindowPtr, true)
+	engine.RegisterMethod("imgui.setWindowPosStr", "ImGui.SetWindowPosStr", imgui.SetWindowPosStr, true)
+	engine.RegisterMethod("imgui.setWindowPosVec2", "ImGui.SetWindowPosVec2", imgui.SetWindowPosVec2, true)
+	engine.RegisterMethod("imgui.internalSetWindowPosWindowPtr", "ImGui.InternalSetWindowPosWindowPtr", imgui.InternalSetWindowPosWindowPtr, true)
+	engine.RegisterMethod("imgui.setWindowSizeStr", "ImGui.SetWindowSizeStr", imgui.SetWindowSizeStr, true)
+	engine.RegisterMethod("imgui.setWindowSizeVec2", "ImGui.SetWindowSizeVec2", imgui.SetWindowSizeVec2, true)
+	engine.RegisterMethod("imgui.internalSetWindowSizeWindowPtr", "ImGui.InternalSetWindowSizeWindowPtr", imgui.InternalSetWindowSizeWindowPtr, true)
+	engine.RegisterMethod("imgui.shortcut", "ImGui.Shortcut", imgui.Shortcut, true)
+	engine.RegisterMethod("imgui.showAboutWindow", "ImGui.ShowAboutWindow", imgui.ShowAboutWindow, true)
+	engine.RegisterMethod("imgui.showDebugLogWindow", "ImGui.ShowDebugLogWindow", imgui.ShowDebugLogWindow, true)
+	engine.RegisterMethod("imgui.showDemoWindow", "ImGui.ShowDemoWindow", imgui.ShowDemoWindow, true)
+	engine.RegisterMethod("imgui.showIDStackToolWindow", "ImGui.ShowIDStackToolWindow", imgui.ShowIDStackToolWindow, true)
+	engine.RegisterMethod("imgui.showMetricsWindow", "ImGui.ShowMetricsWindow", imgui.ShowMetricsWindow, true)
+	engine.RegisterMethod("imgui.showStyleEditor", "ImGui.ShowStyleEditor", imgui.ShowStyleEditor, true)
+	engine.RegisterMethod("imgui.sliderAngle", "ImGui.SliderAngle", imgui.SliderAngle, true)
+	engine.RegisterMethod("imgui.sliderFloat", "ImGui.SliderFloat", imgui.SliderFloat, true)
+	engine.RegisterMethod("imgui.sliderFloat2", "ImGui.SliderFloat2", imgui.SliderFloat2, true)
+	engine.RegisterMethod("imgui.sliderFloat3", "ImGui.SliderFloat3", imgui.SliderFloat3, true)
+	engine.RegisterMethod("imgui.sliderFloat4", "ImGui.SliderFloat4", imgui.SliderFloat4, true)
+	engine.RegisterMethod("imgui.sliderInt", "ImGui.SliderInt", imgui.SliderInt, true)
+	engine.RegisterMethod("imgui.sliderInt2", "ImGui.SliderInt2", imgui.SliderInt2, true)
+	engine.RegisterMethod("imgui.sliderInt3", "ImGui.SliderInt3", imgui.SliderInt3, true)
+	engine.RegisterMethod("imgui.sliderInt4", "ImGui.SliderInt4", imgui.SliderInt4, true)
+	engine.RegisterMethod("imgui.sliderScalar", "ImGui.SliderScalar", imgui.SliderScalar, true)
+	engine.RegisterMethod("imgui.sliderScalarN", "ImGui.SliderScalarN", imgui.SliderScalarN, true)
+	engine.RegisterMethod("imgui.internalSplitterBehavior", "ImGui.InternalSplitterBehavior", imgui.InternalSplitterBehavior, true)
+	engine.RegisterMethod("imgui.styleColorsClassic", "ImGui.StyleColorsClassic", imgui.StyleColorsClassic, true)
+	engine.RegisterMethod("imgui.styleColorsDark", "ImGui.StyleColorsDark", imgui.StyleColorsDark, true)
+	engine.RegisterMethod("imgui.styleColorsLight", "ImGui.StyleColorsLight", imgui.StyleColorsLight, true)
+	engine.RegisterMethod("imgui.tabItemButton", "ImGui.TabItemButton", imgui.TabItemButton, true)
+	engine.RegisterMethod("imgui.tableGetColumnFlags", "ImGui.TableGetColumnFlags", imgui.TableGetColumnFlags, true)
+	engine.RegisterMethod("imgui.tableGetColumnNameInt", "ImGui.TableGetColumnNameInt", imgui.TableGetColumnNameInt, true)
+	engine.RegisterMethod("imgui.internalTableGetColumnResizeID", "ImGui.InternalTableGetColumnResizeID", imgui.InternalTableGetColumnResizeID, true)
+	engine.RegisterMethod("imgui.tableNextRow", "ImGui.TableNextRow", imgui.TableNextRow, true)
+	engine.RegisterMethod("imgui.internalTableOpenContextMenu", "ImGui.InternalTableOpenContextMenu", imgui.InternalTableOpenContextMenu, true)
+	engine.RegisterMethod("imgui.tableSetBgColor", "ImGui.TableSetBgColor", imgui.TableSetBgColor, true)
+	engine.RegisterMethod("imgui.tableSetupColumn", "ImGui.TableSetupColumn", imgui.TableSetupColumn, true)
+	engine.RegisterMethod("imgui.internalTempInputScalar", "ImGui.InternalTempInputScalar", imgui.InternalTempInputScalar, true)
+	engine.RegisterMethod("imgui.internalTextEx", "ImGui.InternalTextEx", imgui.InternalTextEx, true)
+	engine.RegisterMethod("imgui.textLinkOpenURL", "ImGui.TextLinkOpenURL", imgui.TextLinkOpenURL, true)
+	engine.RegisterMethod("imgui.textUnformatted", "ImGui.TextUnformatted", imgui.TextUnformatted, true)
+	engine.RegisterMethod("imgui.internalTreeNodeBehavior", "ImGui.InternalTreeNodeBehavior", imgui.InternalTreeNodeBehavior, true)
+	engine.RegisterMethod("imgui.treeNodeExStr", "ImGui.TreeNodeExStr", imgui.TreeNodeExStr, true)
+	engine.RegisterMethod("imgui.unindent", "ImGui.Unindent", imgui.Unindent, true)
+	engine.RegisterMethod("imgui.vSliderFloat", "ImGui.VSliderFloat", imgui.VSliderFloat, true)
+	engine.RegisterMethod("imgui.vSliderInt", "ImGui.VSliderInt", imgui.VSliderInt, true)
+	engine.RegisterMethod("imgui.vSliderScalar", "ImGui.VSliderScalar", imgui.VSliderScalar, true)
+	engine.RegisterMethod("imgui.valueFloat", "ImGui.ValueFloat", imgui.ValueFloat, true)
+	engine.RegisterMethod("imgui.inputTextWithHint", "ImGui.InputTextWithHint", imgui.InputTextWithHint, true)
+	engine.RegisterMethod("imgui.inputTextMultiline", "ImGui.InputTextMultiline", imgui.InputTextMultiline, true)
+	engine.RegisterMethod("imgui.createTextureNrgba", "ImGui.CreateTextureNrgba", imgui.CreateTextureNrgba, true)
+	engine.RegisterMethod("imgui.newEmptyBitArrayForNamedKeys", "ImGui.NewEmptyBitArrayForNamedKeys", imgui.NewEmptyBitArrayForNamedKeys, true)
+	engine.RegisterMethod("imgui.newEmptyBitVector", "ImGui.NewEmptyBitVector", imgui.NewEmptyBitVector, true)
+	engine.RegisterMethod("imgui.newEmptyDrawChannel", "ImGui.NewEmptyDrawChannel", imgui.NewEmptyDrawChannel, true)
+	engine.RegisterMethod("imgui.newEmptyDrawCmd", "ImGui.NewEmptyDrawCmd", imgui.NewEmptyDrawCmd, true)
+	engine.RegisterMethod("imgui.newEmptyDrawCmdHeader", "ImGui.NewEmptyDrawCmdHeader", imgui.NewEmptyDrawCmdHeader, true)
+	engine.RegisterMethod("imgui.newEmptyDrawData", "ImGui.NewEmptyDrawData", imgui.NewEmptyDrawData, true)
+	engine.RegisterMethod("imgui.newEmptyDrawDataBuilder", "ImGui.NewEmptyDrawDataBuilder", imgui.NewEmptyDrawDataBuilder, true)
+	engine.RegisterMethod("imgui.newEmptyDrawList", "ImGui.NewEmptyDrawList", imgui.NewEmptyDrawList, true)
+	engine.RegisterMethod("imgui.newEmptyDrawListSharedData", "ImGui.NewEmptyDrawListSharedData", imgui.NewEmptyDrawListSharedData, true)
+	engine.RegisterMethod("imgui.newEmptyDrawListSplitter", "ImGui.NewEmptyDrawListSplitter", imgui.NewEmptyDrawListSplitter, true)
+	engine.RegisterMethod("imgui.newEmptyDrawVert", "ImGui.NewEmptyDrawVert", imgui.NewEmptyDrawVert, true)
+	engine.RegisterMethod("imgui.newEmptyFont", "ImGui.NewEmptyFont", imgui.NewEmptyFont, true)
+	engine.RegisterMethod("imgui.newEmptyFontAtlas", "ImGui.NewEmptyFontAtlas", imgui.NewEmptyFontAtlas, true)
+	engine.RegisterMethod("imgui.newEmptyFontAtlasBuilder", "ImGui.NewEmptyFontAtlasBuilder", imgui.NewEmptyFontAtlasBuilder, true)
+	engine.RegisterMethod("imgui.newEmptyFontAtlasPostProcessData", "ImGui.NewEmptyFontAtlasPostProcessData", imgui.NewEmptyFontAtlasPostProcessData, true)
+	engine.RegisterMethod("imgui.newEmptyFontAtlasRect", "ImGui.NewEmptyFontAtlasRect", imgui.NewEmptyFontAtlasRect, true)
+	engine.RegisterMethod("imgui.newEmptyFontAtlasRectEntry", "ImGui.NewEmptyFontAtlasRectEntry", imgui.NewEmptyFontAtlasRectEntry, true)
+	engine.RegisterMethod("imgui.newEmptyFontBaked", "ImGui.NewEmptyFontBaked", imgui.NewEmptyFontBaked, true)
+	engine.RegisterMethod("imgui.newEmptyFontConfig", "ImGui.NewEmptyFontConfig", imgui.NewEmptyFontConfig, true)
+	engine.RegisterMethod("imgui.newEmptyFontGlyph", "ImGui.NewEmptyFontGlyph", imgui.NewEmptyFontGlyph, true)
+	engine.RegisterMethod("imgui.newEmptyFontGlyphRangesBuilder", "ImGui.NewEmptyFontGlyphRangesBuilder", imgui.NewEmptyFontGlyphRangesBuilder, true)
+	engine.RegisterMethod("imgui.newEmptyFontLoader", "ImGui.NewEmptyFontLoader", imgui.NewEmptyFontLoader, true)
+	engine.RegisterMethod("imgui.newEmptyFontStackData", "ImGui.NewEmptyFontStackData", imgui.NewEmptyFontStackData, true)
+	engine.RegisterMethod("imgui.newEmptyBoxSelectState", "ImGui.NewEmptyBoxSelectState", imgui.NewEmptyBoxSelectState, true)
+	engine.RegisterMethod("imgui.newEmptyColorMod", "ImGui.NewEmptyColorMod", imgui.NewEmptyColorMod, true)
+	engine.RegisterMethod("imgui.newEmptyComboPreviewData", "ImGui.NewEmptyComboPreviewData", imgui.NewEmptyComboPreviewData, true)
+	engine.RegisterMethod("imgui.newEmptyContext", "ImGui.NewEmptyContext", imgui.NewEmptyContext, true)
+	engine.RegisterMethod("imgui.newEmptyContextHook", "ImGui.NewEmptyContextHook", imgui.NewEmptyContextHook, true)
+	engine.RegisterMethod("imgui.newEmptyDataTypeInfo", "ImGui.NewEmptyDataTypeInfo", imgui.NewEmptyDataTypeInfo, true)
+	engine.RegisterMethod("imgui.newEmptyDataTypeStorage", "ImGui.NewEmptyDataTypeStorage", imgui.NewEmptyDataTypeStorage, true)
+	engine.RegisterMethod("imgui.newEmptyDeactivatedItemData", "ImGui.NewEmptyDeactivatedItemData", imgui.NewEmptyDeactivatedItemData, true)
+	engine.RegisterMethod("imgui.newEmptyDebugAllocEntry", "ImGui.NewEmptyDebugAllocEntry", imgui.NewEmptyDebugAllocEntry, true)
+	engine.RegisterMethod("imgui.newEmptyDebugAllocInfo", "ImGui.NewEmptyDebugAllocInfo", imgui.NewEmptyDebugAllocInfo, true)
+	engine.RegisterMethod("imgui.newEmptyDockContext", "ImGui.NewEmptyDockContext", imgui.NewEmptyDockContext, true)
+	engine.RegisterMethod("imgui.newEmptyDockNode", "ImGui.NewEmptyDockNode", imgui.NewEmptyDockNode, true)
+	engine.RegisterMethod("imgui.newEmptyErrorRecoveryState", "ImGui.NewEmptyErrorRecoveryState", imgui.NewEmptyErrorRecoveryState, true)
+	engine.RegisterMethod("imgui.newEmptyFocusScopeData", "ImGui.NewEmptyFocusScopeData", imgui.NewEmptyFocusScopeData, true)
+	engine.RegisterMethod("imgui.newEmptyGroupData", "ImGui.NewEmptyGroupData", imgui.NewEmptyGroupData, true)
+	engine.RegisterMethod("imgui.newEmptyIDStackTool", "ImGui.NewEmptyIDStackTool", imgui.NewEmptyIDStackTool, true)
+	engine.RegisterMethod("imgui.newEmptyIO", "ImGui.NewEmptyIO", imgui.NewEmptyIO, true)
+	engine.RegisterMethod("imgui.newEmptyInputEvent", "ImGui.NewEmptyInputEvent", imgui.NewEmptyInputEvent, true)
+	engine.RegisterMethod("imgui.newEmptyInputEventAppFocused", "ImGui.NewEmptyInputEventAppFocused", imgui.NewEmptyInputEventAppFocused, true)
+	engine.RegisterMethod("imgui.newEmptyInputEventKey", "ImGui.NewEmptyInputEventKey", imgui.NewEmptyInputEventKey, true)
+	engine.RegisterMethod("imgui.newEmptyInputEventMouseButton", "ImGui.NewEmptyInputEventMouseButton", imgui.NewEmptyInputEventMouseButton, true)
+	engine.RegisterMethod("imgui.newEmptyInputEventMousePos", "ImGui.NewEmptyInputEventMousePos", imgui.NewEmptyInputEventMousePos, true)
+	engine.RegisterMethod("imgui.newEmptyInputEventMouseViewport", "ImGui.NewEmptyInputEventMouseViewport", imgui.NewEmptyInputEventMouseViewport, true)
+	engine.RegisterMethod("imgui.newEmptyInputEventMouseWheel", "ImGui.NewEmptyInputEventMouseWheel", imgui.NewEmptyInputEventMouseWheel, true)
+	engine.RegisterMethod("imgui.newEmptyInputEventText", "ImGui.NewEmptyInputEventText", imgui.NewEmptyInputEventText, true)
+	engine.RegisterMethod("imgui.newEmptyInputTextCallbackData", "ImGui.NewEmptyInputTextCallbackData", imgui.NewEmptyInputTextCallbackData, true)
+	engine.RegisterMethod("imgui.newEmptyInputTextDeactivatedState", "ImGui.NewEmptyInputTextDeactivatedState", imgui.NewEmptyInputTextDeactivatedState, true)
+	engine.RegisterMethod("imgui.newEmptyInputTextState", "ImGui.NewEmptyInputTextState", imgui.NewEmptyInputTextState, true)
+	engine.RegisterMethod("imgui.newEmptyKeyData", "ImGui.NewEmptyKeyData", imgui.NewEmptyKeyData, true)
+	engine.RegisterMethod("imgui.newEmptyKeyOwnerData", "ImGui.NewEmptyKeyOwnerData", imgui.NewEmptyKeyOwnerData, true)
+	engine.RegisterMethod("imgui.newEmptyKeyRoutingData", "ImGui.NewEmptyKeyRoutingData", imgui.NewEmptyKeyRoutingData, true)
+	engine.RegisterMethod("imgui.newEmptyKeyRoutingTable", "ImGui.NewEmptyKeyRoutingTable", imgui.NewEmptyKeyRoutingTable, true)
+	engine.RegisterMethod("imgui.newEmptyLastItemData", "ImGui.NewEmptyLastItemData", imgui.NewEmptyLastItemData, true)
+	engine.RegisterMethod("imgui.newEmptyListClipper", "ImGui.NewEmptyListClipper", imgui.NewEmptyListClipper, true)
+	engine.RegisterMethod("imgui.newEmptyListClipperData", "ImGui.NewEmptyListClipperData", imgui.NewEmptyListClipperData, true)
+	engine.RegisterMethod("imgui.newEmptyListClipperRange", "ImGui.NewEmptyListClipperRange", imgui.NewEmptyListClipperRange, true)
+	engine.RegisterMethod("imgui.newEmptyLocEntry", "ImGui.NewEmptyLocEntry", imgui.NewEmptyLocEntry, true)
+	engine.RegisterMethod("imgui.newEmptyMenuColumns", "ImGui.NewEmptyMenuColumns", imgui.NewEmptyMenuColumns, true)
+	engine.RegisterMethod("imgui.newEmptyMetricsConfig", "ImGui.NewEmptyMetricsConfig", imgui.NewEmptyMetricsConfig, true)
+	engine.RegisterMethod("imgui.newEmptyMultiSelectIO", "ImGui.NewEmptyMultiSelectIO", imgui.NewEmptyMultiSelectIO, true)
+	engine.RegisterMethod("imgui.newEmptyMultiSelectState", "ImGui.NewEmptyMultiSelectState", imgui.NewEmptyMultiSelectState, true)
+	engine.RegisterMethod("imgui.newEmptyMultiSelectTempData", "ImGui.NewEmptyMultiSelectTempData", imgui.NewEmptyMultiSelectTempData, true)
+	engine.RegisterMethod("imgui.newEmptyNavItemData", "ImGui.NewEmptyNavItemData", imgui.NewEmptyNavItemData, true)
+	engine.RegisterMethod("imgui.newEmptyNextItemData", "ImGui.NewEmptyNextItemData", imgui.NewEmptyNextItemData, true)
+	engine.RegisterMethod("imgui.newEmptyNextWindowData", "ImGui.NewEmptyNextWindowData", imgui.NewEmptyNextWindowData, true)
+	engine.RegisterMethod("imgui.newEmptyOldColumnData", "ImGui.NewEmptyOldColumnData", imgui.NewEmptyOldColumnData, true)
+	engine.RegisterMethod("imgui.newEmptyOldColumns", "ImGui.NewEmptyOldColumns", imgui.NewEmptyOldColumns, true)
+	engine.RegisterMethod("imgui.newEmptyOnceUponAFrame", "ImGui.NewEmptyOnceUponAFrame", imgui.NewEmptyOnceUponAFrame, true)
+	engine.RegisterMethod("imgui.newEmptyPayload", "ImGui.NewEmptyPayload", imgui.NewEmptyPayload, true)
+	engine.RegisterMethod("imgui.newEmptyPlatformIO", "ImGui.NewEmptyPlatformIO", imgui.NewEmptyPlatformIO, true)
+	engine.RegisterMethod("imgui.newEmptyPlatformImeData", "ImGui.NewEmptyPlatformImeData", imgui.NewEmptyPlatformImeData, true)
+	engine.RegisterMethod("imgui.newEmptyPlatformMonitor", "ImGui.NewEmptyPlatformMonitor", imgui.NewEmptyPlatformMonitor, true)
+	engine.RegisterMethod("imgui.newEmptyPopupData", "ImGui.NewEmptyPopupData", imgui.NewEmptyPopupData, true)
+	engine.RegisterMethod("imgui.newEmptyPtrOrIndex", "ImGui.NewEmptyPtrOrIndex", imgui.NewEmptyPtrOrIndex, true)
+	engine.RegisterMethod("imgui.newEmptySelectionBasicStorage", "ImGui.NewEmptySelectionBasicStorage", imgui.NewEmptySelectionBasicStorage, true)
+	engine.RegisterMethod("imgui.newEmptySelectionExternalStorage", "ImGui.NewEmptySelectionExternalStorage", imgui.NewEmptySelectionExternalStorage, true)
+	engine.RegisterMethod("imgui.newEmptySelectionRequest", "ImGui.NewEmptySelectionRequest", imgui.NewEmptySelectionRequest, true)
+	engine.RegisterMethod("imgui.newEmptySettingsHandler", "ImGui.NewEmptySettingsHandler", imgui.NewEmptySettingsHandler, true)
+	engine.RegisterMethod("imgui.newEmptyShrinkWidthItem", "ImGui.NewEmptyShrinkWidthItem", imgui.NewEmptyShrinkWidthItem, true)
+	engine.RegisterMethod("imgui.newEmptySizeCallbackData", "ImGui.NewEmptySizeCallbackData", imgui.NewEmptySizeCallbackData, true)
+	engine.RegisterMethod("imgui.newEmptyStackLevelInfo", "ImGui.NewEmptyStackLevelInfo", imgui.NewEmptyStackLevelInfo, true)
+	engine.RegisterMethod("imgui.newEmptyStorage", "ImGui.NewEmptyStorage", imgui.NewEmptyStorage, true)
+	engine.RegisterMethod("imgui.newEmptyStoragePair", "ImGui.NewEmptyStoragePair", imgui.NewEmptyStoragePair, true)
+	engine.RegisterMethod("imgui.newEmptyStyle", "ImGui.NewEmptyStyle", imgui.NewEmptyStyle, true)
+	engine.RegisterMethod("imgui.newEmptyStyleMod", "ImGui.NewEmptyStyleMod", imgui.NewEmptyStyleMod, true)
+	engine.RegisterMethod("imgui.newEmptyStyleVarInfo", "ImGui.NewEmptyStyleVarInfo", imgui.NewEmptyStyleVarInfo, true)
+	engine.RegisterMethod("imgui.newEmptyTabBar", "ImGui.NewEmptyTabBar", imgui.NewEmptyTabBar, true)
+	engine.RegisterMethod("imgui.newEmptyTabItem", "ImGui.NewEmptyTabItem", imgui.NewEmptyTabItem, true)
+	engine.RegisterMethod("imgui.newEmptyTable", "ImGui.NewEmptyTable", imgui.NewEmptyTable, true)
+	engine.RegisterMethod("imgui.newEmptyTableCellData", "ImGui.NewEmptyTableCellData", imgui.NewEmptyTableCellData, true)
+	engine.RegisterMethod("imgui.newEmptyTableColumn", "ImGui.NewEmptyTableColumn", imgui.NewEmptyTableColumn, true)
+	engine.RegisterMethod("imgui.newEmptyTableColumnSettings", "ImGui.NewEmptyTableColumnSettings", imgui.NewEmptyTableColumnSettings, true)
+	engine.RegisterMethod("imgui.newEmptyTableColumnSortSpecs", "ImGui.NewEmptyTableColumnSortSpecs", imgui.NewEmptyTableColumnSortSpecs, true)
+	engine.RegisterMethod("imgui.newEmptyTableHeaderData", "ImGui.NewEmptyTableHeaderData", imgui.NewEmptyTableHeaderData, true)
+	engine.RegisterMethod("imgui.newEmptyTableInstanceData", "ImGui.NewEmptyTableInstanceData", imgui.NewEmptyTableInstanceData, true)
+	engine.RegisterMethod("imgui.newEmptyTableSettings", "ImGui.NewEmptyTableSettings", imgui.NewEmptyTableSettings, true)
+	engine.RegisterMethod("imgui.newEmptyTableSortSpecs", "ImGui.NewEmptyTableSortSpecs", imgui.NewEmptyTableSortSpecs, true)
+	engine.RegisterMethod("imgui.newEmptyTableTempData", "ImGui.NewEmptyTableTempData", imgui.NewEmptyTableTempData, true)
+	engine.RegisterMethod("imgui.newEmptyTextBuffer", "ImGui.NewEmptyTextBuffer", imgui.NewEmptyTextBuffer, true)
+	engine.RegisterMethod("imgui.newEmptyTextFilter", "ImGui.NewEmptyTextFilter", imgui.NewEmptyTextFilter, true)
+	engine.RegisterMethod("imgui.newEmptyTextIndex", "ImGui.NewEmptyTextIndex", imgui.NewEmptyTextIndex, true)
+	engine.RegisterMethod("imgui.newEmptyTextRange", "ImGui.NewEmptyTextRange", imgui.NewEmptyTextRange, true)
+	engine.RegisterMethod("imgui.newEmptyTreeNodeStackData", "ImGui.NewEmptyTreeNodeStackData", imgui.NewEmptyTreeNodeStackData, true)
+	engine.RegisterMethod("imgui.newEmptyTypingSelectRequest", "ImGui.NewEmptyTypingSelectRequest", imgui.NewEmptyTypingSelectRequest, true)
+	engine.RegisterMethod("imgui.newEmptyTypingSelectState", "ImGui.NewEmptyTypingSelectState", imgui.NewEmptyTypingSelectState, true)
+	engine.RegisterMethod("imgui.newEmptyViewport", "ImGui.NewEmptyViewport", imgui.NewEmptyViewport, true)
+	engine.RegisterMethod("imgui.newEmptyViewportP", "ImGui.NewEmptyViewportP", imgui.NewEmptyViewportP, true)
+	engine.RegisterMethod("imgui.newEmptyWindow", "ImGui.NewEmptyWindow", imgui.NewEmptyWindow, true)
+	engine.RegisterMethod("imgui.newEmptyWindowClass", "ImGui.NewEmptyWindowClass", imgui.NewEmptyWindowClass, true)
+	engine.RegisterMethod("imgui.newEmptyWindowDockStyle", "ImGui.NewEmptyWindowDockStyle", imgui.NewEmptyWindowDockStyle, true)
+	engine.RegisterMethod("imgui.newEmptyWindowSettings", "ImGui.NewEmptyWindowSettings", imgui.NewEmptyWindowSettings, true)
+	engine.RegisterMethod("imgui.newEmptyWindowStackData", "ImGui.NewEmptyWindowStackData", imgui.NewEmptyWindowStackData, true)
+	engine.RegisterMethod("imgui.newEmptyWindowTempData", "ImGui.NewEmptyWindowTempData", imgui.NewEmptyWindowTempData, true)
+	engine.RegisterMethod("imgui.newEmptyTextureData", "ImGui.NewEmptyTextureData", imgui.NewEmptyTextureData, true)
+	engine.RegisterMethod("imgui.newEmptyTextureRect", "ImGui.NewEmptyTextureRect", imgui.NewEmptyTextureRect, true)
+	engine.RegisterMethod("imgui.newEmptyTextureRef", "ImGui.NewEmptyTextureRef", imgui.NewEmptyTextureRef, true)
+	engine.RegisterMethod("imgui.newEmptyVec1", "ImGui.NewEmptyVec1", imgui.NewEmptyVec1, true)
+	engine.RegisterMethod("imgui.newEmptyVec2i", "ImGui.NewEmptyVec2i", imgui.NewEmptyVec2i, true)
+	engine.RegisterMethod("imgui.newEmptystbrpcontextopaque", "ImGui.NewEmptystbrpcontextopaque", imgui.NewEmptystbrpcontextopaque, true)
+	engine.RegisterMethod("imgui.vertexBufferLayout", "ImGui.VertexBufferLayout", imgui.VertexBufferLayout, true)
+	engine.RegisterMethod("imgui.indexBufferLayout", "ImGui.IndexBufferLayout", imgui.IndexBufferLayout, true)
+	engine.RegisterMethod("imgui.newGlyphRange", "ImGui.NewGlyphRange", imgui.NewGlyphRange, true)
+	engine.RegisterMethod("imgui.error", "ImGui AssertionError.Error", (*imgui.AssertionError).Error, true)
+	engine.RegisterMethod("imgui.c", "ImGui DrawCallback.C", (*imgui.DrawCallback).C, true)
+	engine.RegisterMethod("imgui.fromC", "ImGui Vec2.FromC", (*imgui.Vec2).FromC, true)
+	engine.RegisterMethod("imgui.toC", "ImGui Vec2.ToC", (*imgui.Vec2).ToC, true)
+	engine.RegisterMethod("imgui.destroy", "ImGui Vec2.Destroy", (*imgui.Vec2).Destroy, true)
+	engine.RegisterMethod("imgui.add", "ImGui Vec2.Add", (*imgui.Vec2).Add, true)
+	engine.RegisterMethod("imgui.sub", "ImGui Vec2.Sub", (*imgui.Vec2).Sub, true)
+	engine.RegisterMethod("imgui.mul", "ImGui Vec2.Mul", (*imgui.Vec2).Mul, true)
+	engine.RegisterMethod("imgui.div", "ImGui Vec2.Div", (*imgui.Vec2).Div, true)
+	engine.RegisterMethod("imgui.pack", "ImGui Color.Pack", (*imgui.Color).Pack, true)
+	engine.RegisterMethod("imgui.color", "ImGui Color.Color", (*imgui.Color).Color, true)
+	engine.RegisterMethod("imgui.setHSVV", "ImGui Color.SetHSVV", (*imgui.Color).SetHSVV, true)
+	engine.RegisterMethod("imgui.setHSV", "ImGui Color.SetHSV", (*imgui.Color).SetHSV, true)
+	engine.RegisterMethod("imgui.value", "ImGui Color.Value", (*imgui.Color).Value, true)
+	engine.RegisterMethod("imgui.internalAddRect", "ImGui Rect.InternalAddRect", (*imgui.Rect).InternalAddRect, true)
+	engine.RegisterMethod("imgui.internalAddVec2", "ImGui Rect.InternalAddVec2", (*imgui.Rect).InternalAddVec2, true)
+	engine.RegisterMethod("imgui.internalAsVec4", "ImGui Rect.InternalAsVec4", (*imgui.Rect).InternalAsVec4, true)
+	engine.RegisterMethod("imgui.internalClipWith", "ImGui Rect.InternalClipWith", (*imgui.Rect).InternalClipWith, true)
+	engine.RegisterMethod("imgui.internalClipWithFull", "ImGui Rect.InternalClipWithFull", (*imgui.Rect).InternalClipWithFull, true)
+	engine.RegisterMethod("imgui.internalContainsWithPad", "ImGui Rect.InternalContainsWithPad", (*imgui.Rect).InternalContainsWithPad, true)
+	engine.RegisterMethod("imgui.internalContainsRect", "ImGui Rect.InternalContainsRect", (*imgui.Rect).InternalContainsRect, true)
+	engine.RegisterMethod("imgui.internalContainsVec2", "ImGui Rect.InternalContainsVec2", (*imgui.Rect).InternalContainsVec2, true)
+	engine.RegisterMethod("imgui.internalExpandFloat", "ImGui Rect.InternalExpandFloat", (*imgui.Rect).InternalExpandFloat, true)
+	engine.RegisterMethod("imgui.internalExpandVec2", "ImGui Rect.InternalExpandVec2", (*imgui.Rect).InternalExpandVec2, true)
+	engine.RegisterMethod("imgui.internalFloor", "ImGui Rect.InternalFloor", (*imgui.Rect).InternalFloor, true)
+	engine.RegisterMethod("imgui.internalArea", "ImGui Rect.InternalArea", (*imgui.Rect).InternalArea, true)
+	engine.RegisterMethod("imgui.internalBL", "ImGui Rect.InternalBL", (*imgui.Rect).InternalBL, true)
+	engine.RegisterMethod("imgui.internalBR", "ImGui Rect.InternalBR", (*imgui.Rect).InternalBR, true)
+	engine.RegisterMethod("imgui.internalCenter", "ImGui Rect.InternalCenter", (*imgui.Rect).InternalCenter, true)
+	engine.RegisterMethod("imgui.internalHeight", "ImGui Rect.InternalHeight", (*imgui.Rect).InternalHeight, true)
+	engine.RegisterMethod("imgui.internalSize", "ImGui Rect.InternalSize", (*imgui.Rect).InternalSize, true)
+	engine.RegisterMethod("imgui.internalTL", "ImGui Rect.InternalTL", (*imgui.Rect).InternalTL, true)
+	engine.RegisterMethod("imgui.internalTR", "ImGui Rect.InternalTR", (*imgui.Rect).InternalTR, true)
+	engine.RegisterMethod("imgui.internalWidth", "ImGui Rect.InternalWidth", (*imgui.Rect).InternalWidth, true)
+	engine.RegisterMethod("imgui.internalIsInverted", "ImGui Rect.InternalIsInverted", (*imgui.Rect).InternalIsInverted, true)
+	engine.RegisterMethod("imgui.internalOverlaps", "ImGui Rect.InternalOverlaps", (*imgui.Rect).InternalOverlaps, true)
+	engine.RegisterMethod("imgui.internalToVec4", "ImGui Rect.InternalToVec4", (*imgui.Rect).InternalToVec4, true)
+	engine.RegisterMethod("imgui.internalTranslate", "ImGui Rect.InternalTranslate", (*imgui.Rect).InternalTranslate, true)
+	engine.RegisterMethod("imgui.internalTranslateX", "ImGui Rect.InternalTranslateX", (*imgui.Rect).InternalTranslateX, true)
+	engine.RegisterMethod("imgui.internalTranslateY", "ImGui Rect.InternalTranslateY", (*imgui.Rect).InternalTranslateY, true)
+	engine.RegisterMethod("imgui.internalDestroy", "ImGui Rect.InternalDestroy", (*imgui.Rect).InternalDestroy, true)
+	engine.RegisterMethod("imgui.internalClear", "ImGui BitVector.InternalClear", (*imgui.BitVector).InternalClear, true)
+	engine.RegisterMethod("imgui.internalClearBit", "ImGui BitVector.InternalClearBit", (*imgui.BitVector).InternalClearBit, true)
+	engine.RegisterMethod("imgui.internalCreate", "ImGui BitVector.InternalCreate", (*imgui.BitVector).InternalCreate, true)
+	engine.RegisterMethod("imgui.internalSetBit", "ImGui BitVector.InternalSetBit", (*imgui.BitVector).InternalSetBit, true)
+	engine.RegisterMethod("imgui.internalTestBit", "ImGui BitVector.InternalTestBit", (*imgui.BitVector).InternalTestBit, true)
+	engine.RegisterMethod("imgui.setStorage", "ImGui BitVector.SetStorage", (*imgui.BitVector).SetStorage, true)
+	engine.RegisterMethod("imgui.storage", "ImGui BitVector.Storage", (*imgui.BitVector).Storage, true)
+	engine.RegisterMethod("imgui.handle", "ImGui BitVector.Handle", (*imgui.BitVector).Handle, true)
+	engine.RegisterMethod("imgui.texID", "ImGui DrawCmd.TexID", (*imgui.DrawCmd).TexID, true)
+	engine.RegisterMethod("imgui.setClipRect", "ImGui DrawCmd.SetClipRect", (*imgui.DrawCmd).SetClipRect, true)
+	engine.RegisterMethod("imgui.setTexRef", "ImGui DrawCmd.SetTexRef", (*imgui.DrawCmd).SetTexRef, true)
+	engine.RegisterMethod("imgui.setVtxOffset", "ImGui DrawCmd.SetVtxOffset", (*imgui.DrawCmd).SetVtxOffset, true)
+	engine.RegisterMethod("imgui.setIdxOffset", "ImGui DrawCmd.SetIdxOffset", (*imgui.DrawCmd).SetIdxOffset, true)
+	engine.RegisterMethod("imgui.setElemCount", "ImGui DrawCmd.SetElemCount", (*imgui.DrawCmd).SetElemCount, true)
+	engine.RegisterMethod("imgui.setUserCallback", "ImGui DrawCmd.SetUserCallback", (*imgui.DrawCmd).SetUserCallback, true)
+	engine.RegisterMethod("imgui.setUserCallbackData", "ImGui DrawCmd.SetUserCallbackData", (*imgui.DrawCmd).SetUserCallbackData, true)
+	engine.RegisterMethod("imgui.setUserCallbackDataSize", "ImGui DrawCmd.SetUserCallbackDataSize", (*imgui.DrawCmd).SetUserCallbackDataSize, true)
+	engine.RegisterMethod("imgui.setUserCallbackDataOffset", "ImGui DrawCmd.SetUserCallbackDataOffset", (*imgui.DrawCmd).SetUserCallbackDataOffset, true)
+	engine.RegisterMethod("imgui.clipRect", "ImGui DrawCmd.ClipRect", (*imgui.DrawCmd).ClipRect, true)
+	engine.RegisterMethod("imgui.texRef", "ImGui DrawCmd.TexRef", (*imgui.DrawCmd).TexRef, true)
+	engine.RegisterMethod("imgui.vtxOffset", "ImGui DrawCmd.VtxOffset", (*imgui.DrawCmd).VtxOffset, true)
+	engine.RegisterMethod("imgui.idxOffset", "ImGui DrawCmd.IdxOffset", (*imgui.DrawCmd).IdxOffset, true)
+	engine.RegisterMethod("imgui.elemCount", "ImGui DrawCmd.ElemCount", (*imgui.DrawCmd).ElemCount, true)
+	engine.RegisterMethod("imgui.userCallback", "ImGui DrawCmd.UserCallback", (*imgui.DrawCmd).UserCallback, true)
+	engine.RegisterMethod("imgui.userCallbackData", "ImGui DrawCmd.UserCallbackData", (*imgui.DrawCmd).UserCallbackData, true)
+	engine.RegisterMethod("imgui.userCallbackDataSize", "ImGui DrawCmd.UserCallbackDataSize", (*imgui.DrawCmd).UserCallbackDataSize, true)
+	engine.RegisterMethod("imgui.userCallbackDataOffset", "ImGui DrawCmd.UserCallbackDataOffset", (*imgui.DrawCmd).UserCallbackDataOffset, true)
+	engine.RegisterMethod("imgui.hasUserCallback", "ImGui DrawCmd.HasUserCallback", (*imgui.DrawCmd).HasUserCallback, true)
+	engine.RegisterMethod("imgui.callUserCallback", "ImGui DrawCmd.CallUserCallback", (*imgui.DrawCmd).CallUserCallback, true)
+	engine.RegisterMethod("imgui.layers", "ImGui DrawDataBuilder.Layers", (*imgui.DrawDataBuilder).Layers, true)
+	engine.RegisterMethod("imgui.layerData1", "ImGui DrawDataBuilder.LayerData1", (*imgui.DrawDataBuilder).LayerData1, true)
+	engine.RegisterMethod("imgui.addDrawList", "ImGui DrawData.AddDrawList", (*imgui.DrawData).AddDrawList, true)
+	engine.RegisterMethod("imgui.clear", "ImGui DrawData.Clear", (*imgui.DrawData).Clear, true)
+	engine.RegisterMethod("imgui.deIndexAllBuffers", "ImGui DrawData.DeIndexAllBuffers", (*imgui.DrawData).DeIndexAllBuffers, true)
+	engine.RegisterMethod("imgui.scaleClipRects", "ImGui DrawData.ScaleClipRects", (*imgui.DrawData).ScaleClipRects, true)
+	engine.RegisterMethod("imgui.setValid", "ImGui DrawData.SetValid", (*imgui.DrawData).SetValid, true)
+	engine.RegisterMethod("imgui.setCmdListsCount", "ImGui DrawData.SetCmdListsCount", (*imgui.DrawData).SetCmdListsCount, true)
+	engine.RegisterMethod("imgui.setTotalIdxCount", "ImGui DrawData.SetTotalIdxCount", (*imgui.DrawData).SetTotalIdxCount, true)
+	engine.RegisterMethod("imgui.setTotalVtxCount", "ImGui DrawData.SetTotalVtxCount", (*imgui.DrawData).SetTotalVtxCount, true)
+	engine.RegisterMethod("imgui.setDisplayPos", "ImGui DrawData.SetDisplayPos", (*imgui.DrawData).SetDisplayPos, true)
+	engine.RegisterMethod("imgui.setDisplaySize", "ImGui DrawData.SetDisplaySize", (*imgui.DrawData).SetDisplaySize, true)
+	engine.RegisterMethod("imgui.setFramebufferScale", "ImGui DrawData.SetFramebufferScale", (*imgui.DrawData).SetFramebufferScale, true)
+	engine.RegisterMethod("imgui.setOwnerViewport", "ImGui DrawData.SetOwnerViewport", (*imgui.DrawData).SetOwnerViewport, true)
+	engine.RegisterMethod("imgui.valid", "ImGui DrawData.Valid", (*imgui.DrawData).Valid, true)
+	engine.RegisterMethod("imgui.cmdListsCount", "ImGui DrawData.CmdListsCount", (*imgui.DrawData).CmdListsCount, true)
+	engine.RegisterMethod("imgui.totalIdxCount", "ImGui DrawData.TotalIdxCount", (*imgui.DrawData).TotalIdxCount, true)
+	engine.RegisterMethod("imgui.totalVtxCount", "ImGui DrawData.TotalVtxCount", (*imgui.DrawData).TotalVtxCount, true)
+	engine.RegisterMethod("imgui.cmdLists", "ImGui DrawData.CmdLists", (*imgui.DrawData).CmdLists, true)
+	engine.RegisterMethod("imgui.displayPos", "ImGui DrawData.DisplayPos", (*imgui.DrawData).DisplayPos, true)
+	engine.RegisterMethod("imgui.displaySize", "ImGui DrawData.DisplaySize", (*imgui.DrawData).DisplaySize, true)
+	engine.RegisterMethod("imgui.framebufferScale", "ImGui DrawData.FramebufferScale", (*imgui.DrawData).FramebufferScale, true)
+	engine.RegisterMethod("imgui.ownerViewport", "ImGui DrawData.OwnerViewport", (*imgui.DrawData).OwnerViewport, true)
+	engine.RegisterMethod("imgui.textures", "ImGui DrawData.Textures", (*imgui.DrawData).Textures, true)
+	engine.RegisterMethod("imgui.commandLists", "ImGui DrawData.CommandLists", (*imgui.DrawData).CommandLists, true)
+	engine.RegisterMethod("imgui.internalSetCircleTessellationMaxError", "ImGui DrawListSharedData.InternalSetCircleTessellationMaxError", (*imgui.DrawListSharedData).InternalSetCircleTessellationMaxError, true)
+	engine.RegisterMethod("imgui.setTexUvWhitePixel", "ImGui DrawListSharedData.SetTexUvWhitePixel", (*imgui.DrawListSharedData).SetTexUvWhitePixel, true)
+	engine.RegisterMethod("imgui.setTexUvLines", "ImGui DrawListSharedData.SetTexUvLines", (*imgui.DrawListSharedData).SetTexUvLines, true)
+	engine.RegisterMethod("imgui.setFontAtlas", "ImGui DrawListSharedData.SetFontAtlas", (*imgui.DrawListSharedData).SetFontAtlas, true)
+	engine.RegisterMethod("imgui.setFont", "ImGui DrawListSharedData.SetFont", (*imgui.DrawListSharedData).SetFont, true)
+	engine.RegisterMethod("imgui.setFontSize", "ImGui DrawListSharedData.SetFontSize", (*imgui.DrawListSharedData).SetFontSize, true)
+	engine.RegisterMethod("imgui.setFontScale", "ImGui DrawListSharedData.SetFontScale", (*imgui.DrawListSharedData).SetFontScale, true)
+	engine.RegisterMethod("imgui.setCurveTessellationTol", "ImGui DrawListSharedData.SetCurveTessellationTol", (*imgui.DrawListSharedData).SetCurveTessellationTol, true)
+	engine.RegisterMethod("imgui.setCircleSegmentMaxError", "ImGui DrawListSharedData.SetCircleSegmentMaxError", (*imgui.DrawListSharedData).SetCircleSegmentMaxError, true)
+	engine.RegisterMethod("imgui.setInitialFringeScale", "ImGui DrawListSharedData.SetInitialFringeScale", (*imgui.DrawListSharedData).SetInitialFringeScale, true)
+	engine.RegisterMethod("imgui.setInitialFlags", "ImGui DrawListSharedData.SetInitialFlags", (*imgui.DrawListSharedData).SetInitialFlags, true)
+	engine.RegisterMethod("imgui.setClipRectFullscreen", "ImGui DrawListSharedData.SetClipRectFullscreen", (*imgui.DrawListSharedData).SetClipRectFullscreen, true)
+	engine.RegisterMethod("imgui.setTempBuffer", "ImGui DrawListSharedData.SetTempBuffer", (*imgui.DrawListSharedData).SetTempBuffer, true)
+	engine.RegisterMethod("imgui.setContext", "ImGui DrawListSharedData.SetContext", (*imgui.DrawListSharedData).SetContext, true)
+	engine.RegisterMethod("imgui.setArcFastVtx", "ImGui DrawListSharedData.SetArcFastVtx", (*imgui.DrawListSharedData).SetArcFastVtx, true)
+	engine.RegisterMethod("imgui.setArcFastRadiusCutoff", "ImGui DrawListSharedData.SetArcFastRadiusCutoff", (*imgui.DrawListSharedData).SetArcFastRadiusCutoff, true)
+	engine.RegisterMethod("imgui.setCircleSegmentCounts", "ImGui DrawListSharedData.SetCircleSegmentCounts", (*imgui.DrawListSharedData).SetCircleSegmentCounts, true)
+	engine.RegisterMethod("imgui.texUvWhitePixel", "ImGui DrawListSharedData.TexUvWhitePixel", (*imgui.DrawListSharedData).TexUvWhitePixel, true)
+	engine.RegisterMethod("imgui.texUvLines", "ImGui DrawListSharedData.TexUvLines", (*imgui.DrawListSharedData).TexUvLines, true)
+	engine.RegisterMethod("imgui.fontAtlas", "ImGui DrawListSharedData.FontAtlas", (*imgui.DrawListSharedData).FontAtlas, true)
+	engine.RegisterMethod("imgui.font", "ImGui DrawListSharedData.Font", (*imgui.DrawListSharedData).Font, true)
+	engine.RegisterMethod("imgui.fontScale", "ImGui DrawListSharedData.FontScale", (*imgui.DrawListSharedData).FontScale, true)
+	engine.RegisterMethod("imgui.curveTessellationTol", "ImGui DrawListSharedData.CurveTessellationTol", (*imgui.DrawListSharedData).CurveTessellationTol, true)
+	engine.RegisterMethod("imgui.circleSegmentMaxError", "ImGui DrawListSharedData.CircleSegmentMaxError", (*imgui.DrawListSharedData).CircleSegmentMaxError, true)
+	engine.RegisterMethod("imgui.initialFringeScale", "ImGui DrawListSharedData.InitialFringeScale", (*imgui.DrawListSharedData).InitialFringeScale, true)
+	engine.RegisterMethod("imgui.initialFlags", "ImGui DrawListSharedData.InitialFlags", (*imgui.DrawListSharedData).InitialFlags, true)
+	engine.RegisterMethod("imgui.clipRectFullscreen", "ImGui DrawListSharedData.ClipRectFullscreen", (*imgui.DrawListSharedData).ClipRectFullscreen, true)
+	engine.RegisterMethod("imgui.drawLists", "ImGui DrawListSharedData.DrawLists", (*imgui.DrawListSharedData).DrawLists, true)
+	engine.RegisterMethod("imgui.context", "ImGui DrawListSharedData.Context", (*imgui.DrawListSharedData).Context, true)
+	engine.RegisterMethod("imgui.arcFastVtx", "ImGui DrawListSharedData.ArcFastVtx", (*imgui.DrawListSharedData).ArcFastVtx, true)
+	engine.RegisterMethod("imgui.arcFastRadiusCutoff", "ImGui DrawListSharedData.ArcFastRadiusCutoff", (*imgui.DrawListSharedData).ArcFastRadiusCutoff, true)
+	engine.RegisterMethod("imgui.circleSegmentCounts", "ImGui DrawListSharedData.CircleSegmentCounts", (*imgui.DrawListSharedData).CircleSegmentCounts, true)
+	engine.RegisterMethod("imgui.clearFreeMemory", "ImGui DrawListSplitter.ClearFreeMemory", (*imgui.DrawListSplitter).ClearFreeMemory, true)
+	engine.RegisterMethod("imgui.merge", "ImGui DrawListSplitter.Merge", (*imgui.DrawListSplitter).Merge, true)
+	engine.RegisterMethod("imgui.setCurrentChannel", "ImGui DrawListSplitter.SetCurrentChannel", (*imgui.DrawListSplitter).SetCurrentChannel, true)
+	engine.RegisterMethod("imgui.split", "ImGui DrawListSplitter.Split", (*imgui.DrawListSplitter).Split, true)
+	engine.RegisterMethod("imgui.setCurrent", "ImGui DrawListSplitter.SetCurrent", (*imgui.DrawListSplitter).SetCurrent, true)
+	engine.RegisterMethod("imgui.setCount", "ImGui DrawListSplitter.SetCount", (*imgui.DrawListSplitter).SetCount, true)
+	engine.RegisterMethod("imgui.setChannels", "ImGui DrawListSplitter.SetChannels", (*imgui.DrawListSplitter).SetChannels, true)
+	engine.RegisterMethod("imgui.current", "ImGui DrawListSplitter.Current", (*imgui.DrawListSplitter).Current, true)
+	engine.RegisterMethod("imgui.count", "ImGui DrawListSplitter.Count", (*imgui.DrawListSplitter).Count, true)
+	engine.RegisterMethod("imgui.channels", "ImGui DrawListSplitter.Channels", (*imgui.DrawListSplitter).Channels, true)
+	engine.RegisterMethod("imgui.addBezierCubicV", "ImGui DrawList.AddBezierCubicV", (*imgui.DrawList).AddBezierCubicV, true)
+	engine.RegisterMethod("imgui.addBezierQuadraticV", "ImGui DrawList.AddBezierQuadraticV", (*imgui.DrawList).AddBezierQuadraticV, true)
+	engine.RegisterMethod("imgui.addCallbackV", "ImGui DrawList.AddCallbackV", (*imgui.DrawList).AddCallbackV, true)
+	engine.RegisterMethod("imgui.addCircleV", "ImGui DrawList.AddCircleV", (*imgui.DrawList).AddCircleV, true)
+	engine.RegisterMethod("imgui.addCircleFilledV", "ImGui DrawList.AddCircleFilledV", (*imgui.DrawList).AddCircleFilledV, true)
+	engine.RegisterMethod("imgui.addConcavePolyFilled", "ImGui DrawList.AddConcavePolyFilled", (*imgui.DrawList).AddConcavePolyFilled, true)
+	engine.RegisterMethod("imgui.addConvexPolyFilled", "ImGui DrawList.AddConvexPolyFilled", (*imgui.DrawList).AddConvexPolyFilled, true)
+	engine.RegisterMethod("imgui.addDrawCmd", "ImGui DrawList.AddDrawCmd", (*imgui.DrawList).AddDrawCmd, true)
+	engine.RegisterMethod("imgui.addEllipseV", "ImGui DrawList.AddEllipseV", (*imgui.DrawList).AddEllipseV, true)
+	engine.RegisterMethod("imgui.addEllipseFilledV", "ImGui DrawList.AddEllipseFilledV", (*imgui.DrawList).AddEllipseFilledV, true)
+	engine.RegisterMethod("imgui.addImageV", "ImGui DrawList.AddImageV", (*imgui.DrawList).AddImageV, true)
+	engine.RegisterMethod("imgui.addImageQuadV", "ImGui DrawList.AddImageQuadV", (*imgui.DrawList).AddImageQuadV, true)
+	engine.RegisterMethod("imgui.addImageRoundedV", "ImGui DrawList.AddImageRoundedV", (*imgui.DrawList).AddImageRoundedV, true)
+	engine.RegisterMethod("imgui.addLineV", "ImGui DrawList.AddLineV", (*imgui.DrawList).AddLineV, true)
+	engine.RegisterMethod("imgui.addNgonV", "ImGui DrawList.AddNgonV", (*imgui.DrawList).AddNgonV, true)
+	engine.RegisterMethod("imgui.addNgonFilled", "ImGui DrawList.AddNgonFilled", (*imgui.DrawList).AddNgonFilled, true)
+	engine.RegisterMethod("imgui.addPolyline", "ImGui DrawList.AddPolyline", (*imgui.DrawList).AddPolyline, true)
+	engine.RegisterMethod("imgui.addQuadV", "ImGui DrawList.AddQuadV", (*imgui.DrawList).AddQuadV, true)
+	engine.RegisterMethod("imgui.addQuadFilled", "ImGui DrawList.AddQuadFilled", (*imgui.DrawList).AddQuadFilled, true)
+	engine.RegisterMethod("imgui.addRectV", "ImGui DrawList.AddRectV", (*imgui.DrawList).AddRectV, true)
+	engine.RegisterMethod("imgui.addRectFilledV", "ImGui DrawList.AddRectFilledV", (*imgui.DrawList).AddRectFilledV, true)
+	engine.RegisterMethod("imgui.addRectFilledMultiColor", "ImGui DrawList.AddRectFilledMultiColor", (*imgui.DrawList).AddRectFilledMultiColor, true)
+	engine.RegisterMethod("imgui.addTextFontPtrV", "ImGui DrawList.AddTextFontPtrV", (*imgui.DrawList).AddTextFontPtrV, true)
+	engine.RegisterMethod("imgui.addTextVec2V", "ImGui DrawList.AddTextVec2V", (*imgui.DrawList).AddTextVec2V, true)
+	engine.RegisterMethod("imgui.addTriangleV", "ImGui DrawList.AddTriangleV", (*imgui.DrawList).AddTriangleV, true)
+	engine.RegisterMethod("imgui.addTriangleFilled", "ImGui DrawList.AddTriangleFilled", (*imgui.DrawList).AddTriangleFilled, true)
+	engine.RegisterMethod("imgui.channelsMerge", "ImGui DrawList.ChannelsMerge", (*imgui.DrawList).ChannelsMerge, true)
+	engine.RegisterMethod("imgui.channelsSetCurrent", "ImGui DrawList.ChannelsSetCurrent", (*imgui.DrawList).ChannelsSetCurrent, true)
+	engine.RegisterMethod("imgui.channelsSplit", "ImGui DrawList.ChannelsSplit", (*imgui.DrawList).ChannelsSplit, true)
+	engine.RegisterMethod("imgui.cloneOutput", "ImGui DrawList.CloneOutput", (*imgui.DrawList).CloneOutput, true)
+	engine.RegisterMethod("imgui.clipRectMax", "ImGui DrawList.ClipRectMax", (*imgui.DrawList).ClipRectMax, true)
+	engine.RegisterMethod("imgui.clipRectMin", "ImGui DrawList.ClipRectMin", (*imgui.DrawList).ClipRectMin, true)
+	engine.RegisterMethod("imgui.pathArcToV", "ImGui DrawList.PathArcToV", (*imgui.DrawList).PathArcToV, true)
+	engine.RegisterMethod("imgui.pathArcToFast", "ImGui DrawList.PathArcToFast", (*imgui.DrawList).PathArcToFast, true)
+	engine.RegisterMethod("imgui.pathBezierCubicCurveToV", "ImGui DrawList.PathBezierCubicCurveToV", (*imgui.DrawList).PathBezierCubicCurveToV, true)
+	engine.RegisterMethod("imgui.pathBezierQuadraticCurveToV", "ImGui DrawList.PathBezierQuadraticCurveToV", (*imgui.DrawList).PathBezierQuadraticCurveToV, true)
+	engine.RegisterMethod("imgui.pathClear", "ImGui DrawList.PathClear", (*imgui.DrawList).PathClear, true)
+	engine.RegisterMethod("imgui.pathEllipticalArcToV", "ImGui DrawList.PathEllipticalArcToV", (*imgui.DrawList).PathEllipticalArcToV, true)
+	engine.RegisterMethod("imgui.pathFillConcave", "ImGui DrawList.PathFillConcave", (*imgui.DrawList).PathFillConcave, true)
+	engine.RegisterMethod("imgui.pathFillConvex", "ImGui DrawList.PathFillConvex", (*imgui.DrawList).PathFillConvex, true)
+	engine.RegisterMethod("imgui.pathLineTo", "ImGui DrawList.PathLineTo", (*imgui.DrawList).PathLineTo, true)
+	engine.RegisterMethod("imgui.pathLineToMergeDuplicate", "ImGui DrawList.PathLineToMergeDuplicate", (*imgui.DrawList).PathLineToMergeDuplicate, true)
+	engine.RegisterMethod("imgui.pathRectV", "ImGui DrawList.PathRectV", (*imgui.DrawList).PathRectV, true)
+	engine.RegisterMethod("imgui.pathStrokeV", "ImGui DrawList.PathStrokeV", (*imgui.DrawList).PathStrokeV, true)
+	engine.RegisterMethod("imgui.popTexture", "ImGui DrawList.PopTexture", (*imgui.DrawList).PopTexture, true)
+	engine.RegisterMethod("imgui.primQuadUV", "ImGui DrawList.PrimQuadUV", (*imgui.DrawList).PrimQuadUV, true)
+	engine.RegisterMethod("imgui.primRect", "ImGui DrawList.PrimRect", (*imgui.DrawList).PrimRect, true)
+	engine.RegisterMethod("imgui.primRectUV", "ImGui DrawList.PrimRectUV", (*imgui.DrawList).PrimRectUV, true)
+	engine.RegisterMethod("imgui.primReserve", "ImGui DrawList.PrimReserve", (*imgui.DrawList).PrimReserve, true)
+	engine.RegisterMethod("imgui.primUnreserve", "ImGui DrawList.PrimUnreserve", (*imgui.DrawList).PrimUnreserve, true)
+	engine.RegisterMethod("imgui.primVtx", "ImGui DrawList.PrimVtx", (*imgui.DrawList).PrimVtx, true)
+	engine.RegisterMethod("imgui.primWriteIdx", "ImGui DrawList.PrimWriteIdx", (*imgui.DrawList).PrimWriteIdx, true)
+	engine.RegisterMethod("imgui.primWriteVtx", "ImGui DrawList.PrimWriteVtx", (*imgui.DrawList).PrimWriteVtx, true)
+	engine.RegisterMethod("imgui.pushClipRectV", "ImGui DrawList.PushClipRectV", (*imgui.DrawList).PushClipRectV, true)
+	engine.RegisterMethod("imgui.pushClipRectFullScreen", "ImGui DrawList.PushClipRectFullScreen", (*imgui.DrawList).PushClipRectFullScreen, true)
+	engine.RegisterMethod("imgui.pushTexture", "ImGui DrawList.PushTexture", (*imgui.DrawList).PushTexture, true)
+	engine.RegisterMethod("imgui.calcCircleAutoSegmentCount", "ImGui DrawList.CalcCircleAutoSegmentCount", (*imgui.DrawList).CalcCircleAutoSegmentCount, true)
+	engine.RegisterMethod("imgui.onChangedClipRect", "ImGui DrawList.OnChangedClipRect", (*imgui.DrawList).OnChangedClipRect, true)
+	engine.RegisterMethod("imgui.onChangedTexture", "ImGui DrawList.OnChangedTexture", (*imgui.DrawList).OnChangedTexture, true)
+	engine.RegisterMethod("imgui.onChangedVtxOffset", "ImGui DrawList.OnChangedVtxOffset", (*imgui.DrawList).OnChangedVtxOffset, true)
+	engine.RegisterMethod("imgui.pathArcToFastEx", "ImGui DrawList.PathArcToFastEx", (*imgui.DrawList).PathArcToFastEx, true)
+	engine.RegisterMethod("imgui.pathArcToN", "ImGui DrawList.PathArcToN", (*imgui.DrawList).PathArcToN, true)
+	engine.RegisterMethod("imgui.popUnusedDrawCmd", "ImGui DrawList.PopUnusedDrawCmd", (*imgui.DrawList).PopUnusedDrawCmd, true)
+	engine.RegisterMethod("imgui.resetForNewFrame", "ImGui DrawList.ResetForNewFrame", (*imgui.DrawList).ResetForNewFrame, true)
+	engine.RegisterMethod("imgui.setDrawListSharedData", "ImGui DrawList.SetDrawListSharedData", (*imgui.DrawList).SetDrawListSharedData, true)
+	engine.RegisterMethod("imgui.setTexture", "ImGui DrawList.SetTexture", (*imgui.DrawList).SetTexture, true)
+	engine.RegisterMethod("imgui.tryMergeDrawCmds", "ImGui DrawList.TryMergeDrawCmds", (*imgui.DrawList).TryMergeDrawCmds, true)
+	engine.RegisterMethod("imgui.addBezierCubic", "ImGui DrawList.AddBezierCubic", (*imgui.DrawList).AddBezierCubic, true)
+	engine.RegisterMethod("imgui.addBezierQuadratic", "ImGui DrawList.AddBezierQuadratic", (*imgui.DrawList).AddBezierQuadratic, true)
+	engine.RegisterMethod("imgui.addCallback", "ImGui DrawList.AddCallback", (*imgui.DrawList).AddCallback, true)
+	engine.RegisterMethod("imgui.addCircle", "ImGui DrawList.AddCircle", (*imgui.DrawList).AddCircle, true)
+	engine.RegisterMethod("imgui.addCircleFilled", "ImGui DrawList.AddCircleFilled", (*imgui.DrawList).AddCircleFilled, true)
+	engine.RegisterMethod("imgui.addEllipse", "ImGui DrawList.AddEllipse", (*imgui.DrawList).AddEllipse, true)
+	engine.RegisterMethod("imgui.addEllipseFilled", "ImGui DrawList.AddEllipseFilled", (*imgui.DrawList).AddEllipseFilled, true)
+	engine.RegisterMethod("imgui.addImage", "ImGui DrawList.AddImage", (*imgui.DrawList).AddImage, true)
+	engine.RegisterMethod("imgui.addImageQuad", "ImGui DrawList.AddImageQuad", (*imgui.DrawList).AddImageQuad, true)
+	engine.RegisterMethod("imgui.addImageRounded", "ImGui DrawList.AddImageRounded", (*imgui.DrawList).AddImageRounded, true)
+	engine.RegisterMethod("imgui.addLine", "ImGui DrawList.AddLine", (*imgui.DrawList).AddLine, true)
+	engine.RegisterMethod("imgui.addNgon", "ImGui DrawList.AddNgon", (*imgui.DrawList).AddNgon, true)
+	engine.RegisterMethod("imgui.addQuad", "ImGui DrawList.AddQuad", (*imgui.DrawList).AddQuad, true)
+	engine.RegisterMethod("imgui.addRect", "ImGui DrawList.AddRect", (*imgui.DrawList).AddRect, true)
+	engine.RegisterMethod("imgui.addRectFilled", "ImGui DrawList.AddRectFilled", (*imgui.DrawList).AddRectFilled, true)
+	engine.RegisterMethod("imgui.addTextFontPtr", "ImGui DrawList.AddTextFontPtr", (*imgui.DrawList).AddTextFontPtr, true)
+	engine.RegisterMethod("imgui.addTextVec2", "ImGui DrawList.AddTextVec2", (*imgui.DrawList).AddTextVec2, true)
+	engine.RegisterMethod("imgui.addTriangle", "ImGui DrawList.AddTriangle", (*imgui.DrawList).AddTriangle, true)
+	engine.RegisterMethod("imgui.pathArcTo", "ImGui DrawList.PathArcTo", (*imgui.DrawList).PathArcTo, true)
+	engine.RegisterMethod("imgui.pathBezierCubicCurveTo", "ImGui DrawList.PathBezierCubicCurveTo", (*imgui.DrawList).PathBezierCubicCurveTo, true)
+	engine.RegisterMethod("imgui.pathBezierQuadraticCurveTo", "ImGui DrawList.PathBezierQuadraticCurveTo", (*imgui.DrawList).PathBezierQuadraticCurveTo, true)
+	engine.RegisterMethod("imgui.pathEllipticalArcTo", "ImGui DrawList.PathEllipticalArcTo", (*imgui.DrawList).PathEllipticalArcTo, true)
+	engine.RegisterMethod("imgui.pathRect", "ImGui DrawList.PathRect", (*imgui.DrawList).PathRect, true)
+	engine.RegisterMethod("imgui.pathStroke", "ImGui DrawList.PathStroke", (*imgui.DrawList).PathStroke, true)
+	engine.RegisterMethod("imgui.setCmdBuffer", "ImGui DrawList.SetCmdBuffer", (*imgui.DrawList).SetCmdBuffer, true)
+	engine.RegisterMethod("imgui.setIdxBuffer", "ImGui DrawList.SetIdxBuffer", (*imgui.DrawList).SetIdxBuffer, true)
+	engine.RegisterMethod("imgui.setVtxBuffer", "ImGui DrawList.SetVtxBuffer", (*imgui.DrawList).SetVtxBuffer, true)
+	engine.RegisterMethod("imgui.setFlags", "ImGui DrawList.SetFlags", (*imgui.DrawList).SetFlags, true)
+	engine.RegisterMethod("imgui.setVtxCurrentIdx", "ImGui DrawList.SetVtxCurrentIdx", (*imgui.DrawList).SetVtxCurrentIdx, true)
+	engine.RegisterMethod("imgui.setData", "ImGui DrawList.SetData", (*imgui.DrawList).SetData, true)
+	engine.RegisterMethod("imgui.setVtxWritePtr", "ImGui DrawList.SetVtxWritePtr", (*imgui.DrawList).SetVtxWritePtr, true)
+	engine.RegisterMethod("imgui.setIdxWritePtr", "ImGui DrawList.SetIdxWritePtr", (*imgui.DrawList).SetIdxWritePtr, true)
+	engine.RegisterMethod("imgui.setPath", "ImGui DrawList.SetPath", (*imgui.DrawList).SetPath, true)
+	engine.RegisterMethod("imgui.setCmdHeader", "ImGui DrawList.SetCmdHeader", (*imgui.DrawList).SetCmdHeader, true)
+	engine.RegisterMethod("imgui.setSplitter", "ImGui DrawList.SetSplitter", (*imgui.DrawList).SetSplitter, true)
+	engine.RegisterMethod("imgui.setClipRectStack", "ImGui DrawList.SetClipRectStack", (*imgui.DrawList).SetClipRectStack, true)
+	engine.RegisterMethod("imgui.setTextureStack", "ImGui DrawList.SetTextureStack", (*imgui.DrawList).SetTextureStack, true)
+	engine.RegisterMethod("imgui.setCallbacksDataBuf", "ImGui DrawList.SetCallbacksDataBuf", (*imgui.DrawList).SetCallbacksDataBuf, true)
+	engine.RegisterMethod("imgui.setFringeScale", "ImGui DrawList.SetFringeScale", (*imgui.DrawList).SetFringeScale, true)
+	engine.RegisterMethod("imgui.setOwnerName", "ImGui DrawList.SetOwnerName", (*imgui.DrawList).SetOwnerName, true)
+	engine.RegisterMethod("imgui.cmdBuffer", "ImGui DrawList.CmdBuffer", (*imgui.DrawList).CmdBuffer, true)
+	engine.RegisterMethod("imgui.idxBuffer", "ImGui DrawList.IdxBuffer", (*imgui.DrawList).IdxBuffer, true)
+	engine.RegisterMethod("imgui.vtxBuffer", "ImGui DrawList.VtxBuffer", (*imgui.DrawList).VtxBuffer, true)
+	engine.RegisterMethod("imgui.flags", "ImGui DrawList.Flags", (*imgui.DrawList).Flags, true)
+	engine.RegisterMethod("imgui.vtxCurrentIdx", "ImGui DrawList.VtxCurrentIdx", (*imgui.DrawList).VtxCurrentIdx, true)
+	engine.RegisterMethod("imgui.data", "ImGui DrawList.Data", (*imgui.DrawList).Data, true)
+	engine.RegisterMethod("imgui.vtxWritePtr", "ImGui DrawList.VtxWritePtr", (*imgui.DrawList).VtxWritePtr, true)
+	engine.RegisterMethod("imgui.idxWritePtr", "ImGui DrawList.IdxWritePtr", (*imgui.DrawList).IdxWritePtr, true)
+	engine.RegisterMethod("imgui.cmdHeader", "ImGui DrawList.CmdHeader", (*imgui.DrawList).CmdHeader, true)
+	engine.RegisterMethod("imgui.splitter", "ImGui DrawList.Splitter", (*imgui.DrawList).Splitter, true)
+	engine.RegisterMethod("imgui.clipRectStack", "ImGui DrawList.ClipRectStack", (*imgui.DrawList).ClipRectStack, true)
+	engine.RegisterMethod("imgui.textureStack", "ImGui DrawList.TextureStack", (*imgui.DrawList).TextureStack, true)
+	engine.RegisterMethod("imgui.callbacksDataBuf", "ImGui DrawList.CallbacksDataBuf", (*imgui.DrawList).CallbacksDataBuf, true)
+	engine.RegisterMethod("imgui.fringeScale", "ImGui DrawList.FringeScale", (*imgui.DrawList).FringeScale, true)
+	engine.RegisterMethod("imgui.ownerName", "ImGui DrawList.OwnerName", (*imgui.DrawList).OwnerName, true)
+	engine.RegisterMethod("imgui.getVertexBuffer", "ImGui DrawList.GetVertexBuffer", (*imgui.DrawList).GetVertexBuffer, true)
+	engine.RegisterMethod("imgui.getIndexBuffer", "ImGui DrawList.GetIndexBuffer", (*imgui.DrawList).GetIndexBuffer, true)
+	engine.RegisterMethod("imgui.commands", "ImGui DrawList.Commands", (*imgui.DrawList).Commands, true)
+	engine.RegisterMethod("imgui.setPackContext", "ImGui FontAtlasBuilder.SetPackContext", (*imgui.FontAtlasBuilder).SetPackContext, true)
+	engine.RegisterMethod("imgui.setRects", "ImGui FontAtlasBuilder.SetRects", (*imgui.FontAtlasBuilder).SetRects, true)
+	engine.RegisterMethod("imgui.setRectsIndex", "ImGui FontAtlasBuilder.SetRectsIndex", (*imgui.FontAtlasBuilder).SetRectsIndex, true)
+	engine.RegisterMethod("imgui.setRectsIndexFreeListStart", "ImGui FontAtlasBuilder.SetRectsIndexFreeListStart", (*imgui.FontAtlasBuilder).SetRectsIndexFreeListStart, true)
+	engine.RegisterMethod("imgui.setRectsPackedCount", "ImGui FontAtlasBuilder.SetRectsPackedCount", (*imgui.FontAtlasBuilder).SetRectsPackedCount, true)
+	engine.RegisterMethod("imgui.setRectsPackedSurface", "ImGui FontAtlasBuilder.SetRectsPackedSurface", (*imgui.FontAtlasBuilder).SetRectsPackedSurface, true)
+	engine.RegisterMethod("imgui.setRectsDiscardedCount", "ImGui FontAtlasBuilder.SetRectsDiscardedCount", (*imgui.FontAtlasBuilder).SetRectsDiscardedCount, true)
+	engine.RegisterMethod("imgui.setRectsDiscardedSurface", "ImGui FontAtlasBuilder.SetRectsDiscardedSurface", (*imgui.FontAtlasBuilder).SetRectsDiscardedSurface, true)
+	engine.RegisterMethod("imgui.setFrameCount", "ImGui FontAtlasBuilder.SetFrameCount", (*imgui.FontAtlasBuilder).SetFrameCount, true)
+	engine.RegisterMethod("imgui.setMaxRectSize", "ImGui FontAtlasBuilder.SetMaxRectSize", (*imgui.FontAtlasBuilder).SetMaxRectSize, true)
+	engine.RegisterMethod("imgui.setMaxRectBounds", "ImGui FontAtlasBuilder.SetMaxRectBounds", (*imgui.FontAtlasBuilder).SetMaxRectBounds, true)
+	engine.RegisterMethod("imgui.setLockDisableResize", "ImGui FontAtlasBuilder.SetLockDisableResize", (*imgui.FontAtlasBuilder).SetLockDisableResize, true)
+	engine.RegisterMethod("imgui.setPreloadedAllGlyphsRanges", "ImGui FontAtlasBuilder.SetPreloadedAllGlyphsRanges", (*imgui.FontAtlasBuilder).SetPreloadedAllGlyphsRanges, true)
+	engine.RegisterMethod("imgui.setBakedMap", "ImGui FontAtlasBuilder.SetBakedMap", (*imgui.FontAtlasBuilder).SetBakedMap, true)
+	engine.RegisterMethod("imgui.setBakedDiscardedCount", "ImGui FontAtlasBuilder.SetBakedDiscardedCount", (*imgui.FontAtlasBuilder).SetBakedDiscardedCount, true)
+	engine.RegisterMethod("imgui.setPackIdMouseCursors", "ImGui FontAtlasBuilder.SetPackIdMouseCursors", (*imgui.FontAtlasBuilder).SetPackIdMouseCursors, true)
+	engine.RegisterMethod("imgui.setPackIdLinesTexData", "ImGui FontAtlasBuilder.SetPackIdLinesTexData", (*imgui.FontAtlasBuilder).SetPackIdLinesTexData, true)
+	engine.RegisterMethod("imgui.packContext", "ImGui FontAtlasBuilder.PackContext", (*imgui.FontAtlasBuilder).PackContext, true)
+	engine.RegisterMethod("imgui.rects", "ImGui FontAtlasBuilder.Rects", (*imgui.FontAtlasBuilder).Rects, true)
+	engine.RegisterMethod("imgui.rectsIndex", "ImGui FontAtlasBuilder.RectsIndex", (*imgui.FontAtlasBuilder).RectsIndex, true)
+	engine.RegisterMethod("imgui.rectsIndexFreeListStart", "ImGui FontAtlasBuilder.RectsIndexFreeListStart", (*imgui.FontAtlasBuilder).RectsIndexFreeListStart, true)
+	engine.RegisterMethod("imgui.rectsPackedCount", "ImGui FontAtlasBuilder.RectsPackedCount", (*imgui.FontAtlasBuilder).RectsPackedCount, true)
+	engine.RegisterMethod("imgui.rectsPackedSurface", "ImGui FontAtlasBuilder.RectsPackedSurface", (*imgui.FontAtlasBuilder).RectsPackedSurface, true)
+	engine.RegisterMethod("imgui.rectsDiscardedCount", "ImGui FontAtlasBuilder.RectsDiscardedCount", (*imgui.FontAtlasBuilder).RectsDiscardedCount, true)
+	engine.RegisterMethod("imgui.rectsDiscardedSurface", "ImGui FontAtlasBuilder.RectsDiscardedSurface", (*imgui.FontAtlasBuilder).RectsDiscardedSurface, true)
+	engine.RegisterMethod("imgui.maxRectSize", "ImGui FontAtlasBuilder.MaxRectSize", (*imgui.FontAtlasBuilder).MaxRectSize, true)
+	engine.RegisterMethod("imgui.maxRectBounds", "ImGui FontAtlasBuilder.MaxRectBounds", (*imgui.FontAtlasBuilder).MaxRectBounds, true)
+	engine.RegisterMethod("imgui.lockDisableResize", "ImGui FontAtlasBuilder.LockDisableResize", (*imgui.FontAtlasBuilder).LockDisableResize, true)
+	engine.RegisterMethod("imgui.preloadedAllGlyphsRanges", "ImGui FontAtlasBuilder.PreloadedAllGlyphsRanges", (*imgui.FontAtlasBuilder).PreloadedAllGlyphsRanges, true)
+	engine.RegisterMethod("imgui.bakedMap", "ImGui FontAtlasBuilder.BakedMap", (*imgui.FontAtlasBuilder).BakedMap, true)
+	engine.RegisterMethod("imgui.bakedDiscardedCount", "ImGui FontAtlasBuilder.BakedDiscardedCount", (*imgui.FontAtlasBuilder).BakedDiscardedCount, true)
+	engine.RegisterMethod("imgui.packIdMouseCursors", "ImGui FontAtlasBuilder.PackIdMouseCursors", (*imgui.FontAtlasBuilder).PackIdMouseCursors, true)
+	engine.RegisterMethod("imgui.packIdLinesTexData", "ImGui FontAtlasBuilder.PackIdLinesTexData", (*imgui.FontAtlasBuilder).PackIdLinesTexData, true)
+	engine.RegisterMethod("imgui.setX", "ImGui FontAtlasRect.SetX", (*imgui.FontAtlasRect).SetX, true)
+	engine.RegisterMethod("imgui.setY", "ImGui FontAtlasRect.SetY", (*imgui.FontAtlasRect).SetY, true)
+	engine.RegisterMethod("imgui.setW", "ImGui FontAtlasRect.SetW", (*imgui.FontAtlasRect).SetW, true)
+	engine.RegisterMethod("imgui.setH", "ImGui FontAtlasRect.SetH", (*imgui.FontAtlasRect).SetH, true)
+	engine.RegisterMethod("imgui.setUv0", "ImGui FontAtlasRect.SetUv0", (*imgui.FontAtlasRect).SetUv0, true)
+	engine.RegisterMethod("imgui.setUv1", "ImGui FontAtlasRect.SetUv1", (*imgui.FontAtlasRect).SetUv1, true)
+	engine.RegisterMethod("imgui.x", "ImGui FontAtlasRect.X", (*imgui.FontAtlasRect).X, true)
+	engine.RegisterMethod("imgui.y", "ImGui FontAtlasRect.Y", (*imgui.FontAtlasRect).Y, true)
+	engine.RegisterMethod("imgui.w", "ImGui FontAtlasRect.W", (*imgui.FontAtlasRect).W, true)
+	engine.RegisterMethod("imgui.h", "ImGui FontAtlasRect.H", (*imgui.FontAtlasRect).H, true)
+	engine.RegisterMethod("imgui.uv0", "ImGui FontAtlasRect.Uv0", (*imgui.FontAtlasRect).Uv0, true)
+	engine.RegisterMethod("imgui.uv1", "ImGui FontAtlasRect.Uv1", (*imgui.FontAtlasRect).Uv1, true)
+	engine.RegisterMethod("imgui.addCustomRectV", "ImGui FontAtlas.AddCustomRectV", (*imgui.FontAtlas).AddCustomRectV, true)
+	engine.RegisterMethod("imgui.addFont", "ImGui FontAtlas.AddFont", (*imgui.FontAtlas).AddFont, true)
+	engine.RegisterMethod("imgui.addFontDefaultV", "ImGui FontAtlas.AddFontDefaultV", (*imgui.FontAtlas).AddFontDefaultV, true)
+	engine.RegisterMethod("imgui.addFontFromFileTTFV", "ImGui FontAtlas.AddFontFromFileTTFV", (*imgui.FontAtlas).AddFontFromFileTTFV, true)
+	engine.RegisterMethod("imgui.addFontFromMemoryCompressedBase85TTFV", "ImGui FontAtlas.AddFontFromMemoryCompressedBase85TTFV", (*imgui.FontAtlas).AddFontFromMemoryCompressedBase85TTFV, true)
+	engine.RegisterMethod("imgui.addFontFromMemoryCompressedTTFV", "ImGui FontAtlas.AddFontFromMemoryCompressedTTFV", (*imgui.FontAtlas).AddFontFromMemoryCompressedTTFV, true)
+	engine.RegisterMethod("imgui.addFontFromMemoryTTFV", "ImGui FontAtlas.AddFontFromMemoryTTFV", (*imgui.FontAtlas).AddFontFromMemoryTTFV, true)
+	engine.RegisterMethod("imgui.clearFonts", "ImGui FontAtlas.ClearFonts", (*imgui.FontAtlas).ClearFonts, true)
+	engine.RegisterMethod("imgui.clearInputData", "ImGui FontAtlas.ClearInputData", (*imgui.FontAtlas).ClearInputData, true)
+	engine.RegisterMethod("imgui.clearTexData", "ImGui FontAtlas.ClearTexData", (*imgui.FontAtlas).ClearTexData, true)
+	engine.RegisterMethod("imgui.compactCache", "ImGui FontAtlas.CompactCache", (*imgui.FontAtlas).CompactCache, true)
+	engine.RegisterMethod("imgui.customRect", "ImGui FontAtlas.CustomRect", (*imgui.FontAtlas).CustomRect, true)
+	engine.RegisterMethod("imgui.glyphRangesDefault", "ImGui FontAtlas.GlyphRangesDefault", (*imgui.FontAtlas).GlyphRangesDefault, true)
+	engine.RegisterMethod("imgui.removeCustomRect", "ImGui FontAtlas.RemoveCustomRect", (*imgui.FontAtlas).RemoveCustomRect, true)
+	engine.RegisterMethod("imgui.removeFont", "ImGui FontAtlas.RemoveFont", (*imgui.FontAtlas).RemoveFont, true)
+	engine.RegisterMethod("imgui.setFontLoader", "ImGui FontAtlas.SetFontLoader", (*imgui.FontAtlas).SetFontLoader, true)
+	engine.RegisterMethod("imgui.addCustomRect", "ImGui FontAtlas.AddCustomRect", (*imgui.FontAtlas).AddCustomRect, true)
+	engine.RegisterMethod("imgui.addFontDefault", "ImGui FontAtlas.AddFontDefault", (*imgui.FontAtlas).AddFontDefault, true)
+	engine.RegisterMethod("imgui.addFontFromFileTTF", "ImGui FontAtlas.AddFontFromFileTTF", (*imgui.FontAtlas).AddFontFromFileTTF, true)
+	engine.RegisterMethod("imgui.addFontFromMemoryCompressedBase85TTF", "ImGui FontAtlas.AddFontFromMemoryCompressedBase85TTF", (*imgui.FontAtlas).AddFontFromMemoryCompressedBase85TTF, true)
+	engine.RegisterMethod("imgui.addFontFromMemoryCompressedTTF", "ImGui FontAtlas.AddFontFromMemoryCompressedTTF", (*imgui.FontAtlas).AddFontFromMemoryCompressedTTF, true)
+	engine.RegisterMethod("imgui.addFontFromMemoryTTF", "ImGui FontAtlas.AddFontFromMemoryTTF", (*imgui.FontAtlas).AddFontFromMemoryTTF, true)
+	engine.RegisterMethod("imgui.setTexDesiredFormat", "ImGui FontAtlas.SetTexDesiredFormat", (*imgui.FontAtlas).SetTexDesiredFormat, true)
+	engine.RegisterMethod("imgui.setTexGlyphPadding", "ImGui FontAtlas.SetTexGlyphPadding", (*imgui.FontAtlas).SetTexGlyphPadding, true)
+	engine.RegisterMethod("imgui.setTexMinWidth", "ImGui FontAtlas.SetTexMinWidth", (*imgui.FontAtlas).SetTexMinWidth, true)
+	engine.RegisterMethod("imgui.setTexMinHeight", "ImGui FontAtlas.SetTexMinHeight", (*imgui.FontAtlas).SetTexMinHeight, true)
+	engine.RegisterMethod("imgui.setTexMaxWidth", "ImGui FontAtlas.SetTexMaxWidth", (*imgui.FontAtlas).SetTexMaxWidth, true)
+	engine.RegisterMethod("imgui.setTexMaxHeight", "ImGui FontAtlas.SetTexMaxHeight", (*imgui.FontAtlas).SetTexMaxHeight, true)
+	engine.RegisterMethod("imgui.setUserData", "ImGui FontAtlas.SetUserData", (*imgui.FontAtlas).SetUserData, true)
+	engine.RegisterMethod("imgui.setTexData", "ImGui FontAtlas.SetTexData", (*imgui.FontAtlas).SetTexData, true)
+	engine.RegisterMethod("imgui.setLocked", "ImGui FontAtlas.SetLocked", (*imgui.FontAtlas).SetLocked, true)
+	engine.RegisterMethod("imgui.setRendererHasTextures", "ImGui FontAtlas.SetRendererHasTextures", (*imgui.FontAtlas).SetRendererHasTextures, true)
+	engine.RegisterMethod("imgui.setTexIsBuilt", "ImGui FontAtlas.SetTexIsBuilt", (*imgui.FontAtlas).SetTexIsBuilt, true)
+	engine.RegisterMethod("imgui.setTexPixelsUseColors", "ImGui FontAtlas.SetTexPixelsUseColors", (*imgui.FontAtlas).SetTexPixelsUseColors, true)
+	engine.RegisterMethod("imgui.setTexUvScale", "ImGui FontAtlas.SetTexUvScale", (*imgui.FontAtlas).SetTexUvScale, true)
+	engine.RegisterMethod("imgui.setSources", "ImGui FontAtlas.SetSources", (*imgui.FontAtlas).SetSources, true)
+	engine.RegisterMethod("imgui.setTexNextUniqueID", "ImGui FontAtlas.SetTexNextUniqueID", (*imgui.FontAtlas).SetTexNextUniqueID, true)
+	engine.RegisterMethod("imgui.setFontNextUniqueID", "ImGui FontAtlas.SetFontNextUniqueID", (*imgui.FontAtlas).SetFontNextUniqueID, true)
+	engine.RegisterMethod("imgui.setBuilder", "ImGui FontAtlas.SetBuilder", (*imgui.FontAtlas).SetBuilder, true)
+	engine.RegisterMethod("imgui.setFontLoaderName", "ImGui FontAtlas.SetFontLoaderName", (*imgui.FontAtlas).SetFontLoaderName, true)
+	engine.RegisterMethod("imgui.setFontLoaderData", "ImGui FontAtlas.SetFontLoaderData", (*imgui.FontAtlas).SetFontLoaderData, true)
+	engine.RegisterMethod("imgui.setFontLoaderFlags", "ImGui FontAtlas.SetFontLoaderFlags", (*imgui.FontAtlas).SetFontLoaderFlags, true)
+	engine.RegisterMethod("imgui.setRefCount", "ImGui FontAtlas.SetRefCount", (*imgui.FontAtlas).SetRefCount, true)
+	engine.RegisterMethod("imgui.setOwnerContext", "ImGui FontAtlas.SetOwnerContext", (*imgui.FontAtlas).SetOwnerContext, true)
+	engine.RegisterMethod("imgui.texDesiredFormat", "ImGui FontAtlas.TexDesiredFormat", (*imgui.FontAtlas).TexDesiredFormat, true)
+	engine.RegisterMethod("imgui.texGlyphPadding", "ImGui FontAtlas.TexGlyphPadding", (*imgui.FontAtlas).TexGlyphPadding, true)
+	engine.RegisterMethod("imgui.texMinWidth", "ImGui FontAtlas.TexMinWidth", (*imgui.FontAtlas).TexMinWidth, true)
+	engine.RegisterMethod("imgui.texMinHeight", "ImGui FontAtlas.TexMinHeight", (*imgui.FontAtlas).TexMinHeight, true)
+	engine.RegisterMethod("imgui.texMaxWidth", "ImGui FontAtlas.TexMaxWidth", (*imgui.FontAtlas).TexMaxWidth, true)
+	engine.RegisterMethod("imgui.texMaxHeight", "ImGui FontAtlas.TexMaxHeight", (*imgui.FontAtlas).TexMaxHeight, true)
+	engine.RegisterMethod("imgui.userData", "ImGui FontAtlas.UserData", (*imgui.FontAtlas).UserData, true)
+	engine.RegisterMethod("imgui.texData", "ImGui FontAtlas.TexData", (*imgui.FontAtlas).TexData, true)
+	engine.RegisterMethod("imgui.texList", "ImGui FontAtlas.TexList", (*imgui.FontAtlas).TexList, true)
+	engine.RegisterMethod("imgui.locked", "ImGui FontAtlas.Locked", (*imgui.FontAtlas).Locked, true)
+	engine.RegisterMethod("imgui.rendererHasTextures", "ImGui FontAtlas.RendererHasTextures", (*imgui.FontAtlas).RendererHasTextures, true)
+	engine.RegisterMethod("imgui.texIsBuilt", "ImGui FontAtlas.TexIsBuilt", (*imgui.FontAtlas).TexIsBuilt, true)
+	engine.RegisterMethod("imgui.texPixelsUseColors", "ImGui FontAtlas.TexPixelsUseColors", (*imgui.FontAtlas).TexPixelsUseColors, true)
+	engine.RegisterMethod("imgui.texUvScale", "ImGui FontAtlas.TexUvScale", (*imgui.FontAtlas).TexUvScale, true)
+	engine.RegisterMethod("imgui.fonts", "ImGui FontAtlas.Fonts", (*imgui.FontAtlas).Fonts, true)
+	engine.RegisterMethod("imgui.sources", "ImGui FontAtlas.Sources", (*imgui.FontAtlas).Sources, true)
+	engine.RegisterMethod("imgui.texNextUniqueID", "ImGui FontAtlas.TexNextUniqueID", (*imgui.FontAtlas).TexNextUniqueID, true)
+	engine.RegisterMethod("imgui.fontNextUniqueID", "ImGui FontAtlas.FontNextUniqueID", (*imgui.FontAtlas).FontNextUniqueID, true)
+	engine.RegisterMethod("imgui.drawListSharedDatas", "ImGui FontAtlas.DrawListSharedDatas", (*imgui.FontAtlas).DrawListSharedDatas, true)
+	engine.RegisterMethod("imgui.builder", "ImGui FontAtlas.Builder", (*imgui.FontAtlas).Builder, true)
+	engine.RegisterMethod("imgui.fontLoader", "ImGui FontAtlas.FontLoader", (*imgui.FontAtlas).FontLoader, true)
+	engine.RegisterMethod("imgui.fontLoaderName", "ImGui FontAtlas.FontLoaderName", (*imgui.FontAtlas).FontLoaderName, true)
+	engine.RegisterMethod("imgui.fontLoaderData", "ImGui FontAtlas.FontLoaderData", (*imgui.FontAtlas).FontLoaderData, true)
+	engine.RegisterMethod("imgui.fontLoaderFlags", "ImGui FontAtlas.FontLoaderFlags", (*imgui.FontAtlas).FontLoaderFlags, true)
+	engine.RegisterMethod("imgui.refCount", "ImGui FontAtlas.RefCount", (*imgui.FontAtlas).RefCount, true)
+	engine.RegisterMethod("imgui.ownerContext", "ImGui FontAtlas.OwnerContext", (*imgui.FontAtlas).OwnerContext, true)
+	engine.RegisterMethod("imgui.fontCount", "ImGui FontAtlas.FontCount", (*imgui.FontAtlas).FontCount, true)
+	engine.RegisterMethod("imgui.clearOutputData", "ImGui FontBaked.ClearOutputData", (*imgui.FontBaked).ClearOutputData, true)
+	engine.RegisterMethod("imgui.findGlyph", "ImGui FontBaked.FindGlyph", (*imgui.FontBaked).FindGlyph, true)
+	engine.RegisterMethod("imgui.findGlyphNoFallback", "ImGui FontBaked.FindGlyphNoFallback", (*imgui.FontBaked).FindGlyphNoFallback, true)
+	engine.RegisterMethod("imgui.charAdvance", "ImGui FontBaked.CharAdvance", (*imgui.FontBaked).CharAdvance, true)
+	engine.RegisterMethod("imgui.isGlyphLoaded", "ImGui FontBaked.IsGlyphLoaded", (*imgui.FontBaked).IsGlyphLoaded, true)
+	engine.RegisterMethod("imgui.setIndexAdvanceX", "ImGui FontBaked.SetIndexAdvanceX", (*imgui.FontBaked).SetIndexAdvanceX, true)
+	engine.RegisterMethod("imgui.setFallbackAdvanceX", "ImGui FontBaked.SetFallbackAdvanceX", (*imgui.FontBaked).SetFallbackAdvanceX, true)
+	engine.RegisterMethod("imgui.setSize", "ImGui FontBaked.SetSize", (*imgui.FontBaked).SetSize, true)
+	engine.RegisterMethod("imgui.setRasterizerDensity", "ImGui FontBaked.SetRasterizerDensity", (*imgui.FontBaked).SetRasterizerDensity, true)
+	engine.RegisterMethod("imgui.setIndexLookup", "ImGui FontBaked.SetIndexLookup", (*imgui.FontBaked).SetIndexLookup, true)
+	engine.RegisterMethod("imgui.setGlyphs", "ImGui FontBaked.SetGlyphs", (*imgui.FontBaked).SetGlyphs, true)
+	engine.RegisterMethod("imgui.setFallbackGlyphIndex", "ImGui FontBaked.SetFallbackGlyphIndex", (*imgui.FontBaked).SetFallbackGlyphIndex, true)
+	engine.RegisterMethod("imgui.setAscent", "ImGui FontBaked.SetAscent", (*imgui.FontBaked).SetAscent, true)
+	engine.RegisterMethod("imgui.setDescent", "ImGui FontBaked.SetDescent", (*imgui.FontBaked).SetDescent, true)
+	engine.RegisterMethod("imgui.setMetricsTotalSurface", "ImGui FontBaked.SetMetricsTotalSurface", (*imgui.FontBaked).SetMetricsTotalSurface, true)
+	engine.RegisterMethod("imgui.setWantDestroy", "ImGui FontBaked.SetWantDestroy", (*imgui.FontBaked).SetWantDestroy, true)
+	engine.RegisterMethod("imgui.setLoadNoFallback", "ImGui FontBaked.SetLoadNoFallback", (*imgui.FontBaked).SetLoadNoFallback, true)
+	engine.RegisterMethod("imgui.setLoadNoRenderOnLayout", "ImGui FontBaked.SetLoadNoRenderOnLayout", (*imgui.FontBaked).SetLoadNoRenderOnLayout, true)
+	engine.RegisterMethod("imgui.setLastUsedFrame", "ImGui FontBaked.SetLastUsedFrame", (*imgui.FontBaked).SetLastUsedFrame, true)
+	engine.RegisterMethod("imgui.setBakedId", "ImGui FontBaked.SetBakedId", (*imgui.FontBaked).SetBakedId, true)
+	engine.RegisterMethod("imgui.setContainerFont", "ImGui FontBaked.SetContainerFont", (*imgui.FontBaked).SetContainerFont, true)
+	engine.RegisterMethod("imgui.setFontLoaderDatas", "ImGui FontBaked.SetFontLoaderDatas", (*imgui.FontBaked).SetFontLoaderDatas, true)
+	engine.RegisterMethod("imgui.indexAdvanceX", "ImGui FontBaked.IndexAdvanceX", (*imgui.FontBaked).IndexAdvanceX, true)
+	engine.RegisterMethod("imgui.fallbackAdvanceX", "ImGui FontBaked.FallbackAdvanceX", (*imgui.FontBaked).FallbackAdvanceX, true)
+	engine.RegisterMethod("imgui.size", "ImGui FontBaked.Size", (*imgui.FontBaked).Size, true)
+	engine.RegisterMethod("imgui.rasterizerDensity", "ImGui FontBaked.RasterizerDensity", (*imgui.FontBaked).RasterizerDensity, true)
+	engine.RegisterMethod("imgui.indexLookup", "ImGui FontBaked.IndexLookup", (*imgui.FontBaked).IndexLookup, true)
+	engine.RegisterMethod("imgui.glyphs", "ImGui FontBaked.Glyphs", (*imgui.FontBaked).Glyphs, true)
+	engine.RegisterMethod("imgui.fallbackGlyphIndex", "ImGui FontBaked.FallbackGlyphIndex", (*imgui.FontBaked).FallbackGlyphIndex, true)
+	engine.RegisterMethod("imgui.ascent", "ImGui FontBaked.Ascent", (*imgui.FontBaked).Ascent, true)
+	engine.RegisterMethod("imgui.descent", "ImGui FontBaked.Descent", (*imgui.FontBaked).Descent, true)
+	engine.RegisterMethod("imgui.metricsTotalSurface", "ImGui FontBaked.MetricsTotalSurface", (*imgui.FontBaked).MetricsTotalSurface, true)
+	engine.RegisterMethod("imgui.wantDestroy", "ImGui FontBaked.WantDestroy", (*imgui.FontBaked).WantDestroy, true)
+	engine.RegisterMethod("imgui.loadNoFallback", "ImGui FontBaked.LoadNoFallback", (*imgui.FontBaked).LoadNoFallback, true)
+	engine.RegisterMethod("imgui.loadNoRenderOnLayout", "ImGui FontBaked.LoadNoRenderOnLayout", (*imgui.FontBaked).LoadNoRenderOnLayout, true)
+	engine.RegisterMethod("imgui.lastUsedFrame", "ImGui FontBaked.LastUsedFrame", (*imgui.FontBaked).LastUsedFrame, true)
+	engine.RegisterMethod("imgui.bakedId", "ImGui FontBaked.BakedId", (*imgui.FontBaked).BakedId, true)
+	engine.RegisterMethod("imgui.containerFont", "ImGui FontBaked.ContainerFont", (*imgui.FontBaked).ContainerFont, true)
+	engine.RegisterMethod("imgui.fontLoaderDatas", "ImGui FontBaked.FontLoaderDatas", (*imgui.FontBaked).FontLoaderDatas, true)
+	engine.RegisterMethod("imgui.setName", "ImGui FontConfig.SetName", (*imgui.FontConfig).SetName, true)
+	engine.RegisterMethod("imgui.setFontData", "ImGui FontConfig.SetFontData", (*imgui.FontConfig).SetFontData, true)
+	engine.RegisterMethod("imgui.setFontDataSize", "ImGui FontConfig.SetFontDataSize", (*imgui.FontConfig).SetFontDataSize, true)
+	engine.RegisterMethod("imgui.setFontDataOwnedByAtlas", "ImGui FontConfig.SetFontDataOwnedByAtlas", (*imgui.FontConfig).SetFontDataOwnedByAtlas, true)
+	engine.RegisterMethod("imgui.setMergeMode", "ImGui FontConfig.SetMergeMode", (*imgui.FontConfig).SetMergeMode, true)
+	engine.RegisterMethod("imgui.setPixelSnapH", "ImGui FontConfig.SetPixelSnapH", (*imgui.FontConfig).SetPixelSnapH, true)
+	engine.RegisterMethod("imgui.setPixelSnapV", "ImGui FontConfig.SetPixelSnapV", (*imgui.FontConfig).SetPixelSnapV, true)
+	engine.RegisterMethod("imgui.setOversampleH", "ImGui FontConfig.SetOversampleH", (*imgui.FontConfig).SetOversampleH, true)
+	engine.RegisterMethod("imgui.setOversampleV", "ImGui FontConfig.SetOversampleV", (*imgui.FontConfig).SetOversampleV, true)
+	engine.RegisterMethod("imgui.setEllipsisChar", "ImGui FontConfig.SetEllipsisChar", (*imgui.FontConfig).SetEllipsisChar, true)
+	engine.RegisterMethod("imgui.setSizePixels", "ImGui FontConfig.SetSizePixels", (*imgui.FontConfig).SetSizePixels, true)
+	engine.RegisterMethod("imgui.setGlyphRanges", "ImGui FontConfig.SetGlyphRanges", (*imgui.FontConfig).SetGlyphRanges, true)
+	engine.RegisterMethod("imgui.setGlyphExcludeRanges", "ImGui FontConfig.SetGlyphExcludeRanges", (*imgui.FontConfig).SetGlyphExcludeRanges, true)
+	engine.RegisterMethod("imgui.setGlyphOffset", "ImGui FontConfig.SetGlyphOffset", (*imgui.FontConfig).SetGlyphOffset, true)
+	engine.RegisterMethod("imgui.setGlyphMinAdvanceX", "ImGui FontConfig.SetGlyphMinAdvanceX", (*imgui.FontConfig).SetGlyphMinAdvanceX, true)
+	engine.RegisterMethod("imgui.setGlyphMaxAdvanceX", "ImGui FontConfig.SetGlyphMaxAdvanceX", (*imgui.FontConfig).SetGlyphMaxAdvanceX, true)
+	engine.RegisterMethod("imgui.setGlyphExtraAdvanceX", "ImGui FontConfig.SetGlyphExtraAdvanceX", (*imgui.FontConfig).SetGlyphExtraAdvanceX, true)
+	engine.RegisterMethod("imgui.setFontNo", "ImGui FontConfig.SetFontNo", (*imgui.FontConfig).SetFontNo, true)
+	engine.RegisterMethod("imgui.setRasterizerMultiply", "ImGui FontConfig.SetRasterizerMultiply", (*imgui.FontConfig).SetRasterizerMultiply, true)
+	engine.RegisterMethod("imgui.setDstFont", "ImGui FontConfig.SetDstFont", (*imgui.FontConfig).SetDstFont, true)
+	engine.RegisterMethod("imgui.name", "ImGui FontConfig.Name", (*imgui.FontConfig).Name, true)
+	engine.RegisterMethod("imgui.fontData", "ImGui FontConfig.FontData", (*imgui.FontConfig).FontData, true)
+	engine.RegisterMethod("imgui.fontDataSize", "ImGui FontConfig.FontDataSize", (*imgui.FontConfig).FontDataSize, true)
+	engine.RegisterMethod("imgui.fontDataOwnedByAtlas", "ImGui FontConfig.FontDataOwnedByAtlas", (*imgui.FontConfig).FontDataOwnedByAtlas, true)
+	engine.RegisterMethod("imgui.mergeMode", "ImGui FontConfig.MergeMode", (*imgui.FontConfig).MergeMode, true)
+	engine.RegisterMethod("imgui.pixelSnapH", "ImGui FontConfig.PixelSnapH", (*imgui.FontConfig).PixelSnapH, true)
+	engine.RegisterMethod("imgui.pixelSnapV", "ImGui FontConfig.PixelSnapV", (*imgui.FontConfig).PixelSnapV, true)
+	engine.RegisterMethod("imgui.oversampleH", "ImGui FontConfig.OversampleH", (*imgui.FontConfig).OversampleH, true)
+	engine.RegisterMethod("imgui.oversampleV", "ImGui FontConfig.OversampleV", (*imgui.FontConfig).OversampleV, true)
+	engine.RegisterMethod("imgui.ellipsisChar", "ImGui FontConfig.EllipsisChar", (*imgui.FontConfig).EllipsisChar, true)
+	engine.RegisterMethod("imgui.sizePixels", "ImGui FontConfig.SizePixels", (*imgui.FontConfig).SizePixels, true)
+	engine.RegisterMethod("imgui.glyphRanges", "ImGui FontConfig.GlyphRanges", (*imgui.FontConfig).GlyphRanges, true)
+	engine.RegisterMethod("imgui.glyphExcludeRanges", "ImGui FontConfig.GlyphExcludeRanges", (*imgui.FontConfig).GlyphExcludeRanges, true)
+	engine.RegisterMethod("imgui.glyphOffset", "ImGui FontConfig.GlyphOffset", (*imgui.FontConfig).GlyphOffset, true)
+	engine.RegisterMethod("imgui.glyphMinAdvanceX", "ImGui FontConfig.GlyphMinAdvanceX", (*imgui.FontConfig).GlyphMinAdvanceX, true)
+	engine.RegisterMethod("imgui.glyphMaxAdvanceX", "ImGui FontConfig.GlyphMaxAdvanceX", (*imgui.FontConfig).GlyphMaxAdvanceX, true)
+	engine.RegisterMethod("imgui.glyphExtraAdvanceX", "ImGui FontConfig.GlyphExtraAdvanceX", (*imgui.FontConfig).GlyphExtraAdvanceX, true)
+	engine.RegisterMethod("imgui.fontNo", "ImGui FontConfig.FontNo", (*imgui.FontConfig).FontNo, true)
+	engine.RegisterMethod("imgui.rasterizerMultiply", "ImGui FontConfig.RasterizerMultiply", (*imgui.FontConfig).RasterizerMultiply, true)
+	engine.RegisterMethod("imgui.dstFont", "ImGui FontConfig.DstFont", (*imgui.FontConfig).DstFont, true)
+	engine.RegisterMethod("imgui.addChar", "ImGui FontGlyphRangesBuilder.AddChar", (*imgui.FontGlyphRangesBuilder).AddChar, true)
+	engine.RegisterMethod("imgui.addRanges", "ImGui FontGlyphRangesBuilder.AddRanges", (*imgui.FontGlyphRangesBuilder).AddRanges, true)
+	engine.RegisterMethod("imgui.addTextV", "ImGui FontGlyphRangesBuilder.AddTextV", (*imgui.FontGlyphRangesBuilder).AddTextV, true)
+	engine.RegisterMethod("imgui.bit", "ImGui FontGlyphRangesBuilder.Bit", (*imgui.FontGlyphRangesBuilder).Bit, true)
+	engine.RegisterMethod("imgui.setBit", "ImGui FontGlyphRangesBuilder.SetBit", (*imgui.FontGlyphRangesBuilder).SetBit, true)
+	engine.RegisterMethod("imgui.addText", "ImGui FontGlyphRangesBuilder.AddText", (*imgui.FontGlyphRangesBuilder).AddText, true)
+	engine.RegisterMethod("imgui.setUsedChars", "ImGui FontGlyphRangesBuilder.SetUsedChars", (*imgui.FontGlyphRangesBuilder).SetUsedChars, true)
+	engine.RegisterMethod("imgui.usedChars", "ImGui FontGlyphRangesBuilder.UsedChars", (*imgui.FontGlyphRangesBuilder).UsedChars, true)
+	engine.RegisterMethod("imgui.buildRanges", "ImGui FontGlyphRangesBuilder.BuildRanges", (*imgui.FontGlyphRangesBuilder).BuildRanges, true)
+	engine.RegisterMethod("imgui.setColored", "ImGui FontGlyph.SetColored", (*imgui.FontGlyph).SetColored, true)
+	engine.RegisterMethod("imgui.setVisible", "ImGui FontGlyph.SetVisible", (*imgui.FontGlyph).SetVisible, true)
+	engine.RegisterMethod("imgui.setSourceIdx", "ImGui FontGlyph.SetSourceIdx", (*imgui.FontGlyph).SetSourceIdx, true)
+	engine.RegisterMethod("imgui.setCodepoint", "ImGui FontGlyph.SetCodepoint", (*imgui.FontGlyph).SetCodepoint, true)
+	engine.RegisterMethod("imgui.setAdvanceX", "ImGui FontGlyph.SetAdvanceX", (*imgui.FontGlyph).SetAdvanceX, true)
+	engine.RegisterMethod("imgui.setX0", "ImGui FontGlyph.SetX0", (*imgui.FontGlyph).SetX0, true)
+	engine.RegisterMethod("imgui.setY0", "ImGui FontGlyph.SetY0", (*imgui.FontGlyph).SetY0, true)
+	engine.RegisterMethod("imgui.setX1", "ImGui FontGlyph.SetX1", (*imgui.FontGlyph).SetX1, true)
+	engine.RegisterMethod("imgui.setY1", "ImGui FontGlyph.SetY1", (*imgui.FontGlyph).SetY1, true)
+	engine.RegisterMethod("imgui.setU0", "ImGui FontGlyph.SetU0", (*imgui.FontGlyph).SetU0, true)
+	engine.RegisterMethod("imgui.setV0", "ImGui FontGlyph.SetV0", (*imgui.FontGlyph).SetV0, true)
+	engine.RegisterMethod("imgui.setU1", "ImGui FontGlyph.SetU1", (*imgui.FontGlyph).SetU1, true)
+	engine.RegisterMethod("imgui.setV1", "ImGui FontGlyph.SetV1", (*imgui.FontGlyph).SetV1, true)
+	engine.RegisterMethod("imgui.setPackId", "ImGui FontGlyph.SetPackId", (*imgui.FontGlyph).SetPackId, true)
+	engine.RegisterMethod("imgui.colored", "ImGui FontGlyph.Colored", (*imgui.FontGlyph).Colored, true)
+	engine.RegisterMethod("imgui.visible", "ImGui FontGlyph.Visible", (*imgui.FontGlyph).Visible, true)
+	engine.RegisterMethod("imgui.sourceIdx", "ImGui FontGlyph.SourceIdx", (*imgui.FontGlyph).SourceIdx, true)
+	engine.RegisterMethod("imgui.codepoint", "ImGui FontGlyph.Codepoint", (*imgui.FontGlyph).Codepoint, true)
+	engine.RegisterMethod("imgui.advanceX", "ImGui FontGlyph.AdvanceX", (*imgui.FontGlyph).AdvanceX, true)
+	engine.RegisterMethod("imgui.x0", "ImGui FontGlyph.X0", (*imgui.FontGlyph).X0, true)
+	engine.RegisterMethod("imgui.y0", "ImGui FontGlyph.Y0", (*imgui.FontGlyph).Y0, true)
+	engine.RegisterMethod("imgui.x1", "ImGui FontGlyph.X1", (*imgui.FontGlyph).X1, true)
+	engine.RegisterMethod("imgui.y1", "ImGui FontGlyph.Y1", (*imgui.FontGlyph).Y1, true)
+	engine.RegisterMethod("imgui.u0", "ImGui FontGlyph.U0", (*imgui.FontGlyph).U0, true)
+	engine.RegisterMethod("imgui.v0", "ImGui FontGlyph.V0", (*imgui.FontGlyph).V0, true)
+	engine.RegisterMethod("imgui.u1", "ImGui FontGlyph.U1", (*imgui.FontGlyph).U1, true)
+	engine.RegisterMethod("imgui.v1", "ImGui FontGlyph.V1", (*imgui.FontGlyph).V1, true)
+	engine.RegisterMethod("imgui.packId", "ImGui FontGlyph.PackId", (*imgui.FontGlyph).PackId, true)
+	engine.RegisterMethod("imgui.setFontBakedSrcLoaderDataSize", "ImGui FontLoader.SetFontBakedSrcLoaderDataSize", (*imgui.FontLoader).SetFontBakedSrcLoaderDataSize, true)
+	engine.RegisterMethod("imgui.fontBakedSrcLoaderDataSize", "ImGui FontLoader.FontBakedSrcLoaderDataSize", (*imgui.FontLoader).FontBakedSrcLoaderDataSize, true)
+	engine.RegisterMethod("imgui.addRemapChar", "ImGui Font.AddRemapChar", (*imgui.Font).AddRemapChar, true)
+	engine.RegisterMethod("imgui.calcTextSizeAV", "ImGui Font.CalcTextSizeAV", (*imgui.Font).CalcTextSizeAV, true)
+	engine.RegisterMethod("imgui.calcWordWrapPosition", "ImGui Font.CalcWordWrapPosition", (*imgui.Font).CalcWordWrapPosition, true)
+	engine.RegisterMethod("imgui.debugName", "ImGui Font.DebugName", (*imgui.Font).DebugName, true)
+	engine.RegisterMethod("imgui.fontBakedV", "ImGui Font.FontBakedV", (*imgui.Font).FontBakedV, true)
+	engine.RegisterMethod("imgui.isGlyphInFont", "ImGui Font.IsGlyphInFont", (*imgui.Font).IsGlyphInFont, true)
+	engine.RegisterMethod("imgui.isGlyphRangeUnused", "ImGui Font.IsGlyphRangeUnused", (*imgui.Font).IsGlyphRangeUnused, true)
+	engine.RegisterMethod("imgui.isLoaded", "ImGui Font.IsLoaded", (*imgui.Font).IsLoaded, true)
+	engine.RegisterMethod("imgui.renderCharV", "ImGui Font.RenderCharV", (*imgui.Font).RenderCharV, true)
+	engine.RegisterMethod("imgui.renderTextV", "ImGui Font.RenderTextV", (*imgui.Font).RenderTextV, true)
+	engine.RegisterMethod("imgui.calcTextSizeA", "ImGui Font.CalcTextSizeA", (*imgui.Font).CalcTextSizeA, true)
+	engine.RegisterMethod("imgui.fontBaked", "ImGui Font.FontBaked", (*imgui.Font).FontBaked, true)
+	engine.RegisterMethod("imgui.renderChar", "ImGui Font.RenderChar", (*imgui.Font).RenderChar, true)
+	engine.RegisterMethod("imgui.renderText", "ImGui Font.RenderText", (*imgui.Font).RenderText, true)
+	engine.RegisterMethod("imgui.setLastBaked", "ImGui Font.SetLastBaked", (*imgui.Font).SetLastBaked, true)
+	engine.RegisterMethod("imgui.setContainerAtlas", "ImGui Font.SetContainerAtlas", (*imgui.Font).SetContainerAtlas, true)
+	engine.RegisterMethod("imgui.setCurrentRasterizerDensity", "ImGui Font.SetCurrentRasterizerDensity", (*imgui.Font).SetCurrentRasterizerDensity, true)
+	engine.RegisterMethod("imgui.setFontId", "ImGui Font.SetFontId", (*imgui.Font).SetFontId, true)
+	engine.RegisterMethod("imgui.setLegacySize", "ImGui Font.SetLegacySize", (*imgui.Font).SetLegacySize, true)
+	engine.RegisterMethod("imgui.setFallbackChar", "ImGui Font.SetFallbackChar", (*imgui.Font).SetFallbackChar, true)
+	engine.RegisterMethod("imgui.setUsed8kPagesMap", "ImGui Font.SetUsed8kPagesMap", (*imgui.Font).SetUsed8kPagesMap, true)
+	engine.RegisterMethod("imgui.setEllipsisAutoBake", "ImGui Font.SetEllipsisAutoBake", (*imgui.Font).SetEllipsisAutoBake, true)
+	engine.RegisterMethod("imgui.setRemapPairs", "ImGui Font.SetRemapPairs", (*imgui.Font).SetRemapPairs, true)
+	engine.RegisterMethod("imgui.lastBaked", "ImGui Font.LastBaked", (*imgui.Font).LastBaked, true)
+	engine.RegisterMethod("imgui.containerAtlas", "ImGui Font.ContainerAtlas", (*imgui.Font).ContainerAtlas, true)
+	engine.RegisterMethod("imgui.currentRasterizerDensity", "ImGui Font.CurrentRasterizerDensity", (*imgui.Font).CurrentRasterizerDensity, true)
+	engine.RegisterMethod("imgui.fontId", "ImGui Font.FontId", (*imgui.Font).FontId, true)
+	engine.RegisterMethod("imgui.legacySize", "ImGui Font.LegacySize", (*imgui.Font).LegacySize, true)
+	engine.RegisterMethod("imgui.fallbackChar", "ImGui Font.FallbackChar", (*imgui.Font).FallbackChar, true)
+	engine.RegisterMethod("imgui.used8kPagesMap", "ImGui Font.Used8kPagesMap", (*imgui.Font).Used8kPagesMap, true)
+	engine.RegisterMethod("imgui.ellipsisAutoBake", "ImGui Font.EllipsisAutoBake", (*imgui.Font).EllipsisAutoBake, true)
+	engine.RegisterMethod("imgui.remapPairs", "ImGui Font.RemapPairs", (*imgui.Font).RemapPairs, true)
+	engine.RegisterMethod("imgui.setID", "ImGui BoxSelectState.SetID", (*imgui.BoxSelectState).SetID, true)
+	engine.RegisterMethod("imgui.setIsActive", "ImGui BoxSelectState.SetIsActive", (*imgui.BoxSelectState).SetIsActive, true)
+	engine.RegisterMethod("imgui.setIsStarting", "ImGui BoxSelectState.SetIsStarting", (*imgui.BoxSelectState).SetIsStarting, true)
+	engine.RegisterMethod("imgui.setIsStartedFromVoid", "ImGui BoxSelectState.SetIsStartedFromVoid", (*imgui.BoxSelectState).SetIsStartedFromVoid, true)
+	engine.RegisterMethod("imgui.setIsStartedSetNavIdOnce", "ImGui BoxSelectState.SetIsStartedSetNavIdOnce", (*imgui.BoxSelectState).SetIsStartedSetNavIdOnce, true)
+	engine.RegisterMethod("imgui.setRequestClear", "ImGui BoxSelectState.SetRequestClear", (*imgui.BoxSelectState).SetRequestClear, true)
+	engine.RegisterMethod("imgui.setKeyMods", "ImGui BoxSelectState.SetKeyMods", (*imgui.BoxSelectState).SetKeyMods, true)
+	engine.RegisterMethod("imgui.setStartPosRel", "ImGui BoxSelectState.SetStartPosRel", (*imgui.BoxSelectState).SetStartPosRel, true)
+	engine.RegisterMethod("imgui.setEndPosRel", "ImGui BoxSelectState.SetEndPosRel", (*imgui.BoxSelectState).SetEndPosRel, true)
+	engine.RegisterMethod("imgui.setScrollAccum", "ImGui BoxSelectState.SetScrollAccum", (*imgui.BoxSelectState).SetScrollAccum, true)
+	engine.RegisterMethod("imgui.setWindow", "ImGui BoxSelectState.SetWindow", (*imgui.BoxSelectState).SetWindow, true)
+	engine.RegisterMethod("imgui.setUnclipMode", "ImGui BoxSelectState.SetUnclipMode", (*imgui.BoxSelectState).SetUnclipMode, true)
+	engine.RegisterMethod("imgui.setUnclipRect", "ImGui BoxSelectState.SetUnclipRect", (*imgui.BoxSelectState).SetUnclipRect, true)
+	engine.RegisterMethod("imgui.setBoxSelectRectPrev", "ImGui BoxSelectState.SetBoxSelectRectPrev", (*imgui.BoxSelectState).SetBoxSelectRectPrev, true)
+	engine.RegisterMethod("imgui.setBoxSelectRectCurr", "ImGui BoxSelectState.SetBoxSelectRectCurr", (*imgui.BoxSelectState).SetBoxSelectRectCurr, true)
+	engine.RegisterMethod("imgui.iD", "ImGui BoxSelectState.ID", (*imgui.BoxSelectState).ID, true)
+	engine.RegisterMethod("imgui.isActive", "ImGui BoxSelectState.IsActive", (*imgui.BoxSelectState).IsActive, true)
+	engine.RegisterMethod("imgui.isStarting", "ImGui BoxSelectState.IsStarting", (*imgui.BoxSelectState).IsStarting, true)
+	engine.RegisterMethod("imgui.isStartedFromVoid", "ImGui BoxSelectState.IsStartedFromVoid", (*imgui.BoxSelectState).IsStartedFromVoid, true)
+	engine.RegisterMethod("imgui.isStartedSetNavIdOnce", "ImGui BoxSelectState.IsStartedSetNavIdOnce", (*imgui.BoxSelectState).IsStartedSetNavIdOnce, true)
+	engine.RegisterMethod("imgui.requestClear", "ImGui BoxSelectState.RequestClear", (*imgui.BoxSelectState).RequestClear, true)
+	engine.RegisterMethod("imgui.keyMods", "ImGui BoxSelectState.KeyMods", (*imgui.BoxSelectState).KeyMods, true)
+	engine.RegisterMethod("imgui.startPosRel", "ImGui BoxSelectState.StartPosRel", (*imgui.BoxSelectState).StartPosRel, true)
+	engine.RegisterMethod("imgui.endPosRel", "ImGui BoxSelectState.EndPosRel", (*imgui.BoxSelectState).EndPosRel, true)
+	engine.RegisterMethod("imgui.scrollAccum", "ImGui BoxSelectState.ScrollAccum", (*imgui.BoxSelectState).ScrollAccum, true)
+	engine.RegisterMethod("imgui.window", "ImGui BoxSelectState.Window", (*imgui.BoxSelectState).Window, true)
+	engine.RegisterMethod("imgui.unclipMode", "ImGui BoxSelectState.UnclipMode", (*imgui.BoxSelectState).UnclipMode, true)
+	engine.RegisterMethod("imgui.unclipRect", "ImGui BoxSelectState.UnclipRect", (*imgui.BoxSelectState).UnclipRect, true)
+	engine.RegisterMethod("imgui.boxSelectRectPrev", "ImGui BoxSelectState.BoxSelectRectPrev", (*imgui.BoxSelectState).BoxSelectRectPrev, true)
+	engine.RegisterMethod("imgui.boxSelectRectCurr", "ImGui BoxSelectState.BoxSelectRectCurr", (*imgui.BoxSelectState).BoxSelectRectCurr, true)
+	engine.RegisterMethod("imgui.setPreviewRect", "ImGui ComboPreviewData.SetPreviewRect", (*imgui.ComboPreviewData).SetPreviewRect, true)
+	engine.RegisterMethod("imgui.setBackupCursorPos", "ImGui ComboPreviewData.SetBackupCursorPos", (*imgui.ComboPreviewData).SetBackupCursorPos, true)
+	engine.RegisterMethod("imgui.setBackupCursorMaxPos", "ImGui ComboPreviewData.SetBackupCursorMaxPos", (*imgui.ComboPreviewData).SetBackupCursorMaxPos, true)
+	engine.RegisterMethod("imgui.setBackupCursorPosPrevLine", "ImGui ComboPreviewData.SetBackupCursorPosPrevLine", (*imgui.ComboPreviewData).SetBackupCursorPosPrevLine, true)
+	engine.RegisterMethod("imgui.setBackupPrevLineTextBaseOffset", "ImGui ComboPreviewData.SetBackupPrevLineTextBaseOffset", (*imgui.ComboPreviewData).SetBackupPrevLineTextBaseOffset, true)
+	engine.RegisterMethod("imgui.setBackupLayout", "ImGui ComboPreviewData.SetBackupLayout", (*imgui.ComboPreviewData).SetBackupLayout, true)
+	engine.RegisterMethod("imgui.previewRect", "ImGui ComboPreviewData.PreviewRect", (*imgui.ComboPreviewData).PreviewRect, true)
+	engine.RegisterMethod("imgui.backupCursorPos", "ImGui ComboPreviewData.BackupCursorPos", (*imgui.ComboPreviewData).BackupCursorPos, true)
+	engine.RegisterMethod("imgui.backupCursorMaxPos", "ImGui ComboPreviewData.BackupCursorMaxPos", (*imgui.ComboPreviewData).BackupCursorMaxPos, true)
+	engine.RegisterMethod("imgui.backupCursorPosPrevLine", "ImGui ComboPreviewData.BackupCursorPosPrevLine", (*imgui.ComboPreviewData).BackupCursorPosPrevLine, true)
+	engine.RegisterMethod("imgui.backupPrevLineTextBaseOffset", "ImGui ComboPreviewData.BackupPrevLineTextBaseOffset", (*imgui.ComboPreviewData).BackupPrevLineTextBaseOffset, true)
+	engine.RegisterMethod("imgui.backupLayout", "ImGui ComboPreviewData.BackupLayout", (*imgui.ComboPreviewData).BackupLayout, true)
+	engine.RegisterMethod("imgui.setHookId", "ImGui ContextHook.SetHookId", (*imgui.ContextHook).SetHookId, true)
+	engine.RegisterMethod("imgui.setType", "ImGui ContextHook.SetType", (*imgui.ContextHook).SetType, true)
+	engine.RegisterMethod("imgui.setOwner", "ImGui ContextHook.SetOwner", (*imgui.ContextHook).SetOwner, true)
+	engine.RegisterMethod("imgui.setCallback", "ImGui ContextHook.SetCallback", (*imgui.ContextHook).SetCallback, true)
+	engine.RegisterMethod("imgui.hookId", "ImGui ContextHook.HookId", (*imgui.ContextHook).HookId, true)
+	engine.RegisterMethod("imgui.type", "ImGui ContextHook.Type", (*imgui.ContextHook).Type, true)
+	engine.RegisterMethod("imgui.owner", "ImGui ContextHook.Owner", (*imgui.ContextHook).Owner, true)
+	engine.RegisterMethod("imgui.callback", "ImGui ContextHook.Callback", (*imgui.ContextHook).Callback, true)
+	engine.RegisterMethod("imgui.setInitialized", "ImGui Context.SetInitialized", (*imgui.Context).SetInitialized, true)
+	engine.RegisterMethod("imgui.setIO", "ImGui Context.SetIO", (*imgui.Context).SetIO, true)
+	engine.RegisterMethod("imgui.setPlatformIO", "ImGui Context.SetPlatformIO", (*imgui.Context).SetPlatformIO, true)
+	engine.RegisterMethod("imgui.setStyle", "ImGui Context.SetStyle", (*imgui.Context).SetStyle, true)
+	engine.RegisterMethod("imgui.setConfigFlagsCurrFrame", "ImGui Context.SetConfigFlagsCurrFrame", (*imgui.Context).SetConfigFlagsCurrFrame, true)
+	engine.RegisterMethod("imgui.setConfigFlagsLastFrame", "ImGui Context.SetConfigFlagsLastFrame", (*imgui.Context).SetConfigFlagsLastFrame, true)
+	engine.RegisterMethod("imgui.setFontBaked", "ImGui Context.SetFontBaked", (*imgui.Context).SetFontBaked, true)
+	engine.RegisterMethod("imgui.setFontSizeBase", "ImGui Context.SetFontSizeBase", (*imgui.Context).SetFontSizeBase, true)
+	engine.RegisterMethod("imgui.setFontBakedScale", "ImGui Context.SetFontBakedScale", (*imgui.Context).SetFontBakedScale, true)
+	engine.RegisterMethod("imgui.setFontRasterizerDensity", "ImGui Context.SetFontRasterizerDensity", (*imgui.Context).SetFontRasterizerDensity, true)
+	engine.RegisterMethod("imgui.setCurrentDpiScale", "ImGui Context.SetCurrentDpiScale", (*imgui.Context).SetCurrentDpiScale, true)
+	engine.RegisterMethod("imgui.setTime", "ImGui Context.SetTime", (*imgui.Context).SetTime, true)
+	engine.RegisterMethod("imgui.setFrameCountEnded", "ImGui Context.SetFrameCountEnded", (*imgui.Context).SetFrameCountEnded, true)
+	engine.RegisterMethod("imgui.setFrameCountPlatformEnded", "ImGui Context.SetFrameCountPlatformEnded", (*imgui.Context).SetFrameCountPlatformEnded, true)
+	engine.RegisterMethod("imgui.setFrameCountRendered", "ImGui Context.SetFrameCountRendered", (*imgui.Context).SetFrameCountRendered, true)
+	engine.RegisterMethod("imgui.setWithinEndChildID", "ImGui Context.SetWithinEndChildID", (*imgui.Context).SetWithinEndChildID, true)
+	engine.RegisterMethod("imgui.setWithinFrameScope", "ImGui Context.SetWithinFrameScope", (*imgui.Context).SetWithinFrameScope, true)
+	engine.RegisterMethod("imgui.setWithinFrameScopeWithImplicitWindow", "ImGui Context.SetWithinFrameScopeWithImplicitWindow", (*imgui.Context).SetWithinFrameScopeWithImplicitWindow, true)
+	engine.RegisterMethod("imgui.setGcCompactAll", "ImGui Context.SetGcCompactAll", (*imgui.Context).SetGcCompactAll, true)
+	engine.RegisterMethod("imgui.setTestEngineHookItems", "ImGui Context.SetTestEngineHookItems", (*imgui.Context).SetTestEngineHookItems, true)
+	engine.RegisterMethod("imgui.setTestEngine", "ImGui Context.SetTestEngine", (*imgui.Context).SetTestEngine, true)
+	engine.RegisterMethod("imgui.setContextName", "ImGui Context.SetContextName", (*imgui.Context).SetContextName, true)
+	engine.RegisterMethod("imgui.setInputEventsQueue", "ImGui Context.SetInputEventsQueue", (*imgui.Context).SetInputEventsQueue, true)
+	engine.RegisterMethod("imgui.setInputEventsTrail", "ImGui Context.SetInputEventsTrail", (*imgui.Context).SetInputEventsTrail, true)
+	engine.RegisterMethod("imgui.setInputEventsNextMouseSource", "ImGui Context.SetInputEventsNextMouseSource", (*imgui.Context).SetInputEventsNextMouseSource, true)
+	engine.RegisterMethod("imgui.setInputEventsNextEventId", "ImGui Context.SetInputEventsNextEventId", (*imgui.Context).SetInputEventsNextEventId, true)
+	engine.RegisterMethod("imgui.setCurrentWindowStack", "ImGui Context.SetCurrentWindowStack", (*imgui.Context).SetCurrentWindowStack, true)
+	engine.RegisterMethod("imgui.setWindowsById", "ImGui Context.SetWindowsById", (*imgui.Context).SetWindowsById, true)
+	engine.RegisterMethod("imgui.setWindowsActiveCount", "ImGui Context.SetWindowsActiveCount", (*imgui.Context).SetWindowsActiveCount, true)
+	engine.RegisterMethod("imgui.setWindowsBorderHoverPadding", "ImGui Context.SetWindowsBorderHoverPadding", (*imgui.Context).SetWindowsBorderHoverPadding, true)
+	engine.RegisterMethod("imgui.setDebugBreakInWindow", "ImGui Context.SetDebugBreakInWindow", (*imgui.Context).SetDebugBreakInWindow, true)
+	engine.RegisterMethod("imgui.setCurrentWindow", "ImGui Context.SetCurrentWindow", (*imgui.Context).SetCurrentWindow, true)
+	engine.RegisterMethod("imgui.setHoveredWindow", "ImGui Context.SetHoveredWindow", (*imgui.Context).SetHoveredWindow, true)
+	engine.RegisterMethod("imgui.setHoveredWindowUnderMovingWindow", "ImGui Context.SetHoveredWindowUnderMovingWindow", (*imgui.Context).SetHoveredWindowUnderMovingWindow, true)
+	engine.RegisterMethod("imgui.setHoveredWindowBeforeClear", "ImGui Context.SetHoveredWindowBeforeClear", (*imgui.Context).SetHoveredWindowBeforeClear, true)
+	engine.RegisterMethod("imgui.setMovingWindow", "ImGui Context.SetMovingWindow", (*imgui.Context).SetMovingWindow, true)
+	engine.RegisterMethod("imgui.setWheelingWindow", "ImGui Context.SetWheelingWindow", (*imgui.Context).SetWheelingWindow, true)
+	engine.RegisterMethod("imgui.setWheelingWindowRefMousePos", "ImGui Context.SetWheelingWindowRefMousePos", (*imgui.Context).SetWheelingWindowRefMousePos, true)
+	engine.RegisterMethod("imgui.setWheelingWindowStartFrame", "ImGui Context.SetWheelingWindowStartFrame", (*imgui.Context).SetWheelingWindowStartFrame, true)
+	engine.RegisterMethod("imgui.setWheelingWindowScrolledFrame", "ImGui Context.SetWheelingWindowScrolledFrame", (*imgui.Context).SetWheelingWindowScrolledFrame, true)
+	engine.RegisterMethod("imgui.setWheelingWindowReleaseTimer", "ImGui Context.SetWheelingWindowReleaseTimer", (*imgui.Context).SetWheelingWindowReleaseTimer, true)
+	engine.RegisterMethod("imgui.setWheelingWindowWheelRemainder", "ImGui Context.SetWheelingWindowWheelRemainder", (*imgui.Context).SetWheelingWindowWheelRemainder, true)
+	engine.RegisterMethod("imgui.setWheelingAxisAvg", "ImGui Context.SetWheelingAxisAvg", (*imgui.Context).SetWheelingAxisAvg, true)
+	engine.RegisterMethod("imgui.setDebugDrawIdConflictsId", "ImGui Context.SetDebugDrawIdConflictsId", (*imgui.Context).SetDebugDrawIdConflictsId, true)
+	engine.RegisterMethod("imgui.setDebugHookIdInfoId", "ImGui Context.SetDebugHookIdInfoId", (*imgui.Context).SetDebugHookIdInfoId, true)
+	engine.RegisterMethod("imgui.setHoveredId", "ImGui Context.SetHoveredId", (*imgui.Context).SetHoveredId, true)
+	engine.RegisterMethod("imgui.setHoveredIdPreviousFrame", "ImGui Context.SetHoveredIdPreviousFrame", (*imgui.Context).SetHoveredIdPreviousFrame, true)
+	engine.RegisterMethod("imgui.setHoveredIdPreviousFrameItemCount", "ImGui Context.SetHoveredIdPreviousFrameItemCount", (*imgui.Context).SetHoveredIdPreviousFrameItemCount, true)
+	engine.RegisterMethod("imgui.setHoveredIdTimer", "ImGui Context.SetHoveredIdTimer", (*imgui.Context).SetHoveredIdTimer, true)
+	engine.RegisterMethod("imgui.setHoveredIdNotActiveTimer", "ImGui Context.SetHoveredIdNotActiveTimer", (*imgui.Context).SetHoveredIdNotActiveTimer, true)
+	engine.RegisterMethod("imgui.setHoveredIdAllowOverlap", "ImGui Context.SetHoveredIdAllowOverlap", (*imgui.Context).SetHoveredIdAllowOverlap, true)
+	engine.RegisterMethod("imgui.setHoveredIdIsDisabled", "ImGui Context.SetHoveredIdIsDisabled", (*imgui.Context).SetHoveredIdIsDisabled, true)
+	engine.RegisterMethod("imgui.setItemUnclipByLog", "ImGui Context.SetItemUnclipByLog", (*imgui.Context).SetItemUnclipByLog, true)
+	engine.RegisterMethod("imgui.setActiveId", "ImGui Context.SetActiveId", (*imgui.Context).SetActiveId, true)
+	engine.RegisterMethod("imgui.setActiveIdIsAlive", "ImGui Context.SetActiveIdIsAlive", (*imgui.Context).SetActiveIdIsAlive, true)
+	engine.RegisterMethod("imgui.setActiveIdTimer", "ImGui Context.SetActiveIdTimer", (*imgui.Context).SetActiveIdTimer, true)
+	engine.RegisterMethod("imgui.setActiveIdIsJustActivated", "ImGui Context.SetActiveIdIsJustActivated", (*imgui.Context).SetActiveIdIsJustActivated, true)
+	engine.RegisterMethod("imgui.setActiveIdAllowOverlap", "ImGui Context.SetActiveIdAllowOverlap", (*imgui.Context).SetActiveIdAllowOverlap, true)
+	engine.RegisterMethod("imgui.setActiveIdNoClearOnFocusLoss", "ImGui Context.SetActiveIdNoClearOnFocusLoss", (*imgui.Context).SetActiveIdNoClearOnFocusLoss, true)
+	engine.RegisterMethod("imgui.setActiveIdHasBeenPressedBefore", "ImGui Context.SetActiveIdHasBeenPressedBefore", (*imgui.Context).SetActiveIdHasBeenPressedBefore, true)
+	engine.RegisterMethod("imgui.setActiveIdHasBeenEditedBefore", "ImGui Context.SetActiveIdHasBeenEditedBefore", (*imgui.Context).SetActiveIdHasBeenEditedBefore, true)
+	engine.RegisterMethod("imgui.setActiveIdHasBeenEditedThisFrame", "ImGui Context.SetActiveIdHasBeenEditedThisFrame", (*imgui.Context).SetActiveIdHasBeenEditedThisFrame, true)
+	engine.RegisterMethod("imgui.setActiveIdFromShortcut", "ImGui Context.SetActiveIdFromShortcut", (*imgui.Context).SetActiveIdFromShortcut, true)
+	engine.RegisterMethod("imgui.setActiveIdDisabledId", "ImGui Context.SetActiveIdDisabledId", (*imgui.Context).SetActiveIdDisabledId, true)
+	engine.RegisterMethod("imgui.setActiveIdMouseButton", "ImGui Context.SetActiveIdMouseButton", (*imgui.Context).SetActiveIdMouseButton, true)
+	engine.RegisterMethod("imgui.setActiveIdClickOffset", "ImGui Context.SetActiveIdClickOffset", (*imgui.Context).SetActiveIdClickOffset, true)
+	engine.RegisterMethod("imgui.setActiveIdWindow", "ImGui Context.SetActiveIdWindow", (*imgui.Context).SetActiveIdWindow, true)
+	engine.RegisterMethod("imgui.setActiveIdSource", "ImGui Context.SetActiveIdSource", (*imgui.Context).SetActiveIdSource, true)
+	engine.RegisterMethod("imgui.setActiveIdPreviousFrame", "ImGui Context.SetActiveIdPreviousFrame", (*imgui.Context).SetActiveIdPreviousFrame, true)
+	engine.RegisterMethod("imgui.setDeactivatedItemData", "ImGui Context.SetDeactivatedItemData", (*imgui.Context).SetDeactivatedItemData, true)
+	engine.RegisterMethod("imgui.setActiveIdValueOnActivation", "ImGui Context.SetActiveIdValueOnActivation", (*imgui.Context).SetActiveIdValueOnActivation, true)
+	engine.RegisterMethod("imgui.setLastActiveId", "ImGui Context.SetLastActiveId", (*imgui.Context).SetLastActiveId, true)
+	engine.RegisterMethod("imgui.setLastActiveIdTimer", "ImGui Context.SetLastActiveIdTimer", (*imgui.Context).SetLastActiveIdTimer, true)
+	engine.RegisterMethod("imgui.setLastKeyModsChangeTime", "ImGui Context.SetLastKeyModsChangeTime", (*imgui.Context).SetLastKeyModsChangeTime, true)
+	engine.RegisterMethod("imgui.setLastKeyModsChangeFromNoneTime", "ImGui Context.SetLastKeyModsChangeFromNoneTime", (*imgui.Context).SetLastKeyModsChangeFromNoneTime, true)
+	engine.RegisterMethod("imgui.setLastKeyboardKeyPressTime", "ImGui Context.SetLastKeyboardKeyPressTime", (*imgui.Context).SetLastKeyboardKeyPressTime, true)
+	engine.RegisterMethod("imgui.setKeysMayBeCharInput", "ImGui Context.SetKeysMayBeCharInput", (*imgui.Context).SetKeysMayBeCharInput, true)
+	engine.RegisterMethod("imgui.setKeysOwnerData", "ImGui Context.SetKeysOwnerData", (*imgui.Context).SetKeysOwnerData, true)
+	engine.RegisterMethod("imgui.setKeysRoutingTable", "ImGui Context.SetKeysRoutingTable", (*imgui.Context).SetKeysRoutingTable, true)
+	engine.RegisterMethod("imgui.setActiveIdUsingNavDirMask", "ImGui Context.SetActiveIdUsingNavDirMask", (*imgui.Context).SetActiveIdUsingNavDirMask, true)
+	engine.RegisterMethod("imgui.setActiveIdUsingAllKeyboardKeys", "ImGui Context.SetActiveIdUsingAllKeyboardKeys", (*imgui.Context).SetActiveIdUsingAllKeyboardKeys, true)
+	engine.RegisterMethod("imgui.setDebugBreakInShortcutRouting", "ImGui Context.SetDebugBreakInShortcutRouting", (*imgui.Context).SetDebugBreakInShortcutRouting, true)
+	engine.RegisterMethod("imgui.setCurrentFocusScopeId", "ImGui Context.SetCurrentFocusScopeId", (*imgui.Context).SetCurrentFocusScopeId, true)
+	engine.RegisterMethod("imgui.setCurrentItemFlags", "ImGui Context.SetCurrentItemFlags", (*imgui.Context).SetCurrentItemFlags, true)
+	engine.RegisterMethod("imgui.setDebugLocateId", "ImGui Context.SetDebugLocateId", (*imgui.Context).SetDebugLocateId, true)
+	engine.RegisterMethod("imgui.setNextItemData", "ImGui Context.SetNextItemData", (*imgui.Context).SetNextItemData, true)
+	engine.RegisterMethod("imgui.setLastItemData", "ImGui Context.SetLastItemData", (*imgui.Context).SetLastItemData, true)
+	engine.RegisterMethod("imgui.setNextWindowData", "ImGui Context.SetNextWindowData", (*imgui.Context).SetNextWindowData, true)
+	engine.RegisterMethod("imgui.setDebugShowGroupRects", "ImGui Context.SetDebugShowGroupRects", (*imgui.Context).SetDebugShowGroupRects, true)
+	engine.RegisterMethod("imgui.setDebugFlashStyleColorIdx", "ImGui Context.SetDebugFlashStyleColorIdx", (*imgui.Context).SetDebugFlashStyleColorIdx, true)
+	engine.RegisterMethod("imgui.setColorStack", "ImGui Context.SetColorStack", (*imgui.Context).SetColorStack, true)
+	engine.RegisterMethod("imgui.setStyleVarStack", "ImGui Context.SetStyleVarStack", (*imgui.Context).SetStyleVarStack, true)
+	engine.RegisterMethod("imgui.setFontStack", "ImGui Context.SetFontStack", (*imgui.Context).SetFontStack, true)
+	engine.RegisterMethod("imgui.setFocusScopeStack", "ImGui Context.SetFocusScopeStack", (*imgui.Context).SetFocusScopeStack, true)
+	engine.RegisterMethod("imgui.setItemFlagsStack", "ImGui Context.SetItemFlagsStack", (*imgui.Context).SetItemFlagsStack, true)
+	engine.RegisterMethod("imgui.setGroupStack", "ImGui Context.SetGroupStack", (*imgui.Context).SetGroupStack, true)
+	engine.RegisterMethod("imgui.setOpenPopupStack", "ImGui Context.SetOpenPopupStack", (*imgui.Context).SetOpenPopupStack, true)
+	engine.RegisterMethod("imgui.setBeginPopupStack", "ImGui Context.SetBeginPopupStack", (*imgui.Context).SetBeginPopupStack, true)
+	engine.RegisterMethod("imgui.setTreeNodeStack", "ImGui Context.SetTreeNodeStack", (*imgui.Context).SetTreeNodeStack, true)
+	engine.RegisterMethod("imgui.setCurrentViewport", "ImGui Context.SetCurrentViewport", (*imgui.Context).SetCurrentViewport, true)
+	engine.RegisterMethod("imgui.setMouseViewport", "ImGui Context.SetMouseViewport", (*imgui.Context).SetMouseViewport, true)
+	engine.RegisterMethod("imgui.setMouseLastHoveredViewport", "ImGui Context.SetMouseLastHoveredViewport", (*imgui.Context).SetMouseLastHoveredViewport, true)
+	engine.RegisterMethod("imgui.setPlatformLastFocusedViewportId", "ImGui Context.SetPlatformLastFocusedViewportId", (*imgui.Context).SetPlatformLastFocusedViewportId, true)
+	engine.RegisterMethod("imgui.setFallbackMonitor", "ImGui Context.SetFallbackMonitor", (*imgui.Context).SetFallbackMonitor, true)
+	engine.RegisterMethod("imgui.setPlatformMonitorsFullWorkRect", "ImGui Context.SetPlatformMonitorsFullWorkRect", (*imgui.Context).SetPlatformMonitorsFullWorkRect, true)
+	engine.RegisterMethod("imgui.setViewportCreatedCount", "ImGui Context.SetViewportCreatedCount", (*imgui.Context).SetViewportCreatedCount, true)
+	engine.RegisterMethod("imgui.setPlatformWindowsCreatedCount", "ImGui Context.SetPlatformWindowsCreatedCount", (*imgui.Context).SetPlatformWindowsCreatedCount, true)
+	engine.RegisterMethod("imgui.setViewportFocusedStampCount", "ImGui Context.SetViewportFocusedStampCount", (*imgui.Context).SetViewportFocusedStampCount, true)
+	engine.RegisterMethod("imgui.setNavHighlightItemUnderNav", "ImGui Context.SetNavHighlightItemUnderNav", (*imgui.Context).SetNavHighlightItemUnderNav, true)
+	engine.RegisterMethod("imgui.setNavMousePosDirty", "ImGui Context.SetNavMousePosDirty", (*imgui.Context).SetNavMousePosDirty, true)
+	engine.RegisterMethod("imgui.setNavIdIsAlive", "ImGui Context.SetNavIdIsAlive", (*imgui.Context).SetNavIdIsAlive, true)
+	engine.RegisterMethod("imgui.setNavId", "ImGui Context.SetNavId", (*imgui.Context).SetNavId, true)
+	engine.RegisterMethod("imgui.setNavWindow", "ImGui Context.SetNavWindow", (*imgui.Context).SetNavWindow, true)
+	engine.RegisterMethod("imgui.setNavFocusScopeId", "ImGui Context.SetNavFocusScopeId", (*imgui.Context).SetNavFocusScopeId, true)
+	engine.RegisterMethod("imgui.setNavLayer", "ImGui Context.SetNavLayer", (*imgui.Context).SetNavLayer, true)
+	engine.RegisterMethod("imgui.setNavActivateId", "ImGui Context.SetNavActivateId", (*imgui.Context).SetNavActivateId, true)
+	engine.RegisterMethod("imgui.setNavActivateDownId", "ImGui Context.SetNavActivateDownId", (*imgui.Context).SetNavActivateDownId, true)
+	engine.RegisterMethod("imgui.setNavActivatePressedId", "ImGui Context.SetNavActivatePressedId", (*imgui.Context).SetNavActivatePressedId, true)
+	engine.RegisterMethod("imgui.setNavActivateFlags", "ImGui Context.SetNavActivateFlags", (*imgui.Context).SetNavActivateFlags, true)
+	engine.RegisterMethod("imgui.setNavFocusRoute", "ImGui Context.SetNavFocusRoute", (*imgui.Context).SetNavFocusRoute, true)
+	engine.RegisterMethod("imgui.setNavHighlightActivatedId", "ImGui Context.SetNavHighlightActivatedId", (*imgui.Context).SetNavHighlightActivatedId, true)
+	engine.RegisterMethod("imgui.setNavHighlightActivatedTimer", "ImGui Context.SetNavHighlightActivatedTimer", (*imgui.Context).SetNavHighlightActivatedTimer, true)
+	engine.RegisterMethod("imgui.setNavNextActivateId", "ImGui Context.SetNavNextActivateId", (*imgui.Context).SetNavNextActivateId, true)
+	engine.RegisterMethod("imgui.setNavNextActivateFlags", "ImGui Context.SetNavNextActivateFlags", (*imgui.Context).SetNavNextActivateFlags, true)
+	engine.RegisterMethod("imgui.setNavInputSource", "ImGui Context.SetNavInputSource", (*imgui.Context).SetNavInputSource, true)
+	engine.RegisterMethod("imgui.setNavLastValidSelectionUserData", "ImGui Context.SetNavLastValidSelectionUserData", (*imgui.Context).SetNavLastValidSelectionUserData, true)
+	engine.RegisterMethod("imgui.setNavCursorHideFrames", "ImGui Context.SetNavCursorHideFrames", (*imgui.Context).SetNavCursorHideFrames, true)
+	engine.RegisterMethod("imgui.setNavAnyRequest", "ImGui Context.SetNavAnyRequest", (*imgui.Context).SetNavAnyRequest, true)
+	engine.RegisterMethod("imgui.setNavInitRequest", "ImGui Context.SetNavInitRequest", (*imgui.Context).SetNavInitRequest, true)
+	engine.RegisterMethod("imgui.setNavInitRequestFromMove", "ImGui Context.SetNavInitRequestFromMove", (*imgui.Context).SetNavInitRequestFromMove, true)
+	engine.RegisterMethod("imgui.setNavInitResult", "ImGui Context.SetNavInitResult", (*imgui.Context).SetNavInitResult, true)
+	engine.RegisterMethod("imgui.setNavMoveSubmitted", "ImGui Context.SetNavMoveSubmitted", (*imgui.Context).SetNavMoveSubmitted, true)
+	engine.RegisterMethod("imgui.setNavMoveScoringItems", "ImGui Context.SetNavMoveScoringItems", (*imgui.Context).SetNavMoveScoringItems, true)
+	engine.RegisterMethod("imgui.setNavMoveForwardToNextFrame", "ImGui Context.SetNavMoveForwardToNextFrame", (*imgui.Context).SetNavMoveForwardToNextFrame, true)
+	engine.RegisterMethod("imgui.setNavMoveFlags", "ImGui Context.SetNavMoveFlags", (*imgui.Context).SetNavMoveFlags, true)
+	engine.RegisterMethod("imgui.setNavMoveScrollFlags", "ImGui Context.SetNavMoveScrollFlags", (*imgui.Context).SetNavMoveScrollFlags, true)
+	engine.RegisterMethod("imgui.setNavMoveKeyMods", "ImGui Context.SetNavMoveKeyMods", (*imgui.Context).SetNavMoveKeyMods, true)
+	engine.RegisterMethod("imgui.setNavMoveDir", "ImGui Context.SetNavMoveDir", (*imgui.Context).SetNavMoveDir, true)
+	engine.RegisterMethod("imgui.setNavMoveDirForDebug", "ImGui Context.SetNavMoveDirForDebug", (*imgui.Context).SetNavMoveDirForDebug, true)
+	engine.RegisterMethod("imgui.setNavMoveClipDir", "ImGui Context.SetNavMoveClipDir", (*imgui.Context).SetNavMoveClipDir, true)
+	engine.RegisterMethod("imgui.setNavScoringRect", "ImGui Context.SetNavScoringRect", (*imgui.Context).SetNavScoringRect, true)
+	engine.RegisterMethod("imgui.setNavScoringNoClipRect", "ImGui Context.SetNavScoringNoClipRect", (*imgui.Context).SetNavScoringNoClipRect, true)
+	engine.RegisterMethod("imgui.setNavScoringDebugCount", "ImGui Context.SetNavScoringDebugCount", (*imgui.Context).SetNavScoringDebugCount, true)
+	engine.RegisterMethod("imgui.setNavTabbingDir", "ImGui Context.SetNavTabbingDir", (*imgui.Context).SetNavTabbingDir, true)
+	engine.RegisterMethod("imgui.setNavTabbingCounter", "ImGui Context.SetNavTabbingCounter", (*imgui.Context).SetNavTabbingCounter, true)
+	engine.RegisterMethod("imgui.setNavMoveResultLocal", "ImGui Context.SetNavMoveResultLocal", (*imgui.Context).SetNavMoveResultLocal, true)
+	engine.RegisterMethod("imgui.setNavMoveResultLocalVisible", "ImGui Context.SetNavMoveResultLocalVisible", (*imgui.Context).SetNavMoveResultLocalVisible, true)
+	engine.RegisterMethod("imgui.setNavMoveResultOther", "ImGui Context.SetNavMoveResultOther", (*imgui.Context).SetNavMoveResultOther, true)
+	engine.RegisterMethod("imgui.setNavTabbingResultFirst", "ImGui Context.SetNavTabbingResultFirst", (*imgui.Context).SetNavTabbingResultFirst, true)
+	engine.RegisterMethod("imgui.setNavJustMovedFromFocusScopeId", "ImGui Context.SetNavJustMovedFromFocusScopeId", (*imgui.Context).SetNavJustMovedFromFocusScopeId, true)
+	engine.RegisterMethod("imgui.setNavJustMovedToId", "ImGui Context.SetNavJustMovedToId", (*imgui.Context).SetNavJustMovedToId, true)
+	engine.RegisterMethod("imgui.setNavJustMovedToFocusScopeId", "ImGui Context.SetNavJustMovedToFocusScopeId", (*imgui.Context).SetNavJustMovedToFocusScopeId, true)
+	engine.RegisterMethod("imgui.setNavJustMovedToKeyMods", "ImGui Context.SetNavJustMovedToKeyMods", (*imgui.Context).SetNavJustMovedToKeyMods, true)
+	engine.RegisterMethod("imgui.setNavJustMovedToIsTabbing", "ImGui Context.SetNavJustMovedToIsTabbing", (*imgui.Context).SetNavJustMovedToIsTabbing, true)
+	engine.RegisterMethod("imgui.setNavJustMovedToHasSelectionData", "ImGui Context.SetNavJustMovedToHasSelectionData", (*imgui.Context).SetNavJustMovedToHasSelectionData, true)
+	engine.RegisterMethod("imgui.setConfigNavWindowingWithGamepad", "ImGui Context.SetConfigNavWindowingWithGamepad", (*imgui.Context).SetConfigNavWindowingWithGamepad, true)
+	engine.RegisterMethod("imgui.setConfigNavWindowingKeyNext", "ImGui Context.SetConfigNavWindowingKeyNext", (*imgui.Context).SetConfigNavWindowingKeyNext, true)
+	engine.RegisterMethod("imgui.setConfigNavWindowingKeyPrev", "ImGui Context.SetConfigNavWindowingKeyPrev", (*imgui.Context).SetConfigNavWindowingKeyPrev, true)
+	engine.RegisterMethod("imgui.setNavWindowingTarget", "ImGui Context.SetNavWindowingTarget", (*imgui.Context).SetNavWindowingTarget, true)
+	engine.RegisterMethod("imgui.setNavWindowingTargetAnim", "ImGui Context.SetNavWindowingTargetAnim", (*imgui.Context).SetNavWindowingTargetAnim, true)
+	engine.RegisterMethod("imgui.setNavWindowingListWindow", "ImGui Context.SetNavWindowingListWindow", (*imgui.Context).SetNavWindowingListWindow, true)
+	engine.RegisterMethod("imgui.setNavWindowingTimer", "ImGui Context.SetNavWindowingTimer", (*imgui.Context).SetNavWindowingTimer, true)
+	engine.RegisterMethod("imgui.setNavWindowingHighlightAlpha", "ImGui Context.SetNavWindowingHighlightAlpha", (*imgui.Context).SetNavWindowingHighlightAlpha, true)
+	engine.RegisterMethod("imgui.setNavWindowingInputSource", "ImGui Context.SetNavWindowingInputSource", (*imgui.Context).SetNavWindowingInputSource, true)
+	engine.RegisterMethod("imgui.setNavWindowingToggleLayer", "ImGui Context.SetNavWindowingToggleLayer", (*imgui.Context).SetNavWindowingToggleLayer, true)
+	engine.RegisterMethod("imgui.setNavWindowingToggleKey", "ImGui Context.SetNavWindowingToggleKey", (*imgui.Context).SetNavWindowingToggleKey, true)
+	engine.RegisterMethod("imgui.setNavWindowingAccumDeltaPos", "ImGui Context.SetNavWindowingAccumDeltaPos", (*imgui.Context).SetNavWindowingAccumDeltaPos, true)
+	engine.RegisterMethod("imgui.setNavWindowingAccumDeltaSize", "ImGui Context.SetNavWindowingAccumDeltaSize", (*imgui.Context).SetNavWindowingAccumDeltaSize, true)
+	engine.RegisterMethod("imgui.setDimBgRatio", "ImGui Context.SetDimBgRatio", (*imgui.Context).SetDimBgRatio, true)
+	engine.RegisterMethod("imgui.setDragDropActive", "ImGui Context.SetDragDropActive", (*imgui.Context).SetDragDropActive, true)
+	engine.RegisterMethod("imgui.setDragDropWithinSource", "ImGui Context.SetDragDropWithinSource", (*imgui.Context).SetDragDropWithinSource, true)
+	engine.RegisterMethod("imgui.setDragDropWithinTarget", "ImGui Context.SetDragDropWithinTarget", (*imgui.Context).SetDragDropWithinTarget, true)
+	engine.RegisterMethod("imgui.setDragDropSourceFlags", "ImGui Context.SetDragDropSourceFlags", (*imgui.Context).SetDragDropSourceFlags, true)
+	engine.RegisterMethod("imgui.setDragDropSourceFrameCount", "ImGui Context.SetDragDropSourceFrameCount", (*imgui.Context).SetDragDropSourceFrameCount, true)
+	engine.RegisterMethod("imgui.setDragDropMouseButton", "ImGui Context.SetDragDropMouseButton", (*imgui.Context).SetDragDropMouseButton, true)
+	engine.RegisterMethod("imgui.setDragDropTargetRect", "ImGui Context.SetDragDropTargetRect", (*imgui.Context).SetDragDropTargetRect, true)
+	engine.RegisterMethod("imgui.setDragDropTargetClipRect", "ImGui Context.SetDragDropTargetClipRect", (*imgui.Context).SetDragDropTargetClipRect, true)
+	engine.RegisterMethod("imgui.setDragDropTargetId", "ImGui Context.SetDragDropTargetId", (*imgui.Context).SetDragDropTargetId, true)
+	engine.RegisterMethod("imgui.setDragDropTargetFullViewport", "ImGui Context.SetDragDropTargetFullViewport", (*imgui.Context).SetDragDropTargetFullViewport, true)
+	engine.RegisterMethod("imgui.setDragDropAcceptFlags", "ImGui Context.SetDragDropAcceptFlags", (*imgui.Context).SetDragDropAcceptFlags, true)
+	engine.RegisterMethod("imgui.setDragDropAcceptIdCurrRectSurface", "ImGui Context.SetDragDropAcceptIdCurrRectSurface", (*imgui.Context).SetDragDropAcceptIdCurrRectSurface, true)
+	engine.RegisterMethod("imgui.setDragDropAcceptIdCurr", "ImGui Context.SetDragDropAcceptIdCurr", (*imgui.Context).SetDragDropAcceptIdCurr, true)
+	engine.RegisterMethod("imgui.setDragDropAcceptIdPrev", "ImGui Context.SetDragDropAcceptIdPrev", (*imgui.Context).SetDragDropAcceptIdPrev, true)
+	engine.RegisterMethod("imgui.setDragDropAcceptFrameCount", "ImGui Context.SetDragDropAcceptFrameCount", (*imgui.Context).SetDragDropAcceptFrameCount, true)
+	engine.RegisterMethod("imgui.setDragDropHoldJustPressedId", "ImGui Context.SetDragDropHoldJustPressedId", (*imgui.Context).SetDragDropHoldJustPressedId, true)
+	engine.RegisterMethod("imgui.setDragDropPayloadBufLocal", "ImGui Context.SetDragDropPayloadBufLocal", (*imgui.Context).SetDragDropPayloadBufLocal, true)
+	engine.RegisterMethod("imgui.setClipperTempDataStacked", "ImGui Context.SetClipperTempDataStacked", (*imgui.Context).SetClipperTempDataStacked, true)
+	engine.RegisterMethod("imgui.setClipperTempData", "ImGui Context.SetClipperTempData", (*imgui.Context).SetClipperTempData, true)
+	engine.RegisterMethod("imgui.setCurrentTable", "ImGui Context.SetCurrentTable", (*imgui.Context).SetCurrentTable, true)
+	engine.RegisterMethod("imgui.setDebugBreakInTable", "ImGui Context.SetDebugBreakInTable", (*imgui.Context).SetDebugBreakInTable, true)
+	engine.RegisterMethod("imgui.setTablesTempDataStacked", "ImGui Context.SetTablesTempDataStacked", (*imgui.Context).SetTablesTempDataStacked, true)
+	engine.RegisterMethod("imgui.setTablesTempData", "ImGui Context.SetTablesTempData", (*imgui.Context).SetTablesTempData, true)
+	engine.RegisterMethod("imgui.setTablesLastTimeActive", "ImGui Context.SetTablesLastTimeActive", (*imgui.Context).SetTablesLastTimeActive, true)
+	engine.RegisterMethod("imgui.setDrawChannelsTempMergeBuffer", "ImGui Context.SetDrawChannelsTempMergeBuffer", (*imgui.Context).SetDrawChannelsTempMergeBuffer, true)
+	engine.RegisterMethod("imgui.setCurrentTabBar", "ImGui Context.SetCurrentTabBar", (*imgui.Context).SetCurrentTabBar, true)
+	engine.RegisterMethod("imgui.setCurrentTabBarStack", "ImGui Context.SetCurrentTabBarStack", (*imgui.Context).SetCurrentTabBarStack, true)
+	engine.RegisterMethod("imgui.setShrinkWidthBuffer", "ImGui Context.SetShrinkWidthBuffer", (*imgui.Context).SetShrinkWidthBuffer, true)
+	engine.RegisterMethod("imgui.setBoxSelectState", "ImGui Context.SetBoxSelectState", (*imgui.Context).SetBoxSelectState, true)
+	engine.RegisterMethod("imgui.setCurrentMultiSelect", "ImGui Context.SetCurrentMultiSelect", (*imgui.Context).SetCurrentMultiSelect, true)
+	engine.RegisterMethod("imgui.setMultiSelectTempDataStacked", "ImGui Context.SetMultiSelectTempDataStacked", (*imgui.Context).SetMultiSelectTempDataStacked, true)
+	engine.RegisterMethod("imgui.setMultiSelectTempData", "ImGui Context.SetMultiSelectTempData", (*imgui.Context).SetMultiSelectTempData, true)
+	engine.RegisterMethod("imgui.setHoverItemDelayId", "ImGui Context.SetHoverItemDelayId", (*imgui.Context).SetHoverItemDelayId, true)
+	engine.RegisterMethod("imgui.setHoverItemDelayIdPreviousFrame", "ImGui Context.SetHoverItemDelayIdPreviousFrame", (*imgui.Context).SetHoverItemDelayIdPreviousFrame, true)
+	engine.RegisterMethod("imgui.setHoverItemDelayTimer", "ImGui Context.SetHoverItemDelayTimer", (*imgui.Context).SetHoverItemDelayTimer, true)
+	engine.RegisterMethod("imgui.setHoverItemDelayClearTimer", "ImGui Context.SetHoverItemDelayClearTimer", (*imgui.Context).SetHoverItemDelayClearTimer, true)
+	engine.RegisterMethod("imgui.setHoverItemUnlockedStationaryId", "ImGui Context.SetHoverItemUnlockedStationaryId", (*imgui.Context).SetHoverItemUnlockedStationaryId, true)
+	engine.RegisterMethod("imgui.setHoverWindowUnlockedStationaryId", "ImGui Context.SetHoverWindowUnlockedStationaryId", (*imgui.Context).SetHoverWindowUnlockedStationaryId, true)
+	engine.RegisterMethod("imgui.setMouseStationaryTimer", "ImGui Context.SetMouseStationaryTimer", (*imgui.Context).SetMouseStationaryTimer, true)
+	engine.RegisterMethod("imgui.setMouseLastValidPos", "ImGui Context.SetMouseLastValidPos", (*imgui.Context).SetMouseLastValidPos, true)
+	engine.RegisterMethod("imgui.setInputTextState", "ImGui Context.SetInputTextState", (*imgui.Context).SetInputTextState, true)
+	engine.RegisterMethod("imgui.setInputTextLineIndex", "ImGui Context.SetInputTextLineIndex", (*imgui.Context).SetInputTextLineIndex, true)
+	engine.RegisterMethod("imgui.setInputTextDeactivatedState", "ImGui Context.SetInputTextDeactivatedState", (*imgui.Context).SetInputTextDeactivatedState, true)
+	engine.RegisterMethod("imgui.setInputTextPasswordFontBackupBaked", "ImGui Context.SetInputTextPasswordFontBackupBaked", (*imgui.Context).SetInputTextPasswordFontBackupBaked, true)
+	engine.RegisterMethod("imgui.setInputTextPasswordFontBackupFlags", "ImGui Context.SetInputTextPasswordFontBackupFlags", (*imgui.Context).SetInputTextPasswordFontBackupFlags, true)
+	engine.RegisterMethod("imgui.setTempInputId", "ImGui Context.SetTempInputId", (*imgui.Context).SetTempInputId, true)
+	engine.RegisterMethod("imgui.setDataTypeZeroValue", "ImGui Context.SetDataTypeZeroValue", (*imgui.Context).SetDataTypeZeroValue, true)
+	engine.RegisterMethod("imgui.setBeginMenuDepth", "ImGui Context.SetBeginMenuDepth", (*imgui.Context).SetBeginMenuDepth, true)
+	engine.RegisterMethod("imgui.setBeginComboDepth", "ImGui Context.SetBeginComboDepth", (*imgui.Context).SetBeginComboDepth, true)
+	engine.RegisterMethod("imgui.setColorEditCurrentID", "ImGui Context.SetColorEditCurrentID", (*imgui.Context).SetColorEditCurrentID, true)
+	engine.RegisterMethod("imgui.setColorEditSavedID", "ImGui Context.SetColorEditSavedID", (*imgui.Context).SetColorEditSavedID, true)
+	engine.RegisterMethod("imgui.setColorEditSavedHue", "ImGui Context.SetColorEditSavedHue", (*imgui.Context).SetColorEditSavedHue, true)
+	engine.RegisterMethod("imgui.setColorEditSavedSat", "ImGui Context.SetColorEditSavedSat", (*imgui.Context).SetColorEditSavedSat, true)
+	engine.RegisterMethod("imgui.setColorEditSavedColor", "ImGui Context.SetColorEditSavedColor", (*imgui.Context).SetColorEditSavedColor, true)
+	engine.RegisterMethod("imgui.setColorPickerRef", "ImGui Context.SetColorPickerRef", (*imgui.Context).SetColorPickerRef, true)
+	engine.RegisterMethod("imgui.setComboPreviewData", "ImGui Context.SetComboPreviewData", (*imgui.Context).SetComboPreviewData, true)
+	engine.RegisterMethod("imgui.setWindowResizeBorderExpectedRect", "ImGui Context.SetWindowResizeBorderExpectedRect", (*imgui.Context).SetWindowResizeBorderExpectedRect, true)
+	engine.RegisterMethod("imgui.setWindowResizeRelativeMode", "ImGui Context.SetWindowResizeRelativeMode", (*imgui.Context).SetWindowResizeRelativeMode, true)
+	engine.RegisterMethod("imgui.setScrollbarSeekMode", "ImGui Context.SetScrollbarSeekMode", (*imgui.Context).SetScrollbarSeekMode, true)
+	engine.RegisterMethod("imgui.setScrollbarClickDeltaToGrabCenter", "ImGui Context.SetScrollbarClickDeltaToGrabCenter", (*imgui.Context).SetScrollbarClickDeltaToGrabCenter, true)
+	engine.RegisterMethod("imgui.setSliderGrabClickOffset", "ImGui Context.SetSliderGrabClickOffset", (*imgui.Context).SetSliderGrabClickOffset, true)
+	engine.RegisterMethod("imgui.setSliderCurrentAccum", "ImGui Context.SetSliderCurrentAccum", (*imgui.Context).SetSliderCurrentAccum, true)
+	engine.RegisterMethod("imgui.setSliderCurrentAccumDirty", "ImGui Context.SetSliderCurrentAccumDirty", (*imgui.Context).SetSliderCurrentAccumDirty, true)
+	engine.RegisterMethod("imgui.setDragCurrentAccumDirty", "ImGui Context.SetDragCurrentAccumDirty", (*imgui.Context).SetDragCurrentAccumDirty, true)
+	engine.RegisterMethod("imgui.setDragCurrentAccum", "ImGui Context.SetDragCurrentAccum", (*imgui.Context).SetDragCurrentAccum, true)
+	engine.RegisterMethod("imgui.setDragSpeedDefaultRatio", "ImGui Context.SetDragSpeedDefaultRatio", (*imgui.Context).SetDragSpeedDefaultRatio, true)
+	engine.RegisterMethod("imgui.setDisabledAlphaBackup", "ImGui Context.SetDisabledAlphaBackup", (*imgui.Context).SetDisabledAlphaBackup, true)
+	engine.RegisterMethod("imgui.setDisabledStackSize", "ImGui Context.SetDisabledStackSize", (*imgui.Context).SetDisabledStackSize, true)
+	engine.RegisterMethod("imgui.setTooltipOverrideCount", "ImGui Context.SetTooltipOverrideCount", (*imgui.Context).SetTooltipOverrideCount, true)
+	engine.RegisterMethod("imgui.setTooltipPreviousWindow", "ImGui Context.SetTooltipPreviousWindow", (*imgui.Context).SetTooltipPreviousWindow, true)
+	engine.RegisterMethod("imgui.setClipboardHandlerData", "ImGui Context.SetClipboardHandlerData", (*imgui.Context).SetClipboardHandlerData, true)
+	engine.RegisterMethod("imgui.setMenusIdSubmittedThisFrame", "ImGui Context.SetMenusIdSubmittedThisFrame", (*imgui.Context).SetMenusIdSubmittedThisFrame, true)
+	engine.RegisterMethod("imgui.setTypingSelectState", "ImGui Context.SetTypingSelectState", (*imgui.Context).SetTypingSelectState, true)
+	engine.RegisterMethod("imgui.setPlatformImeData", "ImGui Context.SetPlatformImeData", (*imgui.Context).SetPlatformImeData, true)
+	engine.RegisterMethod("imgui.setPlatformImeDataPrev", "ImGui Context.SetPlatformImeDataPrev", (*imgui.Context).SetPlatformImeDataPrev, true)
+	engine.RegisterMethod("imgui.setDockContext", "ImGui Context.SetDockContext", (*imgui.Context).SetDockContext, true)
+	engine.RegisterMethod("imgui.setSettingsLoaded", "ImGui Context.SetSettingsLoaded", (*imgui.Context).SetSettingsLoaded, true)
+	engine.RegisterMethod("imgui.setSettingsDirtyTimer", "ImGui Context.SetSettingsDirtyTimer", (*imgui.Context).SetSettingsDirtyTimer, true)
+	engine.RegisterMethod("imgui.setSettingsIniData", "ImGui Context.SetSettingsIniData", (*imgui.Context).SetSettingsIniData, true)
+	engine.RegisterMethod("imgui.setSettingsHandlers", "ImGui Context.SetSettingsHandlers", (*imgui.Context).SetSettingsHandlers, true)
+	engine.RegisterMethod("imgui.setHooks", "ImGui Context.SetHooks", (*imgui.Context).SetHooks, true)
+	engine.RegisterMethod("imgui.setHookIdNext", "ImGui Context.SetHookIdNext", (*imgui.Context).SetHookIdNext, true)
+	engine.RegisterMethod("imgui.setLocalizationTable", "ImGui Context.SetLocalizationTable", (*imgui.Context).SetLocalizationTable, true)
+	engine.RegisterMethod("imgui.setLogEnabled", "ImGui Context.SetLogEnabled", (*imgui.Context).SetLogEnabled, true)
+	engine.RegisterMethod("imgui.setLogFlags", "ImGui Context.SetLogFlags", (*imgui.Context).SetLogFlags, true)
+	engine.RegisterMethod("imgui.setLogWindow", "ImGui Context.SetLogWindow", (*imgui.Context).SetLogWindow, true)
+	engine.RegisterMethod("imgui.setLogBuffer", "ImGui Context.SetLogBuffer", (*imgui.Context).SetLogBuffer, true)
+	engine.RegisterMethod("imgui.setLogNextPrefix", "ImGui Context.SetLogNextPrefix", (*imgui.Context).SetLogNextPrefix, true)
+	engine.RegisterMethod("imgui.setLogNextSuffix", "ImGui Context.SetLogNextSuffix", (*imgui.Context).SetLogNextSuffix, true)
+	engine.RegisterMethod("imgui.setLogLinePosY", "ImGui Context.SetLogLinePosY", (*imgui.Context).SetLogLinePosY, true)
+	engine.RegisterMethod("imgui.setLogLineFirstItem", "ImGui Context.SetLogLineFirstItem", (*imgui.Context).SetLogLineFirstItem, true)
+	engine.RegisterMethod("imgui.setLogDepthRef", "ImGui Context.SetLogDepthRef", (*imgui.Context).SetLogDepthRef, true)
+	engine.RegisterMethod("imgui.setLogDepthToExpand", "ImGui Context.SetLogDepthToExpand", (*imgui.Context).SetLogDepthToExpand, true)
+	engine.RegisterMethod("imgui.setLogDepthToExpandDefault", "ImGui Context.SetLogDepthToExpandDefault", (*imgui.Context).SetLogDepthToExpandDefault, true)
+	engine.RegisterMethod("imgui.setErrorCallback", "ImGui Context.SetErrorCallback", (*imgui.Context).SetErrorCallback, true)
+	engine.RegisterMethod("imgui.setErrorCallbackUserData", "ImGui Context.SetErrorCallbackUserData", (*imgui.Context).SetErrorCallbackUserData, true)
+	engine.RegisterMethod("imgui.setErrorTooltipLockedPos", "ImGui Context.SetErrorTooltipLockedPos", (*imgui.Context).SetErrorTooltipLockedPos, true)
+	engine.RegisterMethod("imgui.setErrorFirst", "ImGui Context.SetErrorFirst", (*imgui.Context).SetErrorFirst, true)
+	engine.RegisterMethod("imgui.setErrorCountCurrentFrame", "ImGui Context.SetErrorCountCurrentFrame", (*imgui.Context).SetErrorCountCurrentFrame, true)
+	engine.RegisterMethod("imgui.setStackSizesInNewFrame", "ImGui Context.SetStackSizesInNewFrame", (*imgui.Context).SetStackSizesInNewFrame, true)
+	engine.RegisterMethod("imgui.setStackSizesInBeginForCurrentWindow", "ImGui Context.SetStackSizesInBeginForCurrentWindow", (*imgui.Context).SetStackSizesInBeginForCurrentWindow, true)
+	engine.RegisterMethod("imgui.setDebugDrawIdConflictsCount", "ImGui Context.SetDebugDrawIdConflictsCount", (*imgui.Context).SetDebugDrawIdConflictsCount, true)
+	engine.RegisterMethod("imgui.setDebugLogFlags", "ImGui Context.SetDebugLogFlags", (*imgui.Context).SetDebugLogFlags, true)
+	engine.RegisterMethod("imgui.setDebugLogBuf", "ImGui Context.SetDebugLogBuf", (*imgui.Context).SetDebugLogBuf, true)
+	engine.RegisterMethod("imgui.setDebugLogIndex", "ImGui Context.SetDebugLogIndex", (*imgui.Context).SetDebugLogIndex, true)
+	engine.RegisterMethod("imgui.setDebugLogSkippedErrors", "ImGui Context.SetDebugLogSkippedErrors", (*imgui.Context).SetDebugLogSkippedErrors, true)
+	engine.RegisterMethod("imgui.setDebugLogAutoDisableFlags", "ImGui Context.SetDebugLogAutoDisableFlags", (*imgui.Context).SetDebugLogAutoDisableFlags, true)
+	engine.RegisterMethod("imgui.setDebugLogAutoDisableFrames", "ImGui Context.SetDebugLogAutoDisableFrames", (*imgui.Context).SetDebugLogAutoDisableFrames, true)
+	engine.RegisterMethod("imgui.setDebugLocateFrames", "ImGui Context.SetDebugLocateFrames", (*imgui.Context).SetDebugLocateFrames, true)
+	engine.RegisterMethod("imgui.setDebugBreakInLocateId", "ImGui Context.SetDebugBreakInLocateId", (*imgui.Context).SetDebugBreakInLocateId, true)
+	engine.RegisterMethod("imgui.setDebugBreakKeyChord", "ImGui Context.SetDebugBreakKeyChord", (*imgui.Context).SetDebugBreakKeyChord, true)
+	engine.RegisterMethod("imgui.setDebugBeginReturnValueCullDepth", "ImGui Context.SetDebugBeginReturnValueCullDepth", (*imgui.Context).SetDebugBeginReturnValueCullDepth, true)
+	engine.RegisterMethod("imgui.setDebugItemPickerActive", "ImGui Context.SetDebugItemPickerActive", (*imgui.Context).SetDebugItemPickerActive, true)
+	engine.RegisterMethod("imgui.setDebugItemPickerMouseButton", "ImGui Context.SetDebugItemPickerMouseButton", (*imgui.Context).SetDebugItemPickerMouseButton, true)
+	engine.RegisterMethod("imgui.setDebugItemPickerBreakId", "ImGui Context.SetDebugItemPickerBreakId", (*imgui.Context).SetDebugItemPickerBreakId, true)
+	engine.RegisterMethod("imgui.setDebugFlashStyleColorTime", "ImGui Context.SetDebugFlashStyleColorTime", (*imgui.Context).SetDebugFlashStyleColorTime, true)
+	engine.RegisterMethod("imgui.setDebugFlashStyleColorBackup", "ImGui Context.SetDebugFlashStyleColorBackup", (*imgui.Context).SetDebugFlashStyleColorBackup, true)
+	engine.RegisterMethod("imgui.setDebugMetricsConfig", "ImGui Context.SetDebugMetricsConfig", (*imgui.Context).SetDebugMetricsConfig, true)
+	engine.RegisterMethod("imgui.setDebugIDStackTool", "ImGui Context.SetDebugIDStackTool", (*imgui.Context).SetDebugIDStackTool, true)
+	engine.RegisterMethod("imgui.setDebugAllocInfo", "ImGui Context.SetDebugAllocInfo", (*imgui.Context).SetDebugAllocInfo, true)
+	engine.RegisterMethod("imgui.setDebugHoveredDockNode", "ImGui Context.SetDebugHoveredDockNode", (*imgui.Context).SetDebugHoveredDockNode, true)
+	engine.RegisterMethod("imgui.setFramerateSecPerFrame", "ImGui Context.SetFramerateSecPerFrame", (*imgui.Context).SetFramerateSecPerFrame, true)
+	engine.RegisterMethod("imgui.setFramerateSecPerFrameIdx", "ImGui Context.SetFramerateSecPerFrameIdx", (*imgui.Context).SetFramerateSecPerFrameIdx, true)
+	engine.RegisterMethod("imgui.setFramerateSecPerFrameCount", "ImGui Context.SetFramerateSecPerFrameCount", (*imgui.Context).SetFramerateSecPerFrameCount, true)
+	engine.RegisterMethod("imgui.setFramerateSecPerFrameAccum", "ImGui Context.SetFramerateSecPerFrameAccum", (*imgui.Context).SetFramerateSecPerFrameAccum, true)
+	engine.RegisterMethod("imgui.setWantCaptureMouseNextFrame", "ImGui Context.SetWantCaptureMouseNextFrame", (*imgui.Context).SetWantCaptureMouseNextFrame, true)
+	engine.RegisterMethod("imgui.setWantCaptureKeyboardNextFrame", "ImGui Context.SetWantCaptureKeyboardNextFrame", (*imgui.Context).SetWantCaptureKeyboardNextFrame, true)
+	engine.RegisterMethod("imgui.setWantTextInputNextFrame", "ImGui Context.SetWantTextInputNextFrame", (*imgui.Context).SetWantTextInputNextFrame, true)
+	engine.RegisterMethod("imgui.setTempKeychordName", "ImGui Context.SetTempKeychordName", (*imgui.Context).SetTempKeychordName, true)
+	engine.RegisterMethod("imgui.initialized", "ImGui Context.Initialized", (*imgui.Context).Initialized, true)
+	engine.RegisterMethod("imgui.iO", "ImGui Context.IO", (*imgui.Context).IO, true)
+	engine.RegisterMethod("imgui.platformIO", "ImGui Context.PlatformIO", (*imgui.Context).PlatformIO, true)
+	engine.RegisterMethod("imgui.style", "ImGui Context.Style", (*imgui.Context).Style, true)
+	engine.RegisterMethod("imgui.configFlagsCurrFrame", "ImGui Context.ConfigFlagsCurrFrame", (*imgui.Context).ConfigFlagsCurrFrame, true)
+	engine.RegisterMethod("imgui.configFlagsLastFrame", "ImGui Context.ConfigFlagsLastFrame", (*imgui.Context).ConfigFlagsLastFrame, true)
+	engine.RegisterMethod("imgui.fontAtlases", "ImGui Context.FontAtlases", (*imgui.Context).FontAtlases, true)
+	engine.RegisterMethod("imgui.fontSizeBase", "ImGui Context.FontSizeBase", (*imgui.Context).FontSizeBase, true)
+	engine.RegisterMethod("imgui.fontBakedScale", "ImGui Context.FontBakedScale", (*imgui.Context).FontBakedScale, true)
+	engine.RegisterMethod("imgui.fontRasterizerDensity", "ImGui Context.FontRasterizerDensity", (*imgui.Context).FontRasterizerDensity, true)
+	engine.RegisterMethod("imgui.currentDpiScale", "ImGui Context.CurrentDpiScale", (*imgui.Context).CurrentDpiScale, true)
+	engine.RegisterMethod("imgui.drawListSharedData", "ImGui Context.DrawListSharedData", (*imgui.Context).DrawListSharedData, true)
+	engine.RegisterMethod("imgui.frameCountEnded", "ImGui Context.FrameCountEnded", (*imgui.Context).FrameCountEnded, true)
+	engine.RegisterMethod("imgui.frameCountPlatformEnded", "ImGui Context.FrameCountPlatformEnded", (*imgui.Context).FrameCountPlatformEnded, true)
+	engine.RegisterMethod("imgui.frameCountRendered", "ImGui Context.FrameCountRendered", (*imgui.Context).FrameCountRendered, true)
+	engine.RegisterMethod("imgui.withinEndChildID", "ImGui Context.WithinEndChildID", (*imgui.Context).WithinEndChildID, true)
+	engine.RegisterMethod("imgui.withinFrameScope", "ImGui Context.WithinFrameScope", (*imgui.Context).WithinFrameScope, true)
+	engine.RegisterMethod("imgui.withinFrameScopeWithImplicitWindow", "ImGui Context.WithinFrameScopeWithImplicitWindow", (*imgui.Context).WithinFrameScopeWithImplicitWindow, true)
+	engine.RegisterMethod("imgui.gcCompactAll", "ImGui Context.GcCompactAll", (*imgui.Context).GcCompactAll, true)
+	engine.RegisterMethod("imgui.testEngineHookItems", "ImGui Context.TestEngineHookItems", (*imgui.Context).TestEngineHookItems, true)
+	engine.RegisterMethod("imgui.testEngine", "ImGui Context.TestEngine", (*imgui.Context).TestEngine, true)
+	engine.RegisterMethod("imgui.contextName", "ImGui Context.ContextName", (*imgui.Context).ContextName, true)
+	engine.RegisterMethod("imgui.inputEventsQueue", "ImGui Context.InputEventsQueue", (*imgui.Context).InputEventsQueue, true)
+	engine.RegisterMethod("imgui.inputEventsTrail", "ImGui Context.InputEventsTrail", (*imgui.Context).InputEventsTrail, true)
+	engine.RegisterMethod("imgui.inputEventsNextMouseSource", "ImGui Context.InputEventsNextMouseSource", (*imgui.Context).InputEventsNextMouseSource, true)
+	engine.RegisterMethod("imgui.inputEventsNextEventId", "ImGui Context.InputEventsNextEventId", (*imgui.Context).InputEventsNextEventId, true)
+	engine.RegisterMethod("imgui.windows", "ImGui Context.Windows", (*imgui.Context).Windows, true)
+	engine.RegisterMethod("imgui.windowsFocusOrder", "ImGui Context.WindowsFocusOrder", (*imgui.Context).WindowsFocusOrder, true)
+	engine.RegisterMethod("imgui.windowsTempSortBuffer", "ImGui Context.WindowsTempSortBuffer", (*imgui.Context).WindowsTempSortBuffer, true)
+	engine.RegisterMethod("imgui.currentWindowStack", "ImGui Context.CurrentWindowStack", (*imgui.Context).CurrentWindowStack, true)
+	engine.RegisterMethod("imgui.windowsById", "ImGui Context.WindowsById", (*imgui.Context).WindowsById, true)
+	engine.RegisterMethod("imgui.windowsActiveCount", "ImGui Context.WindowsActiveCount", (*imgui.Context).WindowsActiveCount, true)
+	engine.RegisterMethod("imgui.windowsBorderHoverPadding", "ImGui Context.WindowsBorderHoverPadding", (*imgui.Context).WindowsBorderHoverPadding, true)
+	engine.RegisterMethod("imgui.debugBreakInWindow", "ImGui Context.DebugBreakInWindow", (*imgui.Context).DebugBreakInWindow, true)
+	engine.RegisterMethod("imgui.currentWindow", "ImGui Context.CurrentWindow", (*imgui.Context).CurrentWindow, true)
+	engine.RegisterMethod("imgui.hoveredWindow", "ImGui Context.HoveredWindow", (*imgui.Context).HoveredWindow, true)
+	engine.RegisterMethod("imgui.hoveredWindowUnderMovingWindow", "ImGui Context.HoveredWindowUnderMovingWindow", (*imgui.Context).HoveredWindowUnderMovingWindow, true)
+	engine.RegisterMethod("imgui.hoveredWindowBeforeClear", "ImGui Context.HoveredWindowBeforeClear", (*imgui.Context).HoveredWindowBeforeClear, true)
+	engine.RegisterMethod("imgui.movingWindow", "ImGui Context.MovingWindow", (*imgui.Context).MovingWindow, true)
+	engine.RegisterMethod("imgui.wheelingWindow", "ImGui Context.WheelingWindow", (*imgui.Context).WheelingWindow, true)
+	engine.RegisterMethod("imgui.wheelingWindowRefMousePos", "ImGui Context.WheelingWindowRefMousePos", (*imgui.Context).WheelingWindowRefMousePos, true)
+	engine.RegisterMethod("imgui.wheelingWindowStartFrame", "ImGui Context.WheelingWindowStartFrame", (*imgui.Context).WheelingWindowStartFrame, true)
+	engine.RegisterMethod("imgui.wheelingWindowScrolledFrame", "ImGui Context.WheelingWindowScrolledFrame", (*imgui.Context).WheelingWindowScrolledFrame, true)
+	engine.RegisterMethod("imgui.wheelingWindowReleaseTimer", "ImGui Context.WheelingWindowReleaseTimer", (*imgui.Context).WheelingWindowReleaseTimer, true)
+	engine.RegisterMethod("imgui.wheelingWindowWheelRemainder", "ImGui Context.WheelingWindowWheelRemainder", (*imgui.Context).WheelingWindowWheelRemainder, true)
+	engine.RegisterMethod("imgui.wheelingAxisAvg", "ImGui Context.WheelingAxisAvg", (*imgui.Context).WheelingAxisAvg, true)
+	engine.RegisterMethod("imgui.debugDrawIdConflictsId", "ImGui Context.DebugDrawIdConflictsId", (*imgui.Context).DebugDrawIdConflictsId, true)
+	engine.RegisterMethod("imgui.debugHookIdInfoId", "ImGui Context.DebugHookIdInfoId", (*imgui.Context).DebugHookIdInfoId, true)
+	engine.RegisterMethod("imgui.hoveredId", "ImGui Context.HoveredId", (*imgui.Context).HoveredId, true)
+	engine.RegisterMethod("imgui.hoveredIdPreviousFrame", "ImGui Context.HoveredIdPreviousFrame", (*imgui.Context).HoveredIdPreviousFrame, true)
+	engine.RegisterMethod("imgui.hoveredIdPreviousFrameItemCount", "ImGui Context.HoveredIdPreviousFrameItemCount", (*imgui.Context).HoveredIdPreviousFrameItemCount, true)
+	engine.RegisterMethod("imgui.hoveredIdTimer", "ImGui Context.HoveredIdTimer", (*imgui.Context).HoveredIdTimer, true)
+	engine.RegisterMethod("imgui.hoveredIdNotActiveTimer", "ImGui Context.HoveredIdNotActiveTimer", (*imgui.Context).HoveredIdNotActiveTimer, true)
+	engine.RegisterMethod("imgui.hoveredIdAllowOverlap", "ImGui Context.HoveredIdAllowOverlap", (*imgui.Context).HoveredIdAllowOverlap, true)
+	engine.RegisterMethod("imgui.hoveredIdIsDisabled", "ImGui Context.HoveredIdIsDisabled", (*imgui.Context).HoveredIdIsDisabled, true)
+	engine.RegisterMethod("imgui.itemUnclipByLog", "ImGui Context.ItemUnclipByLog", (*imgui.Context).ItemUnclipByLog, true)
+	engine.RegisterMethod("imgui.activeId", "ImGui Context.ActiveId", (*imgui.Context).ActiveId, true)
+	engine.RegisterMethod("imgui.activeIdIsAlive", "ImGui Context.ActiveIdIsAlive", (*imgui.Context).ActiveIdIsAlive, true)
+	engine.RegisterMethod("imgui.activeIdTimer", "ImGui Context.ActiveIdTimer", (*imgui.Context).ActiveIdTimer, true)
+	engine.RegisterMethod("imgui.activeIdIsJustActivated", "ImGui Context.ActiveIdIsJustActivated", (*imgui.Context).ActiveIdIsJustActivated, true)
+	engine.RegisterMethod("imgui.activeIdAllowOverlap", "ImGui Context.ActiveIdAllowOverlap", (*imgui.Context).ActiveIdAllowOverlap, true)
+	engine.RegisterMethod("imgui.activeIdNoClearOnFocusLoss", "ImGui Context.ActiveIdNoClearOnFocusLoss", (*imgui.Context).ActiveIdNoClearOnFocusLoss, true)
+	engine.RegisterMethod("imgui.activeIdHasBeenPressedBefore", "ImGui Context.ActiveIdHasBeenPressedBefore", (*imgui.Context).ActiveIdHasBeenPressedBefore, true)
+	engine.RegisterMethod("imgui.activeIdHasBeenEditedBefore", "ImGui Context.ActiveIdHasBeenEditedBefore", (*imgui.Context).ActiveIdHasBeenEditedBefore, true)
+	engine.RegisterMethod("imgui.activeIdHasBeenEditedThisFrame", "ImGui Context.ActiveIdHasBeenEditedThisFrame", (*imgui.Context).ActiveIdHasBeenEditedThisFrame, true)
+	engine.RegisterMethod("imgui.activeIdFromShortcut", "ImGui Context.ActiveIdFromShortcut", (*imgui.Context).ActiveIdFromShortcut, true)
+	engine.RegisterMethod("imgui.activeIdDisabledId", "ImGui Context.ActiveIdDisabledId", (*imgui.Context).ActiveIdDisabledId, true)
+	engine.RegisterMethod("imgui.activeIdMouseButton", "ImGui Context.ActiveIdMouseButton", (*imgui.Context).ActiveIdMouseButton, true)
+	engine.RegisterMethod("imgui.activeIdClickOffset", "ImGui Context.ActiveIdClickOffset", (*imgui.Context).ActiveIdClickOffset, true)
+	engine.RegisterMethod("imgui.activeIdWindow", "ImGui Context.ActiveIdWindow", (*imgui.Context).ActiveIdWindow, true)
+	engine.RegisterMethod("imgui.activeIdSource", "ImGui Context.ActiveIdSource", (*imgui.Context).ActiveIdSource, true)
+	engine.RegisterMethod("imgui.activeIdPreviousFrame", "ImGui Context.ActiveIdPreviousFrame", (*imgui.Context).ActiveIdPreviousFrame, true)
+	engine.RegisterMethod("imgui.deactivatedItemData", "ImGui Context.DeactivatedItemData", (*imgui.Context).DeactivatedItemData, true)
+	engine.RegisterMethod("imgui.activeIdValueOnActivation", "ImGui Context.ActiveIdValueOnActivation", (*imgui.Context).ActiveIdValueOnActivation, true)
+	engine.RegisterMethod("imgui.lastActiveId", "ImGui Context.LastActiveId", (*imgui.Context).LastActiveId, true)
+	engine.RegisterMethod("imgui.lastActiveIdTimer", "ImGui Context.LastActiveIdTimer", (*imgui.Context).LastActiveIdTimer, true)
+	engine.RegisterMethod("imgui.lastKeyModsChangeTime", "ImGui Context.LastKeyModsChangeTime", (*imgui.Context).LastKeyModsChangeTime, true)
+	engine.RegisterMethod("imgui.lastKeyModsChangeFromNoneTime", "ImGui Context.LastKeyModsChangeFromNoneTime", (*imgui.Context).LastKeyModsChangeFromNoneTime, true)
+	engine.RegisterMethod("imgui.lastKeyboardKeyPressTime", "ImGui Context.LastKeyboardKeyPressTime", (*imgui.Context).LastKeyboardKeyPressTime, true)
+	engine.RegisterMethod("imgui.keysMayBeCharInput", "ImGui Context.KeysMayBeCharInput", (*imgui.Context).KeysMayBeCharInput, true)
+	engine.RegisterMethod("imgui.keysOwnerData", "ImGui Context.KeysOwnerData", (*imgui.Context).KeysOwnerData, true)
+	engine.RegisterMethod("imgui.keysRoutingTable", "ImGui Context.KeysRoutingTable", (*imgui.Context).KeysRoutingTable, true)
+	engine.RegisterMethod("imgui.activeIdUsingNavDirMask", "ImGui Context.ActiveIdUsingNavDirMask", (*imgui.Context).ActiveIdUsingNavDirMask, true)
+	engine.RegisterMethod("imgui.activeIdUsingAllKeyboardKeys", "ImGui Context.ActiveIdUsingAllKeyboardKeys", (*imgui.Context).ActiveIdUsingAllKeyboardKeys, true)
+	engine.RegisterMethod("imgui.debugBreakInShortcutRouting", "ImGui Context.DebugBreakInShortcutRouting", (*imgui.Context).DebugBreakInShortcutRouting, true)
+	engine.RegisterMethod("imgui.currentFocusScopeId", "ImGui Context.CurrentFocusScopeId", (*imgui.Context).CurrentFocusScopeId, true)
+	engine.RegisterMethod("imgui.currentItemFlags", "ImGui Context.CurrentItemFlags", (*imgui.Context).CurrentItemFlags, true)
+	engine.RegisterMethod("imgui.debugLocateId", "ImGui Context.DebugLocateId", (*imgui.Context).DebugLocateId, true)
+	engine.RegisterMethod("imgui.nextItemData", "ImGui Context.NextItemData", (*imgui.Context).NextItemData, true)
+	engine.RegisterMethod("imgui.lastItemData", "ImGui Context.LastItemData", (*imgui.Context).LastItemData, true)
+	engine.RegisterMethod("imgui.nextWindowData", "ImGui Context.NextWindowData", (*imgui.Context).NextWindowData, true)
+	engine.RegisterMethod("imgui.debugShowGroupRects", "ImGui Context.DebugShowGroupRects", (*imgui.Context).DebugShowGroupRects, true)
+	engine.RegisterMethod("imgui.debugFlashStyleColorIdx", "ImGui Context.DebugFlashStyleColorIdx", (*imgui.Context).DebugFlashStyleColorIdx, true)
+	engine.RegisterMethod("imgui.colorStack", "ImGui Context.ColorStack", (*imgui.Context).ColorStack, true)
+	engine.RegisterMethod("imgui.styleVarStack", "ImGui Context.StyleVarStack", (*imgui.Context).StyleVarStack, true)
+	engine.RegisterMethod("imgui.fontStack", "ImGui Context.FontStack", (*imgui.Context).FontStack, true)
+	engine.RegisterMethod("imgui.focusScopeStack", "ImGui Context.FocusScopeStack", (*imgui.Context).FocusScopeStack, true)
+	engine.RegisterMethod("imgui.itemFlagsStack", "ImGui Context.ItemFlagsStack", (*imgui.Context).ItemFlagsStack, true)
+	engine.RegisterMethod("imgui.groupStack", "ImGui Context.GroupStack", (*imgui.Context).GroupStack, true)
+	engine.RegisterMethod("imgui.openPopupStack", "ImGui Context.OpenPopupStack", (*imgui.Context).OpenPopupStack, true)
+	engine.RegisterMethod("imgui.beginPopupStack", "ImGui Context.BeginPopupStack", (*imgui.Context).BeginPopupStack, true)
+	engine.RegisterMethod("imgui.treeNodeStack", "ImGui Context.TreeNodeStack", (*imgui.Context).TreeNodeStack, true)
+	engine.RegisterMethod("imgui.viewports", "ImGui Context.Viewports", (*imgui.Context).Viewports, true)
+	engine.RegisterMethod("imgui.currentViewport", "ImGui Context.CurrentViewport", (*imgui.Context).CurrentViewport, true)
+	engine.RegisterMethod("imgui.mouseViewport", "ImGui Context.MouseViewport", (*imgui.Context).MouseViewport, true)
+	engine.RegisterMethod("imgui.mouseLastHoveredViewport", "ImGui Context.MouseLastHoveredViewport", (*imgui.Context).MouseLastHoveredViewport, true)
+	engine.RegisterMethod("imgui.platformLastFocusedViewportId", "ImGui Context.PlatformLastFocusedViewportId", (*imgui.Context).PlatformLastFocusedViewportId, true)
+	engine.RegisterMethod("imgui.fallbackMonitor", "ImGui Context.FallbackMonitor", (*imgui.Context).FallbackMonitor, true)
+	engine.RegisterMethod("imgui.platformMonitorsFullWorkRect", "ImGui Context.PlatformMonitorsFullWorkRect", (*imgui.Context).PlatformMonitorsFullWorkRect, true)
+	engine.RegisterMethod("imgui.viewportCreatedCount", "ImGui Context.ViewportCreatedCount", (*imgui.Context).ViewportCreatedCount, true)
+	engine.RegisterMethod("imgui.platformWindowsCreatedCount", "ImGui Context.PlatformWindowsCreatedCount", (*imgui.Context).PlatformWindowsCreatedCount, true)
+	engine.RegisterMethod("imgui.viewportFocusedStampCount", "ImGui Context.ViewportFocusedStampCount", (*imgui.Context).ViewportFocusedStampCount, true)
+	engine.RegisterMethod("imgui.navCursorVisible", "ImGui Context.NavCursorVisible", (*imgui.Context).NavCursorVisible, true)
+	engine.RegisterMethod("imgui.navHighlightItemUnderNav", "ImGui Context.NavHighlightItemUnderNav", (*imgui.Context).NavHighlightItemUnderNav, true)
+	engine.RegisterMethod("imgui.navMousePosDirty", "ImGui Context.NavMousePosDirty", (*imgui.Context).NavMousePosDirty, true)
+	engine.RegisterMethod("imgui.navIdIsAlive", "ImGui Context.NavIdIsAlive", (*imgui.Context).NavIdIsAlive, true)
+	engine.RegisterMethod("imgui.navId", "ImGui Context.NavId", (*imgui.Context).NavId, true)
+	engine.RegisterMethod("imgui.navWindow", "ImGui Context.NavWindow", (*imgui.Context).NavWindow, true)
+	engine.RegisterMethod("imgui.navFocusScopeId", "ImGui Context.NavFocusScopeId", (*imgui.Context).NavFocusScopeId, true)
+	engine.RegisterMethod("imgui.navLayer", "ImGui Context.NavLayer", (*imgui.Context).NavLayer, true)
+	engine.RegisterMethod("imgui.navActivateId", "ImGui Context.NavActivateId", (*imgui.Context).NavActivateId, true)
+	engine.RegisterMethod("imgui.navActivateDownId", "ImGui Context.NavActivateDownId", (*imgui.Context).NavActivateDownId, true)
+	engine.RegisterMethod("imgui.navActivatePressedId", "ImGui Context.NavActivatePressedId", (*imgui.Context).NavActivatePressedId, true)
+	engine.RegisterMethod("imgui.navActivateFlags", "ImGui Context.NavActivateFlags", (*imgui.Context).NavActivateFlags, true)
+	engine.RegisterMethod("imgui.navFocusRoute", "ImGui Context.NavFocusRoute", (*imgui.Context).NavFocusRoute, true)
+	engine.RegisterMethod("imgui.navHighlightActivatedId", "ImGui Context.NavHighlightActivatedId", (*imgui.Context).NavHighlightActivatedId, true)
+	engine.RegisterMethod("imgui.navHighlightActivatedTimer", "ImGui Context.NavHighlightActivatedTimer", (*imgui.Context).NavHighlightActivatedTimer, true)
+	engine.RegisterMethod("imgui.navNextActivateId", "ImGui Context.NavNextActivateId", (*imgui.Context).NavNextActivateId, true)
+	engine.RegisterMethod("imgui.navNextActivateFlags", "ImGui Context.NavNextActivateFlags", (*imgui.Context).NavNextActivateFlags, true)
+	engine.RegisterMethod("imgui.navInputSource", "ImGui Context.NavInputSource", (*imgui.Context).NavInputSource, true)
+	engine.RegisterMethod("imgui.navLastValidSelectionUserData", "ImGui Context.NavLastValidSelectionUserData", (*imgui.Context).NavLastValidSelectionUserData, true)
+	engine.RegisterMethod("imgui.navCursorHideFrames", "ImGui Context.NavCursorHideFrames", (*imgui.Context).NavCursorHideFrames, true)
+	engine.RegisterMethod("imgui.navAnyRequest", "ImGui Context.NavAnyRequest", (*imgui.Context).NavAnyRequest, true)
+	engine.RegisterMethod("imgui.navInitRequest", "ImGui Context.NavInitRequest", (*imgui.Context).NavInitRequest, true)
+	engine.RegisterMethod("imgui.navInitRequestFromMove", "ImGui Context.NavInitRequestFromMove", (*imgui.Context).NavInitRequestFromMove, true)
+	engine.RegisterMethod("imgui.navInitResult", "ImGui Context.NavInitResult", (*imgui.Context).NavInitResult, true)
+	engine.RegisterMethod("imgui.navMoveSubmitted", "ImGui Context.NavMoveSubmitted", (*imgui.Context).NavMoveSubmitted, true)
+	engine.RegisterMethod("imgui.navMoveScoringItems", "ImGui Context.NavMoveScoringItems", (*imgui.Context).NavMoveScoringItems, true)
+	engine.RegisterMethod("imgui.navMoveForwardToNextFrame", "ImGui Context.NavMoveForwardToNextFrame", (*imgui.Context).NavMoveForwardToNextFrame, true)
+	engine.RegisterMethod("imgui.navMoveFlags", "ImGui Context.NavMoveFlags", (*imgui.Context).NavMoveFlags, true)
+	engine.RegisterMethod("imgui.navMoveScrollFlags", "ImGui Context.NavMoveScrollFlags", (*imgui.Context).NavMoveScrollFlags, true)
+	engine.RegisterMethod("imgui.navMoveKeyMods", "ImGui Context.NavMoveKeyMods", (*imgui.Context).NavMoveKeyMods, true)
+	engine.RegisterMethod("imgui.navMoveDir", "ImGui Context.NavMoveDir", (*imgui.Context).NavMoveDir, true)
+	engine.RegisterMethod("imgui.navMoveDirForDebug", "ImGui Context.NavMoveDirForDebug", (*imgui.Context).NavMoveDirForDebug, true)
+	engine.RegisterMethod("imgui.navMoveClipDir", "ImGui Context.NavMoveClipDir", (*imgui.Context).NavMoveClipDir, true)
+	engine.RegisterMethod("imgui.navScoringRect", "ImGui Context.NavScoringRect", (*imgui.Context).NavScoringRect, true)
+	engine.RegisterMethod("imgui.navScoringNoClipRect", "ImGui Context.NavScoringNoClipRect", (*imgui.Context).NavScoringNoClipRect, true)
+	engine.RegisterMethod("imgui.navScoringDebugCount", "ImGui Context.NavScoringDebugCount", (*imgui.Context).NavScoringDebugCount, true)
+	engine.RegisterMethod("imgui.navTabbingDir", "ImGui Context.NavTabbingDir", (*imgui.Context).NavTabbingDir, true)
+	engine.RegisterMethod("imgui.navTabbingCounter", "ImGui Context.NavTabbingCounter", (*imgui.Context).NavTabbingCounter, true)
+	engine.RegisterMethod("imgui.navMoveResultLocal", "ImGui Context.NavMoveResultLocal", (*imgui.Context).NavMoveResultLocal, true)
+	engine.RegisterMethod("imgui.navMoveResultLocalVisible", "ImGui Context.NavMoveResultLocalVisible", (*imgui.Context).NavMoveResultLocalVisible, true)
+	engine.RegisterMethod("imgui.navMoveResultOther", "ImGui Context.NavMoveResultOther", (*imgui.Context).NavMoveResultOther, true)
+	engine.RegisterMethod("imgui.navTabbingResultFirst", "ImGui Context.NavTabbingResultFirst", (*imgui.Context).NavTabbingResultFirst, true)
+	engine.RegisterMethod("imgui.navJustMovedFromFocusScopeId", "ImGui Context.NavJustMovedFromFocusScopeId", (*imgui.Context).NavJustMovedFromFocusScopeId, true)
+	engine.RegisterMethod("imgui.navJustMovedToId", "ImGui Context.NavJustMovedToId", (*imgui.Context).NavJustMovedToId, true)
+	engine.RegisterMethod("imgui.navJustMovedToFocusScopeId", "ImGui Context.NavJustMovedToFocusScopeId", (*imgui.Context).NavJustMovedToFocusScopeId, true)
+	engine.RegisterMethod("imgui.navJustMovedToKeyMods", "ImGui Context.NavJustMovedToKeyMods", (*imgui.Context).NavJustMovedToKeyMods, true)
+	engine.RegisterMethod("imgui.navJustMovedToIsTabbing", "ImGui Context.NavJustMovedToIsTabbing", (*imgui.Context).NavJustMovedToIsTabbing, true)
+	engine.RegisterMethod("imgui.navJustMovedToHasSelectionData", "ImGui Context.NavJustMovedToHasSelectionData", (*imgui.Context).NavJustMovedToHasSelectionData, true)
+	engine.RegisterMethod("imgui.configNavWindowingWithGamepad", "ImGui Context.ConfigNavWindowingWithGamepad", (*imgui.Context).ConfigNavWindowingWithGamepad, true)
+	engine.RegisterMethod("imgui.configNavWindowingKeyNext", "ImGui Context.ConfigNavWindowingKeyNext", (*imgui.Context).ConfigNavWindowingKeyNext, true)
+	engine.RegisterMethod("imgui.configNavWindowingKeyPrev", "ImGui Context.ConfigNavWindowingKeyPrev", (*imgui.Context).ConfigNavWindowingKeyPrev, true)
+	engine.RegisterMethod("imgui.navWindowingTarget", "ImGui Context.NavWindowingTarget", (*imgui.Context).NavWindowingTarget, true)
+	engine.RegisterMethod("imgui.navWindowingTargetAnim", "ImGui Context.NavWindowingTargetAnim", (*imgui.Context).NavWindowingTargetAnim, true)
+	engine.RegisterMethod("imgui.navWindowingListWindow", "ImGui Context.NavWindowingListWindow", (*imgui.Context).NavWindowingListWindow, true)
+	engine.RegisterMethod("imgui.navWindowingTimer", "ImGui Context.NavWindowingTimer", (*imgui.Context).NavWindowingTimer, true)
+	engine.RegisterMethod("imgui.navWindowingHighlightAlpha", "ImGui Context.NavWindowingHighlightAlpha", (*imgui.Context).NavWindowingHighlightAlpha, true)
+	engine.RegisterMethod("imgui.navWindowingInputSource", "ImGui Context.NavWindowingInputSource", (*imgui.Context).NavWindowingInputSource, true)
+	engine.RegisterMethod("imgui.navWindowingToggleLayer", "ImGui Context.NavWindowingToggleLayer", (*imgui.Context).NavWindowingToggleLayer, true)
+	engine.RegisterMethod("imgui.navWindowingToggleKey", "ImGui Context.NavWindowingToggleKey", (*imgui.Context).NavWindowingToggleKey, true)
+	engine.RegisterMethod("imgui.navWindowingAccumDeltaPos", "ImGui Context.NavWindowingAccumDeltaPos", (*imgui.Context).NavWindowingAccumDeltaPos, true)
+	engine.RegisterMethod("imgui.navWindowingAccumDeltaSize", "ImGui Context.NavWindowingAccumDeltaSize", (*imgui.Context).NavWindowingAccumDeltaSize, true)
+	engine.RegisterMethod("imgui.dimBgRatio", "ImGui Context.DimBgRatio", (*imgui.Context).DimBgRatio, true)
+	engine.RegisterMethod("imgui.dragDropActive", "ImGui Context.DragDropActive", (*imgui.Context).DragDropActive, true)
+	engine.RegisterMethod("imgui.dragDropWithinSource", "ImGui Context.DragDropWithinSource", (*imgui.Context).DragDropWithinSource, true)
+	engine.RegisterMethod("imgui.dragDropWithinTarget", "ImGui Context.DragDropWithinTarget", (*imgui.Context).DragDropWithinTarget, true)
+	engine.RegisterMethod("imgui.dragDropSourceFlags", "ImGui Context.DragDropSourceFlags", (*imgui.Context).DragDropSourceFlags, true)
+	engine.RegisterMethod("imgui.dragDropSourceFrameCount", "ImGui Context.DragDropSourceFrameCount", (*imgui.Context).DragDropSourceFrameCount, true)
+	engine.RegisterMethod("imgui.dragDropMouseButton", "ImGui Context.DragDropMouseButton", (*imgui.Context).DragDropMouseButton, true)
+	engine.RegisterMethod("imgui.dragDropTargetRect", "ImGui Context.DragDropTargetRect", (*imgui.Context).DragDropTargetRect, true)
+	engine.RegisterMethod("imgui.dragDropTargetClipRect", "ImGui Context.DragDropTargetClipRect", (*imgui.Context).DragDropTargetClipRect, true)
+	engine.RegisterMethod("imgui.dragDropTargetId", "ImGui Context.DragDropTargetId", (*imgui.Context).DragDropTargetId, true)
+	engine.RegisterMethod("imgui.dragDropTargetFullViewport", "ImGui Context.DragDropTargetFullViewport", (*imgui.Context).DragDropTargetFullViewport, true)
+	engine.RegisterMethod("imgui.dragDropAcceptFlags", "ImGui Context.DragDropAcceptFlags", (*imgui.Context).DragDropAcceptFlags, true)
+	engine.RegisterMethod("imgui.dragDropAcceptIdCurrRectSurface", "ImGui Context.DragDropAcceptIdCurrRectSurface", (*imgui.Context).DragDropAcceptIdCurrRectSurface, true)
+	engine.RegisterMethod("imgui.dragDropAcceptIdCurr", "ImGui Context.DragDropAcceptIdCurr", (*imgui.Context).DragDropAcceptIdCurr, true)
+	engine.RegisterMethod("imgui.dragDropAcceptIdPrev", "ImGui Context.DragDropAcceptIdPrev", (*imgui.Context).DragDropAcceptIdPrev, true)
+	engine.RegisterMethod("imgui.dragDropAcceptFrameCount", "ImGui Context.DragDropAcceptFrameCount", (*imgui.Context).DragDropAcceptFrameCount, true)
+	engine.RegisterMethod("imgui.dragDropHoldJustPressedId", "ImGui Context.DragDropHoldJustPressedId", (*imgui.Context).DragDropHoldJustPressedId, true)
+	engine.RegisterMethod("imgui.dragDropPayloadBufLocal", "ImGui Context.DragDropPayloadBufLocal", (*imgui.Context).DragDropPayloadBufLocal, true)
+	engine.RegisterMethod("imgui.clipperTempDataStacked", "ImGui Context.ClipperTempDataStacked", (*imgui.Context).ClipperTempDataStacked, true)
+	engine.RegisterMethod("imgui.clipperTempData", "ImGui Context.ClipperTempData", (*imgui.Context).ClipperTempData, true)
+	engine.RegisterMethod("imgui.currentTable", "ImGui Context.CurrentTable", (*imgui.Context).CurrentTable, true)
+	engine.RegisterMethod("imgui.debugBreakInTable", "ImGui Context.DebugBreakInTable", (*imgui.Context).DebugBreakInTable, true)
+	engine.RegisterMethod("imgui.tablesTempDataStacked", "ImGui Context.TablesTempDataStacked", (*imgui.Context).TablesTempDataStacked, true)
+	engine.RegisterMethod("imgui.tablesTempData", "ImGui Context.TablesTempData", (*imgui.Context).TablesTempData, true)
+	engine.RegisterMethod("imgui.tablesLastTimeActive", "ImGui Context.TablesLastTimeActive", (*imgui.Context).TablesLastTimeActive, true)
+	engine.RegisterMethod("imgui.drawChannelsTempMergeBuffer", "ImGui Context.DrawChannelsTempMergeBuffer", (*imgui.Context).DrawChannelsTempMergeBuffer, true)
+	engine.RegisterMethod("imgui.currentTabBar", "ImGui Context.CurrentTabBar", (*imgui.Context).CurrentTabBar, true)
+	engine.RegisterMethod("imgui.currentTabBarStack", "ImGui Context.CurrentTabBarStack", (*imgui.Context).CurrentTabBarStack, true)
+	engine.RegisterMethod("imgui.shrinkWidthBuffer", "ImGui Context.ShrinkWidthBuffer", (*imgui.Context).ShrinkWidthBuffer, true)
+	engine.RegisterMethod("imgui.boxSelectState", "ImGui Context.BoxSelectState", (*imgui.Context).BoxSelectState, true)
+	engine.RegisterMethod("imgui.currentMultiSelect", "ImGui Context.CurrentMultiSelect", (*imgui.Context).CurrentMultiSelect, true)
+	engine.RegisterMethod("imgui.multiSelectTempDataStacked", "ImGui Context.MultiSelectTempDataStacked", (*imgui.Context).MultiSelectTempDataStacked, true)
+	engine.RegisterMethod("imgui.multiSelectTempData", "ImGui Context.MultiSelectTempData", (*imgui.Context).MultiSelectTempData, true)
+	engine.RegisterMethod("imgui.hoverItemDelayId", "ImGui Context.HoverItemDelayId", (*imgui.Context).HoverItemDelayId, true)
+	engine.RegisterMethod("imgui.hoverItemDelayIdPreviousFrame", "ImGui Context.HoverItemDelayIdPreviousFrame", (*imgui.Context).HoverItemDelayIdPreviousFrame, true)
+	engine.RegisterMethod("imgui.hoverItemDelayTimer", "ImGui Context.HoverItemDelayTimer", (*imgui.Context).HoverItemDelayTimer, true)
+	engine.RegisterMethod("imgui.hoverItemDelayClearTimer", "ImGui Context.HoverItemDelayClearTimer", (*imgui.Context).HoverItemDelayClearTimer, true)
+	engine.RegisterMethod("imgui.hoverItemUnlockedStationaryId", "ImGui Context.HoverItemUnlockedStationaryId", (*imgui.Context).HoverItemUnlockedStationaryId, true)
+	engine.RegisterMethod("imgui.hoverWindowUnlockedStationaryId", "ImGui Context.HoverWindowUnlockedStationaryId", (*imgui.Context).HoverWindowUnlockedStationaryId, true)
+	engine.RegisterMethod("imgui.mouseCursor", "ImGui Context.MouseCursor", (*imgui.Context).MouseCursor, true)
+	engine.RegisterMethod("imgui.mouseStationaryTimer", "ImGui Context.MouseStationaryTimer", (*imgui.Context).MouseStationaryTimer, true)
+	engine.RegisterMethod("imgui.mouseLastValidPos", "ImGui Context.MouseLastValidPos", (*imgui.Context).MouseLastValidPos, true)
+	engine.RegisterMethod("imgui.inputTextState", "ImGui Context.InputTextState", (*imgui.Context).InputTextState, true)
+	engine.RegisterMethod("imgui.inputTextLineIndex", "ImGui Context.InputTextLineIndex", (*imgui.Context).InputTextLineIndex, true)
+	engine.RegisterMethod("imgui.inputTextDeactivatedState", "ImGui Context.InputTextDeactivatedState", (*imgui.Context).InputTextDeactivatedState, true)
+	engine.RegisterMethod("imgui.inputTextPasswordFontBackupBaked", "ImGui Context.InputTextPasswordFontBackupBaked", (*imgui.Context).InputTextPasswordFontBackupBaked, true)
+	engine.RegisterMethod("imgui.inputTextPasswordFontBackupFlags", "ImGui Context.InputTextPasswordFontBackupFlags", (*imgui.Context).InputTextPasswordFontBackupFlags, true)
+	engine.RegisterMethod("imgui.tempInputId", "ImGui Context.TempInputId", (*imgui.Context).TempInputId, true)
+	engine.RegisterMethod("imgui.dataTypeZeroValue", "ImGui Context.DataTypeZeroValue", (*imgui.Context).DataTypeZeroValue, true)
+	engine.RegisterMethod("imgui.beginMenuDepth", "ImGui Context.BeginMenuDepth", (*imgui.Context).BeginMenuDepth, true)
+	engine.RegisterMethod("imgui.beginComboDepth", "ImGui Context.BeginComboDepth", (*imgui.Context).BeginComboDepth, true)
+	engine.RegisterMethod("imgui.colorEditOptions", "ImGui Context.ColorEditOptions", (*imgui.Context).ColorEditOptions, true)
+	engine.RegisterMethod("imgui.colorEditCurrentID", "ImGui Context.ColorEditCurrentID", (*imgui.Context).ColorEditCurrentID, true)
+	engine.RegisterMethod("imgui.colorEditSavedID", "ImGui Context.ColorEditSavedID", (*imgui.Context).ColorEditSavedID, true)
+	engine.RegisterMethod("imgui.colorEditSavedHue", "ImGui Context.ColorEditSavedHue", (*imgui.Context).ColorEditSavedHue, true)
+	engine.RegisterMethod("imgui.colorEditSavedSat", "ImGui Context.ColorEditSavedSat", (*imgui.Context).ColorEditSavedSat, true)
+	engine.RegisterMethod("imgui.colorEditSavedColor", "ImGui Context.ColorEditSavedColor", (*imgui.Context).ColorEditSavedColor, true)
+	engine.RegisterMethod("imgui.colorPickerRef", "ImGui Context.ColorPickerRef", (*imgui.Context).ColorPickerRef, true)
+	engine.RegisterMethod("imgui.comboPreviewData", "ImGui Context.ComboPreviewData", (*imgui.Context).ComboPreviewData, true)
+	engine.RegisterMethod("imgui.windowResizeBorderExpectedRect", "ImGui Context.WindowResizeBorderExpectedRect", (*imgui.Context).WindowResizeBorderExpectedRect, true)
+	engine.RegisterMethod("imgui.windowResizeRelativeMode", "ImGui Context.WindowResizeRelativeMode", (*imgui.Context).WindowResizeRelativeMode, true)
+	engine.RegisterMethod("imgui.scrollbarSeekMode", "ImGui Context.ScrollbarSeekMode", (*imgui.Context).ScrollbarSeekMode, true)
+	engine.RegisterMethod("imgui.scrollbarClickDeltaToGrabCenter", "ImGui Context.ScrollbarClickDeltaToGrabCenter", (*imgui.Context).ScrollbarClickDeltaToGrabCenter, true)
+	engine.RegisterMethod("imgui.sliderGrabClickOffset", "ImGui Context.SliderGrabClickOffset", (*imgui.Context).SliderGrabClickOffset, true)
+	engine.RegisterMethod("imgui.sliderCurrentAccum", "ImGui Context.SliderCurrentAccum", (*imgui.Context).SliderCurrentAccum, true)
+	engine.RegisterMethod("imgui.sliderCurrentAccumDirty", "ImGui Context.SliderCurrentAccumDirty", (*imgui.Context).SliderCurrentAccumDirty, true)
+	engine.RegisterMethod("imgui.dragCurrentAccumDirty", "ImGui Context.DragCurrentAccumDirty", (*imgui.Context).DragCurrentAccumDirty, true)
+	engine.RegisterMethod("imgui.dragCurrentAccum", "ImGui Context.DragCurrentAccum", (*imgui.Context).DragCurrentAccum, true)
+	engine.RegisterMethod("imgui.dragSpeedDefaultRatio", "ImGui Context.DragSpeedDefaultRatio", (*imgui.Context).DragSpeedDefaultRatio, true)
+	engine.RegisterMethod("imgui.disabledAlphaBackup", "ImGui Context.DisabledAlphaBackup", (*imgui.Context).DisabledAlphaBackup, true)
+	engine.RegisterMethod("imgui.disabledStackSize", "ImGui Context.DisabledStackSize", (*imgui.Context).DisabledStackSize, true)
+	engine.RegisterMethod("imgui.tooltipOverrideCount", "ImGui Context.TooltipOverrideCount", (*imgui.Context).TooltipOverrideCount, true)
+	engine.RegisterMethod("imgui.tooltipPreviousWindow", "ImGui Context.TooltipPreviousWindow", (*imgui.Context).TooltipPreviousWindow, true)
+	engine.RegisterMethod("imgui.clipboardHandlerData", "ImGui Context.ClipboardHandlerData", (*imgui.Context).ClipboardHandlerData, true)
+	engine.RegisterMethod("imgui.menusIdSubmittedThisFrame", "ImGui Context.MenusIdSubmittedThisFrame", (*imgui.Context).MenusIdSubmittedThisFrame, true)
+	engine.RegisterMethod("imgui.typingSelectState", "ImGui Context.TypingSelectState", (*imgui.Context).TypingSelectState, true)
+	engine.RegisterMethod("imgui.platformImeData", "ImGui Context.PlatformImeData", (*imgui.Context).PlatformImeData, true)
+	engine.RegisterMethod("imgui.platformImeDataPrev", "ImGui Context.PlatformImeDataPrev", (*imgui.Context).PlatformImeDataPrev, true)
+	engine.RegisterMethod("imgui.userTextures", "ImGui Context.UserTextures", (*imgui.Context).UserTextures, true)
+	engine.RegisterMethod("imgui.dockContext", "ImGui Context.DockContext", (*imgui.Context).DockContext, true)
+	engine.RegisterMethod("imgui.settingsLoaded", "ImGui Context.SettingsLoaded", (*imgui.Context).SettingsLoaded, true)
+	engine.RegisterMethod("imgui.settingsDirtyTimer", "ImGui Context.SettingsDirtyTimer", (*imgui.Context).SettingsDirtyTimer, true)
+	engine.RegisterMethod("imgui.settingsIniData", "ImGui Context.SettingsIniData", (*imgui.Context).SettingsIniData, true)
+	engine.RegisterMethod("imgui.settingsHandlers", "ImGui Context.SettingsHandlers", (*imgui.Context).SettingsHandlers, true)
+	engine.RegisterMethod("imgui.hooks", "ImGui Context.Hooks", (*imgui.Context).Hooks, true)
+	engine.RegisterMethod("imgui.hookIdNext", "ImGui Context.HookIdNext", (*imgui.Context).HookIdNext, true)
+	engine.RegisterMethod("imgui.localizationTable", "ImGui Context.LocalizationTable", (*imgui.Context).LocalizationTable, true)
+	engine.RegisterMethod("imgui.logEnabled", "ImGui Context.LogEnabled", (*imgui.Context).LogEnabled, true)
+	engine.RegisterMethod("imgui.logFlags", "ImGui Context.LogFlags", (*imgui.Context).LogFlags, true)
+	engine.RegisterMethod("imgui.logWindow", "ImGui Context.LogWindow", (*imgui.Context).LogWindow, true)
+	engine.RegisterMethod("imgui.logBuffer", "ImGui Context.LogBuffer", (*imgui.Context).LogBuffer, true)
+	engine.RegisterMethod("imgui.logNextPrefix", "ImGui Context.LogNextPrefix", (*imgui.Context).LogNextPrefix, true)
+	engine.RegisterMethod("imgui.logNextSuffix", "ImGui Context.LogNextSuffix", (*imgui.Context).LogNextSuffix, true)
+	engine.RegisterMethod("imgui.logLinePosY", "ImGui Context.LogLinePosY", (*imgui.Context).LogLinePosY, true)
+	engine.RegisterMethod("imgui.logLineFirstItem", "ImGui Context.LogLineFirstItem", (*imgui.Context).LogLineFirstItem, true)
+	engine.RegisterMethod("imgui.logDepthRef", "ImGui Context.LogDepthRef", (*imgui.Context).LogDepthRef, true)
+	engine.RegisterMethod("imgui.logDepthToExpand", "ImGui Context.LogDepthToExpand", (*imgui.Context).LogDepthToExpand, true)
+	engine.RegisterMethod("imgui.logDepthToExpandDefault", "ImGui Context.LogDepthToExpandDefault", (*imgui.Context).LogDepthToExpandDefault, true)
+	engine.RegisterMethod("imgui.errorCallback", "ImGui Context.ErrorCallback", (*imgui.Context).ErrorCallback, true)
+	engine.RegisterMethod("imgui.errorCallbackUserData", "ImGui Context.ErrorCallbackUserData", (*imgui.Context).ErrorCallbackUserData, true)
+	engine.RegisterMethod("imgui.errorTooltipLockedPos", "ImGui Context.ErrorTooltipLockedPos", (*imgui.Context).ErrorTooltipLockedPos, true)
+	engine.RegisterMethod("imgui.errorFirst", "ImGui Context.ErrorFirst", (*imgui.Context).ErrorFirst, true)
+	engine.RegisterMethod("imgui.errorCountCurrentFrame", "ImGui Context.ErrorCountCurrentFrame", (*imgui.Context).ErrorCountCurrentFrame, true)
+	engine.RegisterMethod("imgui.stackSizesInNewFrame", "ImGui Context.StackSizesInNewFrame", (*imgui.Context).StackSizesInNewFrame, true)
+	engine.RegisterMethod("imgui.stackSizesInBeginForCurrentWindow", "ImGui Context.StackSizesInBeginForCurrentWindow", (*imgui.Context).StackSizesInBeginForCurrentWindow, true)
+	engine.RegisterMethod("imgui.debugDrawIdConflictsCount", "ImGui Context.DebugDrawIdConflictsCount", (*imgui.Context).DebugDrawIdConflictsCount, true)
+	engine.RegisterMethod("imgui.debugLogFlags", "ImGui Context.DebugLogFlags", (*imgui.Context).DebugLogFlags, true)
+	engine.RegisterMethod("imgui.debugLogBuf", "ImGui Context.DebugLogBuf", (*imgui.Context).DebugLogBuf, true)
+	engine.RegisterMethod("imgui.debugLogIndex", "ImGui Context.DebugLogIndex", (*imgui.Context).DebugLogIndex, true)
+	engine.RegisterMethod("imgui.debugLogSkippedErrors", "ImGui Context.DebugLogSkippedErrors", (*imgui.Context).DebugLogSkippedErrors, true)
+	engine.RegisterMethod("imgui.debugLogAutoDisableFlags", "ImGui Context.DebugLogAutoDisableFlags", (*imgui.Context).DebugLogAutoDisableFlags, true)
+	engine.RegisterMethod("imgui.debugLogAutoDisableFrames", "ImGui Context.DebugLogAutoDisableFrames", (*imgui.Context).DebugLogAutoDisableFrames, true)
+	engine.RegisterMethod("imgui.debugLocateFrames", "ImGui Context.DebugLocateFrames", (*imgui.Context).DebugLocateFrames, true)
+	engine.RegisterMethod("imgui.debugBreakInLocateId", "ImGui Context.DebugBreakInLocateId", (*imgui.Context).DebugBreakInLocateId, true)
+	engine.RegisterMethod("imgui.debugBreakKeyChord", "ImGui Context.DebugBreakKeyChord", (*imgui.Context).DebugBreakKeyChord, true)
+	engine.RegisterMethod("imgui.debugBeginReturnValueCullDepth", "ImGui Context.DebugBeginReturnValueCullDepth", (*imgui.Context).DebugBeginReturnValueCullDepth, true)
+	engine.RegisterMethod("imgui.debugItemPickerActive", "ImGui Context.DebugItemPickerActive", (*imgui.Context).DebugItemPickerActive, true)
+	engine.RegisterMethod("imgui.debugItemPickerMouseButton", "ImGui Context.DebugItemPickerMouseButton", (*imgui.Context).DebugItemPickerMouseButton, true)
+	engine.RegisterMethod("imgui.debugItemPickerBreakId", "ImGui Context.DebugItemPickerBreakId", (*imgui.Context).DebugItemPickerBreakId, true)
+	engine.RegisterMethod("imgui.debugFlashStyleColorTime", "ImGui Context.DebugFlashStyleColorTime", (*imgui.Context).DebugFlashStyleColorTime, true)
+	engine.RegisterMethod("imgui.debugFlashStyleColorBackup", "ImGui Context.DebugFlashStyleColorBackup", (*imgui.Context).DebugFlashStyleColorBackup, true)
+	engine.RegisterMethod("imgui.debugMetricsConfig", "ImGui Context.DebugMetricsConfig", (*imgui.Context).DebugMetricsConfig, true)
+	engine.RegisterMethod("imgui.debugIDStackTool", "ImGui Context.DebugIDStackTool", (*imgui.Context).DebugIDStackTool, true)
+	engine.RegisterMethod("imgui.debugAllocInfo", "ImGui Context.DebugAllocInfo", (*imgui.Context).DebugAllocInfo, true)
+	engine.RegisterMethod("imgui.debugHoveredDockNode", "ImGui Context.DebugHoveredDockNode", (*imgui.Context).DebugHoveredDockNode, true)
+	engine.RegisterMethod("imgui.framerateSecPerFrame", "ImGui Context.FramerateSecPerFrame", (*imgui.Context).FramerateSecPerFrame, true)
+	engine.RegisterMethod("imgui.framerateSecPerFrameIdx", "ImGui Context.FramerateSecPerFrameIdx", (*imgui.Context).FramerateSecPerFrameIdx, true)
+	engine.RegisterMethod("imgui.framerateSecPerFrameCount", "ImGui Context.FramerateSecPerFrameCount", (*imgui.Context).FramerateSecPerFrameCount, true)
+	engine.RegisterMethod("imgui.framerateSecPerFrameAccum", "ImGui Context.FramerateSecPerFrameAccum", (*imgui.Context).FramerateSecPerFrameAccum, true)
+	engine.RegisterMethod("imgui.wantCaptureMouseNextFrame", "ImGui Context.WantCaptureMouseNextFrame", (*imgui.Context).WantCaptureMouseNextFrame, true)
+	engine.RegisterMethod("imgui.wantCaptureKeyboardNextFrame", "ImGui Context.WantCaptureKeyboardNextFrame", (*imgui.Context).WantCaptureKeyboardNextFrame, true)
+	engine.RegisterMethod("imgui.wantTextInputNextFrame", "ImGui Context.WantTextInputNextFrame", (*imgui.Context).WantTextInputNextFrame, true)
+	engine.RegisterMethod("imgui.tempBuffer", "ImGui Context.TempBuffer", (*imgui.Context).TempBuffer, true)
+	engine.RegisterMethod("imgui.tempKeychordName", "ImGui Context.TempKeychordName", (*imgui.Context).TempKeychordName, true)
+	engine.RegisterMethod("imgui.setTotalAllocCount", "ImGui DebugAllocInfo.SetTotalAllocCount", (*imgui.DebugAllocInfo).SetTotalAllocCount, true)
+	engine.RegisterMethod("imgui.setTotalFreeCount", "ImGui DebugAllocInfo.SetTotalFreeCount", (*imgui.DebugAllocInfo).SetTotalFreeCount, true)
+	engine.RegisterMethod("imgui.setLastEntriesIdx", "ImGui DebugAllocInfo.SetLastEntriesIdx", (*imgui.DebugAllocInfo).SetLastEntriesIdx, true)
+	engine.RegisterMethod("imgui.setLastEntriesBuf", "ImGui DebugAllocInfo.SetLastEntriesBuf", (*imgui.DebugAllocInfo).SetLastEntriesBuf, true)
+	engine.RegisterMethod("imgui.totalAllocCount", "ImGui DebugAllocInfo.TotalAllocCount", (*imgui.DebugAllocInfo).TotalAllocCount, true)
+	engine.RegisterMethod("imgui.totalFreeCount", "ImGui DebugAllocInfo.TotalFreeCount", (*imgui.DebugAllocInfo).TotalFreeCount, true)
+	engine.RegisterMethod("imgui.lastEntriesIdx", "ImGui DebugAllocInfo.LastEntriesIdx", (*imgui.DebugAllocInfo).LastEntriesIdx, true)
+	engine.RegisterMethod("imgui.lastEntriesBuf", "ImGui DebugAllocInfo.LastEntriesBuf", (*imgui.DebugAllocInfo).LastEntriesBuf, true)
+	engine.RegisterMethod("imgui.setNodes", "ImGui DockContext.SetNodes", (*imgui.DockContext).SetNodes, true)
+	engine.RegisterMethod("imgui.setRequests", "ImGui DockContext.SetRequests", (*imgui.DockContext).SetRequests, true)
+	engine.RegisterMethod("imgui.setNodesSettings", "ImGui DockContext.SetNodesSettings", (*imgui.DockContext).SetNodesSettings, true)
+	engine.RegisterMethod("imgui.setWantFullRebuild", "ImGui DockContext.SetWantFullRebuild", (*imgui.DockContext).SetWantFullRebuild, true)
+	engine.RegisterMethod("imgui.nodes", "ImGui DockContext.Nodes", (*imgui.DockContext).Nodes, true)
+	engine.RegisterMethod("imgui.requests", "ImGui DockContext.Requests", (*imgui.DockContext).Requests, true)
+	engine.RegisterMethod("imgui.nodesSettings", "ImGui DockContext.NodesSettings", (*imgui.DockContext).NodesSettings, true)
+	engine.RegisterMethod("imgui.wantFullRebuild", "ImGui DockContext.WantFullRebuild", (*imgui.DockContext).WantFullRebuild, true)
+	engine.RegisterMethod("imgui.internalIsCentralNode", "ImGui DockNode.InternalIsCentralNode", (*imgui.DockNode).InternalIsCentralNode, true)
+	engine.RegisterMethod("imgui.internalIsDockSpace", "ImGui DockNode.InternalIsDockSpace", (*imgui.DockNode).InternalIsDockSpace, true)
+	engine.RegisterMethod("imgui.internalIsEmpty", "ImGui DockNode.InternalIsEmpty", (*imgui.DockNode).InternalIsEmpty, true)
+	engine.RegisterMethod("imgui.internalIsFloatingNode", "ImGui DockNode.InternalIsFloatingNode", (*imgui.DockNode).InternalIsFloatingNode, true)
+	engine.RegisterMethod("imgui.internalIsHiddenTabBar", "ImGui DockNode.InternalIsHiddenTabBar", (*imgui.DockNode).InternalIsHiddenTabBar, true)
+	engine.RegisterMethod("imgui.internalIsLeafNode", "ImGui DockNode.InternalIsLeafNode", (*imgui.DockNode).InternalIsLeafNode, true)
+	engine.RegisterMethod("imgui.internalIsNoTabBar", "ImGui DockNode.InternalIsNoTabBar", (*imgui.DockNode).InternalIsNoTabBar, true)
+	engine.RegisterMethod("imgui.internalIsRootNode", "ImGui DockNode.InternalIsRootNode", (*imgui.DockNode).InternalIsRootNode, true)
+	engine.RegisterMethod("imgui.internalIsSplitNode", "ImGui DockNode.InternalIsSplitNode", (*imgui.DockNode).InternalIsSplitNode, true)
+	engine.RegisterMethod("imgui.internalRect", "ImGui DockNode.InternalRect", (*imgui.DockNode).InternalRect, true)
+	engine.RegisterMethod("imgui.internalSetLocalFlags", "ImGui DockNode.InternalSetLocalFlags", (*imgui.DockNode).InternalSetLocalFlags, true)
+	engine.RegisterMethod("imgui.internalUpdateMergedFlags", "ImGui DockNode.InternalUpdateMergedFlags", (*imgui.DockNode).InternalUpdateMergedFlags, true)
+	engine.RegisterMethod("imgui.setSharedFlags", "ImGui DockNode.SetSharedFlags", (*imgui.DockNode).SetSharedFlags, true)
+	engine.RegisterMethod("imgui.setLocalFlagsInWindows", "ImGui DockNode.SetLocalFlagsInWindows", (*imgui.DockNode).SetLocalFlagsInWindows, true)
+	engine.RegisterMethod("imgui.setMergedFlags", "ImGui DockNode.SetMergedFlags", (*imgui.DockNode).SetMergedFlags, true)
+	engine.RegisterMethod("imgui.setState", "ImGui DockNode.SetState", (*imgui.DockNode).SetState, true)
+	engine.RegisterMethod("imgui.setParentNode", "ImGui DockNode.SetParentNode", (*imgui.DockNode).SetParentNode, true)
+	engine.RegisterMethod("imgui.setChildNodes", "ImGui DockNode.SetChildNodes", (*imgui.DockNode).SetChildNodes, true)
+	engine.RegisterMethod("imgui.setTabBar", "ImGui DockNode.SetTabBar", (*imgui.DockNode).SetTabBar, true)
+	engine.RegisterMethod("imgui.setPos", "ImGui DockNode.SetPos", (*imgui.DockNode).SetPos, true)
+	engine.RegisterMethod("imgui.setSizeRef", "ImGui DockNode.SetSizeRef", (*imgui.DockNode).SetSizeRef, true)
+	engine.RegisterMethod("imgui.setSplitAxis", "ImGui DockNode.SetSplitAxis", (*imgui.DockNode).SetSplitAxis, true)
+	engine.RegisterMethod("imgui.setWindowClass", "ImGui DockNode.SetWindowClass", (*imgui.DockNode).SetWindowClass, true)
+	engine.RegisterMethod("imgui.setLastBgColor", "ImGui DockNode.SetLastBgColor", (*imgui.DockNode).SetLastBgColor, true)
+	engine.RegisterMethod("imgui.setHostWindow", "ImGui DockNode.SetHostWindow", (*imgui.DockNode).SetHostWindow, true)
+	engine.RegisterMethod("imgui.setVisibleWindow", "ImGui DockNode.SetVisibleWindow", (*imgui.DockNode).SetVisibleWindow, true)
+	engine.RegisterMethod("imgui.setCentralNode", "ImGui DockNode.SetCentralNode", (*imgui.DockNode).SetCentralNode, true)
+	engine.RegisterMethod("imgui.setOnlyNodeWithWindows", "ImGui DockNode.SetOnlyNodeWithWindows", (*imgui.DockNode).SetOnlyNodeWithWindows, true)
+	engine.RegisterMethod("imgui.setCountNodeWithWindows", "ImGui DockNode.SetCountNodeWithWindows", (*imgui.DockNode).SetCountNodeWithWindows, true)
+	engine.RegisterMethod("imgui.setLastFrameAlive", "ImGui DockNode.SetLastFrameAlive", (*imgui.DockNode).SetLastFrameAlive, true)
+	engine.RegisterMethod("imgui.setLastFrameActive", "ImGui DockNode.SetLastFrameActive", (*imgui.DockNode).SetLastFrameActive, true)
+	engine.RegisterMethod("imgui.setLastFrameFocused", "ImGui DockNode.SetLastFrameFocused", (*imgui.DockNode).SetLastFrameFocused, true)
+	engine.RegisterMethod("imgui.setLastFocusedNodeId", "ImGui DockNode.SetLastFocusedNodeId", (*imgui.DockNode).SetLastFocusedNodeId, true)
+	engine.RegisterMethod("imgui.setSelectedTabId", "ImGui DockNode.SetSelectedTabId", (*imgui.DockNode).SetSelectedTabId, true)
+	engine.RegisterMethod("imgui.setWantCloseTabId", "ImGui DockNode.SetWantCloseTabId", (*imgui.DockNode).SetWantCloseTabId, true)
+	engine.RegisterMethod("imgui.setRefViewportId", "ImGui DockNode.SetRefViewportId", (*imgui.DockNode).SetRefViewportId, true)
+	engine.RegisterMethod("imgui.setAuthorityForPos", "ImGui DockNode.SetAuthorityForPos", (*imgui.DockNode).SetAuthorityForPos, true)
+	engine.RegisterMethod("imgui.setAuthorityForSize", "ImGui DockNode.SetAuthorityForSize", (*imgui.DockNode).SetAuthorityForSize, true)
+	engine.RegisterMethod("imgui.setAuthorityForViewport", "ImGui DockNode.SetAuthorityForViewport", (*imgui.DockNode).SetAuthorityForViewport, true)
+	engine.RegisterMethod("imgui.setIsVisible", "ImGui DockNode.SetIsVisible", (*imgui.DockNode).SetIsVisible, true)
+	engine.RegisterMethod("imgui.setIsFocused", "ImGui DockNode.SetIsFocused", (*imgui.DockNode).SetIsFocused, true)
+	engine.RegisterMethod("imgui.setIsBgDrawnThisFrame", "ImGui DockNode.SetIsBgDrawnThisFrame", (*imgui.DockNode).SetIsBgDrawnThisFrame, true)
+	engine.RegisterMethod("imgui.setHasCloseButton", "ImGui DockNode.SetHasCloseButton", (*imgui.DockNode).SetHasCloseButton, true)
+	engine.RegisterMethod("imgui.setHasWindowMenuButton", "ImGui DockNode.SetHasWindowMenuButton", (*imgui.DockNode).SetHasWindowMenuButton, true)
+	engine.RegisterMethod("imgui.setHasCentralNodeChild", "ImGui DockNode.SetHasCentralNodeChild", (*imgui.DockNode).SetHasCentralNodeChild, true)
+	engine.RegisterMethod("imgui.setWantCloseAll", "ImGui DockNode.SetWantCloseAll", (*imgui.DockNode).SetWantCloseAll, true)
+	engine.RegisterMethod("imgui.setWantLockSizeOnce", "ImGui DockNode.SetWantLockSizeOnce", (*imgui.DockNode).SetWantLockSizeOnce, true)
+	engine.RegisterMethod("imgui.setWantMouseMove", "ImGui DockNode.SetWantMouseMove", (*imgui.DockNode).SetWantMouseMove, true)
+	engine.RegisterMethod("imgui.setWantHiddenTabBarUpdate", "ImGui DockNode.SetWantHiddenTabBarUpdate", (*imgui.DockNode).SetWantHiddenTabBarUpdate, true)
+	engine.RegisterMethod("imgui.setWantHiddenTabBarToggle", "ImGui DockNode.SetWantHiddenTabBarToggle", (*imgui.DockNode).SetWantHiddenTabBarToggle, true)
+	engine.RegisterMethod("imgui.sharedFlags", "ImGui DockNode.SharedFlags", (*imgui.DockNode).SharedFlags, true)
+	engine.RegisterMethod("imgui.localFlags", "ImGui DockNode.LocalFlags", (*imgui.DockNode).LocalFlags, true)
+	engine.RegisterMethod("imgui.localFlagsInWindows", "ImGui DockNode.LocalFlagsInWindows", (*imgui.DockNode).LocalFlagsInWindows, true)
+	engine.RegisterMethod("imgui.mergedFlags", "ImGui DockNode.MergedFlags", (*imgui.DockNode).MergedFlags, true)
+	engine.RegisterMethod("imgui.state", "ImGui DockNode.State", (*imgui.DockNode).State, true)
+	engine.RegisterMethod("imgui.parentNode", "ImGui DockNode.ParentNode", (*imgui.DockNode).ParentNode, true)
+	engine.RegisterMethod("imgui.childNodes", "ImGui DockNode.ChildNodes", (*imgui.DockNode).ChildNodes, true)
+	engine.RegisterMethod("imgui.tabBar", "ImGui DockNode.TabBar", (*imgui.DockNode).TabBar, true)
+	engine.RegisterMethod("imgui.pos", "ImGui DockNode.Pos", (*imgui.DockNode).Pos, true)
+	engine.RegisterMethod("imgui.sizeRef", "ImGui DockNode.SizeRef", (*imgui.DockNode).SizeRef, true)
+	engine.RegisterMethod("imgui.splitAxis", "ImGui DockNode.SplitAxis", (*imgui.DockNode).SplitAxis, true)
+	engine.RegisterMethod("imgui.windowClass", "ImGui DockNode.WindowClass", (*imgui.DockNode).WindowClass, true)
+	engine.RegisterMethod("imgui.lastBgColor", "ImGui DockNode.LastBgColor", (*imgui.DockNode).LastBgColor, true)
+	engine.RegisterMethod("imgui.hostWindow", "ImGui DockNode.HostWindow", (*imgui.DockNode).HostWindow, true)
+	engine.RegisterMethod("imgui.visibleWindow", "ImGui DockNode.VisibleWindow", (*imgui.DockNode).VisibleWindow, true)
+	engine.RegisterMethod("imgui.centralNode", "ImGui DockNode.CentralNode", (*imgui.DockNode).CentralNode, true)
+	engine.RegisterMethod("imgui.onlyNodeWithWindows", "ImGui DockNode.OnlyNodeWithWindows", (*imgui.DockNode).OnlyNodeWithWindows, true)
+	engine.RegisterMethod("imgui.countNodeWithWindows", "ImGui DockNode.CountNodeWithWindows", (*imgui.DockNode).CountNodeWithWindows, true)
+	engine.RegisterMethod("imgui.lastFrameAlive", "ImGui DockNode.LastFrameAlive", (*imgui.DockNode).LastFrameAlive, true)
+	engine.RegisterMethod("imgui.lastFrameActive", "ImGui DockNode.LastFrameActive", (*imgui.DockNode).LastFrameActive, true)
+	engine.RegisterMethod("imgui.lastFrameFocused", "ImGui DockNode.LastFrameFocused", (*imgui.DockNode).LastFrameFocused, true)
+	engine.RegisterMethod("imgui.lastFocusedNodeId", "ImGui DockNode.LastFocusedNodeId", (*imgui.DockNode).LastFocusedNodeId, true)
+	engine.RegisterMethod("imgui.selectedTabId", "ImGui DockNode.SelectedTabId", (*imgui.DockNode).SelectedTabId, true)
+	engine.RegisterMethod("imgui.wantCloseTabId", "ImGui DockNode.WantCloseTabId", (*imgui.DockNode).WantCloseTabId, true)
+	engine.RegisterMethod("imgui.refViewportId", "ImGui DockNode.RefViewportId", (*imgui.DockNode).RefViewportId, true)
+	engine.RegisterMethod("imgui.authorityForPos", "ImGui DockNode.AuthorityForPos", (*imgui.DockNode).AuthorityForPos, true)
+	engine.RegisterMethod("imgui.authorityForSize", "ImGui DockNode.AuthorityForSize", (*imgui.DockNode).AuthorityForSize, true)
+	engine.RegisterMethod("imgui.authorityForViewport", "ImGui DockNode.AuthorityForViewport", (*imgui.DockNode).AuthorityForViewport, true)
+	engine.RegisterMethod("imgui.isVisible", "ImGui DockNode.IsVisible", (*imgui.DockNode).IsVisible, true)
+	engine.RegisterMethod("imgui.isFocused", "ImGui DockNode.IsFocused", (*imgui.DockNode).IsFocused, true)
+	engine.RegisterMethod("imgui.isBgDrawnThisFrame", "ImGui DockNode.IsBgDrawnThisFrame", (*imgui.DockNode).IsBgDrawnThisFrame, true)
+	engine.RegisterMethod("imgui.hasCloseButton", "ImGui DockNode.HasCloseButton", (*imgui.DockNode).HasCloseButton, true)
+	engine.RegisterMethod("imgui.hasWindowMenuButton", "ImGui DockNode.HasWindowMenuButton", (*imgui.DockNode).HasWindowMenuButton, true)
+	engine.RegisterMethod("imgui.hasCentralNodeChild", "ImGui DockNode.HasCentralNodeChild", (*imgui.DockNode).HasCentralNodeChild, true)
+	engine.RegisterMethod("imgui.wantCloseAll", "ImGui DockNode.WantCloseAll", (*imgui.DockNode).WantCloseAll, true)
+	engine.RegisterMethod("imgui.wantLockSizeOnce", "ImGui DockNode.WantLockSizeOnce", (*imgui.DockNode).WantLockSizeOnce, true)
+	engine.RegisterMethod("imgui.wantMouseMove", "ImGui DockNode.WantMouseMove", (*imgui.DockNode).WantMouseMove, true)
+	engine.RegisterMethod("imgui.wantHiddenTabBarUpdate", "ImGui DockNode.WantHiddenTabBarUpdate", (*imgui.DockNode).WantHiddenTabBarUpdate, true)
+	engine.RegisterMethod("imgui.wantHiddenTabBarToggle", "ImGui DockNode.WantHiddenTabBarToggle", (*imgui.DockNode).WantHiddenTabBarToggle, true)
+	engine.RegisterMethod("imgui.setSizeOfWindowStack", "ImGui ErrorRecoveryState.SetSizeOfWindowStack", (*imgui.ErrorRecoveryState).SetSizeOfWindowStack, true)
+	engine.RegisterMethod("imgui.setSizeOfIDStack", "ImGui ErrorRecoveryState.SetSizeOfIDStack", (*imgui.ErrorRecoveryState).SetSizeOfIDStack, true)
+	engine.RegisterMethod("imgui.setSizeOfTreeStack", "ImGui ErrorRecoveryState.SetSizeOfTreeStack", (*imgui.ErrorRecoveryState).SetSizeOfTreeStack, true)
+	engine.RegisterMethod("imgui.setSizeOfColorStack", "ImGui ErrorRecoveryState.SetSizeOfColorStack", (*imgui.ErrorRecoveryState).SetSizeOfColorStack, true)
+	engine.RegisterMethod("imgui.setSizeOfStyleVarStack", "ImGui ErrorRecoveryState.SetSizeOfStyleVarStack", (*imgui.ErrorRecoveryState).SetSizeOfStyleVarStack, true)
+	engine.RegisterMethod("imgui.setSizeOfFontStack", "ImGui ErrorRecoveryState.SetSizeOfFontStack", (*imgui.ErrorRecoveryState).SetSizeOfFontStack, true)
+	engine.RegisterMethod("imgui.setSizeOfFocusScopeStack", "ImGui ErrorRecoveryState.SetSizeOfFocusScopeStack", (*imgui.ErrorRecoveryState).SetSizeOfFocusScopeStack, true)
+	engine.RegisterMethod("imgui.setSizeOfGroupStack", "ImGui ErrorRecoveryState.SetSizeOfGroupStack", (*imgui.ErrorRecoveryState).SetSizeOfGroupStack, true)
+	engine.RegisterMethod("imgui.setSizeOfItemFlagsStack", "ImGui ErrorRecoveryState.SetSizeOfItemFlagsStack", (*imgui.ErrorRecoveryState).SetSizeOfItemFlagsStack, true)
+	engine.RegisterMethod("imgui.setSizeOfBeginPopupStack", "ImGui ErrorRecoveryState.SetSizeOfBeginPopupStack", (*imgui.ErrorRecoveryState).SetSizeOfBeginPopupStack, true)
+	engine.RegisterMethod("imgui.setSizeOfDisabledStack", "ImGui ErrorRecoveryState.SetSizeOfDisabledStack", (*imgui.ErrorRecoveryState).SetSizeOfDisabledStack, true)
+	engine.RegisterMethod("imgui.sizeOfWindowStack", "ImGui ErrorRecoveryState.SizeOfWindowStack", (*imgui.ErrorRecoveryState).SizeOfWindowStack, true)
+	engine.RegisterMethod("imgui.sizeOfIDStack", "ImGui ErrorRecoveryState.SizeOfIDStack", (*imgui.ErrorRecoveryState).SizeOfIDStack, true)
+	engine.RegisterMethod("imgui.sizeOfTreeStack", "ImGui ErrorRecoveryState.SizeOfTreeStack", (*imgui.ErrorRecoveryState).SizeOfTreeStack, true)
+	engine.RegisterMethod("imgui.sizeOfColorStack", "ImGui ErrorRecoveryState.SizeOfColorStack", (*imgui.ErrorRecoveryState).SizeOfColorStack, true)
+	engine.RegisterMethod("imgui.sizeOfStyleVarStack", "ImGui ErrorRecoveryState.SizeOfStyleVarStack", (*imgui.ErrorRecoveryState).SizeOfStyleVarStack, true)
+	engine.RegisterMethod("imgui.sizeOfFontStack", "ImGui ErrorRecoveryState.SizeOfFontStack", (*imgui.ErrorRecoveryState).SizeOfFontStack, true)
+	engine.RegisterMethod("imgui.sizeOfFocusScopeStack", "ImGui ErrorRecoveryState.SizeOfFocusScopeStack", (*imgui.ErrorRecoveryState).SizeOfFocusScopeStack, true)
+	engine.RegisterMethod("imgui.sizeOfGroupStack", "ImGui ErrorRecoveryState.SizeOfGroupStack", (*imgui.ErrorRecoveryState).SizeOfGroupStack, true)
+	engine.RegisterMethod("imgui.sizeOfItemFlagsStack", "ImGui ErrorRecoveryState.SizeOfItemFlagsStack", (*imgui.ErrorRecoveryState).SizeOfItemFlagsStack, true)
+	engine.RegisterMethod("imgui.sizeOfBeginPopupStack", "ImGui ErrorRecoveryState.SizeOfBeginPopupStack", (*imgui.ErrorRecoveryState).SizeOfBeginPopupStack, true)
+	engine.RegisterMethod("imgui.sizeOfDisabledStack", "ImGui ErrorRecoveryState.SizeOfDisabledStack", (*imgui.ErrorRecoveryState).SizeOfDisabledStack, true)
+	engine.RegisterMethod("imgui.setLastActiveFrame", "ImGui IDStackTool.SetLastActiveFrame", (*imgui.IDStackTool).SetLastActiveFrame, true)
+	engine.RegisterMethod("imgui.setStackLevel", "ImGui IDStackTool.SetStackLevel", (*imgui.IDStackTool).SetStackLevel, true)
+	engine.RegisterMethod("imgui.setQueryMainId", "ImGui IDStackTool.SetQueryMainId", (*imgui.IDStackTool).SetQueryMainId, true)
+	engine.RegisterMethod("imgui.setResults", "ImGui IDStackTool.SetResults", (*imgui.IDStackTool).SetResults, true)
+	engine.RegisterMethod("imgui.setQueryHookActive", "ImGui IDStackTool.SetQueryHookActive", (*imgui.IDStackTool).SetQueryHookActive, true)
+	engine.RegisterMethod("imgui.setOptHexEncodeNonAsciiChars", "ImGui IDStackTool.SetOptHexEncodeNonAsciiChars", (*imgui.IDStackTool).SetOptHexEncodeNonAsciiChars, true)
+	engine.RegisterMethod("imgui.setOptCopyToClipboardOnCtrlC", "ImGui IDStackTool.SetOptCopyToClipboardOnCtrlC", (*imgui.IDStackTool).SetOptCopyToClipboardOnCtrlC, true)
+	engine.RegisterMethod("imgui.setCopyToClipboardLastTime", "ImGui IDStackTool.SetCopyToClipboardLastTime", (*imgui.IDStackTool).SetCopyToClipboardLastTime, true)
+	engine.RegisterMethod("imgui.setResultPathsBuf", "ImGui IDStackTool.SetResultPathsBuf", (*imgui.IDStackTool).SetResultPathsBuf, true)
+	engine.RegisterMethod("imgui.setResultTempBuf", "ImGui IDStackTool.SetResultTempBuf", (*imgui.IDStackTool).SetResultTempBuf, true)
+	engine.RegisterMethod("imgui.lastActiveFrame", "ImGui IDStackTool.LastActiveFrame", (*imgui.IDStackTool).LastActiveFrame, true)
+	engine.RegisterMethod("imgui.stackLevel", "ImGui IDStackTool.StackLevel", (*imgui.IDStackTool).StackLevel, true)
+	engine.RegisterMethod("imgui.queryMainId", "ImGui IDStackTool.QueryMainId", (*imgui.IDStackTool).QueryMainId, true)
+	engine.RegisterMethod("imgui.results", "ImGui IDStackTool.Results", (*imgui.IDStackTool).Results, true)
+	engine.RegisterMethod("imgui.queryHookActive", "ImGui IDStackTool.QueryHookActive", (*imgui.IDStackTool).QueryHookActive, true)
+	engine.RegisterMethod("imgui.optHexEncodeNonAsciiChars", "ImGui IDStackTool.OptHexEncodeNonAsciiChars", (*imgui.IDStackTool).OptHexEncodeNonAsciiChars, true)
+	engine.RegisterMethod("imgui.optCopyToClipboardOnCtrlC", "ImGui IDStackTool.OptCopyToClipboardOnCtrlC", (*imgui.IDStackTool).OptCopyToClipboardOnCtrlC, true)
+	engine.RegisterMethod("imgui.copyToClipboardLastTime", "ImGui IDStackTool.CopyToClipboardLastTime", (*imgui.IDStackTool).CopyToClipboardLastTime, true)
+	engine.RegisterMethod("imgui.resultPathsBuf", "ImGui IDStackTool.ResultPathsBuf", (*imgui.IDStackTool).ResultPathsBuf, true)
+	engine.RegisterMethod("imgui.resultTempBuf", "ImGui IDStackTool.ResultTempBuf", (*imgui.IDStackTool).ResultTempBuf, true)
+	engine.RegisterMethod("imgui.addFocusEvent", "ImGui IO.AddFocusEvent", (*imgui.IO).AddFocusEvent, true)
+	engine.RegisterMethod("imgui.addInputCharacter", "ImGui IO.AddInputCharacter", (*imgui.IO).AddInputCharacter, true)
+	engine.RegisterMethod("imgui.addInputCharacterUTF16", "ImGui IO.AddInputCharacterUTF16", (*imgui.IO).AddInputCharacterUTF16, true)
+	engine.RegisterMethod("imgui.addInputCharactersUTF8", "ImGui IO.AddInputCharactersUTF8", (*imgui.IO).AddInputCharactersUTF8, true)
+	engine.RegisterMethod("imgui.addKeyAnalogEvent", "ImGui IO.AddKeyAnalogEvent", (*imgui.IO).AddKeyAnalogEvent, true)
+	engine.RegisterMethod("imgui.addKeyEvent", "ImGui IO.AddKeyEvent", (*imgui.IO).AddKeyEvent, true)
+	engine.RegisterMethod("imgui.addMouseButtonEvent", "ImGui IO.AddMouseButtonEvent", (*imgui.IO).AddMouseButtonEvent, true)
+	engine.RegisterMethod("imgui.addMousePosEvent", "ImGui IO.AddMousePosEvent", (*imgui.IO).AddMousePosEvent, true)
+	engine.RegisterMethod("imgui.addMouseSourceEvent", "ImGui IO.AddMouseSourceEvent", (*imgui.IO).AddMouseSourceEvent, true)
+	engine.RegisterMethod("imgui.addMouseViewportEvent", "ImGui IO.AddMouseViewportEvent", (*imgui.IO).AddMouseViewportEvent, true)
+	engine.RegisterMethod("imgui.addMouseWheelEvent", "ImGui IO.AddMouseWheelEvent", (*imgui.IO).AddMouseWheelEvent, true)
+	engine.RegisterMethod("imgui.clearEventsQueue", "ImGui IO.ClearEventsQueue", (*imgui.IO).ClearEventsQueue, true)
+	engine.RegisterMethod("imgui.clearInputKeys", "ImGui IO.ClearInputKeys", (*imgui.IO).ClearInputKeys, true)
+	engine.RegisterMethod("imgui.clearInputMouse", "ImGui IO.ClearInputMouse", (*imgui.IO).ClearInputMouse, true)
+	engine.RegisterMethod("imgui.setAppAcceptingEvents", "ImGui IO.SetAppAcceptingEvents", (*imgui.IO).SetAppAcceptingEvents, true)
+	engine.RegisterMethod("imgui.setKeyEventNativeDataV", "ImGui IO.SetKeyEventNativeDataV", (*imgui.IO).SetKeyEventNativeDataV, true)
+	engine.RegisterMethod("imgui.setKeyEventNativeData", "ImGui IO.SetKeyEventNativeData", (*imgui.IO).SetKeyEventNativeData, true)
+	engine.RegisterMethod("imgui.setConfigFlags", "ImGui IO.SetConfigFlags", (*imgui.IO).SetConfigFlags, true)
+	engine.RegisterMethod("imgui.setBackendFlags", "ImGui IO.SetBackendFlags", (*imgui.IO).SetBackendFlags, true)
+	engine.RegisterMethod("imgui.setDisplayFramebufferScale", "ImGui IO.SetDisplayFramebufferScale", (*imgui.IO).SetDisplayFramebufferScale, true)
+	engine.RegisterMethod("imgui.setDeltaTime", "ImGui IO.SetDeltaTime", (*imgui.IO).SetDeltaTime, true)
+	engine.RegisterMethod("imgui.setIniSavingRate", "ImGui IO.SetIniSavingRate", (*imgui.IO).SetIniSavingRate, true)
+	engine.RegisterMethod("imgui.setIniFilename", "ImGui IO.SetIniFilename", (*imgui.IO).SetIniFilename, true)
+	engine.RegisterMethod("imgui.setLogFilename", "ImGui IO.SetLogFilename", (*imgui.IO).SetLogFilename, true)
+	engine.RegisterMethod("imgui.setFonts", "ImGui IO.SetFonts", (*imgui.IO).SetFonts, true)
+	engine.RegisterMethod("imgui.setFontDefault", "ImGui IO.SetFontDefault", (*imgui.IO).SetFontDefault, true)
+	engine.RegisterMethod("imgui.setFontAllowUserScaling", "ImGui IO.SetFontAllowUserScaling", (*imgui.IO).SetFontAllowUserScaling, true)
+	engine.RegisterMethod("imgui.setConfigNavSwapGamepadButtons", "ImGui IO.SetConfigNavSwapGamepadButtons", (*imgui.IO).SetConfigNavSwapGamepadButtons, true)
+	engine.RegisterMethod("imgui.setConfigNavMoveSetMousePos", "ImGui IO.SetConfigNavMoveSetMousePos", (*imgui.IO).SetConfigNavMoveSetMousePos, true)
+	engine.RegisterMethod("imgui.setConfigNavCaptureKeyboard", "ImGui IO.SetConfigNavCaptureKeyboard", (*imgui.IO).SetConfigNavCaptureKeyboard, true)
+	engine.RegisterMethod("imgui.setConfigNavEscapeClearFocusItem", "ImGui IO.SetConfigNavEscapeClearFocusItem", (*imgui.IO).SetConfigNavEscapeClearFocusItem, true)
+	engine.RegisterMethod("imgui.setConfigNavEscapeClearFocusWindow", "ImGui IO.SetConfigNavEscapeClearFocusWindow", (*imgui.IO).SetConfigNavEscapeClearFocusWindow, true)
+	engine.RegisterMethod("imgui.setConfigNavCursorVisibleAuto", "ImGui IO.SetConfigNavCursorVisibleAuto", (*imgui.IO).SetConfigNavCursorVisibleAuto, true)
+	engine.RegisterMethod("imgui.setConfigNavCursorVisibleAlways", "ImGui IO.SetConfigNavCursorVisibleAlways", (*imgui.IO).SetConfigNavCursorVisibleAlways, true)
+	engine.RegisterMethod("imgui.setConfigDockingNoSplit", "ImGui IO.SetConfigDockingNoSplit", (*imgui.IO).SetConfigDockingNoSplit, true)
+	engine.RegisterMethod("imgui.setConfigDockingWithShift", "ImGui IO.SetConfigDockingWithShift", (*imgui.IO).SetConfigDockingWithShift, true)
+	engine.RegisterMethod("imgui.setConfigDockingAlwaysTabBar", "ImGui IO.SetConfigDockingAlwaysTabBar", (*imgui.IO).SetConfigDockingAlwaysTabBar, true)
+	engine.RegisterMethod("imgui.setConfigDockingTransparentPayload", "ImGui IO.SetConfigDockingTransparentPayload", (*imgui.IO).SetConfigDockingTransparentPayload, true)
+	engine.RegisterMethod("imgui.setConfigViewportsNoAutoMerge", "ImGui IO.SetConfigViewportsNoAutoMerge", (*imgui.IO).SetConfigViewportsNoAutoMerge, true)
+	engine.RegisterMethod("imgui.setConfigViewportsNoTaskBarIcon", "ImGui IO.SetConfigViewportsNoTaskBarIcon", (*imgui.IO).SetConfigViewportsNoTaskBarIcon, true)
+	engine.RegisterMethod("imgui.setConfigViewportsNoDecoration", "ImGui IO.SetConfigViewportsNoDecoration", (*imgui.IO).SetConfigViewportsNoDecoration, true)
+	engine.RegisterMethod("imgui.setConfigViewportsNoDefaultParent", "ImGui IO.SetConfigViewportsNoDefaultParent", (*imgui.IO).SetConfigViewportsNoDefaultParent, true)
+	engine.RegisterMethod("imgui.setConfigViewportsPlatformFocusSetsImGuiFocus", "ImGui IO.SetConfigViewportsPlatformFocusSetsImGuiFocus", (*imgui.IO).SetConfigViewportsPlatformFocusSetsImGuiFocus, true)
+	engine.RegisterMethod("imgui.setConfigDpiScaleFonts", "ImGui IO.SetConfigDpiScaleFonts", (*imgui.IO).SetConfigDpiScaleFonts, true)
+	engine.RegisterMethod("imgui.setConfigDpiScaleViewports", "ImGui IO.SetConfigDpiScaleViewports", (*imgui.IO).SetConfigDpiScaleViewports, true)
+	engine.RegisterMethod("imgui.setMouseDrawCursor", "ImGui IO.SetMouseDrawCursor", (*imgui.IO).SetMouseDrawCursor, true)
+	engine.RegisterMethod("imgui.setConfigMacOSXBehaviors", "ImGui IO.SetConfigMacOSXBehaviors", (*imgui.IO).SetConfigMacOSXBehaviors, true)
+	engine.RegisterMethod("imgui.setConfigInputTrickleEventQueue", "ImGui IO.SetConfigInputTrickleEventQueue", (*imgui.IO).SetConfigInputTrickleEventQueue, true)
+	engine.RegisterMethod("imgui.setConfigInputTextCursorBlink", "ImGui IO.SetConfigInputTextCursorBlink", (*imgui.IO).SetConfigInputTextCursorBlink, true)
+	engine.RegisterMethod("imgui.setConfigInputTextEnterKeepActive", "ImGui IO.SetConfigInputTextEnterKeepActive", (*imgui.IO).SetConfigInputTextEnterKeepActive, true)
+	engine.RegisterMethod("imgui.setConfigDragClickToInputText", "ImGui IO.SetConfigDragClickToInputText", (*imgui.IO).SetConfigDragClickToInputText, true)
+	engine.RegisterMethod("imgui.setConfigWindowsResizeFromEdges", "ImGui IO.SetConfigWindowsResizeFromEdges", (*imgui.IO).SetConfigWindowsResizeFromEdges, true)
+	engine.RegisterMethod("imgui.setConfigWindowsMoveFromTitleBarOnly", "ImGui IO.SetConfigWindowsMoveFromTitleBarOnly", (*imgui.IO).SetConfigWindowsMoveFromTitleBarOnly, true)
+	engine.RegisterMethod("imgui.setConfigWindowsCopyContentsWithCtrlC", "ImGui IO.SetConfigWindowsCopyContentsWithCtrlC", (*imgui.IO).SetConfigWindowsCopyContentsWithCtrlC, true)
+	engine.RegisterMethod("imgui.setConfigScrollbarScrollByPage", "ImGui IO.SetConfigScrollbarScrollByPage", (*imgui.IO).SetConfigScrollbarScrollByPage, true)
+	engine.RegisterMethod("imgui.setConfigMemoryCompactTimer", "ImGui IO.SetConfigMemoryCompactTimer", (*imgui.IO).SetConfigMemoryCompactTimer, true)
+	engine.RegisterMethod("imgui.setMouseDoubleClickTime", "ImGui IO.SetMouseDoubleClickTime", (*imgui.IO).SetMouseDoubleClickTime, true)
+	engine.RegisterMethod("imgui.setMouseDoubleClickMaxDist", "ImGui IO.SetMouseDoubleClickMaxDist", (*imgui.IO).SetMouseDoubleClickMaxDist, true)
+	engine.RegisterMethod("imgui.setMouseDragThreshold", "ImGui IO.SetMouseDragThreshold", (*imgui.IO).SetMouseDragThreshold, true)
+	engine.RegisterMethod("imgui.setKeyRepeatDelay", "ImGui IO.SetKeyRepeatDelay", (*imgui.IO).SetKeyRepeatDelay, true)
+	engine.RegisterMethod("imgui.setKeyRepeatRate", "ImGui IO.SetKeyRepeatRate", (*imgui.IO).SetKeyRepeatRate, true)
+	engine.RegisterMethod("imgui.setConfigErrorRecovery", "ImGui IO.SetConfigErrorRecovery", (*imgui.IO).SetConfigErrorRecovery, true)
+	engine.RegisterMethod("imgui.setConfigErrorRecoveryEnableAssert", "ImGui IO.SetConfigErrorRecoveryEnableAssert", (*imgui.IO).SetConfigErrorRecoveryEnableAssert, true)
+	engine.RegisterMethod("imgui.setConfigErrorRecoveryEnableDebugLog", "ImGui IO.SetConfigErrorRecoveryEnableDebugLog", (*imgui.IO).SetConfigErrorRecoveryEnableDebugLog, true)
+	engine.RegisterMethod("imgui.setConfigErrorRecoveryEnableTooltip", "ImGui IO.SetConfigErrorRecoveryEnableTooltip", (*imgui.IO).SetConfigErrorRecoveryEnableTooltip, true)
+	engine.RegisterMethod("imgui.setConfigDebugIsDebuggerPresent", "ImGui IO.SetConfigDebugIsDebuggerPresent", (*imgui.IO).SetConfigDebugIsDebuggerPresent, true)
+	engine.RegisterMethod("imgui.setConfigDebugHighlightIdConflicts", "ImGui IO.SetConfigDebugHighlightIdConflicts", (*imgui.IO).SetConfigDebugHighlightIdConflicts, true)
+	engine.RegisterMethod("imgui.setConfigDebugHighlightIdConflictsShowItemPicker", "ImGui IO.SetConfigDebugHighlightIdConflictsShowItemPicker", (*imgui.IO).SetConfigDebugHighlightIdConflictsShowItemPicker, true)
+	engine.RegisterMethod("imgui.setConfigDebugBeginReturnValueOnce", "ImGui IO.SetConfigDebugBeginReturnValueOnce", (*imgui.IO).SetConfigDebugBeginReturnValueOnce, true)
+	engine.RegisterMethod("imgui.setConfigDebugBeginReturnValueLoop", "ImGui IO.SetConfigDebugBeginReturnValueLoop", (*imgui.IO).SetConfigDebugBeginReturnValueLoop, true)
+	engine.RegisterMethod("imgui.setConfigDebugIgnoreFocusLoss", "ImGui IO.SetConfigDebugIgnoreFocusLoss", (*imgui.IO).SetConfigDebugIgnoreFocusLoss, true)
+	engine.RegisterMethod("imgui.setConfigDebugIniSettings", "ImGui IO.SetConfigDebugIniSettings", (*imgui.IO).SetConfigDebugIniSettings, true)
+	engine.RegisterMethod("imgui.setBackendPlatformName", "ImGui IO.SetBackendPlatformName", (*imgui.IO).SetBackendPlatformName, true)
+	engine.RegisterMethod("imgui.setBackendRendererName", "ImGui IO.SetBackendRendererName", (*imgui.IO).SetBackendRendererName, true)
+	engine.RegisterMethod("imgui.setBackendPlatformUserData", "ImGui IO.SetBackendPlatformUserData", (*imgui.IO).SetBackendPlatformUserData, true)
+	engine.RegisterMethod("imgui.setBackendRendererUserData", "ImGui IO.SetBackendRendererUserData", (*imgui.IO).SetBackendRendererUserData, true)
+	engine.RegisterMethod("imgui.setBackendLanguageUserData", "ImGui IO.SetBackendLanguageUserData", (*imgui.IO).SetBackendLanguageUserData, true)
+	engine.RegisterMethod("imgui.setWantCaptureMouse", "ImGui IO.SetWantCaptureMouse", (*imgui.IO).SetWantCaptureMouse, true)
+	engine.RegisterMethod("imgui.setWantCaptureKeyboard", "ImGui IO.SetWantCaptureKeyboard", (*imgui.IO).SetWantCaptureKeyboard, true)
+	engine.RegisterMethod("imgui.setWantTextInput", "ImGui IO.SetWantTextInput", (*imgui.IO).SetWantTextInput, true)
+	engine.RegisterMethod("imgui.setWantSetMousePos", "ImGui IO.SetWantSetMousePos", (*imgui.IO).SetWantSetMousePos, true)
+	engine.RegisterMethod("imgui.setWantSaveIniSettings", "ImGui IO.SetWantSaveIniSettings", (*imgui.IO).SetWantSaveIniSettings, true)
+	engine.RegisterMethod("imgui.setNavActive", "ImGui IO.SetNavActive", (*imgui.IO).SetNavActive, true)
+	engine.RegisterMethod("imgui.setNavVisible", "ImGui IO.SetNavVisible", (*imgui.IO).SetNavVisible, true)
+	engine.RegisterMethod("imgui.setFramerate", "ImGui IO.SetFramerate", (*imgui.IO).SetFramerate, true)
+	engine.RegisterMethod("imgui.setMetricsRenderVertices", "ImGui IO.SetMetricsRenderVertices", (*imgui.IO).SetMetricsRenderVertices, true)
+	engine.RegisterMethod("imgui.setMetricsRenderIndices", "ImGui IO.SetMetricsRenderIndices", (*imgui.IO).SetMetricsRenderIndices, true)
+	engine.RegisterMethod("imgui.setMetricsRenderWindows", "ImGui IO.SetMetricsRenderWindows", (*imgui.IO).SetMetricsRenderWindows, true)
+	engine.RegisterMethod("imgui.setMetricsActiveWindows", "ImGui IO.SetMetricsActiveWindows", (*imgui.IO).SetMetricsActiveWindows, true)
+	engine.RegisterMethod("imgui.setMouseDelta", "ImGui IO.SetMouseDelta", (*imgui.IO).SetMouseDelta, true)
+	engine.RegisterMethod("imgui.setCtx", "ImGui IO.SetCtx", (*imgui.IO).SetCtx, true)
+	engine.RegisterMethod("imgui.setMousePos", "ImGui IO.SetMousePos", (*imgui.IO).SetMousePos, true)
+	engine.RegisterMethod("imgui.setMouseDown", "ImGui IO.SetMouseDown", (*imgui.IO).SetMouseDown, true)
+	engine.RegisterMethod("imgui.setMouseWheel", "ImGui IO.SetMouseWheel", (*imgui.IO).SetMouseWheel, true)
+	engine.RegisterMethod("imgui.setMouseWheelH", "ImGui IO.SetMouseWheelH", (*imgui.IO).SetMouseWheelH, true)
+	engine.RegisterMethod("imgui.setMouseSource", "ImGui IO.SetMouseSource", (*imgui.IO).SetMouseSource, true)
+	engine.RegisterMethod("imgui.setMouseHoveredViewport", "ImGui IO.SetMouseHoveredViewport", (*imgui.IO).SetMouseHoveredViewport, true)
+	engine.RegisterMethod("imgui.setKeyCtrl", "ImGui IO.SetKeyCtrl", (*imgui.IO).SetKeyCtrl, true)
+	engine.RegisterMethod("imgui.setKeyShift", "ImGui IO.SetKeyShift", (*imgui.IO).SetKeyShift, true)
+	engine.RegisterMethod("imgui.setKeyAlt", "ImGui IO.SetKeyAlt", (*imgui.IO).SetKeyAlt, true)
+	engine.RegisterMethod("imgui.setKeySuper", "ImGui IO.SetKeySuper", (*imgui.IO).SetKeySuper, true)
+	engine.RegisterMethod("imgui.setKeysData", "ImGui IO.SetKeysData", (*imgui.IO).SetKeysData, true)
+	engine.RegisterMethod("imgui.setWantCaptureMouseUnlessPopupClose", "ImGui IO.SetWantCaptureMouseUnlessPopupClose", (*imgui.IO).SetWantCaptureMouseUnlessPopupClose, true)
+	engine.RegisterMethod("imgui.setMousePosPrev", "ImGui IO.SetMousePosPrev", (*imgui.IO).SetMousePosPrev, true)
+	engine.RegisterMethod("imgui.setMouseClickedPos", "ImGui IO.SetMouseClickedPos", (*imgui.IO).SetMouseClickedPos, true)
+	engine.RegisterMethod("imgui.setMouseClickedTime", "ImGui IO.SetMouseClickedTime", (*imgui.IO).SetMouseClickedTime, true)
+	engine.RegisterMethod("imgui.setMouseClicked", "ImGui IO.SetMouseClicked", (*imgui.IO).SetMouseClicked, true)
+	engine.RegisterMethod("imgui.setMouseDoubleClicked", "ImGui IO.SetMouseDoubleClicked", (*imgui.IO).SetMouseDoubleClicked, true)
+	engine.RegisterMethod("imgui.setMouseClickedCount", "ImGui IO.SetMouseClickedCount", (*imgui.IO).SetMouseClickedCount, true)
+	engine.RegisterMethod("imgui.setMouseClickedLastCount", "ImGui IO.SetMouseClickedLastCount", (*imgui.IO).SetMouseClickedLastCount, true)
+	engine.RegisterMethod("imgui.setMouseReleased", "ImGui IO.SetMouseReleased", (*imgui.IO).SetMouseReleased, true)
+	engine.RegisterMethod("imgui.setMouseReleasedTime", "ImGui IO.SetMouseReleasedTime", (*imgui.IO).SetMouseReleasedTime, true)
+	engine.RegisterMethod("imgui.setMouseDownOwned", "ImGui IO.SetMouseDownOwned", (*imgui.IO).SetMouseDownOwned, true)
+	engine.RegisterMethod("imgui.setMouseDownOwnedUnlessPopupClose", "ImGui IO.SetMouseDownOwnedUnlessPopupClose", (*imgui.IO).SetMouseDownOwnedUnlessPopupClose, true)
+	engine.RegisterMethod("imgui.setMouseWheelRequestAxisSwap", "ImGui IO.SetMouseWheelRequestAxisSwap", (*imgui.IO).SetMouseWheelRequestAxisSwap, true)
+	engine.RegisterMethod("imgui.setMouseCtrlLeftAsRightClick", "ImGui IO.SetMouseCtrlLeftAsRightClick", (*imgui.IO).SetMouseCtrlLeftAsRightClick, true)
+	engine.RegisterMethod("imgui.setMouseDownDuration", "ImGui IO.SetMouseDownDuration", (*imgui.IO).SetMouseDownDuration, true)
+	engine.RegisterMethod("imgui.setMouseDownDurationPrev", "ImGui IO.SetMouseDownDurationPrev", (*imgui.IO).SetMouseDownDurationPrev, true)
+	engine.RegisterMethod("imgui.setMouseDragMaxDistanceAbs", "ImGui IO.SetMouseDragMaxDistanceAbs", (*imgui.IO).SetMouseDragMaxDistanceAbs, true)
+	engine.RegisterMethod("imgui.setMouseDragMaxDistanceSqr", "ImGui IO.SetMouseDragMaxDistanceSqr", (*imgui.IO).SetMouseDragMaxDistanceSqr, true)
+	engine.RegisterMethod("imgui.setPenPressure", "ImGui IO.SetPenPressure", (*imgui.IO).SetPenPressure, true)
+	engine.RegisterMethod("imgui.setAppFocusLost", "ImGui IO.SetAppFocusLost", (*imgui.IO).SetAppFocusLost, true)
+	engine.RegisterMethod("imgui.setInputQueueSurrogate", "ImGui IO.SetInputQueueSurrogate", (*imgui.IO).SetInputQueueSurrogate, true)
+	engine.RegisterMethod("imgui.setInputQueueCharacters", "ImGui IO.SetInputQueueCharacters", (*imgui.IO).SetInputQueueCharacters, true)
+	engine.RegisterMethod("imgui.configFlags", "ImGui IO.ConfigFlags", (*imgui.IO).ConfigFlags, true)
+	engine.RegisterMethod("imgui.backendFlags", "ImGui IO.BackendFlags", (*imgui.IO).BackendFlags, true)
+	engine.RegisterMethod("imgui.displayFramebufferScale", "ImGui IO.DisplayFramebufferScale", (*imgui.IO).DisplayFramebufferScale, true)
+	engine.RegisterMethod("imgui.deltaTime", "ImGui IO.DeltaTime", (*imgui.IO).DeltaTime, true)
+	engine.RegisterMethod("imgui.iniSavingRate", "ImGui IO.IniSavingRate", (*imgui.IO).IniSavingRate, true)
+	engine.RegisterMethod("imgui.iniFilename", "ImGui IO.IniFilename", (*imgui.IO).IniFilename, true)
+	engine.RegisterMethod("imgui.logFilename", "ImGui IO.LogFilename", (*imgui.IO).LogFilename, true)
+	engine.RegisterMethod("imgui.fontDefault", "ImGui IO.FontDefault", (*imgui.IO).FontDefault, true)
+	engine.RegisterMethod("imgui.fontAllowUserScaling", "ImGui IO.FontAllowUserScaling", (*imgui.IO).FontAllowUserScaling, true)
+	engine.RegisterMethod("imgui.configNavSwapGamepadButtons", "ImGui IO.ConfigNavSwapGamepadButtons", (*imgui.IO).ConfigNavSwapGamepadButtons, true)
+	engine.RegisterMethod("imgui.configNavMoveSetMousePos", "ImGui IO.ConfigNavMoveSetMousePos", (*imgui.IO).ConfigNavMoveSetMousePos, true)
+	engine.RegisterMethod("imgui.configNavCaptureKeyboard", "ImGui IO.ConfigNavCaptureKeyboard", (*imgui.IO).ConfigNavCaptureKeyboard, true)
+	engine.RegisterMethod("imgui.configNavEscapeClearFocusItem", "ImGui IO.ConfigNavEscapeClearFocusItem", (*imgui.IO).ConfigNavEscapeClearFocusItem, true)
+	engine.RegisterMethod("imgui.configNavEscapeClearFocusWindow", "ImGui IO.ConfigNavEscapeClearFocusWindow", (*imgui.IO).ConfigNavEscapeClearFocusWindow, true)
+	engine.RegisterMethod("imgui.configNavCursorVisibleAuto", "ImGui IO.ConfigNavCursorVisibleAuto", (*imgui.IO).ConfigNavCursorVisibleAuto, true)
+	engine.RegisterMethod("imgui.configNavCursorVisibleAlways", "ImGui IO.ConfigNavCursorVisibleAlways", (*imgui.IO).ConfigNavCursorVisibleAlways, true)
+	engine.RegisterMethod("imgui.configDockingNoSplit", "ImGui IO.ConfigDockingNoSplit", (*imgui.IO).ConfigDockingNoSplit, true)
+	engine.RegisterMethod("imgui.configDockingWithShift", "ImGui IO.ConfigDockingWithShift", (*imgui.IO).ConfigDockingWithShift, true)
+	engine.RegisterMethod("imgui.configDockingAlwaysTabBar", "ImGui IO.ConfigDockingAlwaysTabBar", (*imgui.IO).ConfigDockingAlwaysTabBar, true)
+	engine.RegisterMethod("imgui.configDockingTransparentPayload", "ImGui IO.ConfigDockingTransparentPayload", (*imgui.IO).ConfigDockingTransparentPayload, true)
+	engine.RegisterMethod("imgui.configViewportsNoAutoMerge", "ImGui IO.ConfigViewportsNoAutoMerge", (*imgui.IO).ConfigViewportsNoAutoMerge, true)
+	engine.RegisterMethod("imgui.configViewportsNoTaskBarIcon", "ImGui IO.ConfigViewportsNoTaskBarIcon", (*imgui.IO).ConfigViewportsNoTaskBarIcon, true)
+	engine.RegisterMethod("imgui.configViewportsNoDecoration", "ImGui IO.ConfigViewportsNoDecoration", (*imgui.IO).ConfigViewportsNoDecoration, true)
+	engine.RegisterMethod("imgui.configViewportsNoDefaultParent", "ImGui IO.ConfigViewportsNoDefaultParent", (*imgui.IO).ConfigViewportsNoDefaultParent, true)
+	engine.RegisterMethod("imgui.configViewportsPlatformFocusSetsImGuiFocus", "ImGui IO.ConfigViewportsPlatformFocusSetsImGuiFocus", (*imgui.IO).ConfigViewportsPlatformFocusSetsImGuiFocus, true)
+	engine.RegisterMethod("imgui.configDpiScaleFonts", "ImGui IO.ConfigDpiScaleFonts", (*imgui.IO).ConfigDpiScaleFonts, true)
+	engine.RegisterMethod("imgui.configDpiScaleViewports", "ImGui IO.ConfigDpiScaleViewports", (*imgui.IO).ConfigDpiScaleViewports, true)
+	engine.RegisterMethod("imgui.mouseDrawCursor", "ImGui IO.MouseDrawCursor", (*imgui.IO).MouseDrawCursor, true)
+	engine.RegisterMethod("imgui.configMacOSXBehaviors", "ImGui IO.ConfigMacOSXBehaviors", (*imgui.IO).ConfigMacOSXBehaviors, true)
+	engine.RegisterMethod("imgui.configInputTrickleEventQueue", "ImGui IO.ConfigInputTrickleEventQueue", (*imgui.IO).ConfigInputTrickleEventQueue, true)
+	engine.RegisterMethod("imgui.configInputTextCursorBlink", "ImGui IO.ConfigInputTextCursorBlink", (*imgui.IO).ConfigInputTextCursorBlink, true)
+	engine.RegisterMethod("imgui.configInputTextEnterKeepActive", "ImGui IO.ConfigInputTextEnterKeepActive", (*imgui.IO).ConfigInputTextEnterKeepActive, true)
+	engine.RegisterMethod("imgui.configDragClickToInputText", "ImGui IO.ConfigDragClickToInputText", (*imgui.IO).ConfigDragClickToInputText, true)
+	engine.RegisterMethod("imgui.configWindowsResizeFromEdges", "ImGui IO.ConfigWindowsResizeFromEdges", (*imgui.IO).ConfigWindowsResizeFromEdges, true)
+	engine.RegisterMethod("imgui.configWindowsMoveFromTitleBarOnly", "ImGui IO.ConfigWindowsMoveFromTitleBarOnly", (*imgui.IO).ConfigWindowsMoveFromTitleBarOnly, true)
+	engine.RegisterMethod("imgui.configWindowsCopyContentsWithCtrlC", "ImGui IO.ConfigWindowsCopyContentsWithCtrlC", (*imgui.IO).ConfigWindowsCopyContentsWithCtrlC, true)
+	engine.RegisterMethod("imgui.configScrollbarScrollByPage", "ImGui IO.ConfigScrollbarScrollByPage", (*imgui.IO).ConfigScrollbarScrollByPage, true)
+	engine.RegisterMethod("imgui.configMemoryCompactTimer", "ImGui IO.ConfigMemoryCompactTimer", (*imgui.IO).ConfigMemoryCompactTimer, true)
+	engine.RegisterMethod("imgui.mouseDoubleClickTime", "ImGui IO.MouseDoubleClickTime", (*imgui.IO).MouseDoubleClickTime, true)
+	engine.RegisterMethod("imgui.mouseDoubleClickMaxDist", "ImGui IO.MouseDoubleClickMaxDist", (*imgui.IO).MouseDoubleClickMaxDist, true)
+	engine.RegisterMethod("imgui.mouseDragThreshold", "ImGui IO.MouseDragThreshold", (*imgui.IO).MouseDragThreshold, true)
+	engine.RegisterMethod("imgui.keyRepeatDelay", "ImGui IO.KeyRepeatDelay", (*imgui.IO).KeyRepeatDelay, true)
+	engine.RegisterMethod("imgui.keyRepeatRate", "ImGui IO.KeyRepeatRate", (*imgui.IO).KeyRepeatRate, true)
+	engine.RegisterMethod("imgui.configErrorRecovery", "ImGui IO.ConfigErrorRecovery", (*imgui.IO).ConfigErrorRecovery, true)
+	engine.RegisterMethod("imgui.configErrorRecoveryEnableAssert", "ImGui IO.ConfigErrorRecoveryEnableAssert", (*imgui.IO).ConfigErrorRecoveryEnableAssert, true)
+	engine.RegisterMethod("imgui.configErrorRecoveryEnableDebugLog", "ImGui IO.ConfigErrorRecoveryEnableDebugLog", (*imgui.IO).ConfigErrorRecoveryEnableDebugLog, true)
+	engine.RegisterMethod("imgui.configErrorRecoveryEnableTooltip", "ImGui IO.ConfigErrorRecoveryEnableTooltip", (*imgui.IO).ConfigErrorRecoveryEnableTooltip, true)
+	engine.RegisterMethod("imgui.configDebugIsDebuggerPresent", "ImGui IO.ConfigDebugIsDebuggerPresent", (*imgui.IO).ConfigDebugIsDebuggerPresent, true)
+	engine.RegisterMethod("imgui.configDebugHighlightIdConflicts", "ImGui IO.ConfigDebugHighlightIdConflicts", (*imgui.IO).ConfigDebugHighlightIdConflicts, true)
+	engine.RegisterMethod("imgui.configDebugHighlightIdConflictsShowItemPicker", "ImGui IO.ConfigDebugHighlightIdConflictsShowItemPicker", (*imgui.IO).ConfigDebugHighlightIdConflictsShowItemPicker, true)
+	engine.RegisterMethod("imgui.configDebugBeginReturnValueOnce", "ImGui IO.ConfigDebugBeginReturnValueOnce", (*imgui.IO).ConfigDebugBeginReturnValueOnce, true)
+	engine.RegisterMethod("imgui.configDebugBeginReturnValueLoop", "ImGui IO.ConfigDebugBeginReturnValueLoop", (*imgui.IO).ConfigDebugBeginReturnValueLoop, true)
+	engine.RegisterMethod("imgui.configDebugIgnoreFocusLoss", "ImGui IO.ConfigDebugIgnoreFocusLoss", (*imgui.IO).ConfigDebugIgnoreFocusLoss, true)
+	engine.RegisterMethod("imgui.configDebugIniSettings", "ImGui IO.ConfigDebugIniSettings", (*imgui.IO).ConfigDebugIniSettings, true)
+	engine.RegisterMethod("imgui.backendPlatformName", "ImGui IO.BackendPlatformName", (*imgui.IO).BackendPlatformName, true)
+	engine.RegisterMethod("imgui.backendRendererName", "ImGui IO.BackendRendererName", (*imgui.IO).BackendRendererName, true)
+	engine.RegisterMethod("imgui.backendPlatformUserData", "ImGui IO.BackendPlatformUserData", (*imgui.IO).BackendPlatformUserData, true)
+	engine.RegisterMethod("imgui.backendRendererUserData", "ImGui IO.BackendRendererUserData", (*imgui.IO).BackendRendererUserData, true)
+	engine.RegisterMethod("imgui.backendLanguageUserData", "ImGui IO.BackendLanguageUserData", (*imgui.IO).BackendLanguageUserData, true)
+	engine.RegisterMethod("imgui.wantCaptureMouse", "ImGui IO.WantCaptureMouse", (*imgui.IO).WantCaptureMouse, true)
+	engine.RegisterMethod("imgui.wantCaptureKeyboard", "ImGui IO.WantCaptureKeyboard", (*imgui.IO).WantCaptureKeyboard, true)
+	engine.RegisterMethod("imgui.wantTextInput", "ImGui IO.WantTextInput", (*imgui.IO).WantTextInput, true)
+	engine.RegisterMethod("imgui.wantSetMousePos", "ImGui IO.WantSetMousePos", (*imgui.IO).WantSetMousePos, true)
+	engine.RegisterMethod("imgui.wantSaveIniSettings", "ImGui IO.WantSaveIniSettings", (*imgui.IO).WantSaveIniSettings, true)
+	engine.RegisterMethod("imgui.navActive", "ImGui IO.NavActive", (*imgui.IO).NavActive, true)
+	engine.RegisterMethod("imgui.navVisible", "ImGui IO.NavVisible", (*imgui.IO).NavVisible, true)
+	engine.RegisterMethod("imgui.framerate", "ImGui IO.Framerate", (*imgui.IO).Framerate, true)
+	engine.RegisterMethod("imgui.metricsRenderVertices", "ImGui IO.MetricsRenderVertices", (*imgui.IO).MetricsRenderVertices, true)
+	engine.RegisterMethod("imgui.metricsRenderIndices", "ImGui IO.MetricsRenderIndices", (*imgui.IO).MetricsRenderIndices, true)
+	engine.RegisterMethod("imgui.metricsRenderWindows", "ImGui IO.MetricsRenderWindows", (*imgui.IO).MetricsRenderWindows, true)
+	engine.RegisterMethod("imgui.metricsActiveWindows", "ImGui IO.MetricsActiveWindows", (*imgui.IO).MetricsActiveWindows, true)
+	engine.RegisterMethod("imgui.mouseDelta", "ImGui IO.MouseDelta", (*imgui.IO).MouseDelta, true)
+	engine.RegisterMethod("imgui.ctx", "ImGui IO.Ctx", (*imgui.IO).Ctx, true)
+	engine.RegisterMethod("imgui.mouseDown", "ImGui IO.MouseDown", (*imgui.IO).MouseDown, true)
+	engine.RegisterMethod("imgui.mouseWheel", "ImGui IO.MouseWheel", (*imgui.IO).MouseWheel, true)
+	engine.RegisterMethod("imgui.mouseWheelH", "ImGui IO.MouseWheelH", (*imgui.IO).MouseWheelH, true)
+	engine.RegisterMethod("imgui.mouseSource", "ImGui IO.MouseSource", (*imgui.IO).MouseSource, true)
+	engine.RegisterMethod("imgui.mouseHoveredViewport", "ImGui IO.MouseHoveredViewport", (*imgui.IO).MouseHoveredViewport, true)
+	engine.RegisterMethod("imgui.keyCtrl", "ImGui IO.KeyCtrl", (*imgui.IO).KeyCtrl, true)
+	engine.RegisterMethod("imgui.keyShift", "ImGui IO.KeyShift", (*imgui.IO).KeyShift, true)
+	engine.RegisterMethod("imgui.keyAlt", "ImGui IO.KeyAlt", (*imgui.IO).KeyAlt, true)
+	engine.RegisterMethod("imgui.keySuper", "ImGui IO.KeySuper", (*imgui.IO).KeySuper, true)
+	engine.RegisterMethod("imgui.keysData", "ImGui IO.KeysData", (*imgui.IO).KeysData, true)
+	engine.RegisterMethod("imgui.wantCaptureMouseUnlessPopupClose", "ImGui IO.WantCaptureMouseUnlessPopupClose", (*imgui.IO).WantCaptureMouseUnlessPopupClose, true)
+	engine.RegisterMethod("imgui.mousePosPrev", "ImGui IO.MousePosPrev", (*imgui.IO).MousePosPrev, true)
+	engine.RegisterMethod("imgui.mouseClickedPos", "ImGui IO.MouseClickedPos", (*imgui.IO).MouseClickedPos, true)
+	engine.RegisterMethod("imgui.mouseClickedTime", "ImGui IO.MouseClickedTime", (*imgui.IO).MouseClickedTime, true)
+	engine.RegisterMethod("imgui.mouseClicked", "ImGui IO.MouseClicked", (*imgui.IO).MouseClicked, true)
+	engine.RegisterMethod("imgui.mouseDoubleClicked", "ImGui IO.MouseDoubleClicked", (*imgui.IO).MouseDoubleClicked, true)
+	engine.RegisterMethod("imgui.mouseClickedLastCount", "ImGui IO.MouseClickedLastCount", (*imgui.IO).MouseClickedLastCount, true)
+	engine.RegisterMethod("imgui.mouseReleased", "ImGui IO.MouseReleased", (*imgui.IO).MouseReleased, true)
+	engine.RegisterMethod("imgui.mouseReleasedTime", "ImGui IO.MouseReleasedTime", (*imgui.IO).MouseReleasedTime, true)
+	engine.RegisterMethod("imgui.mouseDownOwned", "ImGui IO.MouseDownOwned", (*imgui.IO).MouseDownOwned, true)
+	engine.RegisterMethod("imgui.mouseDownOwnedUnlessPopupClose", "ImGui IO.MouseDownOwnedUnlessPopupClose", (*imgui.IO).MouseDownOwnedUnlessPopupClose, true)
+	engine.RegisterMethod("imgui.mouseWheelRequestAxisSwap", "ImGui IO.MouseWheelRequestAxisSwap", (*imgui.IO).MouseWheelRequestAxisSwap, true)
+	engine.RegisterMethod("imgui.mouseCtrlLeftAsRightClick", "ImGui IO.MouseCtrlLeftAsRightClick", (*imgui.IO).MouseCtrlLeftAsRightClick, true)
+	engine.RegisterMethod("imgui.mouseDownDuration", "ImGui IO.MouseDownDuration", (*imgui.IO).MouseDownDuration, true)
+	engine.RegisterMethod("imgui.mouseDownDurationPrev", "ImGui IO.MouseDownDurationPrev", (*imgui.IO).MouseDownDurationPrev, true)
+	engine.RegisterMethod("imgui.mouseDragMaxDistanceAbs", "ImGui IO.MouseDragMaxDistanceAbs", (*imgui.IO).MouseDragMaxDistanceAbs, true)
+	engine.RegisterMethod("imgui.mouseDragMaxDistanceSqr", "ImGui IO.MouseDragMaxDistanceSqr", (*imgui.IO).MouseDragMaxDistanceSqr, true)
+	engine.RegisterMethod("imgui.penPressure", "ImGui IO.PenPressure", (*imgui.IO).PenPressure, true)
+	engine.RegisterMethod("imgui.appFocusLost", "ImGui IO.AppFocusLost", (*imgui.IO).AppFocusLost, true)
+	engine.RegisterMethod("imgui.appAcceptingEvents", "ImGui IO.AppAcceptingEvents", (*imgui.IO).AppAcceptingEvents, true)
+	engine.RegisterMethod("imgui.inputQueueSurrogate", "ImGui IO.InputQueueSurrogate", (*imgui.IO).InputQueueSurrogate, true)
+	engine.RegisterMethod("imgui.inputQueueCharacters", "ImGui IO.InputQueueCharacters", (*imgui.IO).InputQueueCharacters, true)
+	engine.RegisterMethod("imgui.setMouseButtonDown", "ImGui IO.SetMouseButtonDown", (*imgui.IO).SetMouseButtonDown, true)
+	engine.RegisterMethod("imgui.addMouseWheelDelta", "ImGui IO.AddMouseWheelDelta", (*imgui.IO).AddMouseWheelDelta, true)
+	engine.RegisterMethod("imgui.setSource", "ImGui InputEvent.SetSource", (*imgui.InputEvent).SetSource, true)
+	engine.RegisterMethod("imgui.setEventId", "ImGui InputEvent.SetEventId", (*imgui.InputEvent).SetEventId, true)
+	engine.RegisterMethod("imgui.setAddedByTestEngine", "ImGui InputEvent.SetAddedByTestEngine", (*imgui.InputEvent).SetAddedByTestEngine, true)
+	engine.RegisterMethod("imgui.source", "ImGui InputEvent.Source", (*imgui.InputEvent).Source, true)
+	engine.RegisterMethod("imgui.eventId", "ImGui InputEvent.EventId", (*imgui.InputEvent).EventId, true)
+	engine.RegisterMethod("imgui.addedByTestEngine", "ImGui InputEvent.AddedByTestEngine", (*imgui.InputEvent).AddedByTestEngine, true)
+	engine.RegisterMethod("imgui.clearSelection", "ImGui InputTextCallbackData.ClearSelection", (*imgui.InputTextCallbackData).ClearSelection, true)
+	engine.RegisterMethod("imgui.deleteChars", "ImGui InputTextCallbackData.DeleteChars", (*imgui.InputTextCallbackData).DeleteChars, true)
+	engine.RegisterMethod("imgui.hasSelection", "ImGui InputTextCallbackData.HasSelection", (*imgui.InputTextCallbackData).HasSelection, true)
+	engine.RegisterMethod("imgui.insertCharsV", "ImGui InputTextCallbackData.InsertCharsV", (*imgui.InputTextCallbackData).InsertCharsV, true)
+	engine.RegisterMethod("imgui.selectAll", "ImGui InputTextCallbackData.SelectAll", (*imgui.InputTextCallbackData).SelectAll, true)
+	engine.RegisterMethod("imgui.insertChars", "ImGui InputTextCallbackData.InsertChars", (*imgui.InputTextCallbackData).InsertChars, true)
+	engine.RegisterMethod("imgui.setEventFlag", "ImGui InputTextCallbackData.SetEventFlag", (*imgui.InputTextCallbackData).SetEventFlag, true)
+	engine.RegisterMethod("imgui.setEventChar", "ImGui InputTextCallbackData.SetEventChar", (*imgui.InputTextCallbackData).SetEventChar, true)
+	engine.RegisterMethod("imgui.setEventKey", "ImGui InputTextCallbackData.SetEventKey", (*imgui.InputTextCallbackData).SetEventKey, true)
+	engine.RegisterMethod("imgui.setBuf", "ImGui InputTextCallbackData.SetBuf", (*imgui.InputTextCallbackData).SetBuf, true)
+	engine.RegisterMethod("imgui.setBufTextLen", "ImGui InputTextCallbackData.SetBufTextLen", (*imgui.InputTextCallbackData).SetBufTextLen, true)
+	engine.RegisterMethod("imgui.setBufSize", "ImGui InputTextCallbackData.SetBufSize", (*imgui.InputTextCallbackData).SetBufSize, true)
+	engine.RegisterMethod("imgui.setBufDirty", "ImGui InputTextCallbackData.SetBufDirty", (*imgui.InputTextCallbackData).SetBufDirty, true)
+	engine.RegisterMethod("imgui.setSelectionStart", "ImGui InputTextCallbackData.SetSelectionStart", (*imgui.InputTextCallbackData).SetSelectionStart, true)
+	engine.RegisterMethod("imgui.setSelectionEnd", "ImGui InputTextCallbackData.SetSelectionEnd", (*imgui.InputTextCallbackData).SetSelectionEnd, true)
+	engine.RegisterMethod("imgui.eventFlag", "ImGui InputTextCallbackData.EventFlag", (*imgui.InputTextCallbackData).EventFlag, true)
+	engine.RegisterMethod("imgui.eventChar", "ImGui InputTextCallbackData.EventChar", (*imgui.InputTextCallbackData).EventChar, true)
+	engine.RegisterMethod("imgui.eventKey", "ImGui InputTextCallbackData.EventKey", (*imgui.InputTextCallbackData).EventKey, true)
+	engine.RegisterMethod("imgui.buf", "ImGui InputTextCallbackData.Buf", (*imgui.InputTextCallbackData).Buf, true)
+	engine.RegisterMethod("imgui.bufTextLen", "ImGui InputTextCallbackData.BufTextLen", (*imgui.InputTextCallbackData).BufTextLen, true)
+	engine.RegisterMethod("imgui.bufSize", "ImGui InputTextCallbackData.BufSize", (*imgui.InputTextCallbackData).BufSize, true)
+	engine.RegisterMethod("imgui.bufDirty", "ImGui InputTextCallbackData.BufDirty", (*imgui.InputTextCallbackData).BufDirty, true)
+	engine.RegisterMethod("imgui.selectionStart", "ImGui InputTextCallbackData.SelectionStart", (*imgui.InputTextCallbackData).SelectionStart, true)
+	engine.RegisterMethod("imgui.selectionEnd", "ImGui InputTextCallbackData.SelectionEnd", (*imgui.InputTextCallbackData).SelectionEnd, true)
+	engine.RegisterMethod("imgui.internalClearFreeMemory", "ImGui InputTextDeactivatedState.InternalClearFreeMemory", (*imgui.InputTextDeactivatedState).InternalClearFreeMemory, true)
+	engine.RegisterMethod("imgui.setTextA", "ImGui InputTextDeactivatedState.SetTextA", (*imgui.InputTextDeactivatedState).SetTextA, true)
+	engine.RegisterMethod("imgui.textA", "ImGui InputTextDeactivatedState.TextA", (*imgui.InputTextDeactivatedState).TextA, true)
+	engine.RegisterMethod("imgui.internalClearSelection", "ImGui InputTextState.InternalClearSelection", (*imgui.InputTextState).InternalClearSelection, true)
+	engine.RegisterMethod("imgui.internalClearText", "ImGui InputTextState.InternalClearText", (*imgui.InputTextState).InternalClearText, true)
+	engine.RegisterMethod("imgui.internalCursorAnimReset", "ImGui InputTextState.InternalCursorAnimReset", (*imgui.InputTextState).InternalCursorAnimReset, true)
+	engine.RegisterMethod("imgui.internalCursorClamp", "ImGui InputTextState.InternalCursorClamp", (*imgui.InputTextState).InternalCursorClamp, true)
+	engine.RegisterMethod("imgui.internalCursorPos", "ImGui InputTextState.InternalCursorPos", (*imgui.InputTextState).InternalCursorPos, true)
+	engine.RegisterMethod("imgui.internalPreferredOffsetX", "ImGui InputTextState.InternalPreferredOffsetX", (*imgui.InputTextState).InternalPreferredOffsetX, true)
+	engine.RegisterMethod("imgui.internalSelectionEnd", "ImGui InputTextState.InternalSelectionEnd", (*imgui.InputTextState).InternalSelectionEnd, true)
+	engine.RegisterMethod("imgui.internalSelectionStart", "ImGui InputTextState.InternalSelectionStart", (*imgui.InputTextState).InternalSelectionStart, true)
+	engine.RegisterMethod("imgui.internalHasSelection", "ImGui InputTextState.InternalHasSelection", (*imgui.InputTextState).InternalHasSelection, true)
+	engine.RegisterMethod("imgui.internalOnCharPressed", "ImGui InputTextState.InternalOnCharPressed", (*imgui.InputTextState).InternalOnCharPressed, true)
+	engine.RegisterMethod("imgui.internalOnKeyPressed", "ImGui InputTextState.InternalOnKeyPressed", (*imgui.InputTextState).InternalOnKeyPressed, true)
+	engine.RegisterMethod("imgui.internalReloadUserBufAndKeepSelection", "ImGui InputTextState.InternalReloadUserBufAndKeepSelection", (*imgui.InputTextState).InternalReloadUserBufAndKeepSelection, true)
+	engine.RegisterMethod("imgui.internalReloadUserBufAndMoveToEnd", "ImGui InputTextState.InternalReloadUserBufAndMoveToEnd", (*imgui.InputTextState).InternalReloadUserBufAndMoveToEnd, true)
+	engine.RegisterMethod("imgui.internalReloadUserBufAndSelectAll", "ImGui InputTextState.InternalReloadUserBufAndSelectAll", (*imgui.InputTextState).InternalReloadUserBufAndSelectAll, true)
+	engine.RegisterMethod("imgui.internalSelectAll", "ImGui InputTextState.InternalSelectAll", (*imgui.InputTextState).InternalSelectAll, true)
+	engine.RegisterMethod("imgui.setTextLen", "ImGui InputTextState.SetTextLen", (*imgui.InputTextState).SetTextLen, true)
+	engine.RegisterMethod("imgui.setTextSrc", "ImGui InputTextState.SetTextSrc", (*imgui.InputTextState).SetTextSrc, true)
+	engine.RegisterMethod("imgui.setTextToRevertTo", "ImGui InputTextState.SetTextToRevertTo", (*imgui.InputTextState).SetTextToRevertTo, true)
+	engine.RegisterMethod("imgui.setCallbackTextBackup", "ImGui InputTextState.SetCallbackTextBackup", (*imgui.InputTextState).SetCallbackTextBackup, true)
+	engine.RegisterMethod("imgui.setBufCapacity", "ImGui InputTextState.SetBufCapacity", (*imgui.InputTextState).SetBufCapacity, true)
+	engine.RegisterMethod("imgui.setScroll", "ImGui InputTextState.SetScroll", (*imgui.InputTextState).SetScroll, true)
+	engine.RegisterMethod("imgui.setLineCount", "ImGui InputTextState.SetLineCount", (*imgui.InputTextState).SetLineCount, true)
+	engine.RegisterMethod("imgui.setWrapWidth", "ImGui InputTextState.SetWrapWidth", (*imgui.InputTextState).SetWrapWidth, true)
+	engine.RegisterMethod("imgui.setCursorAnim", "ImGui InputTextState.SetCursorAnim", (*imgui.InputTextState).SetCursorAnim, true)
+	engine.RegisterMethod("imgui.setCursorFollow", "ImGui InputTextState.SetCursorFollow", (*imgui.InputTextState).SetCursorFollow, true)
+	engine.RegisterMethod("imgui.setCursorCenterY", "ImGui InputTextState.SetCursorCenterY", (*imgui.InputTextState).SetCursorCenterY, true)
+	engine.RegisterMethod("imgui.setSelectedAllMouseLock", "ImGui InputTextState.SetSelectedAllMouseLock", (*imgui.InputTextState).SetSelectedAllMouseLock, true)
+	engine.RegisterMethod("imgui.setEdited", "ImGui InputTextState.SetEdited", (*imgui.InputTextState).SetEdited, true)
+	engine.RegisterMethod("imgui.setWantReloadUserBuf", "ImGui InputTextState.SetWantReloadUserBuf", (*imgui.InputTextState).SetWantReloadUserBuf, true)
+	engine.RegisterMethod("imgui.setLastMoveDirectionLR", "ImGui InputTextState.SetLastMoveDirectionLR", (*imgui.InputTextState).SetLastMoveDirectionLR, true)
+	engine.RegisterMethod("imgui.setReloadSelectionStart", "ImGui InputTextState.SetReloadSelectionStart", (*imgui.InputTextState).SetReloadSelectionStart, true)
+	engine.RegisterMethod("imgui.setReloadSelectionEnd", "ImGui InputTextState.SetReloadSelectionEnd", (*imgui.InputTextState).SetReloadSelectionEnd, true)
+	engine.RegisterMethod("imgui.textLen", "ImGui InputTextState.TextLen", (*imgui.InputTextState).TextLen, true)
+	engine.RegisterMethod("imgui.textSrc", "ImGui InputTextState.TextSrc", (*imgui.InputTextState).TextSrc, true)
+	engine.RegisterMethod("imgui.textToRevertTo", "ImGui InputTextState.TextToRevertTo", (*imgui.InputTextState).TextToRevertTo, true)
+	engine.RegisterMethod("imgui.callbackTextBackup", "ImGui InputTextState.CallbackTextBackup", (*imgui.InputTextState).CallbackTextBackup, true)
+	engine.RegisterMethod("imgui.bufCapacity", "ImGui InputTextState.BufCapacity", (*imgui.InputTextState).BufCapacity, true)
+	engine.RegisterMethod("imgui.scroll", "ImGui InputTextState.Scroll", (*imgui.InputTextState).Scroll, true)
+	engine.RegisterMethod("imgui.lineCount", "ImGui InputTextState.LineCount", (*imgui.InputTextState).LineCount, true)
+	engine.RegisterMethod("imgui.wrapWidth", "ImGui InputTextState.WrapWidth", (*imgui.InputTextState).WrapWidth, true)
+	engine.RegisterMethod("imgui.cursorAnim", "ImGui InputTextState.CursorAnim", (*imgui.InputTextState).CursorAnim, true)
+	engine.RegisterMethod("imgui.cursorFollow", "ImGui InputTextState.CursorFollow", (*imgui.InputTextState).CursorFollow, true)
+	engine.RegisterMethod("imgui.cursorCenterY", "ImGui InputTextState.CursorCenterY", (*imgui.InputTextState).CursorCenterY, true)
+	engine.RegisterMethod("imgui.selectedAllMouseLock", "ImGui InputTextState.SelectedAllMouseLock", (*imgui.InputTextState).SelectedAllMouseLock, true)
+	engine.RegisterMethod("imgui.edited", "ImGui InputTextState.Edited", (*imgui.InputTextState).Edited, true)
+	engine.RegisterMethod("imgui.wantReloadUserBuf", "ImGui InputTextState.WantReloadUserBuf", (*imgui.InputTextState).WantReloadUserBuf, true)
+	engine.RegisterMethod("imgui.lastMoveDirectionLR", "ImGui InputTextState.LastMoveDirectionLR", (*imgui.InputTextState).LastMoveDirectionLR, true)
+	engine.RegisterMethod("imgui.reloadSelectionStart", "ImGui InputTextState.ReloadSelectionStart", (*imgui.InputTextState).ReloadSelectionStart, true)
+	engine.RegisterMethod("imgui.reloadSelectionEnd", "ImGui InputTextState.ReloadSelectionEnd", (*imgui.InputTextState).ReloadSelectionEnd, true)
+	engine.RegisterMethod("imgui.setOwnerCurr", "ImGui KeyOwnerData.SetOwnerCurr", (*imgui.KeyOwnerData).SetOwnerCurr, true)
+	engine.RegisterMethod("imgui.setOwnerNext", "ImGui KeyOwnerData.SetOwnerNext", (*imgui.KeyOwnerData).SetOwnerNext, true)
+	engine.RegisterMethod("imgui.setLockThisFrame", "ImGui KeyOwnerData.SetLockThisFrame", (*imgui.KeyOwnerData).SetLockThisFrame, true)
+	engine.RegisterMethod("imgui.setLockUntilRelease", "ImGui KeyOwnerData.SetLockUntilRelease", (*imgui.KeyOwnerData).SetLockUntilRelease, true)
+	engine.RegisterMethod("imgui.ownerCurr", "ImGui KeyOwnerData.OwnerCurr", (*imgui.KeyOwnerData).OwnerCurr, true)
+	engine.RegisterMethod("imgui.ownerNext", "ImGui KeyOwnerData.OwnerNext", (*imgui.KeyOwnerData).OwnerNext, true)
+	engine.RegisterMethod("imgui.lockThisFrame", "ImGui KeyOwnerData.LockThisFrame", (*imgui.KeyOwnerData).LockThisFrame, true)
+	engine.RegisterMethod("imgui.lockUntilRelease", "ImGui KeyOwnerData.LockUntilRelease", (*imgui.KeyOwnerData).LockUntilRelease, true)
+	engine.RegisterMethod("imgui.setNextEntryIndex", "ImGui KeyRoutingData.SetNextEntryIndex", (*imgui.KeyRoutingData).SetNextEntryIndex, true)
+	engine.RegisterMethod("imgui.setMods", "ImGui KeyRoutingData.SetMods", (*imgui.KeyRoutingData).SetMods, true)
+	engine.RegisterMethod("imgui.setRoutingCurrScore", "ImGui KeyRoutingData.SetRoutingCurrScore", (*imgui.KeyRoutingData).SetRoutingCurrScore, true)
+	engine.RegisterMethod("imgui.setRoutingNextScore", "ImGui KeyRoutingData.SetRoutingNextScore", (*imgui.KeyRoutingData).SetRoutingNextScore, true)
+	engine.RegisterMethod("imgui.setRoutingCurr", "ImGui KeyRoutingData.SetRoutingCurr", (*imgui.KeyRoutingData).SetRoutingCurr, true)
+	engine.RegisterMethod("imgui.setRoutingNext", "ImGui KeyRoutingData.SetRoutingNext", (*imgui.KeyRoutingData).SetRoutingNext, true)
+	engine.RegisterMethod("imgui.nextEntryIndex", "ImGui KeyRoutingData.NextEntryIndex", (*imgui.KeyRoutingData).NextEntryIndex, true)
+	engine.RegisterMethod("imgui.mods", "ImGui KeyRoutingData.Mods", (*imgui.KeyRoutingData).Mods, true)
+	engine.RegisterMethod("imgui.routingCurrScore", "ImGui KeyRoutingData.RoutingCurrScore", (*imgui.KeyRoutingData).RoutingCurrScore, true)
+	engine.RegisterMethod("imgui.routingNextScore", "ImGui KeyRoutingData.RoutingNextScore", (*imgui.KeyRoutingData).RoutingNextScore, true)
+	engine.RegisterMethod("imgui.routingCurr", "ImGui KeyRoutingData.RoutingCurr", (*imgui.KeyRoutingData).RoutingCurr, true)
+	engine.RegisterMethod("imgui.routingNext", "ImGui KeyRoutingData.RoutingNext", (*imgui.KeyRoutingData).RoutingNext, true)
+	engine.RegisterMethod("imgui.setIndex", "ImGui KeyRoutingTable.SetIndex", (*imgui.KeyRoutingTable).SetIndex, true)
+	engine.RegisterMethod("imgui.setEntries", "ImGui KeyRoutingTable.SetEntries", (*imgui.KeyRoutingTable).SetEntries, true)
+	engine.RegisterMethod("imgui.setEntriesNext", "ImGui KeyRoutingTable.SetEntriesNext", (*imgui.KeyRoutingTable).SetEntriesNext, true)
+	engine.RegisterMethod("imgui.index", "ImGui KeyRoutingTable.Index", (*imgui.KeyRoutingTable).Index, true)
+	engine.RegisterMethod("imgui.entries", "ImGui KeyRoutingTable.Entries", (*imgui.KeyRoutingTable).Entries, true)
+	engine.RegisterMethod("imgui.entriesNext", "ImGui KeyRoutingTable.EntriesNext", (*imgui.KeyRoutingTable).EntriesNext, true)
+	engine.RegisterMethod("imgui.setItemFlags", "ImGui LastItemData.SetItemFlags", (*imgui.LastItemData).SetItemFlags, true)
+	engine.RegisterMethod("imgui.setStatusFlags", "ImGui LastItemData.SetStatusFlags", (*imgui.LastItemData).SetStatusFlags, true)
+	engine.RegisterMethod("imgui.setRect", "ImGui LastItemData.SetRect", (*imgui.LastItemData).SetRect, true)
+	engine.RegisterMethod("imgui.setNavRect", "ImGui LastItemData.SetNavRect", (*imgui.LastItemData).SetNavRect, true)
+	engine.RegisterMethod("imgui.setDisplayRect", "ImGui LastItemData.SetDisplayRect", (*imgui.LastItemData).SetDisplayRect, true)
+	engine.RegisterMethod("imgui.setShortcut", "ImGui LastItemData.SetShortcut", (*imgui.LastItemData).SetShortcut, true)
+	engine.RegisterMethod("imgui.itemFlags", "ImGui LastItemData.ItemFlags", (*imgui.LastItemData).ItemFlags, true)
+	engine.RegisterMethod("imgui.statusFlags", "ImGui LastItemData.StatusFlags", (*imgui.LastItemData).StatusFlags, true)
+	engine.RegisterMethod("imgui.rect", "ImGui LastItemData.Rect", (*imgui.LastItemData).Rect, true)
+	engine.RegisterMethod("imgui.navRect", "ImGui LastItemData.NavRect", (*imgui.LastItemData).NavRect, true)
+	engine.RegisterMethod("imgui.displayRect", "ImGui LastItemData.DisplayRect", (*imgui.LastItemData).DisplayRect, true)
+	engine.RegisterMethod("imgui.internalReset", "ImGui ListClipperData.InternalReset", (*imgui.ListClipperData).InternalReset, true)
+	engine.RegisterMethod("imgui.setListClipper", "ImGui ListClipperData.SetListClipper", (*imgui.ListClipperData).SetListClipper, true)
+	engine.RegisterMethod("imgui.setLossynessOffset", "ImGui ListClipperData.SetLossynessOffset", (*imgui.ListClipperData).SetLossynessOffset, true)
+	engine.RegisterMethod("imgui.setStepNo", "ImGui ListClipperData.SetStepNo", (*imgui.ListClipperData).SetStepNo, true)
+	engine.RegisterMethod("imgui.setItemsFrozen", "ImGui ListClipperData.SetItemsFrozen", (*imgui.ListClipperData).SetItemsFrozen, true)
+	engine.RegisterMethod("imgui.setRanges", "ImGui ListClipperData.SetRanges", (*imgui.ListClipperData).SetRanges, true)
+	engine.RegisterMethod("imgui.listClipper", "ImGui ListClipperData.ListClipper", (*imgui.ListClipperData).ListClipper, true)
+	engine.RegisterMethod("imgui.lossynessOffset", "ImGui ListClipperData.LossynessOffset", (*imgui.ListClipperData).LossynessOffset, true)
+	engine.RegisterMethod("imgui.stepNo", "ImGui ListClipperData.StepNo", (*imgui.ListClipperData).StepNo, true)
+	engine.RegisterMethod("imgui.itemsFrozen", "ImGui ListClipperData.ItemsFrozen", (*imgui.ListClipperData).ItemsFrozen, true)
+	engine.RegisterMethod("imgui.ranges", "ImGui ListClipperData.Ranges", (*imgui.ListClipperData).Ranges, true)
+	engine.RegisterMethod("imgui.includeItemByIndex", "ImGui ListClipper.IncludeItemByIndex", (*imgui.ListClipper).IncludeItemByIndex, true)
+	engine.RegisterMethod("imgui.includeItemsByIndex", "ImGui ListClipper.IncludeItemsByIndex", (*imgui.ListClipper).IncludeItemsByIndex, true)
+	engine.RegisterMethod("imgui.seekCursorForItem", "ImGui ListClipper.SeekCursorForItem", (*imgui.ListClipper).SeekCursorForItem, true)
+	engine.RegisterMethod("imgui.step", "ImGui ListClipper.Step", (*imgui.ListClipper).Step, true)
+	engine.RegisterMethod("imgui.setDisplayStart", "ImGui ListClipper.SetDisplayStart", (*imgui.ListClipper).SetDisplayStart, true)
+	engine.RegisterMethod("imgui.setDisplayEnd", "ImGui ListClipper.SetDisplayEnd", (*imgui.ListClipper).SetDisplayEnd, true)
+	engine.RegisterMethod("imgui.setItemsCount", "ImGui ListClipper.SetItemsCount", (*imgui.ListClipper).SetItemsCount, true)
+	engine.RegisterMethod("imgui.setItemsHeight", "ImGui ListClipper.SetItemsHeight", (*imgui.ListClipper).SetItemsHeight, true)
+	engine.RegisterMethod("imgui.setStartPosY", "ImGui ListClipper.SetStartPosY", (*imgui.ListClipper).SetStartPosY, true)
+	engine.RegisterMethod("imgui.setStartSeekOffsetY", "ImGui ListClipper.SetStartSeekOffsetY", (*imgui.ListClipper).SetStartSeekOffsetY, true)
+	engine.RegisterMethod("imgui.setTempData", "ImGui ListClipper.SetTempData", (*imgui.ListClipper).SetTempData, true)
+	engine.RegisterMethod("imgui.displayStart", "ImGui ListClipper.DisplayStart", (*imgui.ListClipper).DisplayStart, true)
+	engine.RegisterMethod("imgui.displayEnd", "ImGui ListClipper.DisplayEnd", (*imgui.ListClipper).DisplayEnd, true)
+	engine.RegisterMethod("imgui.itemsCount", "ImGui ListClipper.ItemsCount", (*imgui.ListClipper).ItemsCount, true)
+	engine.RegisterMethod("imgui.itemsHeight", "ImGui ListClipper.ItemsHeight", (*imgui.ListClipper).ItemsHeight, true)
+	engine.RegisterMethod("imgui.startPosY", "ImGui ListClipper.StartPosY", (*imgui.ListClipper).StartPosY, true)
+	engine.RegisterMethod("imgui.startSeekOffsetY", "ImGui ListClipper.StartSeekOffsetY", (*imgui.ListClipper).StartSeekOffsetY, true)
+	engine.RegisterMethod("imgui.tempData", "ImGui ListClipper.TempData", (*imgui.ListClipper).TempData, true)
+	engine.RegisterMethod("imgui.internalCalcNextTotalWidth", "ImGui MenuColumns.InternalCalcNextTotalWidth", (*imgui.MenuColumns).InternalCalcNextTotalWidth, true)
+	engine.RegisterMethod("imgui.internalDeclColumns", "ImGui MenuColumns.InternalDeclColumns", (*imgui.MenuColumns).InternalDeclColumns, true)
+	engine.RegisterMethod("imgui.internalUpdate", "ImGui MenuColumns.InternalUpdate", (*imgui.MenuColumns).InternalUpdate, true)
+	engine.RegisterMethod("imgui.setTotalWidth", "ImGui MenuColumns.SetTotalWidth", (*imgui.MenuColumns).SetTotalWidth, true)
+	engine.RegisterMethod("imgui.setNextTotalWidth", "ImGui MenuColumns.SetNextTotalWidth", (*imgui.MenuColumns).SetNextTotalWidth, true)
+	engine.RegisterMethod("imgui.setSpacing", "ImGui MenuColumns.SetSpacing", (*imgui.MenuColumns).SetSpacing, true)
+	engine.RegisterMethod("imgui.setOffsetIcon", "ImGui MenuColumns.SetOffsetIcon", (*imgui.MenuColumns).SetOffsetIcon, true)
+	engine.RegisterMethod("imgui.setOffsetLabel", "ImGui MenuColumns.SetOffsetLabel", (*imgui.MenuColumns).SetOffsetLabel, true)
+	engine.RegisterMethod("imgui.setOffsetShortcut", "ImGui MenuColumns.SetOffsetShortcut", (*imgui.MenuColumns).SetOffsetShortcut, true)
+	engine.RegisterMethod("imgui.setOffsetMark", "ImGui MenuColumns.SetOffsetMark", (*imgui.MenuColumns).SetOffsetMark, true)
+	engine.RegisterMethod("imgui.setWidths", "ImGui MenuColumns.SetWidths", (*imgui.MenuColumns).SetWidths, true)
+	engine.RegisterMethod("imgui.totalWidth", "ImGui MenuColumns.TotalWidth", (*imgui.MenuColumns).TotalWidth, true)
+	engine.RegisterMethod("imgui.nextTotalWidth", "ImGui MenuColumns.NextTotalWidth", (*imgui.MenuColumns).NextTotalWidth, true)
+	engine.RegisterMethod("imgui.offsetIcon", "ImGui MenuColumns.OffsetIcon", (*imgui.MenuColumns).OffsetIcon, true)
+	engine.RegisterMethod("imgui.offsetLabel", "ImGui MenuColumns.OffsetLabel", (*imgui.MenuColumns).OffsetLabel, true)
+	engine.RegisterMethod("imgui.offsetShortcut", "ImGui MenuColumns.OffsetShortcut", (*imgui.MenuColumns).OffsetShortcut, true)
+	engine.RegisterMethod("imgui.offsetMark", "ImGui MenuColumns.OffsetMark", (*imgui.MenuColumns).OffsetMark, true)
+	engine.RegisterMethod("imgui.widths", "ImGui MenuColumns.Widths", (*imgui.MenuColumns).Widths, true)
+	engine.RegisterMethod("imgui.setLastSelectionSize", "ImGui MultiSelectState.SetLastSelectionSize", (*imgui.MultiSelectState).SetLastSelectionSize, true)
+	engine.RegisterMethod("imgui.setRangeSelected", "ImGui MultiSelectState.SetRangeSelected", (*imgui.MultiSelectState).SetRangeSelected, true)
+	engine.RegisterMethod("imgui.setNavIdSelected", "ImGui MultiSelectState.SetNavIdSelected", (*imgui.MultiSelectState).SetNavIdSelected, true)
+	engine.RegisterMethod("imgui.setRangeSrcItem", "ImGui MultiSelectState.SetRangeSrcItem", (*imgui.MultiSelectState).SetRangeSrcItem, true)
+	engine.RegisterMethod("imgui.setNavIdItem", "ImGui MultiSelectState.SetNavIdItem", (*imgui.MultiSelectState).SetNavIdItem, true)
+	engine.RegisterMethod("imgui.lastSelectionSize", "ImGui MultiSelectState.LastSelectionSize", (*imgui.MultiSelectState).LastSelectionSize, true)
+	engine.RegisterMethod("imgui.rangeSelected", "ImGui MultiSelectState.RangeSelected", (*imgui.MultiSelectState).RangeSelected, true)
+	engine.RegisterMethod("imgui.navIdSelected", "ImGui MultiSelectState.NavIdSelected", (*imgui.MultiSelectState).NavIdSelected, true)
+	engine.RegisterMethod("imgui.rangeSrcItem", "ImGui MultiSelectState.RangeSrcItem", (*imgui.MultiSelectState).RangeSrcItem, true)
+	engine.RegisterMethod("imgui.navIdItem", "ImGui MultiSelectState.NavIdItem", (*imgui.MultiSelectState).NavIdItem, true)
+	engine.RegisterMethod("imgui.internalClearIO", "ImGui MultiSelectTempData.InternalClearIO", (*imgui.MultiSelectTempData).InternalClearIO, true)
+	engine.RegisterMethod("imgui.setFocusScopeId", "ImGui MultiSelectTempData.SetFocusScopeId", (*imgui.MultiSelectTempData).SetFocusScopeId, true)
+	engine.RegisterMethod("imgui.setScopeRectMin", "ImGui MultiSelectTempData.SetScopeRectMin", (*imgui.MultiSelectTempData).SetScopeRectMin, true)
+	engine.RegisterMethod("imgui.setLastSubmittedItem", "ImGui MultiSelectTempData.SetLastSubmittedItem", (*imgui.MultiSelectTempData).SetLastSubmittedItem, true)
+	engine.RegisterMethod("imgui.setBoxSelectId", "ImGui MultiSelectTempData.SetBoxSelectId", (*imgui.MultiSelectTempData).SetBoxSelectId, true)
+	engine.RegisterMethod("imgui.setLoopRequestSetAll", "ImGui MultiSelectTempData.SetLoopRequestSetAll", (*imgui.MultiSelectTempData).SetLoopRequestSetAll, true)
+	engine.RegisterMethod("imgui.setIsEndIO", "ImGui MultiSelectTempData.SetIsEndIO", (*imgui.MultiSelectTempData).SetIsEndIO, true)
+	engine.RegisterMethod("imgui.setIsKeyboardSetRange", "ImGui MultiSelectTempData.SetIsKeyboardSetRange", (*imgui.MultiSelectTempData).SetIsKeyboardSetRange, true)
+	engine.RegisterMethod("imgui.setNavIdPassedBy", "ImGui MultiSelectTempData.SetNavIdPassedBy", (*imgui.MultiSelectTempData).SetNavIdPassedBy, true)
+	engine.RegisterMethod("imgui.setRangeSrcPassedBy", "ImGui MultiSelectTempData.SetRangeSrcPassedBy", (*imgui.MultiSelectTempData).SetRangeSrcPassedBy, true)
+	engine.RegisterMethod("imgui.setRangeDstPassedBy", "ImGui MultiSelectTempData.SetRangeDstPassedBy", (*imgui.MultiSelectTempData).SetRangeDstPassedBy, true)
+	engine.RegisterMethod("imgui.focusScopeId", "ImGui MultiSelectTempData.FocusScopeId", (*imgui.MultiSelectTempData).FocusScopeId, true)
+	engine.RegisterMethod("imgui.scopeRectMin", "ImGui MultiSelectTempData.ScopeRectMin", (*imgui.MultiSelectTempData).ScopeRectMin, true)
+	engine.RegisterMethod("imgui.lastSubmittedItem", "ImGui MultiSelectTempData.LastSubmittedItem", (*imgui.MultiSelectTempData).LastSubmittedItem, true)
+	engine.RegisterMethod("imgui.boxSelectId", "ImGui MultiSelectTempData.BoxSelectId", (*imgui.MultiSelectTempData).BoxSelectId, true)
+	engine.RegisterMethod("imgui.loopRequestSetAll", "ImGui MultiSelectTempData.LoopRequestSetAll", (*imgui.MultiSelectTempData).LoopRequestSetAll, true)
+	engine.RegisterMethod("imgui.isEndIO", "ImGui MultiSelectTempData.IsEndIO", (*imgui.MultiSelectTempData).IsEndIO, true)
+	engine.RegisterMethod("imgui.isKeyboardSetRange", "ImGui MultiSelectTempData.IsKeyboardSetRange", (*imgui.MultiSelectTempData).IsKeyboardSetRange, true)
+	engine.RegisterMethod("imgui.navIdPassedBy", "ImGui MultiSelectTempData.NavIdPassedBy", (*imgui.MultiSelectTempData).NavIdPassedBy, true)
+	engine.RegisterMethod("imgui.rangeSrcPassedBy", "ImGui MultiSelectTempData.RangeSrcPassedBy", (*imgui.MultiSelectTempData).RangeSrcPassedBy, true)
+	engine.RegisterMethod("imgui.rangeDstPassedBy", "ImGui MultiSelectTempData.RangeDstPassedBy", (*imgui.MultiSelectTempData).RangeDstPassedBy, true)
+	engine.RegisterMethod("imgui.setRectRel", "ImGui NavItemData.SetRectRel", (*imgui.NavItemData).SetRectRel, true)
+	engine.RegisterMethod("imgui.setDistBox", "ImGui NavItemData.SetDistBox", (*imgui.NavItemData).SetDistBox, true)
+	engine.RegisterMethod("imgui.setDistCenter", "ImGui NavItemData.SetDistCenter", (*imgui.NavItemData).SetDistCenter, true)
+	engine.RegisterMethod("imgui.setDistAxial", "ImGui NavItemData.SetDistAxial", (*imgui.NavItemData).SetDistAxial, true)
+	engine.RegisterMethod("imgui.setSelectionUserData", "ImGui NavItemData.SetSelectionUserData", (*imgui.NavItemData).SetSelectionUserData, true)
+	engine.RegisterMethod("imgui.rectRel", "ImGui NavItemData.RectRel", (*imgui.NavItemData).RectRel, true)
+	engine.RegisterMethod("imgui.distBox", "ImGui NavItemData.DistBox", (*imgui.NavItemData).DistBox, true)
+	engine.RegisterMethod("imgui.distCenter", "ImGui NavItemData.DistCenter", (*imgui.NavItemData).DistCenter, true)
+	engine.RegisterMethod("imgui.distAxial", "ImGui NavItemData.DistAxial", (*imgui.NavItemData).DistAxial, true)
+	engine.RegisterMethod("imgui.selectionUserData", "ImGui NavItemData.SelectionUserData", (*imgui.NavItemData).SelectionUserData, true)
+	engine.RegisterMethod("imgui.internalClearFlags", "ImGui NextItemData.InternalClearFlags", (*imgui.NextItemData).InternalClearFlags, true)
+	engine.RegisterMethod("imgui.setHasFlags", "ImGui NextItemData.SetHasFlags", (*imgui.NextItemData).SetHasFlags, true)
+	engine.RegisterMethod("imgui.setWidth", "ImGui NextItemData.SetWidth", (*imgui.NextItemData).SetWidth, true)
+	engine.RegisterMethod("imgui.setShortcutFlags", "ImGui NextItemData.SetShortcutFlags", (*imgui.NextItemData).SetShortcutFlags, true)
+	engine.RegisterMethod("imgui.setOpenVal", "ImGui NextItemData.SetOpenVal", (*imgui.NextItemData).SetOpenVal, true)
+	engine.RegisterMethod("imgui.setOpenCond", "ImGui NextItemData.SetOpenCond", (*imgui.NextItemData).SetOpenCond, true)
+	engine.RegisterMethod("imgui.setRefVal", "ImGui NextItemData.SetRefVal", (*imgui.NextItemData).SetRefVal, true)
+	engine.RegisterMethod("imgui.setStorageId", "ImGui NextItemData.SetStorageId", (*imgui.NextItemData).SetStorageId, true)
+	engine.RegisterMethod("imgui.hasFlags", "ImGui NextItemData.HasFlags", (*imgui.NextItemData).HasFlags, true)
+	engine.RegisterMethod("imgui.width", "ImGui NextItemData.Width", (*imgui.NextItemData).Width, true)
+	engine.RegisterMethod("imgui.shortcutFlags", "ImGui NextItemData.ShortcutFlags", (*imgui.NextItemData).ShortcutFlags, true)
+	engine.RegisterMethod("imgui.openVal", "ImGui NextItemData.OpenVal", (*imgui.NextItemData).OpenVal, true)
+	engine.RegisterMethod("imgui.openCond", "ImGui NextItemData.OpenCond", (*imgui.NextItemData).OpenCond, true)
+	engine.RegisterMethod("imgui.refVal", "ImGui NextItemData.RefVal", (*imgui.NextItemData).RefVal, true)
+	engine.RegisterMethod("imgui.storageId", "ImGui NextItemData.StorageId", (*imgui.NextItemData).StorageId, true)
+	engine.RegisterMethod("imgui.setPosCond", "ImGui NextWindowData.SetPosCond", (*imgui.NextWindowData).SetPosCond, true)
+	engine.RegisterMethod("imgui.setSizeCond", "ImGui NextWindowData.SetSizeCond", (*imgui.NextWindowData).SetSizeCond, true)
+	engine.RegisterMethod("imgui.setCollapsedCond", "ImGui NextWindowData.SetCollapsedCond", (*imgui.NextWindowData).SetCollapsedCond, true)
+	engine.RegisterMethod("imgui.setDockCond", "ImGui NextWindowData.SetDockCond", (*imgui.NextWindowData).SetDockCond, true)
+	engine.RegisterMethod("imgui.setPosVal", "ImGui NextWindowData.SetPosVal", (*imgui.NextWindowData).SetPosVal, true)
+	engine.RegisterMethod("imgui.setPosPivotVal", "ImGui NextWindowData.SetPosPivotVal", (*imgui.NextWindowData).SetPosPivotVal, true)
+	engine.RegisterMethod("imgui.setSizeVal", "ImGui NextWindowData.SetSizeVal", (*imgui.NextWindowData).SetSizeVal, true)
+	engine.RegisterMethod("imgui.setContentSizeVal", "ImGui NextWindowData.SetContentSizeVal", (*imgui.NextWindowData).SetContentSizeVal, true)
+	engine.RegisterMethod("imgui.setScrollVal", "ImGui NextWindowData.SetScrollVal", (*imgui.NextWindowData).SetScrollVal, true)
+	engine.RegisterMethod("imgui.setWindowFlags", "ImGui NextWindowData.SetWindowFlags", (*imgui.NextWindowData).SetWindowFlags, true)
+	engine.RegisterMethod("imgui.setChildFlags", "ImGui NextWindowData.SetChildFlags", (*imgui.NextWindowData).SetChildFlags, true)
+	engine.RegisterMethod("imgui.setPosUndock", "ImGui NextWindowData.SetPosUndock", (*imgui.NextWindowData).SetPosUndock, true)
+	engine.RegisterMethod("imgui.setCollapsedVal", "ImGui NextWindowData.SetCollapsedVal", (*imgui.NextWindowData).SetCollapsedVal, true)
+	engine.RegisterMethod("imgui.setSizeConstraintRect", "ImGui NextWindowData.SetSizeConstraintRect", (*imgui.NextWindowData).SetSizeConstraintRect, true)
+	engine.RegisterMethod("imgui.setSizeCallback", "ImGui NextWindowData.SetSizeCallback", (*imgui.NextWindowData).SetSizeCallback, true)
+	engine.RegisterMethod("imgui.setSizeCallbackUserData", "ImGui NextWindowData.SetSizeCallbackUserData", (*imgui.NextWindowData).SetSizeCallbackUserData, true)
+	engine.RegisterMethod("imgui.setBgAlphaVal", "ImGui NextWindowData.SetBgAlphaVal", (*imgui.NextWindowData).SetBgAlphaVal, true)
+	engine.RegisterMethod("imgui.setViewportId", "ImGui NextWindowData.SetViewportId", (*imgui.NextWindowData).SetViewportId, true)
+	engine.RegisterMethod("imgui.setDockId", "ImGui NextWindowData.SetDockId", (*imgui.NextWindowData).SetDockId, true)
+	engine.RegisterMethod("imgui.setMenuBarOffsetMinVal", "ImGui NextWindowData.SetMenuBarOffsetMinVal", (*imgui.NextWindowData).SetMenuBarOffsetMinVal, true)
+	engine.RegisterMethod("imgui.setRefreshFlagsVal", "ImGui NextWindowData.SetRefreshFlagsVal", (*imgui.NextWindowData).SetRefreshFlagsVal, true)
+	engine.RegisterMethod("imgui.posCond", "ImGui NextWindowData.PosCond", (*imgui.NextWindowData).PosCond, true)
+	engine.RegisterMethod("imgui.sizeCond", "ImGui NextWindowData.SizeCond", (*imgui.NextWindowData).SizeCond, true)
+	engine.RegisterMethod("imgui.collapsedCond", "ImGui NextWindowData.CollapsedCond", (*imgui.NextWindowData).CollapsedCond, true)
+	engine.RegisterMethod("imgui.dockCond", "ImGui NextWindowData.DockCond", (*imgui.NextWindowData).DockCond, true)
+	engine.RegisterMethod("imgui.posVal", "ImGui NextWindowData.PosVal", (*imgui.NextWindowData).PosVal, true)
+	engine.RegisterMethod("imgui.posPivotVal", "ImGui NextWindowData.PosPivotVal", (*imgui.NextWindowData).PosPivotVal, true)
+	engine.RegisterMethod("imgui.sizeVal", "ImGui NextWindowData.SizeVal", (*imgui.NextWindowData).SizeVal, true)
+	engine.RegisterMethod("imgui.contentSizeVal", "ImGui NextWindowData.ContentSizeVal", (*imgui.NextWindowData).ContentSizeVal, true)
+	engine.RegisterMethod("imgui.scrollVal", "ImGui NextWindowData.ScrollVal", (*imgui.NextWindowData).ScrollVal, true)
+	engine.RegisterMethod("imgui.windowFlags", "ImGui NextWindowData.WindowFlags", (*imgui.NextWindowData).WindowFlags, true)
+	engine.RegisterMethod("imgui.childFlags", "ImGui NextWindowData.ChildFlags", (*imgui.NextWindowData).ChildFlags, true)
+	engine.RegisterMethod("imgui.posUndock", "ImGui NextWindowData.PosUndock", (*imgui.NextWindowData).PosUndock, true)
+	engine.RegisterMethod("imgui.collapsedVal", "ImGui NextWindowData.CollapsedVal", (*imgui.NextWindowData).CollapsedVal, true)
+	engine.RegisterMethod("imgui.sizeConstraintRect", "ImGui NextWindowData.SizeConstraintRect", (*imgui.NextWindowData).SizeConstraintRect, true)
+	engine.RegisterMethod("imgui.sizeCallback", "ImGui NextWindowData.SizeCallback", (*imgui.NextWindowData).SizeCallback, true)
+	engine.RegisterMethod("imgui.sizeCallbackUserData", "ImGui NextWindowData.SizeCallbackUserData", (*imgui.NextWindowData).SizeCallbackUserData, true)
+	engine.RegisterMethod("imgui.bgAlphaVal", "ImGui NextWindowData.BgAlphaVal", (*imgui.NextWindowData).BgAlphaVal, true)
+	engine.RegisterMethod("imgui.viewportId", "ImGui NextWindowData.ViewportId", (*imgui.NextWindowData).ViewportId, true)
+	engine.RegisterMethod("imgui.dockId", "ImGui NextWindowData.DockId", (*imgui.NextWindowData).DockId, true)
+	engine.RegisterMethod("imgui.menuBarOffsetMinVal", "ImGui NextWindowData.MenuBarOffsetMinVal", (*imgui.NextWindowData).MenuBarOffsetMinVal, true)
+	engine.RegisterMethod("imgui.refreshFlagsVal", "ImGui NextWindowData.RefreshFlagsVal", (*imgui.NextWindowData).RefreshFlagsVal, true)
+	engine.RegisterMethod("imgui.setOffsetNorm", "ImGui OldColumnData.SetOffsetNorm", (*imgui.OldColumnData).SetOffsetNorm, true)
+	engine.RegisterMethod("imgui.setOffsetNormBeforeResize", "ImGui OldColumnData.SetOffsetNormBeforeResize", (*imgui.OldColumnData).SetOffsetNormBeforeResize, true)
+	engine.RegisterMethod("imgui.offsetNorm", "ImGui OldColumnData.OffsetNorm", (*imgui.OldColumnData).OffsetNorm, true)
+	engine.RegisterMethod("imgui.offsetNormBeforeResize", "ImGui OldColumnData.OffsetNormBeforeResize", (*imgui.OldColumnData).OffsetNormBeforeResize, true)
+	engine.RegisterMethod("imgui.setIsFirstFrame", "ImGui OldColumns.SetIsFirstFrame", (*imgui.OldColumns).SetIsFirstFrame, true)
+	engine.RegisterMethod("imgui.setIsBeingResized", "ImGui OldColumns.SetIsBeingResized", (*imgui.OldColumns).SetIsBeingResized, true)
+	engine.RegisterMethod("imgui.setOffMinX", "ImGui OldColumns.SetOffMinX", (*imgui.OldColumns).SetOffMinX, true)
+	engine.RegisterMethod("imgui.setOffMaxX", "ImGui OldColumns.SetOffMaxX", (*imgui.OldColumns).SetOffMaxX, true)
+	engine.RegisterMethod("imgui.setLineMinY", "ImGui OldColumns.SetLineMinY", (*imgui.OldColumns).SetLineMinY, true)
+	engine.RegisterMethod("imgui.setLineMaxY", "ImGui OldColumns.SetLineMaxY", (*imgui.OldColumns).SetLineMaxY, true)
+	engine.RegisterMethod("imgui.setHostCursorPosY", "ImGui OldColumns.SetHostCursorPosY", (*imgui.OldColumns).SetHostCursorPosY, true)
+	engine.RegisterMethod("imgui.setHostCursorMaxPosX", "ImGui OldColumns.SetHostCursorMaxPosX", (*imgui.OldColumns).SetHostCursorMaxPosX, true)
+	engine.RegisterMethod("imgui.setHostInitialClipRect", "ImGui OldColumns.SetHostInitialClipRect", (*imgui.OldColumns).SetHostInitialClipRect, true)
+	engine.RegisterMethod("imgui.setHostBackupClipRect", "ImGui OldColumns.SetHostBackupClipRect", (*imgui.OldColumns).SetHostBackupClipRect, true)
+	engine.RegisterMethod("imgui.setHostBackupParentWorkRect", "ImGui OldColumns.SetHostBackupParentWorkRect", (*imgui.OldColumns).SetHostBackupParentWorkRect, true)
+	engine.RegisterMethod("imgui.setColumns", "ImGui OldColumns.SetColumns", (*imgui.OldColumns).SetColumns, true)
+	engine.RegisterMethod("imgui.isFirstFrame", "ImGui OldColumns.IsFirstFrame", (*imgui.OldColumns).IsFirstFrame, true)
+	engine.RegisterMethod("imgui.isBeingResized", "ImGui OldColumns.IsBeingResized", (*imgui.OldColumns).IsBeingResized, true)
+	engine.RegisterMethod("imgui.offMinX", "ImGui OldColumns.OffMinX", (*imgui.OldColumns).OffMinX, true)
+	engine.RegisterMethod("imgui.offMaxX", "ImGui OldColumns.OffMaxX", (*imgui.OldColumns).OffMaxX, true)
+	engine.RegisterMethod("imgui.lineMinY", "ImGui OldColumns.LineMinY", (*imgui.OldColumns).LineMinY, true)
+	engine.RegisterMethod("imgui.lineMaxY", "ImGui OldColumns.LineMaxY", (*imgui.OldColumns).LineMaxY, true)
+	engine.RegisterMethod("imgui.hostCursorPosY", "ImGui OldColumns.HostCursorPosY", (*imgui.OldColumns).HostCursorPosY, true)
+	engine.RegisterMethod("imgui.hostCursorMaxPosX", "ImGui OldColumns.HostCursorMaxPosX", (*imgui.OldColumns).HostCursorMaxPosX, true)
+	engine.RegisterMethod("imgui.hostInitialClipRect", "ImGui OldColumns.HostInitialClipRect", (*imgui.OldColumns).HostInitialClipRect, true)
+	engine.RegisterMethod("imgui.hostBackupClipRect", "ImGui OldColumns.HostBackupClipRect", (*imgui.OldColumns).HostBackupClipRect, true)
+	engine.RegisterMethod("imgui.hostBackupParentWorkRect", "ImGui OldColumns.HostBackupParentWorkRect", (*imgui.OldColumns).HostBackupParentWorkRect, true)
+	engine.RegisterMethod("imgui.setRefFrame", "ImGui OnceUponAFrame.SetRefFrame", (*imgui.OnceUponAFrame).SetRefFrame, true)
+	engine.RegisterMethod("imgui.refFrame", "ImGui OnceUponAFrame.RefFrame", (*imgui.OnceUponAFrame).RefFrame, true)
+	engine.RegisterMethod("imgui.isDataType", "ImGui Payload.IsDataType", (*imgui.Payload).IsDataType, true)
+	engine.RegisterMethod("imgui.isDelivery", "ImGui Payload.IsDelivery", (*imgui.Payload).IsDelivery, true)
+	engine.RegisterMethod("imgui.isPreview", "ImGui Payload.IsPreview", (*imgui.Payload).IsPreview, true)
+	engine.RegisterMethod("imgui.setDataSize", "ImGui Payload.SetDataSize", (*imgui.Payload).SetDataSize, true)
+	engine.RegisterMethod("imgui.setSourceId", "ImGui Payload.SetSourceId", (*imgui.Payload).SetSourceId, true)
+	engine.RegisterMethod("imgui.setSourceParentId", "ImGui Payload.SetSourceParentId", (*imgui.Payload).SetSourceParentId, true)
+	engine.RegisterMethod("imgui.setDataFrameCount", "ImGui Payload.SetDataFrameCount", (*imgui.Payload).SetDataFrameCount, true)
+	engine.RegisterMethod("imgui.setDataType", "ImGui Payload.SetDataType", (*imgui.Payload).SetDataType, true)
+	engine.RegisterMethod("imgui.setPreview", "ImGui Payload.SetPreview", (*imgui.Payload).SetPreview, true)
+	engine.RegisterMethod("imgui.setDelivery", "ImGui Payload.SetDelivery", (*imgui.Payload).SetDelivery, true)
+	engine.RegisterMethod("imgui.dataSize", "ImGui Payload.DataSize", (*imgui.Payload).DataSize, true)
+	engine.RegisterMethod("imgui.sourceId", "ImGui Payload.SourceId", (*imgui.Payload).SourceId, true)
+	engine.RegisterMethod("imgui.sourceParentId", "ImGui Payload.SourceParentId", (*imgui.Payload).SourceParentId, true)
+	engine.RegisterMethod("imgui.dataFrameCount", "ImGui Payload.DataFrameCount", (*imgui.Payload).DataFrameCount, true)
+	engine.RegisterMethod("imgui.dataType", "ImGui Payload.DataType", (*imgui.Payload).DataType, true)
+	engine.RegisterMethod("imgui.preview", "ImGui Payload.Preview", (*imgui.Payload).Preview, true)
+	engine.RegisterMethod("imgui.delivery", "ImGui Payload.Delivery", (*imgui.Payload).Delivery, true)
+	engine.RegisterMethod("imgui.clearPlatformHandlers", "ImGui PlatformIO.ClearPlatformHandlers", (*imgui.PlatformIO).ClearPlatformHandlers, true)
+	engine.RegisterMethod("imgui.clearRendererHandlers", "ImGui PlatformIO.ClearRendererHandlers", (*imgui.PlatformIO).ClearRendererHandlers, true)
+	engine.RegisterMethod("imgui.setPlatformClipboardUserData", "ImGui PlatformIO.SetPlatformClipboardUserData", (*imgui.PlatformIO).SetPlatformClipboardUserData, true)
+	engine.RegisterMethod("imgui.setPlatformOpenInShellUserData", "ImGui PlatformIO.SetPlatformOpenInShellUserData", (*imgui.PlatformIO).SetPlatformOpenInShellUserData, true)
+	engine.RegisterMethod("imgui.setPlatformImeUserData", "ImGui PlatformIO.SetPlatformImeUserData", (*imgui.PlatformIO).SetPlatformImeUserData, true)
+	engine.RegisterMethod("imgui.setPlatformLocaleDecimalPoint", "ImGui PlatformIO.SetPlatformLocaleDecimalPoint", (*imgui.PlatformIO).SetPlatformLocaleDecimalPoint, true)
+	engine.RegisterMethod("imgui.setRendererTextureMaxWidth", "ImGui PlatformIO.SetRendererTextureMaxWidth", (*imgui.PlatformIO).SetRendererTextureMaxWidth, true)
+	engine.RegisterMethod("imgui.setRendererTextureMaxHeight", "ImGui PlatformIO.SetRendererTextureMaxHeight", (*imgui.PlatformIO).SetRendererTextureMaxHeight, true)
+	engine.RegisterMethod("imgui.setRendererRenderState", "ImGui PlatformIO.SetRendererRenderState", (*imgui.PlatformIO).SetRendererRenderState, true)
+	engine.RegisterMethod("imgui.setMonitors", "ImGui PlatformIO.SetMonitors", (*imgui.PlatformIO).SetMonitors, true)
+	engine.RegisterMethod("imgui.platformClipboardUserData", "ImGui PlatformIO.PlatformClipboardUserData", (*imgui.PlatformIO).PlatformClipboardUserData, true)
+	engine.RegisterMethod("imgui.platformOpenInShellUserData", "ImGui PlatformIO.PlatformOpenInShellUserData", (*imgui.PlatformIO).PlatformOpenInShellUserData, true)
+	engine.RegisterMethod("imgui.platformImeUserData", "ImGui PlatformIO.PlatformImeUserData", (*imgui.PlatformIO).PlatformImeUserData, true)
+	engine.RegisterMethod("imgui.platformLocaleDecimalPoint", "ImGui PlatformIO.PlatformLocaleDecimalPoint", (*imgui.PlatformIO).PlatformLocaleDecimalPoint, true)
+	engine.RegisterMethod("imgui.rendererTextureMaxWidth", "ImGui PlatformIO.RendererTextureMaxWidth", (*imgui.PlatformIO).RendererTextureMaxWidth, true)
+	engine.RegisterMethod("imgui.rendererTextureMaxHeight", "ImGui PlatformIO.RendererTextureMaxHeight", (*imgui.PlatformIO).RendererTextureMaxHeight, true)
+	engine.RegisterMethod("imgui.rendererRenderState", "ImGui PlatformIO.RendererRenderState", (*imgui.PlatformIO).RendererRenderState, true)
+	engine.RegisterMethod("imgui.monitors", "ImGui PlatformIO.Monitors", (*imgui.PlatformIO).Monitors, true)
+	engine.RegisterMethod("imgui.setWantVisible", "ImGui PlatformImeData.SetWantVisible", (*imgui.PlatformImeData).SetWantVisible, true)
+	engine.RegisterMethod("imgui.setInputPos", "ImGui PlatformImeData.SetInputPos", (*imgui.PlatformImeData).SetInputPos, true)
+	engine.RegisterMethod("imgui.setInputLineHeight", "ImGui PlatformImeData.SetInputLineHeight", (*imgui.PlatformImeData).SetInputLineHeight, true)
+	engine.RegisterMethod("imgui.wantVisible", "ImGui PlatformImeData.WantVisible", (*imgui.PlatformImeData).WantVisible, true)
+	engine.RegisterMethod("imgui.inputPos", "ImGui PlatformImeData.InputPos", (*imgui.PlatformImeData).InputPos, true)
+	engine.RegisterMethod("imgui.inputLineHeight", "ImGui PlatformImeData.InputLineHeight", (*imgui.PlatformImeData).InputLineHeight, true)
+	engine.RegisterMethod("imgui.setMainPos", "ImGui PlatformMonitor.SetMainPos", (*imgui.PlatformMonitor).SetMainPos, true)
+	engine.RegisterMethod("imgui.setMainSize", "ImGui PlatformMonitor.SetMainSize", (*imgui.PlatformMonitor).SetMainSize, true)
+	engine.RegisterMethod("imgui.setWorkPos", "ImGui PlatformMonitor.SetWorkPos", (*imgui.PlatformMonitor).SetWorkPos, true)
+	engine.RegisterMethod("imgui.setWorkSize", "ImGui PlatformMonitor.SetWorkSize", (*imgui.PlatformMonitor).SetWorkSize, true)
+	engine.RegisterMethod("imgui.setDpiScale", "ImGui PlatformMonitor.SetDpiScale", (*imgui.PlatformMonitor).SetDpiScale, true)
+	engine.RegisterMethod("imgui.setPlatformHandle", "ImGui PlatformMonitor.SetPlatformHandle", (*imgui.PlatformMonitor).SetPlatformHandle, true)
+	engine.RegisterMethod("imgui.mainPos", "ImGui PlatformMonitor.MainPos", (*imgui.PlatformMonitor).MainPos, true)
+	engine.RegisterMethod("imgui.mainSize", "ImGui PlatformMonitor.MainSize", (*imgui.PlatformMonitor).MainSize, true)
+	engine.RegisterMethod("imgui.workPos", "ImGui PlatformMonitor.WorkPos", (*imgui.PlatformMonitor).WorkPos, true)
+	engine.RegisterMethod("imgui.workSize", "ImGui PlatformMonitor.WorkSize", (*imgui.PlatformMonitor).WorkSize, true)
+	engine.RegisterMethod("imgui.dpiScale", "ImGui PlatformMonitor.DpiScale", (*imgui.PlatformMonitor).DpiScale, true)
+	engine.RegisterMethod("imgui.platformHandle", "ImGui PlatformMonitor.PlatformHandle", (*imgui.PlatformMonitor).PlatformHandle, true)
+	engine.RegisterMethod("imgui.setPopupId", "ImGui PopupData.SetPopupId", (*imgui.PopupData).SetPopupId, true)
+	engine.RegisterMethod("imgui.setRestoreNavWindow", "ImGui PopupData.SetRestoreNavWindow", (*imgui.PopupData).SetRestoreNavWindow, true)
+	engine.RegisterMethod("imgui.setParentNavLayer", "ImGui PopupData.SetParentNavLayer", (*imgui.PopupData).SetParentNavLayer, true)
+	engine.RegisterMethod("imgui.setOpenFrameCount", "ImGui PopupData.SetOpenFrameCount", (*imgui.PopupData).SetOpenFrameCount, true)
+	engine.RegisterMethod("imgui.setOpenParentId", "ImGui PopupData.SetOpenParentId", (*imgui.PopupData).SetOpenParentId, true)
+	engine.RegisterMethod("imgui.setOpenPopupPos", "ImGui PopupData.SetOpenPopupPos", (*imgui.PopupData).SetOpenPopupPos, true)
+	engine.RegisterMethod("imgui.setOpenMousePos", "ImGui PopupData.SetOpenMousePos", (*imgui.PopupData).SetOpenMousePos, true)
+	engine.RegisterMethod("imgui.popupId", "ImGui PopupData.PopupId", (*imgui.PopupData).PopupId, true)
+	engine.RegisterMethod("imgui.restoreNavWindow", "ImGui PopupData.RestoreNavWindow", (*imgui.PopupData).RestoreNavWindow, true)
+	engine.RegisterMethod("imgui.parentNavLayer", "ImGui PopupData.ParentNavLayer", (*imgui.PopupData).ParentNavLayer, true)
+	engine.RegisterMethod("imgui.openFrameCount", "ImGui PopupData.OpenFrameCount", (*imgui.PopupData).OpenFrameCount, true)
+	engine.RegisterMethod("imgui.openParentId", "ImGui PopupData.OpenParentId", (*imgui.PopupData).OpenParentId, true)
+	engine.RegisterMethod("imgui.openPopupPos", "ImGui PopupData.OpenPopupPos", (*imgui.PopupData).OpenPopupPos, true)
+	engine.RegisterMethod("imgui.openMousePos", "ImGui PopupData.OpenMousePos", (*imgui.PopupData).OpenMousePos, true)
+	engine.RegisterMethod("imgui.setPtr", "ImGui PtrOrIndex.SetPtr", (*imgui.PtrOrIndex).SetPtr, true)
+	engine.RegisterMethod("imgui.ptr", "ImGui PtrOrIndex.Ptr", (*imgui.PtrOrIndex).Ptr, true)
+	engine.RegisterMethod("imgui.applyRequests", "ImGui SelectionBasicStorage.ApplyRequests", (*imgui.SelectionBasicStorage).ApplyRequests, true)
+	engine.RegisterMethod("imgui.contains", "ImGui SelectionBasicStorage.Contains", (*imgui.SelectionBasicStorage).Contains, true)
+	engine.RegisterMethod("imgui.storageIdFromIndex", "ImGui SelectionBasicStorage.StorageIdFromIndex", (*imgui.SelectionBasicStorage).StorageIdFromIndex, true)
+	engine.RegisterMethod("imgui.setItemSelected", "ImGui SelectionBasicStorage.SetItemSelected", (*imgui.SelectionBasicStorage).SetItemSelected, true)
+	engine.RegisterMethod("imgui.swap", "ImGui SelectionBasicStorage.Swap", (*imgui.SelectionBasicStorage).Swap, true)
+	engine.RegisterMethod("imgui.setPreserveOrder", "ImGui SelectionBasicStorage.SetPreserveOrder", (*imgui.SelectionBasicStorage).SetPreserveOrder, true)
+	engine.RegisterMethod("imgui.setSelectionOrder", "ImGui SelectionBasicStorage.SetSelectionOrder", (*imgui.SelectionBasicStorage).SetSelectionOrder, true)
+	engine.RegisterMethod("imgui.preserveOrder", "ImGui SelectionBasicStorage.PreserveOrder", (*imgui.SelectionBasicStorage).PreserveOrder, true)
+	engine.RegisterMethod("imgui.selectionOrder", "ImGui SelectionBasicStorage.SelectionOrder", (*imgui.SelectionBasicStorage).SelectionOrder, true)
+	engine.RegisterMethod("imgui.setTypeName", "ImGui SettingsHandler.SetTypeName", (*imgui.SettingsHandler).SetTypeName, true)
+	engine.RegisterMethod("imgui.setTypeHash", "ImGui SettingsHandler.SetTypeHash", (*imgui.SettingsHandler).SetTypeHash, true)
+	engine.RegisterMethod("imgui.typeName", "ImGui SettingsHandler.TypeName", (*imgui.SettingsHandler).TypeName, true)
+	engine.RegisterMethod("imgui.typeHash", "ImGui SettingsHandler.TypeHash", (*imgui.SettingsHandler).TypeHash, true)
+	engine.RegisterMethod("imgui.setQueryFrameCount", "ImGui StackLevelInfo.SetQueryFrameCount", (*imgui.StackLevelInfo).SetQueryFrameCount, true)
+	engine.RegisterMethod("imgui.setQuerySuccess", "ImGui StackLevelInfo.SetQuerySuccess", (*imgui.StackLevelInfo).SetQuerySuccess, true)
+	engine.RegisterMethod("imgui.setDescOffset", "ImGui StackLevelInfo.SetDescOffset", (*imgui.StackLevelInfo).SetDescOffset, true)
+	engine.RegisterMethod("imgui.queryFrameCount", "ImGui StackLevelInfo.QueryFrameCount", (*imgui.StackLevelInfo).QueryFrameCount, true)
+	engine.RegisterMethod("imgui.querySuccess", "ImGui StackLevelInfo.QuerySuccess", (*imgui.StackLevelInfo).QuerySuccess, true)
+	engine.RegisterMethod("imgui.descOffset", "ImGui StackLevelInfo.DescOffset", (*imgui.StackLevelInfo).DescOffset, true)
+	engine.RegisterMethod("imgui.setKey", "ImGui StoragePair.SetKey", (*imgui.StoragePair).SetKey, true)
+	engine.RegisterMethod("imgui.key", "ImGui StoragePair.Key", (*imgui.StoragePair).Key, true)
+	engine.RegisterMethod("imgui.buildSortByKey", "ImGui Storage.BuildSortByKey", (*imgui.Storage).BuildSortByKey, true)
+	engine.RegisterMethod("imgui.boolV", "ImGui Storage.BoolV", (*imgui.Storage).BoolV, true)
+	engine.RegisterMethod("imgui.boolRefV", "ImGui Storage.BoolRefV", (*imgui.Storage).BoolRefV, true)
+	engine.RegisterMethod("imgui.floatV", "ImGui Storage.FloatV", (*imgui.Storage).FloatV, true)
+	engine.RegisterMethod("imgui.floatRefV", "ImGui Storage.FloatRefV", (*imgui.Storage).FloatRefV, true)
+	engine.RegisterMethod("imgui.intV", "ImGui Storage.IntV", (*imgui.Storage).IntV, true)
+	engine.RegisterMethod("imgui.intRefV", "ImGui Storage.IntRefV", (*imgui.Storage).IntRefV, true)
+	engine.RegisterMethod("imgui.voidPtr", "ImGui Storage.VoidPtr", (*imgui.Storage).VoidPtr, true)
+	engine.RegisterMethod("imgui.setAllInt", "ImGui Storage.SetAllInt", (*imgui.Storage).SetAllInt, true)
+	engine.RegisterMethod("imgui.setBool", "ImGui Storage.SetBool", (*imgui.Storage).SetBool, true)
+	engine.RegisterMethod("imgui.setFloat", "ImGui Storage.SetFloat", (*imgui.Storage).SetFloat, true)
+	engine.RegisterMethod("imgui.setInt", "ImGui Storage.SetInt", (*imgui.Storage).SetInt, true)
+	engine.RegisterMethod("imgui.setVoidPtr", "ImGui Storage.SetVoidPtr", (*imgui.Storage).SetVoidPtr, true)
+	engine.RegisterMethod("imgui.bool", "ImGui Storage.Bool", (*imgui.Storage).Bool, true)
+	engine.RegisterMethod("imgui.boolRef", "ImGui Storage.BoolRef", (*imgui.Storage).BoolRef, true)
+	engine.RegisterMethod("imgui.float", "ImGui Storage.Float", (*imgui.Storage).Float, true)
+	engine.RegisterMethod("imgui.floatRef", "ImGui Storage.FloatRef", (*imgui.Storage).FloatRef, true)
+	engine.RegisterMethod("imgui.int", "ImGui Storage.Int", (*imgui.Storage).Int, true)
+	engine.RegisterMethod("imgui.intRef", "ImGui Storage.IntRef", (*imgui.Storage).IntRef, true)
+	engine.RegisterMethod("imgui.setVarIdx", "ImGui StyleMod.SetVarIdx", (*imgui.StyleMod).SetVarIdx, true)
+	engine.RegisterMethod("imgui.varIdx", "ImGui StyleMod.VarIdx", (*imgui.StyleMod).VarIdx, true)
+	engine.RegisterMethod("imgui.internalVarPtr", "ImGui StyleVarInfo.InternalVarPtr", (*imgui.StyleVarInfo).InternalVarPtr, true)
+	engine.RegisterMethod("imgui.setOffset", "ImGui StyleVarInfo.SetOffset", (*imgui.StyleVarInfo).SetOffset, true)
+	engine.RegisterMethod("imgui.offset", "ImGui StyleVarInfo.Offset", (*imgui.StyleVarInfo).Offset, true)
+	engine.RegisterMethod("imgui.scaleAllSizes", "ImGui Style.ScaleAllSizes", (*imgui.Style).ScaleAllSizes, true)
+	engine.RegisterMethod("imgui.setFontScaleMain", "ImGui Style.SetFontScaleMain", (*imgui.Style).SetFontScaleMain, true)
+	engine.RegisterMethod("imgui.setFontScaleDpi", "ImGui Style.SetFontScaleDpi", (*imgui.Style).SetFontScaleDpi, true)
+	engine.RegisterMethod("imgui.setAlpha", "ImGui Style.SetAlpha", (*imgui.Style).SetAlpha, true)
+	engine.RegisterMethod("imgui.setDisabledAlpha", "ImGui Style.SetDisabledAlpha", (*imgui.Style).SetDisabledAlpha, true)
+	engine.RegisterMethod("imgui.setWindowPadding", "ImGui Style.SetWindowPadding", (*imgui.Style).SetWindowPadding, true)
+	engine.RegisterMethod("imgui.setWindowRounding", "ImGui Style.SetWindowRounding", (*imgui.Style).SetWindowRounding, true)
+	engine.RegisterMethod("imgui.setWindowBorderSize", "ImGui Style.SetWindowBorderSize", (*imgui.Style).SetWindowBorderSize, true)
+	engine.RegisterMethod("imgui.setWindowBorderHoverPadding", "ImGui Style.SetWindowBorderHoverPadding", (*imgui.Style).SetWindowBorderHoverPadding, true)
+	engine.RegisterMethod("imgui.setWindowMinSize", "ImGui Style.SetWindowMinSize", (*imgui.Style).SetWindowMinSize, true)
+	engine.RegisterMethod("imgui.setWindowTitleAlign", "ImGui Style.SetWindowTitleAlign", (*imgui.Style).SetWindowTitleAlign, true)
+	engine.RegisterMethod("imgui.setWindowMenuButtonPosition", "ImGui Style.SetWindowMenuButtonPosition", (*imgui.Style).SetWindowMenuButtonPosition, true)
+	engine.RegisterMethod("imgui.setChildRounding", "ImGui Style.SetChildRounding", (*imgui.Style).SetChildRounding, true)
+	engine.RegisterMethod("imgui.setChildBorderSize", "ImGui Style.SetChildBorderSize", (*imgui.Style).SetChildBorderSize, true)
+	engine.RegisterMethod("imgui.setPopupRounding", "ImGui Style.SetPopupRounding", (*imgui.Style).SetPopupRounding, true)
+	engine.RegisterMethod("imgui.setPopupBorderSize", "ImGui Style.SetPopupBorderSize", (*imgui.Style).SetPopupBorderSize, true)
+	engine.RegisterMethod("imgui.setFramePadding", "ImGui Style.SetFramePadding", (*imgui.Style).SetFramePadding, true)
+	engine.RegisterMethod("imgui.setFrameRounding", "ImGui Style.SetFrameRounding", (*imgui.Style).SetFrameRounding, true)
+	engine.RegisterMethod("imgui.setFrameBorderSize", "ImGui Style.SetFrameBorderSize", (*imgui.Style).SetFrameBorderSize, true)
+	engine.RegisterMethod("imgui.setItemSpacing", "ImGui Style.SetItemSpacing", (*imgui.Style).SetItemSpacing, true)
+	engine.RegisterMethod("imgui.setItemInnerSpacing", "ImGui Style.SetItemInnerSpacing", (*imgui.Style).SetItemInnerSpacing, true)
+	engine.RegisterMethod("imgui.setCellPadding", "ImGui Style.SetCellPadding", (*imgui.Style).SetCellPadding, true)
+	engine.RegisterMethod("imgui.setTouchExtraPadding", "ImGui Style.SetTouchExtraPadding", (*imgui.Style).SetTouchExtraPadding, true)
+	engine.RegisterMethod("imgui.setIndentSpacing", "ImGui Style.SetIndentSpacing", (*imgui.Style).SetIndentSpacing, true)
+	engine.RegisterMethod("imgui.setColumnsMinSpacing", "ImGui Style.SetColumnsMinSpacing", (*imgui.Style).SetColumnsMinSpacing, true)
+	engine.RegisterMethod("imgui.setScrollbarSize", "ImGui Style.SetScrollbarSize", (*imgui.Style).SetScrollbarSize, true)
+	engine.RegisterMethod("imgui.setScrollbarRounding", "ImGui Style.SetScrollbarRounding", (*imgui.Style).SetScrollbarRounding, true)
+	engine.RegisterMethod("imgui.setScrollbarPadding", "ImGui Style.SetScrollbarPadding", (*imgui.Style).SetScrollbarPadding, true)
+	engine.RegisterMethod("imgui.setGrabMinSize", "ImGui Style.SetGrabMinSize", (*imgui.Style).SetGrabMinSize, true)
+	engine.RegisterMethod("imgui.setGrabRounding", "ImGui Style.SetGrabRounding", (*imgui.Style).SetGrabRounding, true)
+	engine.RegisterMethod("imgui.setLogSliderDeadzone", "ImGui Style.SetLogSliderDeadzone", (*imgui.Style).SetLogSliderDeadzone, true)
+	engine.RegisterMethod("imgui.setImageBorderSize", "ImGui Style.SetImageBorderSize", (*imgui.Style).SetImageBorderSize, true)
+	engine.RegisterMethod("imgui.setTabRounding", "ImGui Style.SetTabRounding", (*imgui.Style).SetTabRounding, true)
+	engine.RegisterMethod("imgui.setTabBorderSize", "ImGui Style.SetTabBorderSize", (*imgui.Style).SetTabBorderSize, true)
+	engine.RegisterMethod("imgui.setTabMinWidthBase", "ImGui Style.SetTabMinWidthBase", (*imgui.Style).SetTabMinWidthBase, true)
+	engine.RegisterMethod("imgui.setTabMinWidthShrink", "ImGui Style.SetTabMinWidthShrink", (*imgui.Style).SetTabMinWidthShrink, true)
+	engine.RegisterMethod("imgui.setTabCloseButtonMinWidthSelected", "ImGui Style.SetTabCloseButtonMinWidthSelected", (*imgui.Style).SetTabCloseButtonMinWidthSelected, true)
+	engine.RegisterMethod("imgui.setTabCloseButtonMinWidthUnselected", "ImGui Style.SetTabCloseButtonMinWidthUnselected", (*imgui.Style).SetTabCloseButtonMinWidthUnselected, true)
+	engine.RegisterMethod("imgui.setTabBarBorderSize", "ImGui Style.SetTabBarBorderSize", (*imgui.Style).SetTabBarBorderSize, true)
+	engine.RegisterMethod("imgui.setTabBarOverlineSize", "ImGui Style.SetTabBarOverlineSize", (*imgui.Style).SetTabBarOverlineSize, true)
+	engine.RegisterMethod("imgui.setTableAngledHeadersAngle", "ImGui Style.SetTableAngledHeadersAngle", (*imgui.Style).SetTableAngledHeadersAngle, true)
+	engine.RegisterMethod("imgui.setTableAngledHeadersTextAlign", "ImGui Style.SetTableAngledHeadersTextAlign", (*imgui.Style).SetTableAngledHeadersTextAlign, true)
+	engine.RegisterMethod("imgui.setTreeLinesFlags", "ImGui Style.SetTreeLinesFlags", (*imgui.Style).SetTreeLinesFlags, true)
+	engine.RegisterMethod("imgui.setTreeLinesSize", "ImGui Style.SetTreeLinesSize", (*imgui.Style).SetTreeLinesSize, true)
+	engine.RegisterMethod("imgui.setTreeLinesRounding", "ImGui Style.SetTreeLinesRounding", (*imgui.Style).SetTreeLinesRounding, true)
+	engine.RegisterMethod("imgui.setColorButtonPosition", "ImGui Style.SetColorButtonPosition", (*imgui.Style).SetColorButtonPosition, true)
+	engine.RegisterMethod("imgui.setButtonTextAlign", "ImGui Style.SetButtonTextAlign", (*imgui.Style).SetButtonTextAlign, true)
+	engine.RegisterMethod("imgui.setSelectableTextAlign", "ImGui Style.SetSelectableTextAlign", (*imgui.Style).SetSelectableTextAlign, true)
+	engine.RegisterMethod("imgui.setSeparatorTextBorderSize", "ImGui Style.SetSeparatorTextBorderSize", (*imgui.Style).SetSeparatorTextBorderSize, true)
+	engine.RegisterMethod("imgui.setSeparatorTextAlign", "ImGui Style.SetSeparatorTextAlign", (*imgui.Style).SetSeparatorTextAlign, true)
+	engine.RegisterMethod("imgui.setSeparatorTextPadding", "ImGui Style.SetSeparatorTextPadding", (*imgui.Style).SetSeparatorTextPadding, true)
+	engine.RegisterMethod("imgui.setDisplayWindowPadding", "ImGui Style.SetDisplayWindowPadding", (*imgui.Style).SetDisplayWindowPadding, true)
+	engine.RegisterMethod("imgui.setDisplaySafeAreaPadding", "ImGui Style.SetDisplaySafeAreaPadding", (*imgui.Style).SetDisplaySafeAreaPadding, true)
+	engine.RegisterMethod("imgui.setDockingNodeHasCloseButton", "ImGui Style.SetDockingNodeHasCloseButton", (*imgui.Style).SetDockingNodeHasCloseButton, true)
+	engine.RegisterMethod("imgui.setDockingSeparatorSize", "ImGui Style.SetDockingSeparatorSize", (*imgui.Style).SetDockingSeparatorSize, true)
+	engine.RegisterMethod("imgui.setMouseCursorScale", "ImGui Style.SetMouseCursorScale", (*imgui.Style).SetMouseCursorScale, true)
+	engine.RegisterMethod("imgui.setAntiAliasedLines", "ImGui Style.SetAntiAliasedLines", (*imgui.Style).SetAntiAliasedLines, true)
+	engine.RegisterMethod("imgui.setAntiAliasedLinesUseTex", "ImGui Style.SetAntiAliasedLinesUseTex", (*imgui.Style).SetAntiAliasedLinesUseTex, true)
+	engine.RegisterMethod("imgui.setAntiAliasedFill", "ImGui Style.SetAntiAliasedFill", (*imgui.Style).SetAntiAliasedFill, true)
+	engine.RegisterMethod("imgui.setCircleTessellationMaxError", "ImGui Style.SetCircleTessellationMaxError", (*imgui.Style).SetCircleTessellationMaxError, true)
+	engine.RegisterMethod("imgui.setColors", "ImGui Style.SetColors", (*imgui.Style).SetColors, true)
+	engine.RegisterMethod("imgui.setHoverStationaryDelay", "ImGui Style.SetHoverStationaryDelay", (*imgui.Style).SetHoverStationaryDelay, true)
+	engine.RegisterMethod("imgui.setHoverDelayShort", "ImGui Style.SetHoverDelayShort", (*imgui.Style).SetHoverDelayShort, true)
+	engine.RegisterMethod("imgui.setHoverDelayNormal", "ImGui Style.SetHoverDelayNormal", (*imgui.Style).SetHoverDelayNormal, true)
+	engine.RegisterMethod("imgui.setHoverFlagsForTooltipMouse", "ImGui Style.SetHoverFlagsForTooltipMouse", (*imgui.Style).SetHoverFlagsForTooltipMouse, true)
+	engine.RegisterMethod("imgui.setHoverFlagsForTooltipNav", "ImGui Style.SetHoverFlagsForTooltipNav", (*imgui.Style).SetHoverFlagsForTooltipNav, true)
+	engine.RegisterMethod("imgui.setMainScale", "ImGui Style.SetMainScale", (*imgui.Style).SetMainScale, true)
+	engine.RegisterMethod("imgui.setNextFrameFontSizeBase", "ImGui Style.SetNextFrameFontSizeBase", (*imgui.Style).SetNextFrameFontSizeBase, true)
+	engine.RegisterMethod("imgui.fontScaleMain", "ImGui Style.FontScaleMain", (*imgui.Style).FontScaleMain, true)
+	engine.RegisterMethod("imgui.fontScaleDpi", "ImGui Style.FontScaleDpi", (*imgui.Style).FontScaleDpi, true)
+	engine.RegisterMethod("imgui.alpha", "ImGui Style.Alpha", (*imgui.Style).Alpha, true)
+	engine.RegisterMethod("imgui.disabledAlpha", "ImGui Style.DisabledAlpha", (*imgui.Style).DisabledAlpha, true)
+	engine.RegisterMethod("imgui.windowPadding", "ImGui Style.WindowPadding", (*imgui.Style).WindowPadding, true)
+	engine.RegisterMethod("imgui.windowRounding", "ImGui Style.WindowRounding", (*imgui.Style).WindowRounding, true)
+	engine.RegisterMethod("imgui.windowBorderSize", "ImGui Style.WindowBorderSize", (*imgui.Style).WindowBorderSize, true)
+	engine.RegisterMethod("imgui.windowBorderHoverPadding", "ImGui Style.WindowBorderHoverPadding", (*imgui.Style).WindowBorderHoverPadding, true)
+	engine.RegisterMethod("imgui.windowMinSize", "ImGui Style.WindowMinSize", (*imgui.Style).WindowMinSize, true)
+	engine.RegisterMethod("imgui.windowTitleAlign", "ImGui Style.WindowTitleAlign", (*imgui.Style).WindowTitleAlign, true)
+	engine.RegisterMethod("imgui.windowMenuButtonPosition", "ImGui Style.WindowMenuButtonPosition", (*imgui.Style).WindowMenuButtonPosition, true)
+	engine.RegisterMethod("imgui.childRounding", "ImGui Style.ChildRounding", (*imgui.Style).ChildRounding, true)
+	engine.RegisterMethod("imgui.childBorderSize", "ImGui Style.ChildBorderSize", (*imgui.Style).ChildBorderSize, true)
+	engine.RegisterMethod("imgui.popupRounding", "ImGui Style.PopupRounding", (*imgui.Style).PopupRounding, true)
+	engine.RegisterMethod("imgui.popupBorderSize", "ImGui Style.PopupBorderSize", (*imgui.Style).PopupBorderSize, true)
+	engine.RegisterMethod("imgui.framePadding", "ImGui Style.FramePadding", (*imgui.Style).FramePadding, true)
+	engine.RegisterMethod("imgui.frameRounding", "ImGui Style.FrameRounding", (*imgui.Style).FrameRounding, true)
+	engine.RegisterMethod("imgui.frameBorderSize", "ImGui Style.FrameBorderSize", (*imgui.Style).FrameBorderSize, true)
+	engine.RegisterMethod("imgui.itemSpacing", "ImGui Style.ItemSpacing", (*imgui.Style).ItemSpacing, true)
+	engine.RegisterMethod("imgui.itemInnerSpacing", "ImGui Style.ItemInnerSpacing", (*imgui.Style).ItemInnerSpacing, true)
+	engine.RegisterMethod("imgui.cellPadding", "ImGui Style.CellPadding", (*imgui.Style).CellPadding, true)
+	engine.RegisterMethod("imgui.touchExtraPadding", "ImGui Style.TouchExtraPadding", (*imgui.Style).TouchExtraPadding, true)
+	engine.RegisterMethod("imgui.indentSpacing", "ImGui Style.IndentSpacing", (*imgui.Style).IndentSpacing, true)
+	engine.RegisterMethod("imgui.columnsMinSpacing", "ImGui Style.ColumnsMinSpacing", (*imgui.Style).ColumnsMinSpacing, true)
+	engine.RegisterMethod("imgui.scrollbarSize", "ImGui Style.ScrollbarSize", (*imgui.Style).ScrollbarSize, true)
+	engine.RegisterMethod("imgui.scrollbarRounding", "ImGui Style.ScrollbarRounding", (*imgui.Style).ScrollbarRounding, true)
+	engine.RegisterMethod("imgui.scrollbarPadding", "ImGui Style.ScrollbarPadding", (*imgui.Style).ScrollbarPadding, true)
+	engine.RegisterMethod("imgui.grabMinSize", "ImGui Style.GrabMinSize", (*imgui.Style).GrabMinSize, true)
+	engine.RegisterMethod("imgui.grabRounding", "ImGui Style.GrabRounding", (*imgui.Style).GrabRounding, true)
+	engine.RegisterMethod("imgui.logSliderDeadzone", "ImGui Style.LogSliderDeadzone", (*imgui.Style).LogSliderDeadzone, true)
+	engine.RegisterMethod("imgui.imageBorderSize", "ImGui Style.ImageBorderSize", (*imgui.Style).ImageBorderSize, true)
+	engine.RegisterMethod("imgui.tabRounding", "ImGui Style.TabRounding", (*imgui.Style).TabRounding, true)
+	engine.RegisterMethod("imgui.tabBorderSize", "ImGui Style.TabBorderSize", (*imgui.Style).TabBorderSize, true)
+	engine.RegisterMethod("imgui.tabMinWidthBase", "ImGui Style.TabMinWidthBase", (*imgui.Style).TabMinWidthBase, true)
+	engine.RegisterMethod("imgui.tabMinWidthShrink", "ImGui Style.TabMinWidthShrink", (*imgui.Style).TabMinWidthShrink, true)
+	engine.RegisterMethod("imgui.tabCloseButtonMinWidthSelected", "ImGui Style.TabCloseButtonMinWidthSelected", (*imgui.Style).TabCloseButtonMinWidthSelected, true)
+	engine.RegisterMethod("imgui.tabCloseButtonMinWidthUnselected", "ImGui Style.TabCloseButtonMinWidthUnselected", (*imgui.Style).TabCloseButtonMinWidthUnselected, true)
+	engine.RegisterMethod("imgui.tabBarBorderSize", "ImGui Style.TabBarBorderSize", (*imgui.Style).TabBarBorderSize, true)
+	engine.RegisterMethod("imgui.tabBarOverlineSize", "ImGui Style.TabBarOverlineSize", (*imgui.Style).TabBarOverlineSize, true)
+	engine.RegisterMethod("imgui.tableAngledHeadersAngle", "ImGui Style.TableAngledHeadersAngle", (*imgui.Style).TableAngledHeadersAngle, true)
+	engine.RegisterMethod("imgui.tableAngledHeadersTextAlign", "ImGui Style.TableAngledHeadersTextAlign", (*imgui.Style).TableAngledHeadersTextAlign, true)
+	engine.RegisterMethod("imgui.treeLinesFlags", "ImGui Style.TreeLinesFlags", (*imgui.Style).TreeLinesFlags, true)
+	engine.RegisterMethod("imgui.treeLinesSize", "ImGui Style.TreeLinesSize", (*imgui.Style).TreeLinesSize, true)
+	engine.RegisterMethod("imgui.treeLinesRounding", "ImGui Style.TreeLinesRounding", (*imgui.Style).TreeLinesRounding, true)
+	engine.RegisterMethod("imgui.colorButtonPosition", "ImGui Style.ColorButtonPosition", (*imgui.Style).ColorButtonPosition, true)
+	engine.RegisterMethod("imgui.buttonTextAlign", "ImGui Style.ButtonTextAlign", (*imgui.Style).ButtonTextAlign, true)
+	engine.RegisterMethod("imgui.selectableTextAlign", "ImGui Style.SelectableTextAlign", (*imgui.Style).SelectableTextAlign, true)
+	engine.RegisterMethod("imgui.separatorTextBorderSize", "ImGui Style.SeparatorTextBorderSize", (*imgui.Style).SeparatorTextBorderSize, true)
+	engine.RegisterMethod("imgui.separatorTextAlign", "ImGui Style.SeparatorTextAlign", (*imgui.Style).SeparatorTextAlign, true)
+	engine.RegisterMethod("imgui.separatorTextPadding", "ImGui Style.SeparatorTextPadding", (*imgui.Style).SeparatorTextPadding, true)
+	engine.RegisterMethod("imgui.displayWindowPadding", "ImGui Style.DisplayWindowPadding", (*imgui.Style).DisplayWindowPadding, true)
+	engine.RegisterMethod("imgui.displaySafeAreaPadding", "ImGui Style.DisplaySafeAreaPadding", (*imgui.Style).DisplaySafeAreaPadding, true)
+	engine.RegisterMethod("imgui.dockingNodeHasCloseButton", "ImGui Style.DockingNodeHasCloseButton", (*imgui.Style).DockingNodeHasCloseButton, true)
+	engine.RegisterMethod("imgui.dockingSeparatorSize", "ImGui Style.DockingSeparatorSize", (*imgui.Style).DockingSeparatorSize, true)
+	engine.RegisterMethod("imgui.mouseCursorScale", "ImGui Style.MouseCursorScale", (*imgui.Style).MouseCursorScale, true)
+	engine.RegisterMethod("imgui.antiAliasedLines", "ImGui Style.AntiAliasedLines", (*imgui.Style).AntiAliasedLines, true)
+	engine.RegisterMethod("imgui.antiAliasedLinesUseTex", "ImGui Style.AntiAliasedLinesUseTex", (*imgui.Style).AntiAliasedLinesUseTex, true)
+	engine.RegisterMethod("imgui.antiAliasedFill", "ImGui Style.AntiAliasedFill", (*imgui.Style).AntiAliasedFill, true)
+	engine.RegisterMethod("imgui.circleTessellationMaxError", "ImGui Style.CircleTessellationMaxError", (*imgui.Style).CircleTessellationMaxError, true)
+	engine.RegisterMethod("imgui.colors", "ImGui Style.Colors", (*imgui.Style).Colors, true)
+	engine.RegisterMethod("imgui.hoverStationaryDelay", "ImGui Style.HoverStationaryDelay", (*imgui.Style).HoverStationaryDelay, true)
+	engine.RegisterMethod("imgui.hoverDelayShort", "ImGui Style.HoverDelayShort", (*imgui.Style).HoverDelayShort, true)
+	engine.RegisterMethod("imgui.hoverDelayNormal", "ImGui Style.HoverDelayNormal", (*imgui.Style).HoverDelayNormal, true)
+	engine.RegisterMethod("imgui.hoverFlagsForTooltipMouse", "ImGui Style.HoverFlagsForTooltipMouse", (*imgui.Style).HoverFlagsForTooltipMouse, true)
+	engine.RegisterMethod("imgui.hoverFlagsForTooltipNav", "ImGui Style.HoverFlagsForTooltipNav", (*imgui.Style).HoverFlagsForTooltipNav, true)
+	engine.RegisterMethod("imgui.mainScale", "ImGui Style.MainScale", (*imgui.Style).MainScale, true)
+	engine.RegisterMethod("imgui.nextFrameFontSizeBase", "ImGui Style.NextFrameFontSizeBase", (*imgui.Style).NextFrameFontSizeBase, true)
+	engine.RegisterMethod("imgui.setTabs", "ImGui TabBar.SetTabs", (*imgui.TabBar).SetTabs, true)
+	engine.RegisterMethod("imgui.setNextSelectedTabId", "ImGui TabBar.SetNextSelectedTabId", (*imgui.TabBar).SetNextSelectedTabId, true)
+	engine.RegisterMethod("imgui.setVisibleTabId", "ImGui TabBar.SetVisibleTabId", (*imgui.TabBar).SetVisibleTabId, true)
+	engine.RegisterMethod("imgui.setCurrFrameVisible", "ImGui TabBar.SetCurrFrameVisible", (*imgui.TabBar).SetCurrFrameVisible, true)
+	engine.RegisterMethod("imgui.setPrevFrameVisible", "ImGui TabBar.SetPrevFrameVisible", (*imgui.TabBar).SetPrevFrameVisible, true)
+	engine.RegisterMethod("imgui.setBarRect", "ImGui TabBar.SetBarRect", (*imgui.TabBar).SetBarRect, true)
+	engine.RegisterMethod("imgui.setBarRectPrevWidth", "ImGui TabBar.SetBarRectPrevWidth", (*imgui.TabBar).SetBarRectPrevWidth, true)
+	engine.RegisterMethod("imgui.setCurrTabsContentsHeight", "ImGui TabBar.SetCurrTabsContentsHeight", (*imgui.TabBar).SetCurrTabsContentsHeight, true)
+	engine.RegisterMethod("imgui.setPrevTabsContentsHeight", "ImGui TabBar.SetPrevTabsContentsHeight", (*imgui.TabBar).SetPrevTabsContentsHeight, true)
+	engine.RegisterMethod("imgui.setWidthAllTabs", "ImGui TabBar.SetWidthAllTabs", (*imgui.TabBar).SetWidthAllTabs, true)
+	engine.RegisterMethod("imgui.setWidthAllTabsIdeal", "ImGui TabBar.SetWidthAllTabsIdeal", (*imgui.TabBar).SetWidthAllTabsIdeal, true)
+	engine.RegisterMethod("imgui.setScrollingAnim", "ImGui TabBar.SetScrollingAnim", (*imgui.TabBar).SetScrollingAnim, true)
+	engine.RegisterMethod("imgui.setScrollingTarget", "ImGui TabBar.SetScrollingTarget", (*imgui.TabBar).SetScrollingTarget, true)
+	engine.RegisterMethod("imgui.setScrollingTargetDistToVisibility", "ImGui TabBar.SetScrollingTargetDistToVisibility", (*imgui.TabBar).SetScrollingTargetDistToVisibility, true)
+	engine.RegisterMethod("imgui.setScrollingSpeed", "ImGui TabBar.SetScrollingSpeed", (*imgui.TabBar).SetScrollingSpeed, true)
+	engine.RegisterMethod("imgui.setScrollingRectMinX", "ImGui TabBar.SetScrollingRectMinX", (*imgui.TabBar).SetScrollingRectMinX, true)
+	engine.RegisterMethod("imgui.setScrollingRectMaxX", "ImGui TabBar.SetScrollingRectMaxX", (*imgui.TabBar).SetScrollingRectMaxX, true)
+	engine.RegisterMethod("imgui.setSeparatorMinX", "ImGui TabBar.SetSeparatorMinX", (*imgui.TabBar).SetSeparatorMinX, true)
+	engine.RegisterMethod("imgui.setSeparatorMaxX", "ImGui TabBar.SetSeparatorMaxX", (*imgui.TabBar).SetSeparatorMaxX, true)
+	engine.RegisterMethod("imgui.setReorderRequestTabId", "ImGui TabBar.SetReorderRequestTabId", (*imgui.TabBar).SetReorderRequestTabId, true)
+	engine.RegisterMethod("imgui.setReorderRequestOffset", "ImGui TabBar.SetReorderRequestOffset", (*imgui.TabBar).SetReorderRequestOffset, true)
+	engine.RegisterMethod("imgui.setBeginCount", "ImGui TabBar.SetBeginCount", (*imgui.TabBar).SetBeginCount, true)
+	engine.RegisterMethod("imgui.setWantLayout", "ImGui TabBar.SetWantLayout", (*imgui.TabBar).SetWantLayout, true)
+	engine.RegisterMethod("imgui.setVisibleTabWasSubmitted", "ImGui TabBar.SetVisibleTabWasSubmitted", (*imgui.TabBar).SetVisibleTabWasSubmitted, true)
+	engine.RegisterMethod("imgui.setTabsAddedNew", "ImGui TabBar.SetTabsAddedNew", (*imgui.TabBar).SetTabsAddedNew, true)
+	engine.RegisterMethod("imgui.setScrollButtonEnabled", "ImGui TabBar.SetScrollButtonEnabled", (*imgui.TabBar).SetScrollButtonEnabled, true)
+	engine.RegisterMethod("imgui.setTabsActiveCount", "ImGui TabBar.SetTabsActiveCount", (*imgui.TabBar).SetTabsActiveCount, true)
+	engine.RegisterMethod("imgui.setLastTabItemIdx", "ImGui TabBar.SetLastTabItemIdx", (*imgui.TabBar).SetLastTabItemIdx, true)
+	engine.RegisterMethod("imgui.setItemSpacingY", "ImGui TabBar.SetItemSpacingY", (*imgui.TabBar).SetItemSpacingY, true)
+	engine.RegisterMethod("imgui.setTabsNames", "ImGui TabBar.SetTabsNames", (*imgui.TabBar).SetTabsNames, true)
+	engine.RegisterMethod("imgui.tabs", "ImGui TabBar.Tabs", (*imgui.TabBar).Tabs, true)
+	engine.RegisterMethod("imgui.nextSelectedTabId", "ImGui TabBar.NextSelectedTabId", (*imgui.TabBar).NextSelectedTabId, true)
+	engine.RegisterMethod("imgui.visibleTabId", "ImGui TabBar.VisibleTabId", (*imgui.TabBar).VisibleTabId, true)
+	engine.RegisterMethod("imgui.currFrameVisible", "ImGui TabBar.CurrFrameVisible", (*imgui.TabBar).CurrFrameVisible, true)
+	engine.RegisterMethod("imgui.prevFrameVisible", "ImGui TabBar.PrevFrameVisible", (*imgui.TabBar).PrevFrameVisible, true)
+	engine.RegisterMethod("imgui.barRect", "ImGui TabBar.BarRect", (*imgui.TabBar).BarRect, true)
+	engine.RegisterMethod("imgui.barRectPrevWidth", "ImGui TabBar.BarRectPrevWidth", (*imgui.TabBar).BarRectPrevWidth, true)
+	engine.RegisterMethod("imgui.currTabsContentsHeight", "ImGui TabBar.CurrTabsContentsHeight", (*imgui.TabBar).CurrTabsContentsHeight, true)
+	engine.RegisterMethod("imgui.prevTabsContentsHeight", "ImGui TabBar.PrevTabsContentsHeight", (*imgui.TabBar).PrevTabsContentsHeight, true)
+	engine.RegisterMethod("imgui.widthAllTabs", "ImGui TabBar.WidthAllTabs", (*imgui.TabBar).WidthAllTabs, true)
+	engine.RegisterMethod("imgui.widthAllTabsIdeal", "ImGui TabBar.WidthAllTabsIdeal", (*imgui.TabBar).WidthAllTabsIdeal, true)
+	engine.RegisterMethod("imgui.scrollingAnim", "ImGui TabBar.ScrollingAnim", (*imgui.TabBar).ScrollingAnim, true)
+	engine.RegisterMethod("imgui.scrollingTarget", "ImGui TabBar.ScrollingTarget", (*imgui.TabBar).ScrollingTarget, true)
+	engine.RegisterMethod("imgui.scrollingTargetDistToVisibility", "ImGui TabBar.ScrollingTargetDistToVisibility", (*imgui.TabBar).ScrollingTargetDistToVisibility, true)
+	engine.RegisterMethod("imgui.scrollingSpeed", "ImGui TabBar.ScrollingSpeed", (*imgui.TabBar).ScrollingSpeed, true)
+	engine.RegisterMethod("imgui.scrollingRectMinX", "ImGui TabBar.ScrollingRectMinX", (*imgui.TabBar).ScrollingRectMinX, true)
+	engine.RegisterMethod("imgui.scrollingRectMaxX", "ImGui TabBar.ScrollingRectMaxX", (*imgui.TabBar).ScrollingRectMaxX, true)
+	engine.RegisterMethod("imgui.separatorMinX", "ImGui TabBar.SeparatorMinX", (*imgui.TabBar).SeparatorMinX, true)
+	engine.RegisterMethod("imgui.separatorMaxX", "ImGui TabBar.SeparatorMaxX", (*imgui.TabBar).SeparatorMaxX, true)
+	engine.RegisterMethod("imgui.reorderRequestTabId", "ImGui TabBar.ReorderRequestTabId", (*imgui.TabBar).ReorderRequestTabId, true)
+	engine.RegisterMethod("imgui.reorderRequestOffset", "ImGui TabBar.ReorderRequestOffset", (*imgui.TabBar).ReorderRequestOffset, true)
+	engine.RegisterMethod("imgui.beginCount", "ImGui TabBar.BeginCount", (*imgui.TabBar).BeginCount, true)
+	engine.RegisterMethod("imgui.wantLayout", "ImGui TabBar.WantLayout", (*imgui.TabBar).WantLayout, true)
+	engine.RegisterMethod("imgui.visibleTabWasSubmitted", "ImGui TabBar.VisibleTabWasSubmitted", (*imgui.TabBar).VisibleTabWasSubmitted, true)
+	engine.RegisterMethod("imgui.tabsAddedNew", "ImGui TabBar.TabsAddedNew", (*imgui.TabBar).TabsAddedNew, true)
+	engine.RegisterMethod("imgui.scrollButtonEnabled", "ImGui TabBar.ScrollButtonEnabled", (*imgui.TabBar).ScrollButtonEnabled, true)
+	engine.RegisterMethod("imgui.tabsActiveCount", "ImGui TabBar.TabsActiveCount", (*imgui.TabBar).TabsActiveCount, true)
+	engine.RegisterMethod("imgui.lastTabItemIdx", "ImGui TabBar.LastTabItemIdx", (*imgui.TabBar).LastTabItemIdx, true)
+	engine.RegisterMethod("imgui.itemSpacingY", "ImGui TabBar.ItemSpacingY", (*imgui.TabBar).ItemSpacingY, true)
+	engine.RegisterMethod("imgui.tabsNames", "ImGui TabBar.TabsNames", (*imgui.TabBar).TabsNames, true)
+	engine.RegisterMethod("imgui.setLastFrameVisible", "ImGui TabItem.SetLastFrameVisible", (*imgui.TabItem).SetLastFrameVisible, true)
+	engine.RegisterMethod("imgui.setLastFrameSelected", "ImGui TabItem.SetLastFrameSelected", (*imgui.TabItem).SetLastFrameSelected, true)
+	engine.RegisterMethod("imgui.setContentWidth", "ImGui TabItem.SetContentWidth", (*imgui.TabItem).SetContentWidth, true)
+	engine.RegisterMethod("imgui.setRequestedWidth", "ImGui TabItem.SetRequestedWidth", (*imgui.TabItem).SetRequestedWidth, true)
+	engine.RegisterMethod("imgui.setNameOffset", "ImGui TabItem.SetNameOffset", (*imgui.TabItem).SetNameOffset, true)
+	engine.RegisterMethod("imgui.setBeginOrder", "ImGui TabItem.SetBeginOrder", (*imgui.TabItem).SetBeginOrder, true)
+	engine.RegisterMethod("imgui.setIndexDuringLayout", "ImGui TabItem.SetIndexDuringLayout", (*imgui.TabItem).SetIndexDuringLayout, true)
+	engine.RegisterMethod("imgui.setWantClose", "ImGui TabItem.SetWantClose", (*imgui.TabItem).SetWantClose, true)
+	engine.RegisterMethod("imgui.lastFrameVisible", "ImGui TabItem.LastFrameVisible", (*imgui.TabItem).LastFrameVisible, true)
+	engine.RegisterMethod("imgui.lastFrameSelected", "ImGui TabItem.LastFrameSelected", (*imgui.TabItem).LastFrameSelected, true)
+	engine.RegisterMethod("imgui.contentWidth", "ImGui TabItem.ContentWidth", (*imgui.TabItem).ContentWidth, true)
+	engine.RegisterMethod("imgui.requestedWidth", "ImGui TabItem.RequestedWidth", (*imgui.TabItem).RequestedWidth, true)
+	engine.RegisterMethod("imgui.nameOffset", "ImGui TabItem.NameOffset", (*imgui.TabItem).NameOffset, true)
+	engine.RegisterMethod("imgui.beginOrder", "ImGui TabItem.BeginOrder", (*imgui.TabItem).BeginOrder, true)
+	engine.RegisterMethod("imgui.indexDuringLayout", "ImGui TabItem.IndexDuringLayout", (*imgui.TabItem).IndexDuringLayout, true)
+	engine.RegisterMethod("imgui.wantClose", "ImGui TabItem.WantClose", (*imgui.TabItem).WantClose, true)
+	engine.RegisterMethod("imgui.setWidthOrWeight", "ImGui TableColumnSettings.SetWidthOrWeight", (*imgui.TableColumnSettings).SetWidthOrWeight, true)
+	engine.RegisterMethod("imgui.setUserID", "ImGui TableColumnSettings.SetUserID", (*imgui.TableColumnSettings).SetUserID, true)
+	engine.RegisterMethod("imgui.setDisplayOrder", "ImGui TableColumnSettings.SetDisplayOrder", (*imgui.TableColumnSettings).SetDisplayOrder, true)
+	engine.RegisterMethod("imgui.setSortOrder", "ImGui TableColumnSettings.SetSortOrder", (*imgui.TableColumnSettings).SetSortOrder, true)
+	engine.RegisterMethod("imgui.setSortDirection", "ImGui TableColumnSettings.SetSortDirection", (*imgui.TableColumnSettings).SetSortDirection, true)
+	engine.RegisterMethod("imgui.setIsEnabled", "ImGui TableColumnSettings.SetIsEnabled", (*imgui.TableColumnSettings).SetIsEnabled, true)
+	engine.RegisterMethod("imgui.setIsStretch", "ImGui TableColumnSettings.SetIsStretch", (*imgui.TableColumnSettings).SetIsStretch, true)
+	engine.RegisterMethod("imgui.widthOrWeight", "ImGui TableColumnSettings.WidthOrWeight", (*imgui.TableColumnSettings).WidthOrWeight, true)
+	engine.RegisterMethod("imgui.userID", "ImGui TableColumnSettings.UserID", (*imgui.TableColumnSettings).UserID, true)
+	engine.RegisterMethod("imgui.displayOrder", "ImGui TableColumnSettings.DisplayOrder", (*imgui.TableColumnSettings).DisplayOrder, true)
+	engine.RegisterMethod("imgui.sortOrder", "ImGui TableColumnSettings.SortOrder", (*imgui.TableColumnSettings).SortOrder, true)
+	engine.RegisterMethod("imgui.sortDirection", "ImGui TableColumnSettings.SortDirection", (*imgui.TableColumnSettings).SortDirection, true)
+	engine.RegisterMethod("imgui.isEnabled", "ImGui TableColumnSettings.IsEnabled", (*imgui.TableColumnSettings).IsEnabled, true)
+	engine.RegisterMethod("imgui.isStretch", "ImGui TableColumnSettings.IsStretch", (*imgui.TableColumnSettings).IsStretch, true)
+	engine.RegisterMethod("imgui.setColumnUserID", "ImGui TableColumnSortSpecs.SetColumnUserID", (*imgui.TableColumnSortSpecs).SetColumnUserID, true)
+	engine.RegisterMethod("imgui.setColumnIndex", "ImGui TableColumnSortSpecs.SetColumnIndex", (*imgui.TableColumnSortSpecs).SetColumnIndex, true)
+	engine.RegisterMethod("imgui.columnUserID", "ImGui TableColumnSortSpecs.ColumnUserID", (*imgui.TableColumnSortSpecs).ColumnUserID, true)
+	engine.RegisterMethod("imgui.setWidthGiven", "ImGui TableColumn.SetWidthGiven", (*imgui.TableColumn).SetWidthGiven, true)
+	engine.RegisterMethod("imgui.setMinX", "ImGui TableColumn.SetMinX", (*imgui.TableColumn).SetMinX, true)
+	engine.RegisterMethod("imgui.setMaxX", "ImGui TableColumn.SetMaxX", (*imgui.TableColumn).SetMaxX, true)
+	engine.RegisterMethod("imgui.setWidthRequest", "ImGui TableColumn.SetWidthRequest", (*imgui.TableColumn).SetWidthRequest, true)
+	engine.RegisterMethod("imgui.setWidthAuto", "ImGui TableColumn.SetWidthAuto", (*imgui.TableColumn).SetWidthAuto, true)
+	engine.RegisterMethod("imgui.setWidthMax", "ImGui TableColumn.SetWidthMax", (*imgui.TableColumn).SetWidthMax, true)
+	engine.RegisterMethod("imgui.setStretchWeight", "ImGui TableColumn.SetStretchWeight", (*imgui.TableColumn).SetStretchWeight, true)
+	engine.RegisterMethod("imgui.setInitStretchWeightOrWidth", "ImGui TableColumn.SetInitStretchWeightOrWidth", (*imgui.TableColumn).SetInitStretchWeightOrWidth, true)
+	engine.RegisterMethod("imgui.setWorkMinX", "ImGui TableColumn.SetWorkMinX", (*imgui.TableColumn).SetWorkMinX, true)
+	engine.RegisterMethod("imgui.setWorkMaxX", "ImGui TableColumn.SetWorkMaxX", (*imgui.TableColumn).SetWorkMaxX, true)
+	engine.RegisterMethod("imgui.setItemWidth", "ImGui TableColumn.SetItemWidth", (*imgui.TableColumn).SetItemWidth, true)
+	engine.RegisterMethod("imgui.setContentMaxXFrozen", "ImGui TableColumn.SetContentMaxXFrozen", (*imgui.TableColumn).SetContentMaxXFrozen, true)
+	engine.RegisterMethod("imgui.setContentMaxXUnfrozen", "ImGui TableColumn.SetContentMaxXUnfrozen", (*imgui.TableColumn).SetContentMaxXUnfrozen, true)
+	engine.RegisterMethod("imgui.setContentMaxXHeadersUsed", "ImGui TableColumn.SetContentMaxXHeadersUsed", (*imgui.TableColumn).SetContentMaxXHeadersUsed, true)
+	engine.RegisterMethod("imgui.setContentMaxXHeadersIdeal", "ImGui TableColumn.SetContentMaxXHeadersIdeal", (*imgui.TableColumn).SetContentMaxXHeadersIdeal, true)
+	engine.RegisterMethod("imgui.setIndexWithinEnabledSet", "ImGui TableColumn.SetIndexWithinEnabledSet", (*imgui.TableColumn).SetIndexWithinEnabledSet, true)
+	engine.RegisterMethod("imgui.setPrevEnabledColumn", "ImGui TableColumn.SetPrevEnabledColumn", (*imgui.TableColumn).SetPrevEnabledColumn, true)
+	engine.RegisterMethod("imgui.setNextEnabledColumn", "ImGui TableColumn.SetNextEnabledColumn", (*imgui.TableColumn).SetNextEnabledColumn, true)
+	engine.RegisterMethod("imgui.setDrawChannelCurrent", "ImGui TableColumn.SetDrawChannelCurrent", (*imgui.TableColumn).SetDrawChannelCurrent, true)
+	engine.RegisterMethod("imgui.setDrawChannelFrozen", "ImGui TableColumn.SetDrawChannelFrozen", (*imgui.TableColumn).SetDrawChannelFrozen, true)
+	engine.RegisterMethod("imgui.setDrawChannelUnfrozen", "ImGui TableColumn.SetDrawChannelUnfrozen", (*imgui.TableColumn).SetDrawChannelUnfrozen, true)
+	engine.RegisterMethod("imgui.setIsUserEnabled", "ImGui TableColumn.SetIsUserEnabled", (*imgui.TableColumn).SetIsUserEnabled, true)
+	engine.RegisterMethod("imgui.setIsUserEnabledNextFrame", "ImGui TableColumn.SetIsUserEnabledNextFrame", (*imgui.TableColumn).SetIsUserEnabledNextFrame, true)
+	engine.RegisterMethod("imgui.setIsVisibleX", "ImGui TableColumn.SetIsVisibleX", (*imgui.TableColumn).SetIsVisibleX, true)
+	engine.RegisterMethod("imgui.setIsVisibleY", "ImGui TableColumn.SetIsVisibleY", (*imgui.TableColumn).SetIsVisibleY, true)
+	engine.RegisterMethod("imgui.setIsRequestOutput", "ImGui TableColumn.SetIsRequestOutput", (*imgui.TableColumn).SetIsRequestOutput, true)
+	engine.RegisterMethod("imgui.setIsSkipItems", "ImGui TableColumn.SetIsSkipItems", (*imgui.TableColumn).SetIsSkipItems, true)
+	engine.RegisterMethod("imgui.setIsPreserveWidthAuto", "ImGui TableColumn.SetIsPreserveWidthAuto", (*imgui.TableColumn).SetIsPreserveWidthAuto, true)
+	engine.RegisterMethod("imgui.setNavLayerCurrent", "ImGui TableColumn.SetNavLayerCurrent", (*imgui.TableColumn).SetNavLayerCurrent, true)
+	engine.RegisterMethod("imgui.setAutoFitQueue", "ImGui TableColumn.SetAutoFitQueue", (*imgui.TableColumn).SetAutoFitQueue, true)
+	engine.RegisterMethod("imgui.setCannotSkipItemsQueue", "ImGui TableColumn.SetCannotSkipItemsQueue", (*imgui.TableColumn).SetCannotSkipItemsQueue, true)
+	engine.RegisterMethod("imgui.setSortDirectionsAvailCount", "ImGui TableColumn.SetSortDirectionsAvailCount", (*imgui.TableColumn).SetSortDirectionsAvailCount, true)
+	engine.RegisterMethod("imgui.setSortDirectionsAvailMask", "ImGui TableColumn.SetSortDirectionsAvailMask", (*imgui.TableColumn).SetSortDirectionsAvailMask, true)
+	engine.RegisterMethod("imgui.setSortDirectionsAvailList", "ImGui TableColumn.SetSortDirectionsAvailList", (*imgui.TableColumn).SetSortDirectionsAvailList, true)
+	engine.RegisterMethod("imgui.widthGiven", "ImGui TableColumn.WidthGiven", (*imgui.TableColumn).WidthGiven, true)
+	engine.RegisterMethod("imgui.minX", "ImGui TableColumn.MinX", (*imgui.TableColumn).MinX, true)
+	engine.RegisterMethod("imgui.maxX", "ImGui TableColumn.MaxX", (*imgui.TableColumn).MaxX, true)
+	engine.RegisterMethod("imgui.widthRequest", "ImGui TableColumn.WidthRequest", (*imgui.TableColumn).WidthRequest, true)
+	engine.RegisterMethod("imgui.widthAuto", "ImGui TableColumn.WidthAuto", (*imgui.TableColumn).WidthAuto, true)
+	engine.RegisterMethod("imgui.widthMax", "ImGui TableColumn.WidthMax", (*imgui.TableColumn).WidthMax, true)
+	engine.RegisterMethod("imgui.stretchWeight", "ImGui TableColumn.StretchWeight", (*imgui.TableColumn).StretchWeight, true)
+	engine.RegisterMethod("imgui.initStretchWeightOrWidth", "ImGui TableColumn.InitStretchWeightOrWidth", (*imgui.TableColumn).InitStretchWeightOrWidth, true)
+	engine.RegisterMethod("imgui.workMinX", "ImGui TableColumn.WorkMinX", (*imgui.TableColumn).WorkMinX, true)
+	engine.RegisterMethod("imgui.workMaxX", "ImGui TableColumn.WorkMaxX", (*imgui.TableColumn).WorkMaxX, true)
+	engine.RegisterMethod("imgui.itemWidth", "ImGui TableColumn.ItemWidth", (*imgui.TableColumn).ItemWidth, true)
+	engine.RegisterMethod("imgui.contentMaxXFrozen", "ImGui TableColumn.ContentMaxXFrozen", (*imgui.TableColumn).ContentMaxXFrozen, true)
+	engine.RegisterMethod("imgui.contentMaxXUnfrozen", "ImGui TableColumn.ContentMaxXUnfrozen", (*imgui.TableColumn).ContentMaxXUnfrozen, true)
+	engine.RegisterMethod("imgui.contentMaxXHeadersUsed", "ImGui TableColumn.ContentMaxXHeadersUsed", (*imgui.TableColumn).ContentMaxXHeadersUsed, true)
+	engine.RegisterMethod("imgui.contentMaxXHeadersIdeal", "ImGui TableColumn.ContentMaxXHeadersIdeal", (*imgui.TableColumn).ContentMaxXHeadersIdeal, true)
+	engine.RegisterMethod("imgui.indexWithinEnabledSet", "ImGui TableColumn.IndexWithinEnabledSet", (*imgui.TableColumn).IndexWithinEnabledSet, true)
+	engine.RegisterMethod("imgui.prevEnabledColumn", "ImGui TableColumn.PrevEnabledColumn", (*imgui.TableColumn).PrevEnabledColumn, true)
+	engine.RegisterMethod("imgui.nextEnabledColumn", "ImGui TableColumn.NextEnabledColumn", (*imgui.TableColumn).NextEnabledColumn, true)
+	engine.RegisterMethod("imgui.drawChannelCurrent", "ImGui TableColumn.DrawChannelCurrent", (*imgui.TableColumn).DrawChannelCurrent, true)
+	engine.RegisterMethod("imgui.drawChannelFrozen", "ImGui TableColumn.DrawChannelFrozen", (*imgui.TableColumn).DrawChannelFrozen, true)
+	engine.RegisterMethod("imgui.drawChannelUnfrozen", "ImGui TableColumn.DrawChannelUnfrozen", (*imgui.TableColumn).DrawChannelUnfrozen, true)
+	engine.RegisterMethod("imgui.isUserEnabled", "ImGui TableColumn.IsUserEnabled", (*imgui.TableColumn).IsUserEnabled, true)
+	engine.RegisterMethod("imgui.isUserEnabledNextFrame", "ImGui TableColumn.IsUserEnabledNextFrame", (*imgui.TableColumn).IsUserEnabledNextFrame, true)
+	engine.RegisterMethod("imgui.isVisibleX", "ImGui TableColumn.IsVisibleX", (*imgui.TableColumn).IsVisibleX, true)
+	engine.RegisterMethod("imgui.isVisibleY", "ImGui TableColumn.IsVisibleY", (*imgui.TableColumn).IsVisibleY, true)
+	engine.RegisterMethod("imgui.isRequestOutput", "ImGui TableColumn.IsRequestOutput", (*imgui.TableColumn).IsRequestOutput, true)
+	engine.RegisterMethod("imgui.isSkipItems", "ImGui TableColumn.IsSkipItems", (*imgui.TableColumn).IsSkipItems, true)
+	engine.RegisterMethod("imgui.isPreserveWidthAuto", "ImGui TableColumn.IsPreserveWidthAuto", (*imgui.TableColumn).IsPreserveWidthAuto, true)
+	engine.RegisterMethod("imgui.navLayerCurrent", "ImGui TableColumn.NavLayerCurrent", (*imgui.TableColumn).NavLayerCurrent, true)
+	engine.RegisterMethod("imgui.autoFitQueue", "ImGui TableColumn.AutoFitQueue", (*imgui.TableColumn).AutoFitQueue, true)
+	engine.RegisterMethod("imgui.cannotSkipItemsQueue", "ImGui TableColumn.CannotSkipItemsQueue", (*imgui.TableColumn).CannotSkipItemsQueue, true)
+	engine.RegisterMethod("imgui.sortDirectionsAvailCount", "ImGui TableColumn.SortDirectionsAvailCount", (*imgui.TableColumn).SortDirectionsAvailCount, true)
+	engine.RegisterMethod("imgui.sortDirectionsAvailMask", "ImGui TableColumn.SortDirectionsAvailMask", (*imgui.TableColumn).SortDirectionsAvailMask, true)
+	engine.RegisterMethod("imgui.sortDirectionsAvailList", "ImGui TableColumn.SortDirectionsAvailList", (*imgui.TableColumn).SortDirectionsAvailList, true)
+	engine.RegisterMethod("imgui.setTableInstanceID", "ImGui TableInstanceData.SetTableInstanceID", (*imgui.TableInstanceData).SetTableInstanceID, true)
+	engine.RegisterMethod("imgui.setLastOuterHeight", "ImGui TableInstanceData.SetLastOuterHeight", (*imgui.TableInstanceData).SetLastOuterHeight, true)
+	engine.RegisterMethod("imgui.setLastTopHeadersRowHeight", "ImGui TableInstanceData.SetLastTopHeadersRowHeight", (*imgui.TableInstanceData).SetLastTopHeadersRowHeight, true)
+	engine.RegisterMethod("imgui.setLastFrozenHeight", "ImGui TableInstanceData.SetLastFrozenHeight", (*imgui.TableInstanceData).SetLastFrozenHeight, true)
+	engine.RegisterMethod("imgui.setHoveredRowLast", "ImGui TableInstanceData.SetHoveredRowLast", (*imgui.TableInstanceData).SetHoveredRowLast, true)
+	engine.RegisterMethod("imgui.setHoveredRowNext", "ImGui TableInstanceData.SetHoveredRowNext", (*imgui.TableInstanceData).SetHoveredRowNext, true)
+	engine.RegisterMethod("imgui.tableInstanceID", "ImGui TableInstanceData.TableInstanceID", (*imgui.TableInstanceData).TableInstanceID, true)
+	engine.RegisterMethod("imgui.lastOuterHeight", "ImGui TableInstanceData.LastOuterHeight", (*imgui.TableInstanceData).LastOuterHeight, true)
+	engine.RegisterMethod("imgui.lastTopHeadersRowHeight", "ImGui TableInstanceData.LastTopHeadersRowHeight", (*imgui.TableInstanceData).LastTopHeadersRowHeight, true)
+	engine.RegisterMethod("imgui.lastFrozenHeight", "ImGui TableInstanceData.LastFrozenHeight", (*imgui.TableInstanceData).LastFrozenHeight, true)
+	engine.RegisterMethod("imgui.hoveredRowLast", "ImGui TableInstanceData.HoveredRowLast", (*imgui.TableInstanceData).HoveredRowLast, true)
+	engine.RegisterMethod("imgui.hoveredRowNext", "ImGui TableInstanceData.HoveredRowNext", (*imgui.TableInstanceData).HoveredRowNext, true)
+	engine.RegisterMethod("imgui.internalColumnSettings", "ImGui TableSettings.InternalColumnSettings", (*imgui.TableSettings).InternalColumnSettings, true)
+	engine.RegisterMethod("imgui.setSaveFlags", "ImGui TableSettings.SetSaveFlags", (*imgui.TableSettings).SetSaveFlags, true)
+	engine.RegisterMethod("imgui.setRefScale", "ImGui TableSettings.SetRefScale", (*imgui.TableSettings).SetRefScale, true)
+	engine.RegisterMethod("imgui.setColumnsCount", "ImGui TableSettings.SetColumnsCount", (*imgui.TableSettings).SetColumnsCount, true)
+	engine.RegisterMethod("imgui.setColumnsCountMax", "ImGui TableSettings.SetColumnsCountMax", (*imgui.TableSettings).SetColumnsCountMax, true)
+	engine.RegisterMethod("imgui.setWantApply", "ImGui TableSettings.SetWantApply", (*imgui.TableSettings).SetWantApply, true)
+	engine.RegisterMethod("imgui.saveFlags", "ImGui TableSettings.SaveFlags", (*imgui.TableSettings).SaveFlags, true)
+	engine.RegisterMethod("imgui.refScale", "ImGui TableSettings.RefScale", (*imgui.TableSettings).RefScale, true)
+	engine.RegisterMethod("imgui.columnsCountMax", "ImGui TableSettings.ColumnsCountMax", (*imgui.TableSettings).ColumnsCountMax, true)
+	engine.RegisterMethod("imgui.wantApply", "ImGui TableSettings.WantApply", (*imgui.TableSettings).WantApply, true)
+	engine.RegisterMethod("imgui.setSpecs", "ImGui TableSortSpecs.SetSpecs", (*imgui.TableSortSpecs).SetSpecs, true)
+	engine.RegisterMethod("imgui.setSpecsCount", "ImGui TableSortSpecs.SetSpecsCount", (*imgui.TableSortSpecs).SetSpecsCount, true)
+	engine.RegisterMethod("imgui.setSpecsDirty", "ImGui TableSortSpecs.SetSpecsDirty", (*imgui.TableSortSpecs).SetSpecsDirty, true)
+	engine.RegisterMethod("imgui.specs", "ImGui TableSortSpecs.Specs", (*imgui.TableSortSpecs).Specs, true)
+	engine.RegisterMethod("imgui.specsCount", "ImGui TableSortSpecs.SpecsCount", (*imgui.TableSortSpecs).SpecsCount, true)
+	engine.RegisterMethod("imgui.specsDirty", "ImGui TableSortSpecs.SpecsDirty", (*imgui.TableSortSpecs).SpecsDirty, true)
+	engine.RegisterMethod("imgui.setTableIndex", "ImGui TableTempData.SetTableIndex", (*imgui.TableTempData).SetTableIndex, true)
+	engine.RegisterMethod("imgui.setLastTimeActive", "ImGui TableTempData.SetLastTimeActive", (*imgui.TableTempData).SetLastTimeActive, true)
+	engine.RegisterMethod("imgui.setAngledHeadersExtraWidth", "ImGui TableTempData.SetAngledHeadersExtraWidth", (*imgui.TableTempData).SetAngledHeadersExtraWidth, true)
+	engine.RegisterMethod("imgui.setAngledHeadersRequests", "ImGui TableTempData.SetAngledHeadersRequests", (*imgui.TableTempData).SetAngledHeadersRequests, true)
+	engine.RegisterMethod("imgui.setUserOuterSize", "ImGui TableTempData.SetUserOuterSize", (*imgui.TableTempData).SetUserOuterSize, true)
+	engine.RegisterMethod("imgui.setDrawSplitter", "ImGui TableTempData.SetDrawSplitter", (*imgui.TableTempData).SetDrawSplitter, true)
+	engine.RegisterMethod("imgui.setHostBackupWorkRect", "ImGui TableTempData.SetHostBackupWorkRect", (*imgui.TableTempData).SetHostBackupWorkRect, true)
+	engine.RegisterMethod("imgui.setHostBackupPrevLineSize", "ImGui TableTempData.SetHostBackupPrevLineSize", (*imgui.TableTempData).SetHostBackupPrevLineSize, true)
+	engine.RegisterMethod("imgui.setHostBackupCurrLineSize", "ImGui TableTempData.SetHostBackupCurrLineSize", (*imgui.TableTempData).SetHostBackupCurrLineSize, true)
+	engine.RegisterMethod("imgui.setHostBackupCursorMaxPos", "ImGui TableTempData.SetHostBackupCursorMaxPos", (*imgui.TableTempData).SetHostBackupCursorMaxPos, true)
+	engine.RegisterMethod("imgui.setHostBackupColumnsOffset", "ImGui TableTempData.SetHostBackupColumnsOffset", (*imgui.TableTempData).SetHostBackupColumnsOffset, true)
+	engine.RegisterMethod("imgui.setHostBackupItemWidth", "ImGui TableTempData.SetHostBackupItemWidth", (*imgui.TableTempData).SetHostBackupItemWidth, true)
+	engine.RegisterMethod("imgui.setHostBackupItemWidthStackSize", "ImGui TableTempData.SetHostBackupItemWidthStackSize", (*imgui.TableTempData).SetHostBackupItemWidthStackSize, true)
+	engine.RegisterMethod("imgui.tableIndex", "ImGui TableTempData.TableIndex", (*imgui.TableTempData).TableIndex, true)
+	engine.RegisterMethod("imgui.lastTimeActive", "ImGui TableTempData.LastTimeActive", (*imgui.TableTempData).LastTimeActive, true)
+	engine.RegisterMethod("imgui.angledHeadersExtraWidth", "ImGui TableTempData.AngledHeadersExtraWidth", (*imgui.TableTempData).AngledHeadersExtraWidth, true)
+	engine.RegisterMethod("imgui.angledHeadersRequests", "ImGui TableTempData.AngledHeadersRequests", (*imgui.TableTempData).AngledHeadersRequests, true)
+	engine.RegisterMethod("imgui.userOuterSize", "ImGui TableTempData.UserOuterSize", (*imgui.TableTempData).UserOuterSize, true)
+	engine.RegisterMethod("imgui.drawSplitter", "ImGui TableTempData.DrawSplitter", (*imgui.TableTempData).DrawSplitter, true)
+	engine.RegisterMethod("imgui.hostBackupWorkRect", "ImGui TableTempData.HostBackupWorkRect", (*imgui.TableTempData).HostBackupWorkRect, true)
+	engine.RegisterMethod("imgui.hostBackupPrevLineSize", "ImGui TableTempData.HostBackupPrevLineSize", (*imgui.TableTempData).HostBackupPrevLineSize, true)
+	engine.RegisterMethod("imgui.hostBackupCurrLineSize", "ImGui TableTempData.HostBackupCurrLineSize", (*imgui.TableTempData).HostBackupCurrLineSize, true)
+	engine.RegisterMethod("imgui.hostBackupCursorMaxPos", "ImGui TableTempData.HostBackupCursorMaxPos", (*imgui.TableTempData).HostBackupCursorMaxPos, true)
+	engine.RegisterMethod("imgui.hostBackupColumnsOffset", "ImGui TableTempData.HostBackupColumnsOffset", (*imgui.TableTempData).HostBackupColumnsOffset, true)
+	engine.RegisterMethod("imgui.hostBackupItemWidth", "ImGui TableTempData.HostBackupItemWidth", (*imgui.TableTempData).HostBackupItemWidth, true)
+	engine.RegisterMethod("imgui.hostBackupItemWidthStackSize", "ImGui TableTempData.HostBackupItemWidthStackSize", (*imgui.TableTempData).HostBackupItemWidthStackSize, true)
+	engine.RegisterMethod("imgui.setRawData", "ImGui Table.SetRawData", (*imgui.Table).SetRawData, true)
+	engine.RegisterMethod("imgui.setEnabledMaskByDisplayOrder", "ImGui Table.SetEnabledMaskByDisplayOrder", (*imgui.Table).SetEnabledMaskByDisplayOrder, true)
+	engine.RegisterMethod("imgui.setEnabledMaskByIndex", "ImGui Table.SetEnabledMaskByIndex", (*imgui.Table).SetEnabledMaskByIndex, true)
+	engine.RegisterMethod("imgui.setVisibleMaskByIndex", "ImGui Table.SetVisibleMaskByIndex", (*imgui.Table).SetVisibleMaskByIndex, true)
+	engine.RegisterMethod("imgui.setSettingsLoadedFlags", "ImGui Table.SetSettingsLoadedFlags", (*imgui.Table).SetSettingsLoadedFlags, true)
+	engine.RegisterMethod("imgui.setSettingsOffset", "ImGui Table.SetSettingsOffset", (*imgui.Table).SetSettingsOffset, true)
+	engine.RegisterMethod("imgui.setCurrentRow", "ImGui Table.SetCurrentRow", (*imgui.Table).SetCurrentRow, true)
+	engine.RegisterMethod("imgui.setCurrentColumn", "ImGui Table.SetCurrentColumn", (*imgui.Table).SetCurrentColumn, true)
+	engine.RegisterMethod("imgui.setInstanceCurrent", "ImGui Table.SetInstanceCurrent", (*imgui.Table).SetInstanceCurrent, true)
+	engine.RegisterMethod("imgui.setInstanceInteracted", "ImGui Table.SetInstanceInteracted", (*imgui.Table).SetInstanceInteracted, true)
+	engine.RegisterMethod("imgui.setRowPosY1", "ImGui Table.SetRowPosY1", (*imgui.Table).SetRowPosY1, true)
+	engine.RegisterMethod("imgui.setRowPosY2", "ImGui Table.SetRowPosY2", (*imgui.Table).SetRowPosY2, true)
+	engine.RegisterMethod("imgui.setRowMinHeight", "ImGui Table.SetRowMinHeight", (*imgui.Table).SetRowMinHeight, true)
+	engine.RegisterMethod("imgui.setRowCellPaddingY", "ImGui Table.SetRowCellPaddingY", (*imgui.Table).SetRowCellPaddingY, true)
+	engine.RegisterMethod("imgui.setRowTextBaseline", "ImGui Table.SetRowTextBaseline", (*imgui.Table).SetRowTextBaseline, true)
+	engine.RegisterMethod("imgui.setRowIndentOffsetX", "ImGui Table.SetRowIndentOffsetX", (*imgui.Table).SetRowIndentOffsetX, true)
+	engine.RegisterMethod("imgui.setRowFlags", "ImGui Table.SetRowFlags", (*imgui.Table).SetRowFlags, true)
+	engine.RegisterMethod("imgui.setLastRowFlags", "ImGui Table.SetLastRowFlags", (*imgui.Table).SetLastRowFlags, true)
+	engine.RegisterMethod("imgui.setRowBgColorCounter", "ImGui Table.SetRowBgColorCounter", (*imgui.Table).SetRowBgColorCounter, true)
+	engine.RegisterMethod("imgui.setRowBgColor", "ImGui Table.SetRowBgColor", (*imgui.Table).SetRowBgColor, true)
+	engine.RegisterMethod("imgui.setBorderColorStrong", "ImGui Table.SetBorderColorStrong", (*imgui.Table).SetBorderColorStrong, true)
+	engine.RegisterMethod("imgui.setBorderColorLight", "ImGui Table.SetBorderColorLight", (*imgui.Table).SetBorderColorLight, true)
+	engine.RegisterMethod("imgui.setBorderX1", "ImGui Table.SetBorderX1", (*imgui.Table).SetBorderX1, true)
+	engine.RegisterMethod("imgui.setBorderX2", "ImGui Table.SetBorderX2", (*imgui.Table).SetBorderX2, true)
+	engine.RegisterMethod("imgui.setHostIndentX", "ImGui Table.SetHostIndentX", (*imgui.Table).SetHostIndentX, true)
+	engine.RegisterMethod("imgui.setMinColumnWidth", "ImGui Table.SetMinColumnWidth", (*imgui.Table).SetMinColumnWidth, true)
+	engine.RegisterMethod("imgui.setOuterPaddingX", "ImGui Table.SetOuterPaddingX", (*imgui.Table).SetOuterPaddingX, true)
+	engine.RegisterMethod("imgui.setCellPaddingX", "ImGui Table.SetCellPaddingX", (*imgui.Table).SetCellPaddingX, true)
+	engine.RegisterMethod("imgui.setCellSpacingX1", "ImGui Table.SetCellSpacingX1", (*imgui.Table).SetCellSpacingX1, true)
+	engine.RegisterMethod("imgui.setCellSpacingX2", "ImGui Table.SetCellSpacingX2", (*imgui.Table).SetCellSpacingX2, true)
+	engine.RegisterMethod("imgui.setInnerWidth", "ImGui Table.SetInnerWidth", (*imgui.Table).SetInnerWidth, true)
+	engine.RegisterMethod("imgui.setColumnsGivenWidth", "ImGui Table.SetColumnsGivenWidth", (*imgui.Table).SetColumnsGivenWidth, true)
+	engine.RegisterMethod("imgui.setColumnsAutoFitWidth", "ImGui Table.SetColumnsAutoFitWidth", (*imgui.Table).SetColumnsAutoFitWidth, true)
+	engine.RegisterMethod("imgui.setColumnsStretchSumWeights", "ImGui Table.SetColumnsStretchSumWeights", (*imgui.Table).SetColumnsStretchSumWeights, true)
+	engine.RegisterMethod("imgui.setResizedColumnNextWidth", "ImGui Table.SetResizedColumnNextWidth", (*imgui.Table).SetResizedColumnNextWidth, true)
+	engine.RegisterMethod("imgui.setResizeLockMinContentsX2", "ImGui Table.SetResizeLockMinContentsX2", (*imgui.Table).SetResizeLockMinContentsX2, true)
+	engine.RegisterMethod("imgui.setAngledHeadersHeight", "ImGui Table.SetAngledHeadersHeight", (*imgui.Table).SetAngledHeadersHeight, true)
+	engine.RegisterMethod("imgui.setAngledHeadersSlope", "ImGui Table.SetAngledHeadersSlope", (*imgui.Table).SetAngledHeadersSlope, true)
+	engine.RegisterMethod("imgui.setOuterRect", "ImGui Table.SetOuterRect", (*imgui.Table).SetOuterRect, true)
+	engine.RegisterMethod("imgui.setInnerRect", "ImGui Table.SetInnerRect", (*imgui.Table).SetInnerRect, true)
+	engine.RegisterMethod("imgui.setWorkRect", "ImGui Table.SetWorkRect", (*imgui.Table).SetWorkRect, true)
+	engine.RegisterMethod("imgui.setInnerClipRect", "ImGui Table.SetInnerClipRect", (*imgui.Table).SetInnerClipRect, true)
+	engine.RegisterMethod("imgui.setBgClipRect", "ImGui Table.SetBgClipRect", (*imgui.Table).SetBgClipRect, true)
+	engine.RegisterMethod("imgui.setBg0ClipRectForDrawCmd", "ImGui Table.SetBg0ClipRectForDrawCmd", (*imgui.Table).SetBg0ClipRectForDrawCmd, true)
+	engine.RegisterMethod("imgui.setBg2ClipRectForDrawCmd", "ImGui Table.SetBg2ClipRectForDrawCmd", (*imgui.Table).SetBg2ClipRectForDrawCmd, true)
+	engine.RegisterMethod("imgui.setHostClipRect", "ImGui Table.SetHostClipRect", (*imgui.Table).SetHostClipRect, true)
+	engine.RegisterMethod("imgui.setHostBackupInnerClipRect", "ImGui Table.SetHostBackupInnerClipRect", (*imgui.Table).SetHostBackupInnerClipRect, true)
+	engine.RegisterMethod("imgui.setOuterWindow", "ImGui Table.SetOuterWindow", (*imgui.Table).SetOuterWindow, true)
+	engine.RegisterMethod("imgui.setInnerWindow", "ImGui Table.SetInnerWindow", (*imgui.Table).SetInnerWindow, true)
+	engine.RegisterMethod("imgui.setColumnsNames", "ImGui Table.SetColumnsNames", (*imgui.Table).SetColumnsNames, true)
+	engine.RegisterMethod("imgui.setInstanceDataFirst", "ImGui Table.SetInstanceDataFirst", (*imgui.Table).SetInstanceDataFirst, true)
+	engine.RegisterMethod("imgui.setInstanceDataExtra", "ImGui Table.SetInstanceDataExtra", (*imgui.Table).SetInstanceDataExtra, true)
+	engine.RegisterMethod("imgui.setSortSpecsSingle", "ImGui Table.SetSortSpecsSingle", (*imgui.Table).SetSortSpecsSingle, true)
+	engine.RegisterMethod("imgui.setSortSpecsMulti", "ImGui Table.SetSortSpecsMulti", (*imgui.Table).SetSortSpecsMulti, true)
+	engine.RegisterMethod("imgui.setSortSpecs", "ImGui Table.SetSortSpecs", (*imgui.Table).SetSortSpecs, true)
+	engine.RegisterMethod("imgui.setSortSpecsCount", "ImGui Table.SetSortSpecsCount", (*imgui.Table).SetSortSpecsCount, true)
+	engine.RegisterMethod("imgui.setColumnsEnabledCount", "ImGui Table.SetColumnsEnabledCount", (*imgui.Table).SetColumnsEnabledCount, true)
+	engine.RegisterMethod("imgui.setColumnsEnabledFixedCount", "ImGui Table.SetColumnsEnabledFixedCount", (*imgui.Table).SetColumnsEnabledFixedCount, true)
+	engine.RegisterMethod("imgui.setDeclColumnsCount", "ImGui Table.SetDeclColumnsCount", (*imgui.Table).SetDeclColumnsCount, true)
+	engine.RegisterMethod("imgui.setAngledHeadersCount", "ImGui Table.SetAngledHeadersCount", (*imgui.Table).SetAngledHeadersCount, true)
+	engine.RegisterMethod("imgui.setHoveredColumnBody", "ImGui Table.SetHoveredColumnBody", (*imgui.Table).SetHoveredColumnBody, true)
+	engine.RegisterMethod("imgui.setHoveredColumnBorder", "ImGui Table.SetHoveredColumnBorder", (*imgui.Table).SetHoveredColumnBorder, true)
+	engine.RegisterMethod("imgui.setHighlightColumnHeader", "ImGui Table.SetHighlightColumnHeader", (*imgui.Table).SetHighlightColumnHeader, true)
+	engine.RegisterMethod("imgui.setAutoFitSingleColumn", "ImGui Table.SetAutoFitSingleColumn", (*imgui.Table).SetAutoFitSingleColumn, true)
+	engine.RegisterMethod("imgui.setResizedColumn", "ImGui Table.SetResizedColumn", (*imgui.Table).SetResizedColumn, true)
+	engine.RegisterMethod("imgui.setLastResizedColumn", "ImGui Table.SetLastResizedColumn", (*imgui.Table).SetLastResizedColumn, true)
+	engine.RegisterMethod("imgui.setHeldHeaderColumn", "ImGui Table.SetHeldHeaderColumn", (*imgui.Table).SetHeldHeaderColumn, true)
+	engine.RegisterMethod("imgui.setReorderColumn", "ImGui Table.SetReorderColumn", (*imgui.Table).SetReorderColumn, true)
+	engine.RegisterMethod("imgui.setReorderColumnDir", "ImGui Table.SetReorderColumnDir", (*imgui.Table).SetReorderColumnDir, true)
+	engine.RegisterMethod("imgui.setLeftMostEnabledColumn", "ImGui Table.SetLeftMostEnabledColumn", (*imgui.Table).SetLeftMostEnabledColumn, true)
+	engine.RegisterMethod("imgui.setRightMostEnabledColumn", "ImGui Table.SetRightMostEnabledColumn", (*imgui.Table).SetRightMostEnabledColumn, true)
+	engine.RegisterMethod("imgui.setLeftMostStretchedColumn", "ImGui Table.SetLeftMostStretchedColumn", (*imgui.Table).SetLeftMostStretchedColumn, true)
+	engine.RegisterMethod("imgui.setRightMostStretchedColumn", "ImGui Table.SetRightMostStretchedColumn", (*imgui.Table).SetRightMostStretchedColumn, true)
+	engine.RegisterMethod("imgui.setContextPopupColumn", "ImGui Table.SetContextPopupColumn", (*imgui.Table).SetContextPopupColumn, true)
+	engine.RegisterMethod("imgui.setFreezeRowsRequest", "ImGui Table.SetFreezeRowsRequest", (*imgui.Table).SetFreezeRowsRequest, true)
+	engine.RegisterMethod("imgui.setFreezeRowsCount", "ImGui Table.SetFreezeRowsCount", (*imgui.Table).SetFreezeRowsCount, true)
+	engine.RegisterMethod("imgui.setFreezeColumnsRequest", "ImGui Table.SetFreezeColumnsRequest", (*imgui.Table).SetFreezeColumnsRequest, true)
+	engine.RegisterMethod("imgui.setFreezeColumnsCount", "ImGui Table.SetFreezeColumnsCount", (*imgui.Table).SetFreezeColumnsCount, true)
+	engine.RegisterMethod("imgui.setRowCellDataCurrent", "ImGui Table.SetRowCellDataCurrent", (*imgui.Table).SetRowCellDataCurrent, true)
+	engine.RegisterMethod("imgui.setDummyDrawChannel", "ImGui Table.SetDummyDrawChannel", (*imgui.Table).SetDummyDrawChannel, true)
+	engine.RegisterMethod("imgui.setBg2DrawChannelCurrent", "ImGui Table.SetBg2DrawChannelCurrent", (*imgui.Table).SetBg2DrawChannelCurrent, true)
+	engine.RegisterMethod("imgui.setBg2DrawChannelUnfrozen", "ImGui Table.SetBg2DrawChannelUnfrozen", (*imgui.Table).SetBg2DrawChannelUnfrozen, true)
+	engine.RegisterMethod("imgui.setIsLayoutLocked", "ImGui Table.SetIsLayoutLocked", (*imgui.Table).SetIsLayoutLocked, true)
+	engine.RegisterMethod("imgui.setIsInsideRow", "ImGui Table.SetIsInsideRow", (*imgui.Table).SetIsInsideRow, true)
+	engine.RegisterMethod("imgui.setIsInitializing", "ImGui Table.SetIsInitializing", (*imgui.Table).SetIsInitializing, true)
+	engine.RegisterMethod("imgui.setIsSortSpecsDirty", "ImGui Table.SetIsSortSpecsDirty", (*imgui.Table).SetIsSortSpecsDirty, true)
+	engine.RegisterMethod("imgui.setIsUsingHeaders", "ImGui Table.SetIsUsingHeaders", (*imgui.Table).SetIsUsingHeaders, true)
+	engine.RegisterMethod("imgui.setIsContextPopupOpen", "ImGui Table.SetIsContextPopupOpen", (*imgui.Table).SetIsContextPopupOpen, true)
+	engine.RegisterMethod("imgui.setDisableDefaultContextMenu", "ImGui Table.SetDisableDefaultContextMenu", (*imgui.Table).SetDisableDefaultContextMenu, true)
+	engine.RegisterMethod("imgui.setIsSettingsRequestLoad", "ImGui Table.SetIsSettingsRequestLoad", (*imgui.Table).SetIsSettingsRequestLoad, true)
+	engine.RegisterMethod("imgui.setIsSettingsDirty", "ImGui Table.SetIsSettingsDirty", (*imgui.Table).SetIsSettingsDirty, true)
+	engine.RegisterMethod("imgui.setIsDefaultDisplayOrder", "ImGui Table.SetIsDefaultDisplayOrder", (*imgui.Table).SetIsDefaultDisplayOrder, true)
+	engine.RegisterMethod("imgui.setIsResetAllRequest", "ImGui Table.SetIsResetAllRequest", (*imgui.Table).SetIsResetAllRequest, true)
+	engine.RegisterMethod("imgui.setIsResetDisplayOrderRequest", "ImGui Table.SetIsResetDisplayOrderRequest", (*imgui.Table).SetIsResetDisplayOrderRequest, true)
+	engine.RegisterMethod("imgui.setIsUnfrozenRows", "ImGui Table.SetIsUnfrozenRows", (*imgui.Table).SetIsUnfrozenRows, true)
+	engine.RegisterMethod("imgui.setIsDefaultSizingPolicy", "ImGui Table.SetIsDefaultSizingPolicy", (*imgui.Table).SetIsDefaultSizingPolicy, true)
+	engine.RegisterMethod("imgui.setIsActiveIdAliveBeforeTable", "ImGui Table.SetIsActiveIdAliveBeforeTable", (*imgui.Table).SetIsActiveIdAliveBeforeTable, true)
+	engine.RegisterMethod("imgui.setIsActiveIdInTable", "ImGui Table.SetIsActiveIdInTable", (*imgui.Table).SetIsActiveIdInTable, true)
+	engine.RegisterMethod("imgui.setHasScrollbarYCurr", "ImGui Table.SetHasScrollbarYCurr", (*imgui.Table).SetHasScrollbarYCurr, true)
+	engine.RegisterMethod("imgui.setHasScrollbarYPrev", "ImGui Table.SetHasScrollbarYPrev", (*imgui.Table).SetHasScrollbarYPrev, true)
+	engine.RegisterMethod("imgui.setMemoryCompacted", "ImGui Table.SetMemoryCompacted", (*imgui.Table).SetMemoryCompacted, true)
+	engine.RegisterMethod("imgui.setHostSkipItems", "ImGui Table.SetHostSkipItems", (*imgui.Table).SetHostSkipItems, true)
+	engine.RegisterMethod("imgui.rawData", "ImGui Table.RawData", (*imgui.Table).RawData, true)
+	engine.RegisterMethod("imgui.enabledMaskByDisplayOrder", "ImGui Table.EnabledMaskByDisplayOrder", (*imgui.Table).EnabledMaskByDisplayOrder, true)
+	engine.RegisterMethod("imgui.enabledMaskByIndex", "ImGui Table.EnabledMaskByIndex", (*imgui.Table).EnabledMaskByIndex, true)
+	engine.RegisterMethod("imgui.visibleMaskByIndex", "ImGui Table.VisibleMaskByIndex", (*imgui.Table).VisibleMaskByIndex, true)
+	engine.RegisterMethod("imgui.settingsLoadedFlags", "ImGui Table.SettingsLoadedFlags", (*imgui.Table).SettingsLoadedFlags, true)
+	engine.RegisterMethod("imgui.settingsOffset", "ImGui Table.SettingsOffset", (*imgui.Table).SettingsOffset, true)
+	engine.RegisterMethod("imgui.currentRow", "ImGui Table.CurrentRow", (*imgui.Table).CurrentRow, true)
+	engine.RegisterMethod("imgui.currentColumn", "ImGui Table.CurrentColumn", (*imgui.Table).CurrentColumn, true)
+	engine.RegisterMethod("imgui.instanceCurrent", "ImGui Table.InstanceCurrent", (*imgui.Table).InstanceCurrent, true)
+	engine.RegisterMethod("imgui.instanceInteracted", "ImGui Table.InstanceInteracted", (*imgui.Table).InstanceInteracted, true)
+	engine.RegisterMethod("imgui.rowPosY1", "ImGui Table.RowPosY1", (*imgui.Table).RowPosY1, true)
+	engine.RegisterMethod("imgui.rowPosY2", "ImGui Table.RowPosY2", (*imgui.Table).RowPosY2, true)
+	engine.RegisterMethod("imgui.rowMinHeight", "ImGui Table.RowMinHeight", (*imgui.Table).RowMinHeight, true)
+	engine.RegisterMethod("imgui.rowCellPaddingY", "ImGui Table.RowCellPaddingY", (*imgui.Table).RowCellPaddingY, true)
+	engine.RegisterMethod("imgui.rowTextBaseline", "ImGui Table.RowTextBaseline", (*imgui.Table).RowTextBaseline, true)
+	engine.RegisterMethod("imgui.rowIndentOffsetX", "ImGui Table.RowIndentOffsetX", (*imgui.Table).RowIndentOffsetX, true)
+	engine.RegisterMethod("imgui.rowFlags", "ImGui Table.RowFlags", (*imgui.Table).RowFlags, true)
+	engine.RegisterMethod("imgui.lastRowFlags", "ImGui Table.LastRowFlags", (*imgui.Table).LastRowFlags, true)
+	engine.RegisterMethod("imgui.rowBgColorCounter", "ImGui Table.RowBgColorCounter", (*imgui.Table).RowBgColorCounter, true)
+	engine.RegisterMethod("imgui.rowBgColor", "ImGui Table.RowBgColor", (*imgui.Table).RowBgColor, true)
+	engine.RegisterMethod("imgui.borderColorStrong", "ImGui Table.BorderColorStrong", (*imgui.Table).BorderColorStrong, true)
+	engine.RegisterMethod("imgui.borderColorLight", "ImGui Table.BorderColorLight", (*imgui.Table).BorderColorLight, true)
+	engine.RegisterMethod("imgui.borderX1", "ImGui Table.BorderX1", (*imgui.Table).BorderX1, true)
+	engine.RegisterMethod("imgui.borderX2", "ImGui Table.BorderX2", (*imgui.Table).BorderX2, true)
+	engine.RegisterMethod("imgui.hostIndentX", "ImGui Table.HostIndentX", (*imgui.Table).HostIndentX, true)
+	engine.RegisterMethod("imgui.minColumnWidth", "ImGui Table.MinColumnWidth", (*imgui.Table).MinColumnWidth, true)
+	engine.RegisterMethod("imgui.outerPaddingX", "ImGui Table.OuterPaddingX", (*imgui.Table).OuterPaddingX, true)
+	engine.RegisterMethod("imgui.cellPaddingX", "ImGui Table.CellPaddingX", (*imgui.Table).CellPaddingX, true)
+	engine.RegisterMethod("imgui.cellSpacingX1", "ImGui Table.CellSpacingX1", (*imgui.Table).CellSpacingX1, true)
+	engine.RegisterMethod("imgui.cellSpacingX2", "ImGui Table.CellSpacingX2", (*imgui.Table).CellSpacingX2, true)
+	engine.RegisterMethod("imgui.innerWidth", "ImGui Table.InnerWidth", (*imgui.Table).InnerWidth, true)
+	engine.RegisterMethod("imgui.columnsGivenWidth", "ImGui Table.ColumnsGivenWidth", (*imgui.Table).ColumnsGivenWidth, true)
+	engine.RegisterMethod("imgui.columnsAutoFitWidth", "ImGui Table.ColumnsAutoFitWidth", (*imgui.Table).ColumnsAutoFitWidth, true)
+	engine.RegisterMethod("imgui.columnsStretchSumWeights", "ImGui Table.ColumnsStretchSumWeights", (*imgui.Table).ColumnsStretchSumWeights, true)
+	engine.RegisterMethod("imgui.resizedColumnNextWidth", "ImGui Table.ResizedColumnNextWidth", (*imgui.Table).ResizedColumnNextWidth, true)
+	engine.RegisterMethod("imgui.resizeLockMinContentsX2", "ImGui Table.ResizeLockMinContentsX2", (*imgui.Table).ResizeLockMinContentsX2, true)
+	engine.RegisterMethod("imgui.angledHeadersHeight", "ImGui Table.AngledHeadersHeight", (*imgui.Table).AngledHeadersHeight, true)
+	engine.RegisterMethod("imgui.angledHeadersSlope", "ImGui Table.AngledHeadersSlope", (*imgui.Table).AngledHeadersSlope, true)
+	engine.RegisterMethod("imgui.outerRect", "ImGui Table.OuterRect", (*imgui.Table).OuterRect, true)
+	engine.RegisterMethod("imgui.innerRect", "ImGui Table.InnerRect", (*imgui.Table).InnerRect, true)
+	engine.RegisterMethod("imgui.workRect", "ImGui Table.WorkRect", (*imgui.Table).WorkRect, true)
+	engine.RegisterMethod("imgui.innerClipRect", "ImGui Table.InnerClipRect", (*imgui.Table).InnerClipRect, true)
+	engine.RegisterMethod("imgui.bgClipRect", "ImGui Table.BgClipRect", (*imgui.Table).BgClipRect, true)
+	engine.RegisterMethod("imgui.bg0ClipRectForDrawCmd", "ImGui Table.Bg0ClipRectForDrawCmd", (*imgui.Table).Bg0ClipRectForDrawCmd, true)
+	engine.RegisterMethod("imgui.bg2ClipRectForDrawCmd", "ImGui Table.Bg2ClipRectForDrawCmd", (*imgui.Table).Bg2ClipRectForDrawCmd, true)
+	engine.RegisterMethod("imgui.hostClipRect", "ImGui Table.HostClipRect", (*imgui.Table).HostClipRect, true)
+	engine.RegisterMethod("imgui.hostBackupInnerClipRect", "ImGui Table.HostBackupInnerClipRect", (*imgui.Table).HostBackupInnerClipRect, true)
+	engine.RegisterMethod("imgui.outerWindow", "ImGui Table.OuterWindow", (*imgui.Table).OuterWindow, true)
+	engine.RegisterMethod("imgui.innerWindow", "ImGui Table.InnerWindow", (*imgui.Table).InnerWindow, true)
+	engine.RegisterMethod("imgui.columnsNames", "ImGui Table.ColumnsNames", (*imgui.Table).ColumnsNames, true)
+	engine.RegisterMethod("imgui.instanceDataFirst", "ImGui Table.InstanceDataFirst", (*imgui.Table).InstanceDataFirst, true)
+	engine.RegisterMethod("imgui.instanceDataExtra", "ImGui Table.InstanceDataExtra", (*imgui.Table).InstanceDataExtra, true)
+	engine.RegisterMethod("imgui.sortSpecsSingle", "ImGui Table.SortSpecsSingle", (*imgui.Table).SortSpecsSingle, true)
+	engine.RegisterMethod("imgui.sortSpecsMulti", "ImGui Table.SortSpecsMulti", (*imgui.Table).SortSpecsMulti, true)
+	engine.RegisterMethod("imgui.sortSpecs", "ImGui Table.SortSpecs", (*imgui.Table).SortSpecs, true)
+	engine.RegisterMethod("imgui.sortSpecsCount", "ImGui Table.SortSpecsCount", (*imgui.Table).SortSpecsCount, true)
+	engine.RegisterMethod("imgui.columnsEnabledCount", "ImGui Table.ColumnsEnabledCount", (*imgui.Table).ColumnsEnabledCount, true)
+	engine.RegisterMethod("imgui.columnsEnabledFixedCount", "ImGui Table.ColumnsEnabledFixedCount", (*imgui.Table).ColumnsEnabledFixedCount, true)
+	engine.RegisterMethod("imgui.declColumnsCount", "ImGui Table.DeclColumnsCount", (*imgui.Table).DeclColumnsCount, true)
+	engine.RegisterMethod("imgui.angledHeadersCount", "ImGui Table.AngledHeadersCount", (*imgui.Table).AngledHeadersCount, true)
+	engine.RegisterMethod("imgui.hoveredColumnBody", "ImGui Table.HoveredColumnBody", (*imgui.Table).HoveredColumnBody, true)
+	engine.RegisterMethod("imgui.hoveredColumnBorder", "ImGui Table.HoveredColumnBorder", (*imgui.Table).HoveredColumnBorder, true)
+	engine.RegisterMethod("imgui.highlightColumnHeader", "ImGui Table.HighlightColumnHeader", (*imgui.Table).HighlightColumnHeader, true)
+	engine.RegisterMethod("imgui.autoFitSingleColumn", "ImGui Table.AutoFitSingleColumn", (*imgui.Table).AutoFitSingleColumn, true)
+	engine.RegisterMethod("imgui.resizedColumn", "ImGui Table.ResizedColumn", (*imgui.Table).ResizedColumn, true)
+	engine.RegisterMethod("imgui.lastResizedColumn", "ImGui Table.LastResizedColumn", (*imgui.Table).LastResizedColumn, true)
+	engine.RegisterMethod("imgui.heldHeaderColumn", "ImGui Table.HeldHeaderColumn", (*imgui.Table).HeldHeaderColumn, true)
+	engine.RegisterMethod("imgui.reorderColumn", "ImGui Table.ReorderColumn", (*imgui.Table).ReorderColumn, true)
+	engine.RegisterMethod("imgui.reorderColumnDir", "ImGui Table.ReorderColumnDir", (*imgui.Table).ReorderColumnDir, true)
+	engine.RegisterMethod("imgui.leftMostEnabledColumn", "ImGui Table.LeftMostEnabledColumn", (*imgui.Table).LeftMostEnabledColumn, true)
+	engine.RegisterMethod("imgui.rightMostEnabledColumn", "ImGui Table.RightMostEnabledColumn", (*imgui.Table).RightMostEnabledColumn, true)
+	engine.RegisterMethod("imgui.leftMostStretchedColumn", "ImGui Table.LeftMostStretchedColumn", (*imgui.Table).LeftMostStretchedColumn, true)
+	engine.RegisterMethod("imgui.rightMostStretchedColumn", "ImGui Table.RightMostStretchedColumn", (*imgui.Table).RightMostStretchedColumn, true)
+	engine.RegisterMethod("imgui.contextPopupColumn", "ImGui Table.ContextPopupColumn", (*imgui.Table).ContextPopupColumn, true)
+	engine.RegisterMethod("imgui.freezeRowsRequest", "ImGui Table.FreezeRowsRequest", (*imgui.Table).FreezeRowsRequest, true)
+	engine.RegisterMethod("imgui.freezeRowsCount", "ImGui Table.FreezeRowsCount", (*imgui.Table).FreezeRowsCount, true)
+	engine.RegisterMethod("imgui.freezeColumnsRequest", "ImGui Table.FreezeColumnsRequest", (*imgui.Table).FreezeColumnsRequest, true)
+	engine.RegisterMethod("imgui.freezeColumnsCount", "ImGui Table.FreezeColumnsCount", (*imgui.Table).FreezeColumnsCount, true)
+	engine.RegisterMethod("imgui.rowCellDataCurrent", "ImGui Table.RowCellDataCurrent", (*imgui.Table).RowCellDataCurrent, true)
+	engine.RegisterMethod("imgui.dummyDrawChannel", "ImGui Table.DummyDrawChannel", (*imgui.Table).DummyDrawChannel, true)
+	engine.RegisterMethod("imgui.bg2DrawChannelCurrent", "ImGui Table.Bg2DrawChannelCurrent", (*imgui.Table).Bg2DrawChannelCurrent, true)
+	engine.RegisterMethod("imgui.bg2DrawChannelUnfrozen", "ImGui Table.Bg2DrawChannelUnfrozen", (*imgui.Table).Bg2DrawChannelUnfrozen, true)
+	engine.RegisterMethod("imgui.isLayoutLocked", "ImGui Table.IsLayoutLocked", (*imgui.Table).IsLayoutLocked, true)
+	engine.RegisterMethod("imgui.isInsideRow", "ImGui Table.IsInsideRow", (*imgui.Table).IsInsideRow, true)
+	engine.RegisterMethod("imgui.isInitializing", "ImGui Table.IsInitializing", (*imgui.Table).IsInitializing, true)
+	engine.RegisterMethod("imgui.isSortSpecsDirty", "ImGui Table.IsSortSpecsDirty", (*imgui.Table).IsSortSpecsDirty, true)
+	engine.RegisterMethod("imgui.isUsingHeaders", "ImGui Table.IsUsingHeaders", (*imgui.Table).IsUsingHeaders, true)
+	engine.RegisterMethod("imgui.isContextPopupOpen", "ImGui Table.IsContextPopupOpen", (*imgui.Table).IsContextPopupOpen, true)
+	engine.RegisterMethod("imgui.disableDefaultContextMenu", "ImGui Table.DisableDefaultContextMenu", (*imgui.Table).DisableDefaultContextMenu, true)
+	engine.RegisterMethod("imgui.isSettingsRequestLoad", "ImGui Table.IsSettingsRequestLoad", (*imgui.Table).IsSettingsRequestLoad, true)
+	engine.RegisterMethod("imgui.isSettingsDirty", "ImGui Table.IsSettingsDirty", (*imgui.Table).IsSettingsDirty, true)
+	engine.RegisterMethod("imgui.isDefaultDisplayOrder", "ImGui Table.IsDefaultDisplayOrder", (*imgui.Table).IsDefaultDisplayOrder, true)
+	engine.RegisterMethod("imgui.isResetAllRequest", "ImGui Table.IsResetAllRequest", (*imgui.Table).IsResetAllRequest, true)
+	engine.RegisterMethod("imgui.isResetDisplayOrderRequest", "ImGui Table.IsResetDisplayOrderRequest", (*imgui.Table).IsResetDisplayOrderRequest, true)
+	engine.RegisterMethod("imgui.isUnfrozenRows", "ImGui Table.IsUnfrozenRows", (*imgui.Table).IsUnfrozenRows, true)
+	engine.RegisterMethod("imgui.isDefaultSizingPolicy", "ImGui Table.IsDefaultSizingPolicy", (*imgui.Table).IsDefaultSizingPolicy, true)
+	engine.RegisterMethod("imgui.isActiveIdAliveBeforeTable", "ImGui Table.IsActiveIdAliveBeforeTable", (*imgui.Table).IsActiveIdAliveBeforeTable, true)
+	engine.RegisterMethod("imgui.isActiveIdInTable", "ImGui Table.IsActiveIdInTable", (*imgui.Table).IsActiveIdInTable, true)
+	engine.RegisterMethod("imgui.hasScrollbarYCurr", "ImGui Table.HasScrollbarYCurr", (*imgui.Table).HasScrollbarYCurr, true)
+	engine.RegisterMethod("imgui.hasScrollbarYPrev", "ImGui Table.HasScrollbarYPrev", (*imgui.Table).HasScrollbarYPrev, true)
+	engine.RegisterMethod("imgui.memoryCompacted", "ImGui Table.MemoryCompacted", (*imgui.Table).MemoryCompacted, true)
+	engine.RegisterMethod("imgui.hostSkipItems", "ImGui Table.HostSkipItems", (*imgui.Table).HostSkipItems, true)
+	engine.RegisterMethod("imgui.appendV", "ImGui TextBuffer.AppendV", (*imgui.TextBuffer).AppendV, true)
+	engine.RegisterMethod("imgui.cstr", "ImGui TextBuffer.Cstr", (*imgui.TextBuffer).Cstr, true)
+	engine.RegisterMethod("imgui.empty", "ImGui TextBuffer.Empty", (*imgui.TextBuffer).Empty, true)
+	engine.RegisterMethod("imgui.reserve", "ImGui TextBuffer.Reserve", (*imgui.TextBuffer).Reserve, true)
+	engine.RegisterMethod("imgui.resize", "ImGui TextBuffer.Resize", (*imgui.TextBuffer).Resize, true)
+	engine.RegisterMethod("imgui.append", "ImGui TextBuffer.Append", (*imgui.TextBuffer).Append, true)
+	engine.RegisterMethod("imgui.build", "ImGui TextFilter.Build", (*imgui.TextFilter).Build, true)
+	engine.RegisterMethod("imgui.drawV", "ImGui TextFilter.DrawV", (*imgui.TextFilter).DrawV, true)
+	engine.RegisterMethod("imgui.passFilterV", "ImGui TextFilter.PassFilterV", (*imgui.TextFilter).PassFilterV, true)
+	engine.RegisterMethod("imgui.draw", "ImGui TextFilter.Draw", (*imgui.TextFilter).Draw, true)
+	engine.RegisterMethod("imgui.passFilter", "ImGui TextFilter.PassFilter", (*imgui.TextFilter).PassFilter, true)
+	engine.RegisterMethod("imgui.setInputBuf", "ImGui TextFilter.SetInputBuf", (*imgui.TextFilter).SetInputBuf, true)
+	engine.RegisterMethod("imgui.setFilters", "ImGui TextFilter.SetFilters", (*imgui.TextFilter).SetFilters, true)
+	engine.RegisterMethod("imgui.setCountGrep", "ImGui TextFilter.SetCountGrep", (*imgui.TextFilter).SetCountGrep, true)
+	engine.RegisterMethod("imgui.inputBuf", "ImGui TextFilter.InputBuf", (*imgui.TextFilter).InputBuf, true)
+	engine.RegisterMethod("imgui.filters", "ImGui TextFilter.Filters", (*imgui.TextFilter).Filters, true)
+	engine.RegisterMethod("imgui.countGrep", "ImGui TextFilter.CountGrep", (*imgui.TextFilter).CountGrep, true)
+	engine.RegisterMethod("imgui.internalAppend", "ImGui TextIndex.InternalAppend", (*imgui.TextIndex).InternalAppend, true)
+	engine.RegisterMethod("imgui.internalGetlinebegin", "ImGui TextIndex.InternalGetlinebegin", (*imgui.TextIndex).InternalGetlinebegin, true)
+	engine.RegisterMethod("imgui.internalGetlineend", "ImGui TextIndex.InternalGetlineend", (*imgui.TextIndex).InternalGetlineend, true)
+	engine.RegisterMethod("imgui.setOffsets", "ImGui TextIndex.SetOffsets", (*imgui.TextIndex).SetOffsets, true)
+	engine.RegisterMethod("imgui.setEndOffset", "ImGui TextIndex.SetEndOffset", (*imgui.TextIndex).SetEndOffset, true)
+	engine.RegisterMethod("imgui.offsets", "ImGui TextIndex.Offsets", (*imgui.TextIndex).Offsets, true)
+	engine.RegisterMethod("imgui.endOffset", "ImGui TextIndex.EndOffset", (*imgui.TextIndex).EndOffset, true)
+	engine.RegisterMethod("imgui.setB", "ImGui TextRange.SetB", (*imgui.TextRange).SetB, true)
+	engine.RegisterMethod("imgui.setE", "ImGui TextRange.SetE", (*imgui.TextRange).SetE, true)
+	engine.RegisterMethod("imgui.b", "ImGui TextRange.B", (*imgui.TextRange).B, true)
+	engine.RegisterMethod("imgui.e", "ImGui TextRange.E", (*imgui.TextRange).E, true)
+	engine.RegisterMethod("imgui.setRequest", "ImGui TypingSelectState.SetRequest", (*imgui.TypingSelectState).SetRequest, true)
+	engine.RegisterMethod("imgui.setSearchBuffer", "ImGui TypingSelectState.SetSearchBuffer", (*imgui.TypingSelectState).SetSearchBuffer, true)
+	engine.RegisterMethod("imgui.setFocusScope", "ImGui TypingSelectState.SetFocusScope", (*imgui.TypingSelectState).SetFocusScope, true)
+	engine.RegisterMethod("imgui.setLastRequestFrame", "ImGui TypingSelectState.SetLastRequestFrame", (*imgui.TypingSelectState).SetLastRequestFrame, true)
+	engine.RegisterMethod("imgui.setLastRequestTime", "ImGui TypingSelectState.SetLastRequestTime", (*imgui.TypingSelectState).SetLastRequestTime, true)
+	engine.RegisterMethod("imgui.setSingleCharModeLock", "ImGui TypingSelectState.SetSingleCharModeLock", (*imgui.TypingSelectState).SetSingleCharModeLock, true)
+	engine.RegisterMethod("imgui.request", "ImGui TypingSelectState.Request", (*imgui.TypingSelectState).Request, true)
+	engine.RegisterMethod("imgui.searchBuffer", "ImGui TypingSelectState.SearchBuffer", (*imgui.TypingSelectState).SearchBuffer, true)
+	engine.RegisterMethod("imgui.focusScope", "ImGui TypingSelectState.FocusScope", (*imgui.TypingSelectState).FocusScope, true)
+	engine.RegisterMethod("imgui.lastRequestFrame", "ImGui TypingSelectState.LastRequestFrame", (*imgui.TypingSelectState).LastRequestFrame, true)
+	engine.RegisterMethod("imgui.lastRequestTime", "ImGui TypingSelectState.LastRequestTime", (*imgui.TypingSelectState).LastRequestTime, true)
+	engine.RegisterMethod("imgui.singleCharModeLock", "ImGui TypingSelectState.SingleCharModeLock", (*imgui.TypingSelectState).SingleCharModeLock, true)
+	engine.RegisterMethod("imgui.internalCalcWorkRectPos", "ImGui ViewportP.InternalCalcWorkRectPos", (*imgui.ViewportP).InternalCalcWorkRectPos, true)
+	engine.RegisterMethod("imgui.internalCalcWorkRectSize", "ImGui ViewportP.InternalCalcWorkRectSize", (*imgui.ViewportP).InternalCalcWorkRectSize, true)
+	engine.RegisterMethod("imgui.internalClearRequestFlags", "ImGui ViewportP.InternalClearRequestFlags", (*imgui.ViewportP).InternalClearRequestFlags, true)
+	engine.RegisterMethod("imgui.internalBuildWorkRect", "ImGui ViewportP.InternalBuildWorkRect", (*imgui.ViewportP).InternalBuildWorkRect, true)
+	engine.RegisterMethod("imgui.internalMainRect", "ImGui ViewportP.InternalMainRect", (*imgui.ViewportP).InternalMainRect, true)
+	engine.RegisterMethod("imgui.internalWorkRect", "ImGui ViewportP.InternalWorkRect", (*imgui.ViewportP).InternalWorkRect, true)
+	engine.RegisterMethod("imgui.internalUpdateWorkRect", "ImGui ViewportP.InternalUpdateWorkRect", (*imgui.ViewportP).InternalUpdateWorkRect, true)
+	engine.RegisterMethod("imgui.setImGuiViewport", "ImGui ViewportP.SetImGuiViewport", (*imgui.ViewportP).SetImGuiViewport, true)
+	engine.RegisterMethod("imgui.setIdx", "ImGui ViewportP.SetIdx", (*imgui.ViewportP).SetIdx, true)
+	engine.RegisterMethod("imgui.setLastFocusedStampCount", "ImGui ViewportP.SetLastFocusedStampCount", (*imgui.ViewportP).SetLastFocusedStampCount, true)
+	engine.RegisterMethod("imgui.setLastNameHash", "ImGui ViewportP.SetLastNameHash", (*imgui.ViewportP).SetLastNameHash, true)
+	engine.RegisterMethod("imgui.setLastPos", "ImGui ViewportP.SetLastPos", (*imgui.ViewportP).SetLastPos, true)
+	engine.RegisterMethod("imgui.setLastSize", "ImGui ViewportP.SetLastSize", (*imgui.ViewportP).SetLastSize, true)
+	engine.RegisterMethod("imgui.setLastAlpha", "ImGui ViewportP.SetLastAlpha", (*imgui.ViewportP).SetLastAlpha, true)
+	engine.RegisterMethod("imgui.setLastFocusedHadNavWindow", "ImGui ViewportP.SetLastFocusedHadNavWindow", (*imgui.ViewportP).SetLastFocusedHadNavWindow, true)
+	engine.RegisterMethod("imgui.setPlatformMonitor", "ImGui ViewportP.SetPlatformMonitor", (*imgui.ViewportP).SetPlatformMonitor, true)
+	engine.RegisterMethod("imgui.setBgFgDrawListsLastFrame", "ImGui ViewportP.SetBgFgDrawListsLastFrame", (*imgui.ViewportP).SetBgFgDrawListsLastFrame, true)
+	engine.RegisterMethod("imgui.setBgFgDrawLists", "ImGui ViewportP.SetBgFgDrawLists", (*imgui.ViewportP).SetBgFgDrawLists, true)
+	engine.RegisterMethod("imgui.setDrawDataP", "ImGui ViewportP.SetDrawDataP", (*imgui.ViewportP).SetDrawDataP, true)
+	engine.RegisterMethod("imgui.setDrawDataBuilder", "ImGui ViewportP.SetDrawDataBuilder", (*imgui.ViewportP).SetDrawDataBuilder, true)
+	engine.RegisterMethod("imgui.setLastPlatformPos", "ImGui ViewportP.SetLastPlatformPos", (*imgui.ViewportP).SetLastPlatformPos, true)
+	engine.RegisterMethod("imgui.setLastPlatformSize", "ImGui ViewportP.SetLastPlatformSize", (*imgui.ViewportP).SetLastPlatformSize, true)
+	engine.RegisterMethod("imgui.setLastRendererSize", "ImGui ViewportP.SetLastRendererSize", (*imgui.ViewportP).SetLastRendererSize, true)
+	engine.RegisterMethod("imgui.setWorkInsetMin", "ImGui ViewportP.SetWorkInsetMin", (*imgui.ViewportP).SetWorkInsetMin, true)
+	engine.RegisterMethod("imgui.setWorkInsetMax", "ImGui ViewportP.SetWorkInsetMax", (*imgui.ViewportP).SetWorkInsetMax, true)
+	engine.RegisterMethod("imgui.setBuildWorkInsetMin", "ImGui ViewportP.SetBuildWorkInsetMin", (*imgui.ViewportP).SetBuildWorkInsetMin, true)
+	engine.RegisterMethod("imgui.setBuildWorkInsetMax", "ImGui ViewportP.SetBuildWorkInsetMax", (*imgui.ViewportP).SetBuildWorkInsetMax, true)
+	engine.RegisterMethod("imgui.imGuiViewport", "ImGui ViewportP.ImGuiViewport", (*imgui.ViewportP).ImGuiViewport, true)
+	engine.RegisterMethod("imgui.idx", "ImGui ViewportP.Idx", (*imgui.ViewportP).Idx, true)
+	engine.RegisterMethod("imgui.lastFocusedStampCount", "ImGui ViewportP.LastFocusedStampCount", (*imgui.ViewportP).LastFocusedStampCount, true)
+	engine.RegisterMethod("imgui.lastNameHash", "ImGui ViewportP.LastNameHash", (*imgui.ViewportP).LastNameHash, true)
+	engine.RegisterMethod("imgui.lastPos", "ImGui ViewportP.LastPos", (*imgui.ViewportP).LastPos, true)
+	engine.RegisterMethod("imgui.lastSize", "ImGui ViewportP.LastSize", (*imgui.ViewportP).LastSize, true)
+	engine.RegisterMethod("imgui.lastAlpha", "ImGui ViewportP.LastAlpha", (*imgui.ViewportP).LastAlpha, true)
+	engine.RegisterMethod("imgui.lastFocusedHadNavWindow", "ImGui ViewportP.LastFocusedHadNavWindow", (*imgui.ViewportP).LastFocusedHadNavWindow, true)
+	engine.RegisterMethod("imgui.platformMonitor", "ImGui ViewportP.PlatformMonitor", (*imgui.ViewportP).PlatformMonitor, true)
+	engine.RegisterMethod("imgui.bgFgDrawListsLastFrame", "ImGui ViewportP.BgFgDrawListsLastFrame", (*imgui.ViewportP).BgFgDrawListsLastFrame, true)
+	engine.RegisterMethod("imgui.bgFgDrawLists", "ImGui ViewportP.BgFgDrawLists", (*imgui.ViewportP).BgFgDrawLists, true)
+	engine.RegisterMethod("imgui.drawDataP", "ImGui ViewportP.DrawDataP", (*imgui.ViewportP).DrawDataP, true)
+	engine.RegisterMethod("imgui.drawDataBuilder", "ImGui ViewportP.DrawDataBuilder", (*imgui.ViewportP).DrawDataBuilder, true)
+	engine.RegisterMethod("imgui.lastPlatformPos", "ImGui ViewportP.LastPlatformPos", (*imgui.ViewportP).LastPlatformPos, true)
+	engine.RegisterMethod("imgui.lastPlatformSize", "ImGui ViewportP.LastPlatformSize", (*imgui.ViewportP).LastPlatformSize, true)
+	engine.RegisterMethod("imgui.lastRendererSize", "ImGui ViewportP.LastRendererSize", (*imgui.ViewportP).LastRendererSize, true)
+	engine.RegisterMethod("imgui.workInsetMin", "ImGui ViewportP.WorkInsetMin", (*imgui.ViewportP).WorkInsetMin, true)
+	engine.RegisterMethod("imgui.workInsetMax", "ImGui ViewportP.WorkInsetMax", (*imgui.ViewportP).WorkInsetMax, true)
+	engine.RegisterMethod("imgui.buildWorkInsetMin", "ImGui ViewportP.BuildWorkInsetMin", (*imgui.ViewportP).BuildWorkInsetMin, true)
+	engine.RegisterMethod("imgui.buildWorkInsetMax", "ImGui ViewportP.BuildWorkInsetMax", (*imgui.ViewportP).BuildWorkInsetMax, true)
+	engine.RegisterMethod("imgui.center", "ImGui Viewport.Center", (*imgui.Viewport).Center, true)
+	engine.RegisterMethod("imgui.workCenter", "ImGui Viewport.WorkCenter", (*imgui.Viewport).WorkCenter, true)
+	engine.RegisterMethod("imgui.setParentViewportId", "ImGui Viewport.SetParentViewportId", (*imgui.Viewport).SetParentViewportId, true)
+	engine.RegisterMethod("imgui.setParentViewport", "ImGui Viewport.SetParentViewport", (*imgui.Viewport).SetParentViewport, true)
+	engine.RegisterMethod("imgui.setDrawData", "ImGui Viewport.SetDrawData", (*imgui.Viewport).SetDrawData, true)
+	engine.RegisterMethod("imgui.setRendererUserData", "ImGui Viewport.SetRendererUserData", (*imgui.Viewport).SetRendererUserData, true)
+	engine.RegisterMethod("imgui.setPlatformUserData", "ImGui Viewport.SetPlatformUserData", (*imgui.Viewport).SetPlatformUserData, true)
+	engine.RegisterMethod("imgui.setPlatformHandleRaw", "ImGui Viewport.SetPlatformHandleRaw", (*imgui.Viewport).SetPlatformHandleRaw, true)
+	engine.RegisterMethod("imgui.setPlatformWindowCreated", "ImGui Viewport.SetPlatformWindowCreated", (*imgui.Viewport).SetPlatformWindowCreated, true)
+	engine.RegisterMethod("imgui.setPlatformRequestMove", "ImGui Viewport.SetPlatformRequestMove", (*imgui.Viewport).SetPlatformRequestMove, true)
+	engine.RegisterMethod("imgui.setPlatformRequestResize", "ImGui Viewport.SetPlatformRequestResize", (*imgui.Viewport).SetPlatformRequestResize, true)
+	engine.RegisterMethod("imgui.setPlatformRequestClose", "ImGui Viewport.SetPlatformRequestClose", (*imgui.Viewport).SetPlatformRequestClose, true)
+	engine.RegisterMethod("imgui.parentViewportId", "ImGui Viewport.ParentViewportId", (*imgui.Viewport).ParentViewportId, true)
+	engine.RegisterMethod("imgui.parentViewport", "ImGui Viewport.ParentViewport", (*imgui.Viewport).ParentViewport, true)
+	engine.RegisterMethod("imgui.drawData", "ImGui Viewport.DrawData", (*imgui.Viewport).DrawData, true)
+	engine.RegisterMethod("imgui.rendererUserData", "ImGui Viewport.RendererUserData", (*imgui.Viewport).RendererUserData, true)
+	engine.RegisterMethod("imgui.platformUserData", "ImGui Viewport.PlatformUserData", (*imgui.Viewport).PlatformUserData, true)
+	engine.RegisterMethod("imgui.platformHandleRaw", "ImGui Viewport.PlatformHandleRaw", (*imgui.Viewport).PlatformHandleRaw, true)
+	engine.RegisterMethod("imgui.platformWindowCreated", "ImGui Viewport.PlatformWindowCreated", (*imgui.Viewport).PlatformWindowCreated, true)
+	engine.RegisterMethod("imgui.platformRequestMove", "ImGui Viewport.PlatformRequestMove", (*imgui.Viewport).PlatformRequestMove, true)
+	engine.RegisterMethod("imgui.platformRequestResize", "ImGui Viewport.PlatformRequestResize", (*imgui.Viewport).PlatformRequestResize, true)
+	engine.RegisterMethod("imgui.platformRequestClose", "ImGui Viewport.PlatformRequestClose", (*imgui.Viewport).PlatformRequestClose, true)
+	engine.RegisterMethod("imgui.setClassId", "ImGui WindowClass.SetClassId", (*imgui.WindowClass).SetClassId, true)
+	engine.RegisterMethod("imgui.setFocusRouteParentWindowId", "ImGui WindowClass.SetFocusRouteParentWindowId", (*imgui.WindowClass).SetFocusRouteParentWindowId, true)
+	engine.RegisterMethod("imgui.setViewportFlagsOverrideSet", "ImGui WindowClass.SetViewportFlagsOverrideSet", (*imgui.WindowClass).SetViewportFlagsOverrideSet, true)
+	engine.RegisterMethod("imgui.setViewportFlagsOverrideClear", "ImGui WindowClass.SetViewportFlagsOverrideClear", (*imgui.WindowClass).SetViewportFlagsOverrideClear, true)
+	engine.RegisterMethod("imgui.setTabItemFlagsOverrideSet", "ImGui WindowClass.SetTabItemFlagsOverrideSet", (*imgui.WindowClass).SetTabItemFlagsOverrideSet, true)
+	engine.RegisterMethod("imgui.setDockNodeFlagsOverrideSet", "ImGui WindowClass.SetDockNodeFlagsOverrideSet", (*imgui.WindowClass).SetDockNodeFlagsOverrideSet, true)
+	engine.RegisterMethod("imgui.setDockingAlwaysTabBar", "ImGui WindowClass.SetDockingAlwaysTabBar", (*imgui.WindowClass).SetDockingAlwaysTabBar, true)
+	engine.RegisterMethod("imgui.setDockingAllowUnclassed", "ImGui WindowClass.SetDockingAllowUnclassed", (*imgui.WindowClass).SetDockingAllowUnclassed, true)
+	engine.RegisterMethod("imgui.classId", "ImGui WindowClass.ClassId", (*imgui.WindowClass).ClassId, true)
+	engine.RegisterMethod("imgui.focusRouteParentWindowId", "ImGui WindowClass.FocusRouteParentWindowId", (*imgui.WindowClass).FocusRouteParentWindowId, true)
+	engine.RegisterMethod("imgui.viewportFlagsOverrideSet", "ImGui WindowClass.ViewportFlagsOverrideSet", (*imgui.WindowClass).ViewportFlagsOverrideSet, true)
+	engine.RegisterMethod("imgui.viewportFlagsOverrideClear", "ImGui WindowClass.ViewportFlagsOverrideClear", (*imgui.WindowClass).ViewportFlagsOverrideClear, true)
+	engine.RegisterMethod("imgui.tabItemFlagsOverrideSet", "ImGui WindowClass.TabItemFlagsOverrideSet", (*imgui.WindowClass).TabItemFlagsOverrideSet, true)
+	engine.RegisterMethod("imgui.dockNodeFlagsOverrideSet", "ImGui WindowClass.DockNodeFlagsOverrideSet", (*imgui.WindowClass).DockNodeFlagsOverrideSet, true)
+	engine.RegisterMethod("imgui.dockingAlwaysTabBar", "ImGui WindowClass.DockingAlwaysTabBar", (*imgui.WindowClass).DockingAlwaysTabBar, true)
+	engine.RegisterMethod("imgui.dockingAllowUnclassed", "ImGui WindowClass.DockingAllowUnclassed", (*imgui.WindowClass).DockingAllowUnclassed, true)
+	engine.RegisterMethod("imgui.internalName", "ImGui WindowSettings.InternalName", (*imgui.WindowSettings).InternalName, true)
+	engine.RegisterMethod("imgui.setDockOrder", "ImGui WindowSettings.SetDockOrder", (*imgui.WindowSettings).SetDockOrder, true)
+	engine.RegisterMethod("imgui.setCollapsed", "ImGui WindowSettings.SetCollapsed", (*imgui.WindowSettings).SetCollapsed, true)
+	engine.RegisterMethod("imgui.setIsChild", "ImGui WindowSettings.SetIsChild", (*imgui.WindowSettings).SetIsChild, true)
+	engine.RegisterMethod("imgui.setWantDelete", "ImGui WindowSettings.SetWantDelete", (*imgui.WindowSettings).SetWantDelete, true)
+	engine.RegisterMethod("imgui.dockOrder", "ImGui WindowSettings.DockOrder", (*imgui.WindowSettings).DockOrder, true)
+	engine.RegisterMethod("imgui.collapsed", "ImGui WindowSettings.Collapsed", (*imgui.WindowSettings).Collapsed, true)
+	engine.RegisterMethod("imgui.isChild", "ImGui WindowSettings.IsChild", (*imgui.WindowSettings).IsChild, true)
+	engine.RegisterMethod("imgui.wantDelete", "ImGui WindowSettings.WantDelete", (*imgui.WindowSettings).WantDelete, true)
+	engine.RegisterMethod("imgui.internalIDFromPos", "ImGui Window.InternalIDFromPos", (*imgui.Window).InternalIDFromPos, true)
+	engine.RegisterMethod("imgui.internalIDFromRectangle", "ImGui Window.InternalIDFromRectangle", (*imgui.Window).InternalIDFromRectangle, true)
+	engine.RegisterMethod("imgui.internalIDInt", "ImGui Window.InternalIDInt", (*imgui.Window).InternalIDInt, true)
+	engine.RegisterMethod("imgui.internalIDPtr", "ImGui Window.InternalIDPtr", (*imgui.Window).InternalIDPtr, true)
+	engine.RegisterMethod("imgui.internalIDStrV", "ImGui Window.InternalIDStrV", (*imgui.Window).InternalIDStrV, true)
+	engine.RegisterMethod("imgui.internalMenuBarRect", "ImGui Window.InternalMenuBarRect", (*imgui.Window).InternalMenuBarRect, true)
+	engine.RegisterMethod("imgui.internalTitleBarRect", "ImGui Window.InternalTitleBarRect", (*imgui.Window).InternalTitleBarRect, true)
+	engine.RegisterMethod("imgui.internalIDStr", "ImGui Window.InternalIDStr", (*imgui.Window).InternalIDStr, true)
+	engine.RegisterMethod("imgui.setFlagsPreviousFrame", "ImGui Window.SetFlagsPreviousFrame", (*imgui.Window).SetFlagsPreviousFrame, true)
+	engine.RegisterMethod("imgui.setViewport", "ImGui Window.SetViewport", (*imgui.Window).SetViewport, true)
+	engine.RegisterMethod("imgui.setViewportPos", "ImGui Window.SetViewportPos", (*imgui.Window).SetViewportPos, true)
+	engine.RegisterMethod("imgui.setViewportAllowPlatformMonitorExtend", "ImGui Window.SetViewportAllowPlatformMonitorExtend", (*imgui.Window).SetViewportAllowPlatformMonitorExtend, true)
+	engine.RegisterMethod("imgui.setSizeFull", "ImGui Window.SetSizeFull", (*imgui.Window).SetSizeFull, true)
+	engine.RegisterMethod("imgui.setContentSize", "ImGui Window.SetContentSize", (*imgui.Window).SetContentSize, true)
+	engine.RegisterMethod("imgui.setContentSizeIdeal", "ImGui Window.SetContentSizeIdeal", (*imgui.Window).SetContentSizeIdeal, true)
+	engine.RegisterMethod("imgui.setContentSizeExplicit", "ImGui Window.SetContentSizeExplicit", (*imgui.Window).SetContentSizeExplicit, true)
+	engine.RegisterMethod("imgui.setTitleBarHeight", "ImGui Window.SetTitleBarHeight", (*imgui.Window).SetTitleBarHeight, true)
+	engine.RegisterMethod("imgui.setMenuBarHeight", "ImGui Window.SetMenuBarHeight", (*imgui.Window).SetMenuBarHeight, true)
+	engine.RegisterMethod("imgui.setDecoOuterSizeX1", "ImGui Window.SetDecoOuterSizeX1", (*imgui.Window).SetDecoOuterSizeX1, true)
+	engine.RegisterMethod("imgui.setDecoOuterSizeY1", "ImGui Window.SetDecoOuterSizeY1", (*imgui.Window).SetDecoOuterSizeY1, true)
+	engine.RegisterMethod("imgui.setDecoOuterSizeX2", "ImGui Window.SetDecoOuterSizeX2", (*imgui.Window).SetDecoOuterSizeX2, true)
+	engine.RegisterMethod("imgui.setDecoOuterSizeY2", "ImGui Window.SetDecoOuterSizeY2", (*imgui.Window).SetDecoOuterSizeY2, true)
+	engine.RegisterMethod("imgui.setDecoInnerSizeX1", "ImGui Window.SetDecoInnerSizeX1", (*imgui.Window).SetDecoInnerSizeX1, true)
+	engine.RegisterMethod("imgui.setDecoInnerSizeY1", "ImGui Window.SetDecoInnerSizeY1", (*imgui.Window).SetDecoInnerSizeY1, true)
+	engine.RegisterMethod("imgui.setNameBufLen", "ImGui Window.SetNameBufLen", (*imgui.Window).SetNameBufLen, true)
+	engine.RegisterMethod("imgui.setMoveId", "ImGui Window.SetMoveId", (*imgui.Window).SetMoveId, true)
+	engine.RegisterMethod("imgui.setTabId", "ImGui Window.SetTabId", (*imgui.Window).SetTabId, true)
+	engine.RegisterMethod("imgui.setChildId", "ImGui Window.SetChildId", (*imgui.Window).SetChildId, true)
+	engine.RegisterMethod("imgui.setScrollMax", "ImGui Window.SetScrollMax", (*imgui.Window).SetScrollMax, true)
+	engine.RegisterMethod("imgui.setScrollTarget", "ImGui Window.SetScrollTarget", (*imgui.Window).SetScrollTarget, true)
+	engine.RegisterMethod("imgui.setScrollTargetCenterRatio", "ImGui Window.SetScrollTargetCenterRatio", (*imgui.Window).SetScrollTargetCenterRatio, true)
+	engine.RegisterMethod("imgui.setScrollTargetEdgeSnapDist", "ImGui Window.SetScrollTargetEdgeSnapDist", (*imgui.Window).SetScrollTargetEdgeSnapDist, true)
+	engine.RegisterMethod("imgui.setScrollbarSizes", "ImGui Window.SetScrollbarSizes", (*imgui.Window).SetScrollbarSizes, true)
+	engine.RegisterMethod("imgui.setScrollbarX", "ImGui Window.SetScrollbarX", (*imgui.Window).SetScrollbarX, true)
+	engine.RegisterMethod("imgui.setScrollbarY", "ImGui Window.SetScrollbarY", (*imgui.Window).SetScrollbarY, true)
+	engine.RegisterMethod("imgui.setScrollbarXStabilizeEnabled", "ImGui Window.SetScrollbarXStabilizeEnabled", (*imgui.Window).SetScrollbarXStabilizeEnabled, true)
+	engine.RegisterMethod("imgui.setScrollbarXStabilizeToggledHistory", "ImGui Window.SetScrollbarXStabilizeToggledHistory", (*imgui.Window).SetScrollbarXStabilizeToggledHistory, true)
+	engine.RegisterMethod("imgui.setViewportOwned", "ImGui Window.SetViewportOwned", (*imgui.Window).SetViewportOwned, true)
+	engine.RegisterMethod("imgui.setActive", "ImGui Window.SetActive", (*imgui.Window).SetActive, true)
+	engine.RegisterMethod("imgui.setWasActive", "ImGui Window.SetWasActive", (*imgui.Window).SetWasActive, true)
+	engine.RegisterMethod("imgui.setWriteAccessed", "ImGui Window.SetWriteAccessed", (*imgui.Window).SetWriteAccessed, true)
+	engine.RegisterMethod("imgui.setWantCollapseToggle", "ImGui Window.SetWantCollapseToggle", (*imgui.Window).SetWantCollapseToggle, true)
+	engine.RegisterMethod("imgui.setSkipItems", "ImGui Window.SetSkipItems", (*imgui.Window).SetSkipItems, true)
+	engine.RegisterMethod("imgui.setSkipRefresh", "ImGui Window.SetSkipRefresh", (*imgui.Window).SetSkipRefresh, true)
+	engine.RegisterMethod("imgui.setAppearing", "ImGui Window.SetAppearing", (*imgui.Window).SetAppearing, true)
+	engine.RegisterMethod("imgui.setHidden", "ImGui Window.SetHidden", (*imgui.Window).SetHidden, true)
+	engine.RegisterMethod("imgui.setIsFallbackWindow", "ImGui Window.SetIsFallbackWindow", (*imgui.Window).SetIsFallbackWindow, true)
+	engine.RegisterMethod("imgui.setIsExplicitChild", "ImGui Window.SetIsExplicitChild", (*imgui.Window).SetIsExplicitChild, true)
+	engine.RegisterMethod("imgui.setBeginCountPreviousFrame", "ImGui Window.SetBeginCountPreviousFrame", (*imgui.Window).SetBeginCountPreviousFrame, true)
+	engine.RegisterMethod("imgui.setBeginOrderWithinParent", "ImGui Window.SetBeginOrderWithinParent", (*imgui.Window).SetBeginOrderWithinParent, true)
+	engine.RegisterMethod("imgui.setBeginOrderWithinContext", "ImGui Window.SetBeginOrderWithinContext", (*imgui.Window).SetBeginOrderWithinContext, true)
+	engine.RegisterMethod("imgui.setFocusOrder", "ImGui Window.SetFocusOrder", (*imgui.Window).SetFocusOrder, true)
+	engine.RegisterMethod("imgui.setAutoFitFramesX", "ImGui Window.SetAutoFitFramesX", (*imgui.Window).SetAutoFitFramesX, true)
+	engine.RegisterMethod("imgui.setAutoFitFramesY", "ImGui Window.SetAutoFitFramesY", (*imgui.Window).SetAutoFitFramesY, true)
+	engine.RegisterMethod("imgui.setAutoFitOnlyGrows", "ImGui Window.SetAutoFitOnlyGrows", (*imgui.Window).SetAutoFitOnlyGrows, true)
+	engine.RegisterMethod("imgui.setAutoPosLastDirection", "ImGui Window.SetAutoPosLastDirection", (*imgui.Window).SetAutoPosLastDirection, true)
+	engine.RegisterMethod("imgui.setHiddenFramesCanSkipItems", "ImGui Window.SetHiddenFramesCanSkipItems", (*imgui.Window).SetHiddenFramesCanSkipItems, true)
+	engine.RegisterMethod("imgui.setHiddenFramesCannotSkipItems", "ImGui Window.SetHiddenFramesCannotSkipItems", (*imgui.Window).SetHiddenFramesCannotSkipItems, true)
+	engine.RegisterMethod("imgui.setHiddenFramesForRenderOnly", "ImGui Window.SetHiddenFramesForRenderOnly", (*imgui.Window).SetHiddenFramesForRenderOnly, true)
+	engine.RegisterMethod("imgui.setDisableInputsFrames", "ImGui Window.SetDisableInputsFrames", (*imgui.Window).SetDisableInputsFrames, true)
+	engine.RegisterMethod("imgui.setSetWindowPosAllowFlags", "ImGui Window.SetSetWindowPosAllowFlags", (*imgui.Window).SetSetWindowPosAllowFlags, true)
+	engine.RegisterMethod("imgui.setSetWindowSizeAllowFlags", "ImGui Window.SetSetWindowSizeAllowFlags", (*imgui.Window).SetSetWindowSizeAllowFlags, true)
+	engine.RegisterMethod("imgui.setSetWindowCollapsedAllowFlags", "ImGui Window.SetSetWindowCollapsedAllowFlags", (*imgui.Window).SetSetWindowCollapsedAllowFlags, true)
+	engine.RegisterMethod("imgui.setSetWindowDockAllowFlags", "ImGui Window.SetSetWindowDockAllowFlags", (*imgui.Window).SetSetWindowDockAllowFlags, true)
+	engine.RegisterMethod("imgui.setSetWindowPosVal", "ImGui Window.SetSetWindowPosVal", (*imgui.Window).SetSetWindowPosVal, true)
+	engine.RegisterMethod("imgui.setSetWindowPosPivot", "ImGui Window.SetSetWindowPosPivot", (*imgui.Window).SetSetWindowPosPivot, true)
+	engine.RegisterMethod("imgui.setIDStack", "ImGui Window.SetIDStack", (*imgui.Window).SetIDStack, true)
+	engine.RegisterMethod("imgui.setDC", "ImGui Window.SetDC", (*imgui.Window).SetDC, true)
+	engine.RegisterMethod("imgui.setOuterRectClipped", "ImGui Window.SetOuterRectClipped", (*imgui.Window).SetOuterRectClipped, true)
+	engine.RegisterMethod("imgui.setParentWorkRect", "ImGui Window.SetParentWorkRect", (*imgui.Window).SetParentWorkRect, true)
+	engine.RegisterMethod("imgui.setContentRegionRect", "ImGui Window.SetContentRegionRect", (*imgui.Window).SetContentRegionRect, true)
+	engine.RegisterMethod("imgui.setLastFrameJustFocused", "ImGui Window.SetLastFrameJustFocused", (*imgui.Window).SetLastFrameJustFocused, true)
+	engine.RegisterMethod("imgui.setItemWidthDefault", "ImGui Window.SetItemWidthDefault", (*imgui.Window).SetItemWidthDefault, true)
+	engine.RegisterMethod("imgui.setColumnsStorage", "ImGui Window.SetColumnsStorage", (*imgui.Window).SetColumnsStorage, true)
+	engine.RegisterMethod("imgui.setFontWindowScale", "ImGui Window.SetFontWindowScale", (*imgui.Window).SetFontWindowScale, true)
+	engine.RegisterMethod("imgui.setFontWindowScaleParents", "ImGui Window.SetFontWindowScaleParents", (*imgui.Window).SetFontWindowScaleParents, true)
+	engine.RegisterMethod("imgui.setFontRefSize", "ImGui Window.SetFontRefSize", (*imgui.Window).SetFontRefSize, true)
+	engine.RegisterMethod("imgui.setDrawList", "ImGui Window.SetDrawList", (*imgui.Window).SetDrawList, true)
+	engine.RegisterMethod("imgui.setDrawListInst", "ImGui Window.SetDrawListInst", (*imgui.Window).SetDrawListInst, true)
+	engine.RegisterMethod("imgui.setParentWindow", "ImGui Window.SetParentWindow", (*imgui.Window).SetParentWindow, true)
+	engine.RegisterMethod("imgui.setParentWindowInBeginStack", "ImGui Window.SetParentWindowInBeginStack", (*imgui.Window).SetParentWindowInBeginStack, true)
+	engine.RegisterMethod("imgui.setRootWindow", "ImGui Window.SetRootWindow", (*imgui.Window).SetRootWindow, true)
+	engine.RegisterMethod("imgui.setRootWindowPopupTree", "ImGui Window.SetRootWindowPopupTree", (*imgui.Window).SetRootWindowPopupTree, true)
+	engine.RegisterMethod("imgui.setRootWindowDockTree", "ImGui Window.SetRootWindowDockTree", (*imgui.Window).SetRootWindowDockTree, true)
+	engine.RegisterMethod("imgui.setRootWindowForTitleBarHighlight", "ImGui Window.SetRootWindowForTitleBarHighlight", (*imgui.Window).SetRootWindowForTitleBarHighlight, true)
+	engine.RegisterMethod("imgui.setRootWindowForNav", "ImGui Window.SetRootWindowForNav", (*imgui.Window).SetRootWindowForNav, true)
+	engine.RegisterMethod("imgui.setParentWindowForFocusRoute", "ImGui Window.SetParentWindowForFocusRoute", (*imgui.Window).SetParentWindowForFocusRoute, true)
+	engine.RegisterMethod("imgui.setNavLastChildNavWindow", "ImGui Window.SetNavLastChildNavWindow", (*imgui.Window).SetNavLastChildNavWindow, true)
+	engine.RegisterMethod("imgui.setNavLastIds", "ImGui Window.SetNavLastIds", (*imgui.Window).SetNavLastIds, true)
+	engine.RegisterMethod("imgui.setNavRectRel", "ImGui Window.SetNavRectRel", (*imgui.Window).SetNavRectRel, true)
+	engine.RegisterMethod("imgui.setNavPreferredScoringPosRel", "ImGui Window.SetNavPreferredScoringPosRel", (*imgui.Window).SetNavPreferredScoringPosRel, true)
+	engine.RegisterMethod("imgui.setNavRootFocusScopeId", "ImGui Window.SetNavRootFocusScopeId", (*imgui.Window).SetNavRootFocusScopeId, true)
+	engine.RegisterMethod("imgui.setMemoryDrawListIdxCapacity", "ImGui Window.SetMemoryDrawListIdxCapacity", (*imgui.Window).SetMemoryDrawListIdxCapacity, true)
+	engine.RegisterMethod("imgui.setMemoryDrawListVtxCapacity", "ImGui Window.SetMemoryDrawListVtxCapacity", (*imgui.Window).SetMemoryDrawListVtxCapacity, true)
+	engine.RegisterMethod("imgui.setDockIsActive", "ImGui Window.SetDockIsActive", (*imgui.Window).SetDockIsActive, true)
+	engine.RegisterMethod("imgui.setDockNodeIsVisible", "ImGui Window.SetDockNodeIsVisible", (*imgui.Window).SetDockNodeIsVisible, true)
+	engine.RegisterMethod("imgui.setDockTabIsVisible", "ImGui Window.SetDockTabIsVisible", (*imgui.Window).SetDockTabIsVisible, true)
+	engine.RegisterMethod("imgui.setDockTabWantClose", "ImGui Window.SetDockTabWantClose", (*imgui.Window).SetDockTabWantClose, true)
+	engine.RegisterMethod("imgui.setDockStyle", "ImGui Window.SetDockStyle", (*imgui.Window).SetDockStyle, true)
+	engine.RegisterMethod("imgui.setDockNode", "ImGui Window.SetDockNode", (*imgui.Window).SetDockNode, true)
+	engine.RegisterMethod("imgui.setDockNodeAsHost", "ImGui Window.SetDockNodeAsHost", (*imgui.Window).SetDockNodeAsHost, true)
+	engine.RegisterMethod("imgui.flagsPreviousFrame", "ImGui Window.FlagsPreviousFrame", (*imgui.Window).FlagsPreviousFrame, true)
+	engine.RegisterMethod("imgui.viewport", "ImGui Window.Viewport", (*imgui.Window).Viewport, true)
+	engine.RegisterMethod("imgui.viewportPos", "ImGui Window.ViewportPos", (*imgui.Window).ViewportPos, true)
+	engine.RegisterMethod("imgui.viewportAllowPlatformMonitorExtend", "ImGui Window.ViewportAllowPlatformMonitorExtend", (*imgui.Window).ViewportAllowPlatformMonitorExtend, true)
+	engine.RegisterMethod("imgui.sizeFull", "ImGui Window.SizeFull", (*imgui.Window).SizeFull, true)
+	engine.RegisterMethod("imgui.contentSize", "ImGui Window.ContentSize", (*imgui.Window).ContentSize, true)
+	engine.RegisterMethod("imgui.contentSizeIdeal", "ImGui Window.ContentSizeIdeal", (*imgui.Window).ContentSizeIdeal, true)
+	engine.RegisterMethod("imgui.contentSizeExplicit", "ImGui Window.ContentSizeExplicit", (*imgui.Window).ContentSizeExplicit, true)
+	engine.RegisterMethod("imgui.titleBarHeight", "ImGui Window.TitleBarHeight", (*imgui.Window).TitleBarHeight, true)
+	engine.RegisterMethod("imgui.menuBarHeight", "ImGui Window.MenuBarHeight", (*imgui.Window).MenuBarHeight, true)
+	engine.RegisterMethod("imgui.decoOuterSizeX1", "ImGui Window.DecoOuterSizeX1", (*imgui.Window).DecoOuterSizeX1, true)
+	engine.RegisterMethod("imgui.decoOuterSizeY1", "ImGui Window.DecoOuterSizeY1", (*imgui.Window).DecoOuterSizeY1, true)
+	engine.RegisterMethod("imgui.decoOuterSizeX2", "ImGui Window.DecoOuterSizeX2", (*imgui.Window).DecoOuterSizeX2, true)
+	engine.RegisterMethod("imgui.decoOuterSizeY2", "ImGui Window.DecoOuterSizeY2", (*imgui.Window).DecoOuterSizeY2, true)
+	engine.RegisterMethod("imgui.decoInnerSizeX1", "ImGui Window.DecoInnerSizeX1", (*imgui.Window).DecoInnerSizeX1, true)
+	engine.RegisterMethod("imgui.decoInnerSizeY1", "ImGui Window.DecoInnerSizeY1", (*imgui.Window).DecoInnerSizeY1, true)
+	engine.RegisterMethod("imgui.nameBufLen", "ImGui Window.NameBufLen", (*imgui.Window).NameBufLen, true)
+	engine.RegisterMethod("imgui.moveId", "ImGui Window.MoveId", (*imgui.Window).MoveId, true)
+	engine.RegisterMethod("imgui.tabId", "ImGui Window.TabId", (*imgui.Window).TabId, true)
+	engine.RegisterMethod("imgui.childId", "ImGui Window.ChildId", (*imgui.Window).ChildId, true)
+	engine.RegisterMethod("imgui.scrollMax", "ImGui Window.ScrollMax", (*imgui.Window).ScrollMax, true)
+	engine.RegisterMethod("imgui.scrollTarget", "ImGui Window.ScrollTarget", (*imgui.Window).ScrollTarget, true)
+	engine.RegisterMethod("imgui.scrollTargetCenterRatio", "ImGui Window.ScrollTargetCenterRatio", (*imgui.Window).ScrollTargetCenterRatio, true)
+	engine.RegisterMethod("imgui.scrollTargetEdgeSnapDist", "ImGui Window.ScrollTargetEdgeSnapDist", (*imgui.Window).ScrollTargetEdgeSnapDist, true)
+	engine.RegisterMethod("imgui.scrollbarSizes", "ImGui Window.ScrollbarSizes", (*imgui.Window).ScrollbarSizes, true)
+	engine.RegisterMethod("imgui.scrollbarX", "ImGui Window.ScrollbarX", (*imgui.Window).ScrollbarX, true)
+	engine.RegisterMethod("imgui.scrollbarY", "ImGui Window.ScrollbarY", (*imgui.Window).ScrollbarY, true)
+	engine.RegisterMethod("imgui.scrollbarXStabilizeEnabled", "ImGui Window.ScrollbarXStabilizeEnabled", (*imgui.Window).ScrollbarXStabilizeEnabled, true)
+	engine.RegisterMethod("imgui.scrollbarXStabilizeToggledHistory", "ImGui Window.ScrollbarXStabilizeToggledHistory", (*imgui.Window).ScrollbarXStabilizeToggledHistory, true)
+	engine.RegisterMethod("imgui.viewportOwned", "ImGui Window.ViewportOwned", (*imgui.Window).ViewportOwned, true)
+	engine.RegisterMethod("imgui.active", "ImGui Window.Active", (*imgui.Window).Active, true)
+	engine.RegisterMethod("imgui.wasActive", "ImGui Window.WasActive", (*imgui.Window).WasActive, true)
+	engine.RegisterMethod("imgui.writeAccessed", "ImGui Window.WriteAccessed", (*imgui.Window).WriteAccessed, true)
+	engine.RegisterMethod("imgui.wantCollapseToggle", "ImGui Window.WantCollapseToggle", (*imgui.Window).WantCollapseToggle, true)
+	engine.RegisterMethod("imgui.skipItems", "ImGui Window.SkipItems", (*imgui.Window).SkipItems, true)
+	engine.RegisterMethod("imgui.skipRefresh", "ImGui Window.SkipRefresh", (*imgui.Window).SkipRefresh, true)
+	engine.RegisterMethod("imgui.appearing", "ImGui Window.Appearing", (*imgui.Window).Appearing, true)
+	engine.RegisterMethod("imgui.hidden", "ImGui Window.Hidden", (*imgui.Window).Hidden, true)
+	engine.RegisterMethod("imgui.isFallbackWindow", "ImGui Window.IsFallbackWindow", (*imgui.Window).IsFallbackWindow, true)
+	engine.RegisterMethod("imgui.isExplicitChild", "ImGui Window.IsExplicitChild", (*imgui.Window).IsExplicitChild, true)
+	engine.RegisterMethod("imgui.beginCountPreviousFrame", "ImGui Window.BeginCountPreviousFrame", (*imgui.Window).BeginCountPreviousFrame, true)
+	engine.RegisterMethod("imgui.beginOrderWithinParent", "ImGui Window.BeginOrderWithinParent", (*imgui.Window).BeginOrderWithinParent, true)
+	engine.RegisterMethod("imgui.beginOrderWithinContext", "ImGui Window.BeginOrderWithinContext", (*imgui.Window).BeginOrderWithinContext, true)
+	engine.RegisterMethod("imgui.focusOrder", "ImGui Window.FocusOrder", (*imgui.Window).FocusOrder, true)
+	engine.RegisterMethod("imgui.autoFitFramesX", "ImGui Window.AutoFitFramesX", (*imgui.Window).AutoFitFramesX, true)
+	engine.RegisterMethod("imgui.autoFitFramesY", "ImGui Window.AutoFitFramesY", (*imgui.Window).AutoFitFramesY, true)
+	engine.RegisterMethod("imgui.autoFitOnlyGrows", "ImGui Window.AutoFitOnlyGrows", (*imgui.Window).AutoFitOnlyGrows, true)
+	engine.RegisterMethod("imgui.autoPosLastDirection", "ImGui Window.AutoPosLastDirection", (*imgui.Window).AutoPosLastDirection, true)
+	engine.RegisterMethod("imgui.hiddenFramesCanSkipItems", "ImGui Window.HiddenFramesCanSkipItems", (*imgui.Window).HiddenFramesCanSkipItems, true)
+	engine.RegisterMethod("imgui.hiddenFramesCannotSkipItems", "ImGui Window.HiddenFramesCannotSkipItems", (*imgui.Window).HiddenFramesCannotSkipItems, true)
+	engine.RegisterMethod("imgui.hiddenFramesForRenderOnly", "ImGui Window.HiddenFramesForRenderOnly", (*imgui.Window).HiddenFramesForRenderOnly, true)
+	engine.RegisterMethod("imgui.disableInputsFrames", "ImGui Window.DisableInputsFrames", (*imgui.Window).DisableInputsFrames, true)
+	engine.RegisterMethod("imgui.setWindowPosAllowFlags", "ImGui Window.SetWindowPosAllowFlags", (*imgui.Window).SetWindowPosAllowFlags, true)
+	engine.RegisterMethod("imgui.setWindowSizeAllowFlags", "ImGui Window.SetWindowSizeAllowFlags", (*imgui.Window).SetWindowSizeAllowFlags, true)
+	engine.RegisterMethod("imgui.setWindowCollapsedAllowFlags", "ImGui Window.SetWindowCollapsedAllowFlags", (*imgui.Window).SetWindowCollapsedAllowFlags, true)
+	engine.RegisterMethod("imgui.setWindowDockAllowFlags", "ImGui Window.SetWindowDockAllowFlags", (*imgui.Window).SetWindowDockAllowFlags, true)
+	engine.RegisterMethod("imgui.setWindowPosVal", "ImGui Window.SetWindowPosVal", (*imgui.Window).SetWindowPosVal, true)
+	engine.RegisterMethod("imgui.setWindowPosPivot", "ImGui Window.SetWindowPosPivot", (*imgui.Window).SetWindowPosPivot, true)
+	engine.RegisterMethod("imgui.iDStack", "ImGui Window.IDStack", (*imgui.Window).IDStack, true)
+	engine.RegisterMethod("imgui.dC", "ImGui Window.DC", (*imgui.Window).DC, true)
+	engine.RegisterMethod("imgui.outerRectClipped", "ImGui Window.OuterRectClipped", (*imgui.Window).OuterRectClipped, true)
+	engine.RegisterMethod("imgui.parentWorkRect", "ImGui Window.ParentWorkRect", (*imgui.Window).ParentWorkRect, true)
+	engine.RegisterMethod("imgui.contentRegionRect", "ImGui Window.ContentRegionRect", (*imgui.Window).ContentRegionRect, true)
+	engine.RegisterMethod("imgui.lastFrameJustFocused", "ImGui Window.LastFrameJustFocused", (*imgui.Window).LastFrameJustFocused, true)
+	engine.RegisterMethod("imgui.itemWidthDefault", "ImGui Window.ItemWidthDefault", (*imgui.Window).ItemWidthDefault, true)
+	engine.RegisterMethod("imgui.columnsStorage", "ImGui Window.ColumnsStorage", (*imgui.Window).ColumnsStorage, true)
+	engine.RegisterMethod("imgui.fontWindowScale", "ImGui Window.FontWindowScale", (*imgui.Window).FontWindowScale, true)
+	engine.RegisterMethod("imgui.fontWindowScaleParents", "ImGui Window.FontWindowScaleParents", (*imgui.Window).FontWindowScaleParents, true)
+	engine.RegisterMethod("imgui.fontRefSize", "ImGui Window.FontRefSize", (*imgui.Window).FontRefSize, true)
+	engine.RegisterMethod("imgui.drawList", "ImGui Window.DrawList", (*imgui.Window).DrawList, true)
+	engine.RegisterMethod("imgui.drawListInst", "ImGui Window.DrawListInst", (*imgui.Window).DrawListInst, true)
+	engine.RegisterMethod("imgui.parentWindow", "ImGui Window.ParentWindow", (*imgui.Window).ParentWindow, true)
+	engine.RegisterMethod("imgui.parentWindowInBeginStack", "ImGui Window.ParentWindowInBeginStack", (*imgui.Window).ParentWindowInBeginStack, true)
+	engine.RegisterMethod("imgui.rootWindow", "ImGui Window.RootWindow", (*imgui.Window).RootWindow, true)
+	engine.RegisterMethod("imgui.rootWindowPopupTree", "ImGui Window.RootWindowPopupTree", (*imgui.Window).RootWindowPopupTree, true)
+	engine.RegisterMethod("imgui.rootWindowDockTree", "ImGui Window.RootWindowDockTree", (*imgui.Window).RootWindowDockTree, true)
+	engine.RegisterMethod("imgui.rootWindowForTitleBarHighlight", "ImGui Window.RootWindowForTitleBarHighlight", (*imgui.Window).RootWindowForTitleBarHighlight, true)
+	engine.RegisterMethod("imgui.rootWindowForNav", "ImGui Window.RootWindowForNav", (*imgui.Window).RootWindowForNav, true)
+	engine.RegisterMethod("imgui.parentWindowForFocusRoute", "ImGui Window.ParentWindowForFocusRoute", (*imgui.Window).ParentWindowForFocusRoute, true)
+	engine.RegisterMethod("imgui.navLastChildNavWindow", "ImGui Window.NavLastChildNavWindow", (*imgui.Window).NavLastChildNavWindow, true)
+	engine.RegisterMethod("imgui.navLastIds", "ImGui Window.NavLastIds", (*imgui.Window).NavLastIds, true)
+	engine.RegisterMethod("imgui.navRectRel", "ImGui Window.NavRectRel", (*imgui.Window).NavRectRel, true)
+	engine.RegisterMethod("imgui.navPreferredScoringPosRel", "ImGui Window.NavPreferredScoringPosRel", (*imgui.Window).NavPreferredScoringPosRel, true)
+	engine.RegisterMethod("imgui.navRootFocusScopeId", "ImGui Window.NavRootFocusScopeId", (*imgui.Window).NavRootFocusScopeId, true)
+	engine.RegisterMethod("imgui.memoryDrawListIdxCapacity", "ImGui Window.MemoryDrawListIdxCapacity", (*imgui.Window).MemoryDrawListIdxCapacity, true)
+	engine.RegisterMethod("imgui.memoryDrawListVtxCapacity", "ImGui Window.MemoryDrawListVtxCapacity", (*imgui.Window).MemoryDrawListVtxCapacity, true)
+	engine.RegisterMethod("imgui.dockIsActive", "ImGui Window.DockIsActive", (*imgui.Window).DockIsActive, true)
+	engine.RegisterMethod("imgui.dockNodeIsVisible", "ImGui Window.DockNodeIsVisible", (*imgui.Window).DockNodeIsVisible, true)
+	engine.RegisterMethod("imgui.dockTabIsVisible", "ImGui Window.DockTabIsVisible", (*imgui.Window).DockTabIsVisible, true)
+	engine.RegisterMethod("imgui.dockTabWantClose", "ImGui Window.DockTabWantClose", (*imgui.Window).DockTabWantClose, true)
+	engine.RegisterMethod("imgui.dockStyle", "ImGui Window.DockStyle", (*imgui.Window).DockStyle, true)
+	engine.RegisterMethod("imgui.dockNode", "ImGui Window.DockNode", (*imgui.Window).DockNode, true)
+	engine.RegisterMethod("imgui.dockNodeAsHost", "ImGui Window.DockNodeAsHost", (*imgui.Window).DockNodeAsHost, true)
+	engine.RegisterMethod("imgui.create", "ImGui TextureData.Create", (*imgui.TextureData).Create, true)
+	engine.RegisterMethod("imgui.destroyPixels", "ImGui TextureData.DestroyPixels", (*imgui.TextureData).DestroyPixels, true)
+	engine.RegisterMethod("imgui.pitch", "ImGui TextureData.Pitch", (*imgui.TextureData).Pitch, true)
+	engine.RegisterMethod("imgui.pixels", "ImGui TextureData.Pixels", (*imgui.TextureData).Pixels, true)
+	engine.RegisterMethod("imgui.pixelsAt", "ImGui TextureData.PixelsAt", (*imgui.TextureData).PixelsAt, true)
+	engine.RegisterMethod("imgui.sizeInBytes", "ImGui TextureData.SizeInBytes", (*imgui.TextureData).SizeInBytes, true)
+	engine.RegisterMethod("imgui.setStatus", "ImGui TextureData.SetStatus", (*imgui.TextureData).SetStatus, true)
+	engine.RegisterMethod("imgui.setTexID", "ImGui TextureData.SetTexID", (*imgui.TextureData).SetTexID, true)
+	engine.RegisterMethod("imgui.setUniqueID", "ImGui TextureData.SetUniqueID", (*imgui.TextureData).SetUniqueID, true)
+	engine.RegisterMethod("imgui.setBackendUserData", "ImGui TextureData.SetBackendUserData", (*imgui.TextureData).SetBackendUserData, true)
+	engine.RegisterMethod("imgui.setFormat", "ImGui TextureData.SetFormat", (*imgui.TextureData).SetFormat, true)
+	engine.RegisterMethod("imgui.setHeight", "ImGui TextureData.SetHeight", (*imgui.TextureData).SetHeight, true)
+	engine.RegisterMethod("imgui.setBytesPerPixel", "ImGui TextureData.SetBytesPerPixel", (*imgui.TextureData).SetBytesPerPixel, true)
+	engine.RegisterMethod("imgui.setPixels", "ImGui TextureData.SetPixels", (*imgui.TextureData).SetPixels, true)
+	engine.RegisterMethod("imgui.setUsedRect", "ImGui TextureData.SetUsedRect", (*imgui.TextureData).SetUsedRect, true)
+	engine.RegisterMethod("imgui.setUpdateRect", "ImGui TextureData.SetUpdateRect", (*imgui.TextureData).SetUpdateRect, true)
+	engine.RegisterMethod("imgui.setUpdates", "ImGui TextureData.SetUpdates", (*imgui.TextureData).SetUpdates, true)
+	engine.RegisterMethod("imgui.setUnusedFrames", "ImGui TextureData.SetUnusedFrames", (*imgui.TextureData).SetUnusedFrames, true)
+	engine.RegisterMethod("imgui.setUseColors", "ImGui TextureData.SetUseColors", (*imgui.TextureData).SetUseColors, true)
+	engine.RegisterMethod("imgui.setWantDestroyNextFrame", "ImGui TextureData.SetWantDestroyNextFrame", (*imgui.TextureData).SetWantDestroyNextFrame, true)
+	engine.RegisterMethod("imgui.uniqueID", "ImGui TextureData.UniqueID", (*imgui.TextureData).UniqueID, true)
+	engine.RegisterMethod("imgui.status", "ImGui TextureData.Status", (*imgui.TextureData).Status, true)
+	engine.RegisterMethod("imgui.backendUserData", "ImGui TextureData.BackendUserData", (*imgui.TextureData).BackendUserData, true)
+	engine.RegisterMethod("imgui.format", "ImGui TextureData.Format", (*imgui.TextureData).Format, true)
+	engine.RegisterMethod("imgui.height", "ImGui TextureData.Height", (*imgui.TextureData).Height, true)
+	engine.RegisterMethod("imgui.bytesPerPixel", "ImGui TextureData.BytesPerPixel", (*imgui.TextureData).BytesPerPixel, true)
+	engine.RegisterMethod("imgui.usedRect", "ImGui TextureData.UsedRect", (*imgui.TextureData).UsedRect, true)
+	engine.RegisterMethod("imgui.updateRect", "ImGui TextureData.UpdateRect", (*imgui.TextureData).UpdateRect, true)
+	engine.RegisterMethod("imgui.updates", "ImGui TextureData.Updates", (*imgui.TextureData).Updates, true)
+	engine.RegisterMethod("imgui.unusedFrames", "ImGui TextureData.UnusedFrames", (*imgui.TextureData).UnusedFrames, true)
+	engine.RegisterMethod("imgui.useColors", "ImGui TextureData.UseColors", (*imgui.TextureData).UseColors, true)
+	engine.RegisterMethod("imgui.wantDestroyNextFrame", "ImGui TextureData.WantDestroyNextFrame", (*imgui.TextureData).WantDestroyNextFrame, true)
+	engine.RegisterMethod("imgui.getTexID", "ImGui TextureRef.GetTexID", (*imgui.TextureRef).GetTexID, true)
+	engine.RegisterMethod("imgui.setUv", "ImGui DrawVert.SetUv", (*imgui.DrawVert).SetUv, true)
+	engine.RegisterMethod("imgui.setCol", "ImGui DrawVert.SetCol", (*imgui.DrawVert).SetCol, true)
+	engine.RegisterMethod("imgui.uv", "ImGui DrawVert.Uv", (*imgui.DrawVert).Uv, true)
+	engine.RegisterMethod("imgui.col", "ImGui DrawVert.Col", (*imgui.DrawVert).Col, true)
+	engine.RegisterMethod("imgui.setFontSrc", "ImGui FontAtlasPostProcessData.SetFontSrc", (*imgui.FontAtlasPostProcessData).SetFontSrc, true)
+	engine.RegisterMethod("imgui.setGlyph", "ImGui FontAtlasPostProcessData.SetGlyph", (*imgui.FontAtlasPostProcessData).SetGlyph, true)
+	engine.RegisterMethod("imgui.setPitch", "ImGui FontAtlasPostProcessData.SetPitch", (*imgui.FontAtlasPostProcessData).SetPitch, true)
+	engine.RegisterMethod("imgui.fontSrc", "ImGui FontAtlasPostProcessData.FontSrc", (*imgui.FontAtlasPostProcessData).FontSrc, true)
+	engine.RegisterMethod("imgui.glyph", "ImGui FontAtlasPostProcessData.Glyph", (*imgui.FontAtlasPostProcessData).Glyph, true)
+	engine.RegisterMethod("imgui.setTargetIndex", "ImGui FontAtlasRectEntry.SetTargetIndex", (*imgui.FontAtlasRectEntry).SetTargetIndex, true)
+	engine.RegisterMethod("imgui.setGeneration", "ImGui FontAtlasRectEntry.SetGeneration", (*imgui.FontAtlasRectEntry).SetGeneration, true)
+	engine.RegisterMethod("imgui.setIsUsed", "ImGui FontAtlasRectEntry.SetIsUsed", (*imgui.FontAtlasRectEntry).SetIsUsed, true)
+	engine.RegisterMethod("imgui.targetIndex", "ImGui FontAtlasRectEntry.TargetIndex", (*imgui.FontAtlasRectEntry).TargetIndex, true)
+	engine.RegisterMethod("imgui.generation", "ImGui FontAtlasRectEntry.Generation", (*imgui.FontAtlasRectEntry).Generation, true)
+	engine.RegisterMethod("imgui.isUsed", "ImGui FontAtlasRectEntry.IsUsed", (*imgui.FontAtlasRectEntry).IsUsed, true)
+	engine.RegisterMethod("imgui.setFontSizeBeforeScaling", "ImGui FontStackData.SetFontSizeBeforeScaling", (*imgui.FontStackData).SetFontSizeBeforeScaling, true)
+	engine.RegisterMethod("imgui.setFontSizeAfterScaling", "ImGui FontStackData.SetFontSizeAfterScaling", (*imgui.FontStackData).SetFontSizeAfterScaling, true)
+	engine.RegisterMethod("imgui.fontSizeBeforeScaling", "ImGui FontStackData.FontSizeBeforeScaling", (*imgui.FontStackData).FontSizeBeforeScaling, true)
+	engine.RegisterMethod("imgui.fontSizeAfterScaling", "ImGui FontStackData.FontSizeAfterScaling", (*imgui.FontStackData).FontSizeAfterScaling, true)
+	engine.RegisterMethod("imgui.setBackupValue", "ImGui ColorMod.SetBackupValue", (*imgui.ColorMod).SetBackupValue, true)
+	engine.RegisterMethod("imgui.backupValue", "ImGui ColorMod.BackupValue", (*imgui.ColorMod).BackupValue, true)
+	engine.RegisterMethod("imgui.setPrintFmt", "ImGui DataTypeInfo.SetPrintFmt", (*imgui.DataTypeInfo).SetPrintFmt, true)
+	engine.RegisterMethod("imgui.setScanFmt", "ImGui DataTypeInfo.SetScanFmt", (*imgui.DataTypeInfo).SetScanFmt, true)
+	engine.RegisterMethod("imgui.printFmt", "ImGui DataTypeInfo.PrintFmt", (*imgui.DataTypeInfo).PrintFmt, true)
+	engine.RegisterMethod("imgui.scanFmt", "ImGui DataTypeInfo.ScanFmt", (*imgui.DataTypeInfo).ScanFmt, true)
+	engine.RegisterMethod("imgui.setElapseFrame", "ImGui DeactivatedItemData.SetElapseFrame", (*imgui.DeactivatedItemData).SetElapseFrame, true)
+	engine.RegisterMethod("imgui.setHasBeenEditedBefore", "ImGui DeactivatedItemData.SetHasBeenEditedBefore", (*imgui.DeactivatedItemData).SetHasBeenEditedBefore, true)
+	engine.RegisterMethod("imgui.setIsAlive", "ImGui DeactivatedItemData.SetIsAlive", (*imgui.DeactivatedItemData).SetIsAlive, true)
+	engine.RegisterMethod("imgui.elapseFrame", "ImGui DeactivatedItemData.ElapseFrame", (*imgui.DeactivatedItemData).ElapseFrame, true)
+	engine.RegisterMethod("imgui.hasBeenEditedBefore", "ImGui DeactivatedItemData.HasBeenEditedBefore", (*imgui.DeactivatedItemData).HasBeenEditedBefore, true)
+	engine.RegisterMethod("imgui.isAlive", "ImGui DeactivatedItemData.IsAlive", (*imgui.DeactivatedItemData).IsAlive, true)
+	engine.RegisterMethod("imgui.setAllocCount", "ImGui DebugAllocEntry.SetAllocCount", (*imgui.DebugAllocEntry).SetAllocCount, true)
+	engine.RegisterMethod("imgui.setFreeCount", "ImGui DebugAllocEntry.SetFreeCount", (*imgui.DebugAllocEntry).SetFreeCount, true)
+	engine.RegisterMethod("imgui.allocCount", "ImGui DebugAllocEntry.AllocCount", (*imgui.DebugAllocEntry).AllocCount, true)
+	engine.RegisterMethod("imgui.freeCount", "ImGui DebugAllocEntry.FreeCount", (*imgui.DebugAllocEntry).FreeCount, true)
+	engine.RegisterMethod("imgui.setWindowID", "ImGui FocusScopeData.SetWindowID", (*imgui.FocusScopeData).SetWindowID, true)
+	engine.RegisterMethod("imgui.windowID", "ImGui FocusScopeData.WindowID", (*imgui.FocusScopeData).WindowID, true)
+	engine.RegisterMethod("imgui.setBackupIndent", "ImGui GroupData.SetBackupIndent", (*imgui.GroupData).SetBackupIndent, true)
+	engine.RegisterMethod("imgui.setBackupGroupOffset", "ImGui GroupData.SetBackupGroupOffset", (*imgui.GroupData).SetBackupGroupOffset, true)
+	engine.RegisterMethod("imgui.setBackupCurrLineSize", "ImGui GroupData.SetBackupCurrLineSize", (*imgui.GroupData).SetBackupCurrLineSize, true)
+	engine.RegisterMethod("imgui.setBackupCurrLineTextBaseOffset", "ImGui GroupData.SetBackupCurrLineTextBaseOffset", (*imgui.GroupData).SetBackupCurrLineTextBaseOffset, true)
+	engine.RegisterMethod("imgui.setBackupActiveIdIsAlive", "ImGui GroupData.SetBackupActiveIdIsAlive", (*imgui.GroupData).SetBackupActiveIdIsAlive, true)
+	engine.RegisterMethod("imgui.setBackupDeactivatedIdIsAlive", "ImGui GroupData.SetBackupDeactivatedIdIsAlive", (*imgui.GroupData).SetBackupDeactivatedIdIsAlive, true)
+	engine.RegisterMethod("imgui.setBackupHoveredIdIsAlive", "ImGui GroupData.SetBackupHoveredIdIsAlive", (*imgui.GroupData).SetBackupHoveredIdIsAlive, true)
+	engine.RegisterMethod("imgui.setBackupIsSameLine", "ImGui GroupData.SetBackupIsSameLine", (*imgui.GroupData).SetBackupIsSameLine, true)
+	engine.RegisterMethod("imgui.setEmitItem", "ImGui GroupData.SetEmitItem", (*imgui.GroupData).SetEmitItem, true)
+	engine.RegisterMethod("imgui.backupIndent", "ImGui GroupData.BackupIndent", (*imgui.GroupData).BackupIndent, true)
+	engine.RegisterMethod("imgui.backupGroupOffset", "ImGui GroupData.BackupGroupOffset", (*imgui.GroupData).BackupGroupOffset, true)
+	engine.RegisterMethod("imgui.backupCurrLineSize", "ImGui GroupData.BackupCurrLineSize", (*imgui.GroupData).BackupCurrLineSize, true)
+	engine.RegisterMethod("imgui.backupCurrLineTextBaseOffset", "ImGui GroupData.BackupCurrLineTextBaseOffset", (*imgui.GroupData).BackupCurrLineTextBaseOffset, true)
+	engine.RegisterMethod("imgui.backupActiveIdIsAlive", "ImGui GroupData.BackupActiveIdIsAlive", (*imgui.GroupData).BackupActiveIdIsAlive, true)
+	engine.RegisterMethod("imgui.backupDeactivatedIdIsAlive", "ImGui GroupData.BackupDeactivatedIdIsAlive", (*imgui.GroupData).BackupDeactivatedIdIsAlive, true)
+	engine.RegisterMethod("imgui.backupHoveredIdIsAlive", "ImGui GroupData.BackupHoveredIdIsAlive", (*imgui.GroupData).BackupHoveredIdIsAlive, true)
+	engine.RegisterMethod("imgui.backupIsSameLine", "ImGui GroupData.BackupIsSameLine", (*imgui.GroupData).BackupIsSameLine, true)
+	engine.RegisterMethod("imgui.emitItem", "ImGui GroupData.EmitItem", (*imgui.GroupData).EmitItem, true)
+	engine.RegisterMethod("imgui.setFocused", "ImGui InputEventAppFocused.SetFocused", (*imgui.InputEventAppFocused).SetFocused, true)
+	engine.RegisterMethod("imgui.focused", "ImGui InputEventAppFocused.Focused", (*imgui.InputEventAppFocused).Focused, true)
+	engine.RegisterMethod("imgui.setDown", "ImGui InputEventKey.SetDown", (*imgui.InputEventKey).SetDown, true)
+	engine.RegisterMethod("imgui.setAnalogValue", "ImGui InputEventKey.SetAnalogValue", (*imgui.InputEventKey).SetAnalogValue, true)
+	engine.RegisterMethod("imgui.down", "ImGui InputEventKey.Down", (*imgui.InputEventKey).Down, true)
+	engine.RegisterMethod("imgui.analogValue", "ImGui InputEventKey.AnalogValue", (*imgui.InputEventKey).AnalogValue, true)
+	engine.RegisterMethod("imgui.setButton", "ImGui InputEventMouseButton.SetButton", (*imgui.InputEventMouseButton).SetButton, true)
+	engine.RegisterMethod("imgui.setPosX", "ImGui InputEventMousePos.SetPosX", (*imgui.InputEventMousePos).SetPosX, true)
+	engine.RegisterMethod("imgui.setPosY", "ImGui InputEventMousePos.SetPosY", (*imgui.InputEventMousePos).SetPosY, true)
+	engine.RegisterMethod("imgui.posX", "ImGui InputEventMousePos.PosX", (*imgui.InputEventMousePos).PosX, true)
+	engine.RegisterMethod("imgui.posY", "ImGui InputEventMousePos.PosY", (*imgui.InputEventMousePos).PosY, true)
+	engine.RegisterMethod("imgui.setHoveredViewportID", "ImGui InputEventMouseViewport.SetHoveredViewportID", (*imgui.InputEventMouseViewport).SetHoveredViewportID, true)
+	engine.RegisterMethod("imgui.hoveredViewportID", "ImGui InputEventMouseViewport.HoveredViewportID", (*imgui.InputEventMouseViewport).HoveredViewportID, true)
+	engine.RegisterMethod("imgui.setWheelX", "ImGui InputEventMouseWheel.SetWheelX", (*imgui.InputEventMouseWheel).SetWheelX, true)
+	engine.RegisterMethod("imgui.setWheelY", "ImGui InputEventMouseWheel.SetWheelY", (*imgui.InputEventMouseWheel).SetWheelY, true)
+	engine.RegisterMethod("imgui.wheelX", "ImGui InputEventMouseWheel.WheelX", (*imgui.InputEventMouseWheel).WheelX, true)
+	engine.RegisterMethod("imgui.wheelY", "ImGui InputEventMouseWheel.WheelY", (*imgui.InputEventMouseWheel).WheelY, true)
+	engine.RegisterMethod("imgui.setChar", "ImGui InputEventText.SetChar", (*imgui.InputEventText).SetChar, true)
+	engine.RegisterMethod("imgui.char", "ImGui InputEventText.Char", (*imgui.InputEventText).Char, true)
+	engine.RegisterMethod("imgui.setDownDuration", "ImGui KeyData.SetDownDuration", (*imgui.KeyData).SetDownDuration, true)
+	engine.RegisterMethod("imgui.setDownDurationPrev", "ImGui KeyData.SetDownDurationPrev", (*imgui.KeyData).SetDownDurationPrev, true)
+	engine.RegisterMethod("imgui.downDuration", "ImGui KeyData.DownDuration", (*imgui.KeyData).DownDuration, true)
+	engine.RegisterMethod("imgui.downDurationPrev", "ImGui KeyData.DownDurationPrev", (*imgui.KeyData).DownDurationPrev, true)
+	engine.RegisterMethod("imgui.setMin", "ImGui ListClipperRange.SetMin", (*imgui.ListClipperRange).SetMin, true)
+	engine.RegisterMethod("imgui.setMax", "ImGui ListClipperRange.SetMax", (*imgui.ListClipperRange).SetMax, true)
+	engine.RegisterMethod("imgui.setPosToIndexConvert", "ImGui ListClipperRange.SetPosToIndexConvert", (*imgui.ListClipperRange).SetPosToIndexConvert, true)
+	engine.RegisterMethod("imgui.setPosToIndexOffsetMin", "ImGui ListClipperRange.SetPosToIndexOffsetMin", (*imgui.ListClipperRange).SetPosToIndexOffsetMin, true)
+	engine.RegisterMethod("imgui.setPosToIndexOffsetMax", "ImGui ListClipperRange.SetPosToIndexOffsetMax", (*imgui.ListClipperRange).SetPosToIndexOffsetMax, true)
+	engine.RegisterMethod("imgui.min", "ImGui ListClipperRange.Min", (*imgui.ListClipperRange).Min, true)
+	engine.RegisterMethod("imgui.max", "ImGui ListClipperRange.Max", (*imgui.ListClipperRange).Max, true)
+	engine.RegisterMethod("imgui.posToIndexConvert", "ImGui ListClipperRange.PosToIndexConvert", (*imgui.ListClipperRange).PosToIndexConvert, true)
+	engine.RegisterMethod("imgui.posToIndexOffsetMin", "ImGui ListClipperRange.PosToIndexOffsetMin", (*imgui.ListClipperRange).PosToIndexOffsetMin, true)
+	engine.RegisterMethod("imgui.posToIndexOffsetMax", "ImGui ListClipperRange.PosToIndexOffsetMax", (*imgui.ListClipperRange).PosToIndexOffsetMax, true)
+	engine.RegisterMethod("imgui.setText", "ImGui LocEntry.SetText", (*imgui.LocEntry).SetText, true)
+	engine.RegisterMethod("imgui.setShowDebugLog", "ImGui MetricsConfig.SetShowDebugLog", (*imgui.MetricsConfig).SetShowDebugLog, true)
+	engine.RegisterMethod("imgui.setShowIDStackTool", "ImGui MetricsConfig.SetShowIDStackTool", (*imgui.MetricsConfig).SetShowIDStackTool, true)
+	engine.RegisterMethod("imgui.setShowWindowsRects", "ImGui MetricsConfig.SetShowWindowsRects", (*imgui.MetricsConfig).SetShowWindowsRects, true)
+	engine.RegisterMethod("imgui.setShowWindowsBeginOrder", "ImGui MetricsConfig.SetShowWindowsBeginOrder", (*imgui.MetricsConfig).SetShowWindowsBeginOrder, true)
+	engine.RegisterMethod("imgui.setShowTablesRects", "ImGui MetricsConfig.SetShowTablesRects", (*imgui.MetricsConfig).SetShowTablesRects, true)
+	engine.RegisterMethod("imgui.setShowDrawCmdMesh", "ImGui MetricsConfig.SetShowDrawCmdMesh", (*imgui.MetricsConfig).SetShowDrawCmdMesh, true)
+	engine.RegisterMethod("imgui.setShowDrawCmdBoundingBoxes", "ImGui MetricsConfig.SetShowDrawCmdBoundingBoxes", (*imgui.MetricsConfig).SetShowDrawCmdBoundingBoxes, true)
+	engine.RegisterMethod("imgui.setShowTextEncodingViewer", "ImGui MetricsConfig.SetShowTextEncodingViewer", (*imgui.MetricsConfig).SetShowTextEncodingViewer, true)
+	engine.RegisterMethod("imgui.setShowTextureUsedRect", "ImGui MetricsConfig.SetShowTextureUsedRect", (*imgui.MetricsConfig).SetShowTextureUsedRect, true)
+	engine.RegisterMethod("imgui.setShowDockingNodes", "ImGui MetricsConfig.SetShowDockingNodes", (*imgui.MetricsConfig).SetShowDockingNodes, true)
+	engine.RegisterMethod("imgui.setShowWindowsRectsType", "ImGui MetricsConfig.SetShowWindowsRectsType", (*imgui.MetricsConfig).SetShowWindowsRectsType, true)
+	engine.RegisterMethod("imgui.setShowTablesRectsType", "ImGui MetricsConfig.SetShowTablesRectsType", (*imgui.MetricsConfig).SetShowTablesRectsType, true)
+	engine.RegisterMethod("imgui.setHighlightMonitorIdx", "ImGui MetricsConfig.SetHighlightMonitorIdx", (*imgui.MetricsConfig).SetHighlightMonitorIdx, true)
+	engine.RegisterMethod("imgui.setHighlightViewportID", "ImGui MetricsConfig.SetHighlightViewportID", (*imgui.MetricsConfig).SetHighlightViewportID, true)
+	engine.RegisterMethod("imgui.setShowFontPreview", "ImGui MetricsConfig.SetShowFontPreview", (*imgui.MetricsConfig).SetShowFontPreview, true)
+	engine.RegisterMethod("imgui.showDebugLog", "ImGui MetricsConfig.ShowDebugLog", (*imgui.MetricsConfig).ShowDebugLog, true)
+	engine.RegisterMethod("imgui.showIDStackTool", "ImGui MetricsConfig.ShowIDStackTool", (*imgui.MetricsConfig).ShowIDStackTool, true)
+	engine.RegisterMethod("imgui.showWindowsRects", "ImGui MetricsConfig.ShowWindowsRects", (*imgui.MetricsConfig).ShowWindowsRects, true)
+	engine.RegisterMethod("imgui.showWindowsBeginOrder", "ImGui MetricsConfig.ShowWindowsBeginOrder", (*imgui.MetricsConfig).ShowWindowsBeginOrder, true)
+	engine.RegisterMethod("imgui.showTablesRects", "ImGui MetricsConfig.ShowTablesRects", (*imgui.MetricsConfig).ShowTablesRects, true)
+	engine.RegisterMethod("imgui.showDrawCmdMesh", "ImGui MetricsConfig.ShowDrawCmdMesh", (*imgui.MetricsConfig).ShowDrawCmdMesh, true)
+	engine.RegisterMethod("imgui.showDrawCmdBoundingBoxes", "ImGui MetricsConfig.ShowDrawCmdBoundingBoxes", (*imgui.MetricsConfig).ShowDrawCmdBoundingBoxes, true)
+	engine.RegisterMethod("imgui.showTextEncodingViewer", "ImGui MetricsConfig.ShowTextEncodingViewer", (*imgui.MetricsConfig).ShowTextEncodingViewer, true)
+	engine.RegisterMethod("imgui.showTextureUsedRect", "ImGui MetricsConfig.ShowTextureUsedRect", (*imgui.MetricsConfig).ShowTextureUsedRect, true)
+	engine.RegisterMethod("imgui.showDockingNodes", "ImGui MetricsConfig.ShowDockingNodes", (*imgui.MetricsConfig).ShowDockingNodes, true)
+	engine.RegisterMethod("imgui.showWindowsRectsType", "ImGui MetricsConfig.ShowWindowsRectsType", (*imgui.MetricsConfig).ShowWindowsRectsType, true)
+	engine.RegisterMethod("imgui.showTablesRectsType", "ImGui MetricsConfig.ShowTablesRectsType", (*imgui.MetricsConfig).ShowTablesRectsType, true)
+	engine.RegisterMethod("imgui.highlightMonitorIdx", "ImGui MetricsConfig.HighlightMonitorIdx", (*imgui.MetricsConfig).HighlightMonitorIdx, true)
+	engine.RegisterMethod("imgui.highlightViewportID", "ImGui MetricsConfig.HighlightViewportID", (*imgui.MetricsConfig).HighlightViewportID, true)
+	engine.RegisterMethod("imgui.showFontPreview", "ImGui MetricsConfig.ShowFontPreview", (*imgui.MetricsConfig).ShowFontPreview, true)
+	engine.RegisterMethod("imgui.setRangeSrcReset", "ImGui MultiSelectIO.SetRangeSrcReset", (*imgui.MultiSelectIO).SetRangeSrcReset, true)
+	engine.RegisterMethod("imgui.rangeSrcReset", "ImGui MultiSelectIO.RangeSrcReset", (*imgui.MultiSelectIO).RangeSrcReset, true)
+	engine.RegisterMethod("imgui.setSelected", "ImGui SelectionRequest.SetSelected", (*imgui.SelectionRequest).SetSelected, true)
+	engine.RegisterMethod("imgui.setRangeDirection", "ImGui SelectionRequest.SetRangeDirection", (*imgui.SelectionRequest).SetRangeDirection, true)
+	engine.RegisterMethod("imgui.setRangeFirstItem", "ImGui SelectionRequest.SetRangeFirstItem", (*imgui.SelectionRequest).SetRangeFirstItem, true)
+	engine.RegisterMethod("imgui.setRangeLastItem", "ImGui SelectionRequest.SetRangeLastItem", (*imgui.SelectionRequest).SetRangeLastItem, true)
+	engine.RegisterMethod("imgui.selected", "ImGui SelectionRequest.Selected", (*imgui.SelectionRequest).Selected, true)
+	engine.RegisterMethod("imgui.rangeDirection", "ImGui SelectionRequest.RangeDirection", (*imgui.SelectionRequest).RangeDirection, true)
+	engine.RegisterMethod("imgui.rangeFirstItem", "ImGui SelectionRequest.RangeFirstItem", (*imgui.SelectionRequest).RangeFirstItem, true)
+	engine.RegisterMethod("imgui.rangeLastItem", "ImGui SelectionRequest.RangeLastItem", (*imgui.SelectionRequest).RangeLastItem, true)
+	engine.RegisterMethod("imgui.setInitialWidth", "ImGui ShrinkWidthItem.SetInitialWidth", (*imgui.ShrinkWidthItem).SetInitialWidth, true)
+	engine.RegisterMethod("imgui.initialWidth", "ImGui ShrinkWidthItem.InitialWidth", (*imgui.ShrinkWidthItem).InitialWidth, true)
+	engine.RegisterMethod("imgui.setCurrentSize", "ImGui SizeCallbackData.SetCurrentSize", (*imgui.SizeCallbackData).SetCurrentSize, true)
+	engine.RegisterMethod("imgui.setDesiredSize", "ImGui SizeCallbackData.SetDesiredSize", (*imgui.SizeCallbackData).SetDesiredSize, true)
+	engine.RegisterMethod("imgui.currentSize", "ImGui SizeCallbackData.CurrentSize", (*imgui.SizeCallbackData).CurrentSize, true)
+	engine.RegisterMethod("imgui.desiredSize", "ImGui SizeCallbackData.DesiredSize", (*imgui.SizeCallbackData).DesiredSize, true)
+	engine.RegisterMethod("imgui.setBgColor", "ImGui TableCellData.SetBgColor", (*imgui.TableCellData).SetBgColor, true)
+	engine.RegisterMethod("imgui.setColumn", "ImGui TableCellData.SetColumn", (*imgui.TableCellData).SetColumn, true)
+	engine.RegisterMethod("imgui.bgColor", "ImGui TableCellData.BgColor", (*imgui.TableCellData).BgColor, true)
+	engine.RegisterMethod("imgui.column", "ImGui TableCellData.Column", (*imgui.TableCellData).Column, true)
+	engine.RegisterMethod("imgui.setTextColor", "ImGui TableHeaderData.SetTextColor", (*imgui.TableHeaderData).SetTextColor, true)
+	engine.RegisterMethod("imgui.setBgColor0", "ImGui TableHeaderData.SetBgColor0", (*imgui.TableHeaderData).SetBgColor0, true)
+	engine.RegisterMethod("imgui.setBgColor1", "ImGui TableHeaderData.SetBgColor1", (*imgui.TableHeaderData).SetBgColor1, true)
+	engine.RegisterMethod("imgui.textColor", "ImGui TableHeaderData.TextColor", (*imgui.TableHeaderData).TextColor, true)
+	engine.RegisterMethod("imgui.bgColor0", "ImGui TableHeaderData.BgColor0", (*imgui.TableHeaderData).BgColor0, true)
+	engine.RegisterMethod("imgui.bgColor1", "ImGui TableHeaderData.BgColor1", (*imgui.TableHeaderData).BgColor1, true)
+	engine.RegisterMethod("imgui.setTreeFlags", "ImGui TreeNodeStackData.SetTreeFlags", (*imgui.TreeNodeStackData).SetTreeFlags, true)
+	engine.RegisterMethod("imgui.setDrawLinesX1", "ImGui TreeNodeStackData.SetDrawLinesX1", (*imgui.TreeNodeStackData).SetDrawLinesX1, true)
+	engine.RegisterMethod("imgui.setDrawLinesToNodesY2", "ImGui TreeNodeStackData.SetDrawLinesToNodesY2", (*imgui.TreeNodeStackData).SetDrawLinesToNodesY2, true)
+	engine.RegisterMethod("imgui.setDrawLinesTableColumn", "ImGui TreeNodeStackData.SetDrawLinesTableColumn", (*imgui.TreeNodeStackData).SetDrawLinesTableColumn, true)
+	engine.RegisterMethod("imgui.treeFlags", "ImGui TreeNodeStackData.TreeFlags", (*imgui.TreeNodeStackData).TreeFlags, true)
+	engine.RegisterMethod("imgui.drawLinesX1", "ImGui TreeNodeStackData.DrawLinesX1", (*imgui.TreeNodeStackData).DrawLinesX1, true)
+	engine.RegisterMethod("imgui.drawLinesToNodesY2", "ImGui TreeNodeStackData.DrawLinesToNodesY2", (*imgui.TreeNodeStackData).DrawLinesToNodesY2, true)
+	engine.RegisterMethod("imgui.drawLinesTableColumn", "ImGui TreeNodeStackData.DrawLinesTableColumn", (*imgui.TreeNodeStackData).DrawLinesTableColumn, true)
+	engine.RegisterMethod("imgui.setSearchBufferLen", "ImGui TypingSelectRequest.SetSearchBufferLen", (*imgui.TypingSelectRequest).SetSearchBufferLen, true)
+	engine.RegisterMethod("imgui.setSelectRequest", "ImGui TypingSelectRequest.SetSelectRequest", (*imgui.TypingSelectRequest).SetSelectRequest, true)
+	engine.RegisterMethod("imgui.setSingleCharMode", "ImGui TypingSelectRequest.SetSingleCharMode", (*imgui.TypingSelectRequest).SetSingleCharMode, true)
+	engine.RegisterMethod("imgui.setSingleCharSize", "ImGui TypingSelectRequest.SetSingleCharSize", (*imgui.TypingSelectRequest).SetSingleCharSize, true)
+	engine.RegisterMethod("imgui.searchBufferLen", "ImGui TypingSelectRequest.SearchBufferLen", (*imgui.TypingSelectRequest).SearchBufferLen, true)
+	engine.RegisterMethod("imgui.selectRequest", "ImGui TypingSelectRequest.SelectRequest", (*imgui.TypingSelectRequest).SelectRequest, true)
+	engine.RegisterMethod("imgui.singleCharMode", "ImGui TypingSelectRequest.SingleCharMode", (*imgui.TypingSelectRequest).SingleCharMode, true)
+	engine.RegisterMethod("imgui.singleCharSize", "ImGui TypingSelectRequest.SingleCharSize", (*imgui.TypingSelectRequest).SingleCharSize, true)
+	engine.RegisterMethod("imgui.setParentLastItemDataBackup", "ImGui WindowStackData.SetParentLastItemDataBackup", (*imgui.WindowStackData).SetParentLastItemDataBackup, true)
+	engine.RegisterMethod("imgui.setStackSizesInBegin", "ImGui WindowStackData.SetStackSizesInBegin", (*imgui.WindowStackData).SetStackSizesInBegin, true)
+	engine.RegisterMethod("imgui.setDisabledOverrideReenable", "ImGui WindowStackData.SetDisabledOverrideReenable", (*imgui.WindowStackData).SetDisabledOverrideReenable, true)
+	engine.RegisterMethod("imgui.setDisabledOverrideReenableAlphaBackup", "ImGui WindowStackData.SetDisabledOverrideReenableAlphaBackup", (*imgui.WindowStackData).SetDisabledOverrideReenableAlphaBackup, true)
+	engine.RegisterMethod("imgui.parentLastItemDataBackup", "ImGui WindowStackData.ParentLastItemDataBackup", (*imgui.WindowStackData).ParentLastItemDataBackup, true)
+	engine.RegisterMethod("imgui.stackSizesInBegin", "ImGui WindowStackData.StackSizesInBegin", (*imgui.WindowStackData).StackSizesInBegin, true)
+	engine.RegisterMethod("imgui.disabledOverrideReenable", "ImGui WindowStackData.DisabledOverrideReenable", (*imgui.WindowStackData).DisabledOverrideReenable, true)
+	engine.RegisterMethod("imgui.disabledOverrideReenableAlphaBackup", "ImGui WindowStackData.DisabledOverrideReenableAlphaBackup", (*imgui.WindowStackData).DisabledOverrideReenableAlphaBackup, true)
+	engine.RegisterMethod("imgui.setCursorPosPrevLine", "ImGui WindowTempData.SetCursorPosPrevLine", (*imgui.WindowTempData).SetCursorPosPrevLine, true)
+	engine.RegisterMethod("imgui.setCursorStartPos", "ImGui WindowTempData.SetCursorStartPos", (*imgui.WindowTempData).SetCursorStartPos, true)
+	engine.RegisterMethod("imgui.setCursorMaxPos", "ImGui WindowTempData.SetCursorMaxPos", (*imgui.WindowTempData).SetCursorMaxPos, true)
+	engine.RegisterMethod("imgui.setIdealMaxPos", "ImGui WindowTempData.SetIdealMaxPos", (*imgui.WindowTempData).SetIdealMaxPos, true)
+	engine.RegisterMethod("imgui.setCurrLineSize", "ImGui WindowTempData.SetCurrLineSize", (*imgui.WindowTempData).SetCurrLineSize, true)
+	engine.RegisterMethod("imgui.setPrevLineSize", "ImGui WindowTempData.SetPrevLineSize", (*imgui.WindowTempData).SetPrevLineSize, true)
+	engine.RegisterMethod("imgui.setCurrLineTextBaseOffset", "ImGui WindowTempData.SetCurrLineTextBaseOffset", (*imgui.WindowTempData).SetCurrLineTextBaseOffset, true)
+	engine.RegisterMethod("imgui.setPrevLineTextBaseOffset", "ImGui WindowTempData.SetPrevLineTextBaseOffset", (*imgui.WindowTempData).SetPrevLineTextBaseOffset, true)
+	engine.RegisterMethod("imgui.setIsSameLine", "ImGui WindowTempData.SetIsSameLine", (*imgui.WindowTempData).SetIsSameLine, true)
+	engine.RegisterMethod("imgui.setIsSetPos", "ImGui WindowTempData.SetIsSetPos", (*imgui.WindowTempData).SetIsSetPos, true)
+	engine.RegisterMethod("imgui.setIndent", "ImGui WindowTempData.SetIndent", (*imgui.WindowTempData).SetIndent, true)
+	engine.RegisterMethod("imgui.setColumnsOffset", "ImGui WindowTempData.SetColumnsOffset", (*imgui.WindowTempData).SetColumnsOffset, true)
+	engine.RegisterMethod("imgui.setGroupOffset", "ImGui WindowTempData.SetGroupOffset", (*imgui.WindowTempData).SetGroupOffset, true)
+	engine.RegisterMethod("imgui.setCursorStartPosLossyness", "ImGui WindowTempData.SetCursorStartPosLossyness", (*imgui.WindowTempData).SetCursorStartPosLossyness, true)
+	engine.RegisterMethod("imgui.setNavLayersActiveMask", "ImGui WindowTempData.SetNavLayersActiveMask", (*imgui.WindowTempData).SetNavLayersActiveMask, true)
+	engine.RegisterMethod("imgui.setNavLayersActiveMaskNext", "ImGui WindowTempData.SetNavLayersActiveMaskNext", (*imgui.WindowTempData).SetNavLayersActiveMaskNext, true)
+	engine.RegisterMethod("imgui.setNavIsScrollPushableX", "ImGui WindowTempData.SetNavIsScrollPushableX", (*imgui.WindowTempData).SetNavIsScrollPushableX, true)
+	engine.RegisterMethod("imgui.setNavHideHighlightOneFrame", "ImGui WindowTempData.SetNavHideHighlightOneFrame", (*imgui.WindowTempData).SetNavHideHighlightOneFrame, true)
+	engine.RegisterMethod("imgui.setNavWindowHasScrollY", "ImGui WindowTempData.SetNavWindowHasScrollY", (*imgui.WindowTempData).SetNavWindowHasScrollY, true)
+	engine.RegisterMethod("imgui.setMenuBarAppending", "ImGui WindowTempData.SetMenuBarAppending", (*imgui.WindowTempData).SetMenuBarAppending, true)
+	engine.RegisterMethod("imgui.setMenuBarOffset", "ImGui WindowTempData.SetMenuBarOffset", (*imgui.WindowTempData).SetMenuBarOffset, true)
+	engine.RegisterMethod("imgui.setMenuColumns", "ImGui WindowTempData.SetMenuColumns", (*imgui.WindowTempData).SetMenuColumns, true)
+	engine.RegisterMethod("imgui.setTreeDepth", "ImGui WindowTempData.SetTreeDepth", (*imgui.WindowTempData).SetTreeDepth, true)
+	engine.RegisterMethod("imgui.setTreeHasStackDataDepthMask", "ImGui WindowTempData.SetTreeHasStackDataDepthMask", (*imgui.WindowTempData).SetTreeHasStackDataDepthMask, true)
+	engine.RegisterMethod("imgui.setTreeRecordsClippedNodesY2Mask", "ImGui WindowTempData.SetTreeRecordsClippedNodesY2Mask", (*imgui.WindowTempData).SetTreeRecordsClippedNodesY2Mask, true)
+	engine.RegisterMethod("imgui.setCurrentColumns", "ImGui WindowTempData.SetCurrentColumns", (*imgui.WindowTempData).SetCurrentColumns, true)
+	engine.RegisterMethod("imgui.setCurrentTableIdx", "ImGui WindowTempData.SetCurrentTableIdx", (*imgui.WindowTempData).SetCurrentTableIdx, true)
+	engine.RegisterMethod("imgui.setLayoutType", "ImGui WindowTempData.SetLayoutType", (*imgui.WindowTempData).SetLayoutType, true)
+	engine.RegisterMethod("imgui.setParentLayoutType", "ImGui WindowTempData.SetParentLayoutType", (*imgui.WindowTempData).SetParentLayoutType, true)
+	engine.RegisterMethod("imgui.setModalDimBgColor", "ImGui WindowTempData.SetModalDimBgColor", (*imgui.WindowTempData).SetModalDimBgColor, true)
+	engine.RegisterMethod("imgui.setWindowItemStatusFlags", "ImGui WindowTempData.SetWindowItemStatusFlags", (*imgui.WindowTempData).SetWindowItemStatusFlags, true)
+	engine.RegisterMethod("imgui.setChildItemStatusFlags", "ImGui WindowTempData.SetChildItemStatusFlags", (*imgui.WindowTempData).SetChildItemStatusFlags, true)
+	engine.RegisterMethod("imgui.setDockTabItemStatusFlags", "ImGui WindowTempData.SetDockTabItemStatusFlags", (*imgui.WindowTempData).SetDockTabItemStatusFlags, true)
+	engine.RegisterMethod("imgui.setDockTabItemRect", "ImGui WindowTempData.SetDockTabItemRect", (*imgui.WindowTempData).SetDockTabItemRect, true)
+	engine.RegisterMethod("imgui.setTextWrapPos", "ImGui WindowTempData.SetTextWrapPos", (*imgui.WindowTempData).SetTextWrapPos, true)
+	engine.RegisterMethod("imgui.setItemWidthStack", "ImGui WindowTempData.SetItemWidthStack", (*imgui.WindowTempData).SetItemWidthStack, true)
+	engine.RegisterMethod("imgui.setTextWrapPosStack", "ImGui WindowTempData.SetTextWrapPosStack", (*imgui.WindowTempData).SetTextWrapPosStack, true)
+	engine.RegisterMethod("imgui.cursorPosPrevLine", "ImGui WindowTempData.CursorPosPrevLine", (*imgui.WindowTempData).CursorPosPrevLine, true)
+	engine.RegisterMethod("imgui.cursorMaxPos", "ImGui WindowTempData.CursorMaxPos", (*imgui.WindowTempData).CursorMaxPos, true)
+	engine.RegisterMethod("imgui.idealMaxPos", "ImGui WindowTempData.IdealMaxPos", (*imgui.WindowTempData).IdealMaxPos, true)
+	engine.RegisterMethod("imgui.currLineSize", "ImGui WindowTempData.CurrLineSize", (*imgui.WindowTempData).CurrLineSize, true)
+	engine.RegisterMethod("imgui.prevLineSize", "ImGui WindowTempData.PrevLineSize", (*imgui.WindowTempData).PrevLineSize, true)
+	engine.RegisterMethod("imgui.currLineTextBaseOffset", "ImGui WindowTempData.CurrLineTextBaseOffset", (*imgui.WindowTempData).CurrLineTextBaseOffset, true)
+	engine.RegisterMethod("imgui.prevLineTextBaseOffset", "ImGui WindowTempData.PrevLineTextBaseOffset", (*imgui.WindowTempData).PrevLineTextBaseOffset, true)
+	engine.RegisterMethod("imgui.isSameLine", "ImGui WindowTempData.IsSameLine", (*imgui.WindowTempData).IsSameLine, true)
+	engine.RegisterMethod("imgui.isSetPos", "ImGui WindowTempData.IsSetPos", (*imgui.WindowTempData).IsSetPos, true)
+	engine.RegisterMethod("imgui.columnsOffset", "ImGui WindowTempData.ColumnsOffset", (*imgui.WindowTempData).ColumnsOffset, true)
+	engine.RegisterMethod("imgui.groupOffset", "ImGui WindowTempData.GroupOffset", (*imgui.WindowTempData).GroupOffset, true)
+	engine.RegisterMethod("imgui.cursorStartPosLossyness", "ImGui WindowTempData.CursorStartPosLossyness", (*imgui.WindowTempData).CursorStartPosLossyness, true)
+	engine.RegisterMethod("imgui.navLayersActiveMask", "ImGui WindowTempData.NavLayersActiveMask", (*imgui.WindowTempData).NavLayersActiveMask, true)
+	engine.RegisterMethod("imgui.navLayersActiveMaskNext", "ImGui WindowTempData.NavLayersActiveMaskNext", (*imgui.WindowTempData).NavLayersActiveMaskNext, true)
+	engine.RegisterMethod("imgui.navIsScrollPushableX", "ImGui WindowTempData.NavIsScrollPushableX", (*imgui.WindowTempData).NavIsScrollPushableX, true)
+	engine.RegisterMethod("imgui.navHideHighlightOneFrame", "ImGui WindowTempData.NavHideHighlightOneFrame", (*imgui.WindowTempData).NavHideHighlightOneFrame, true)
+	engine.RegisterMethod("imgui.navWindowHasScrollY", "ImGui WindowTempData.NavWindowHasScrollY", (*imgui.WindowTempData).NavWindowHasScrollY, true)
+	engine.RegisterMethod("imgui.menuBarAppending", "ImGui WindowTempData.MenuBarAppending", (*imgui.WindowTempData).MenuBarAppending, true)
+	engine.RegisterMethod("imgui.menuBarOffset", "ImGui WindowTempData.MenuBarOffset", (*imgui.WindowTempData).MenuBarOffset, true)
+	engine.RegisterMethod("imgui.menuColumns", "ImGui WindowTempData.MenuColumns", (*imgui.WindowTempData).MenuColumns, true)
+	engine.RegisterMethod("imgui.treeDepth", "ImGui WindowTempData.TreeDepth", (*imgui.WindowTempData).TreeDepth, true)
+	engine.RegisterMethod("imgui.treeHasStackDataDepthMask", "ImGui WindowTempData.TreeHasStackDataDepthMask", (*imgui.WindowTempData).TreeHasStackDataDepthMask, true)
+	engine.RegisterMethod("imgui.treeRecordsClippedNodesY2Mask", "ImGui WindowTempData.TreeRecordsClippedNodesY2Mask", (*imgui.WindowTempData).TreeRecordsClippedNodesY2Mask, true)
+	engine.RegisterMethod("imgui.childWindows", "ImGui WindowTempData.ChildWindows", (*imgui.WindowTempData).ChildWindows, true)
+	engine.RegisterMethod("imgui.currentColumns", "ImGui WindowTempData.CurrentColumns", (*imgui.WindowTempData).CurrentColumns, true)
+	engine.RegisterMethod("imgui.currentTableIdx", "ImGui WindowTempData.CurrentTableIdx", (*imgui.WindowTempData).CurrentTableIdx, true)
+	engine.RegisterMethod("imgui.layoutType", "ImGui WindowTempData.LayoutType", (*imgui.WindowTempData).LayoutType, true)
+	engine.RegisterMethod("imgui.parentLayoutType", "ImGui WindowTempData.ParentLayoutType", (*imgui.WindowTempData).ParentLayoutType, true)
+	engine.RegisterMethod("imgui.modalDimBgColor", "ImGui WindowTempData.ModalDimBgColor", (*imgui.WindowTempData).ModalDimBgColor, true)
+	engine.RegisterMethod("imgui.windowItemStatusFlags", "ImGui WindowTempData.WindowItemStatusFlags", (*imgui.WindowTempData).WindowItemStatusFlags, true)
+	engine.RegisterMethod("imgui.childItemStatusFlags", "ImGui WindowTempData.ChildItemStatusFlags", (*imgui.WindowTempData).ChildItemStatusFlags, true)
+	engine.RegisterMethod("imgui.dockTabItemStatusFlags", "ImGui WindowTempData.DockTabItemStatusFlags", (*imgui.WindowTempData).DockTabItemStatusFlags, true)
+	engine.RegisterMethod("imgui.dockTabItemRect", "ImGui WindowTempData.DockTabItemRect", (*imgui.WindowTempData).DockTabItemRect, true)
+	engine.RegisterMethod("imgui.textWrapPos", "ImGui WindowTempData.TextWrapPos", (*imgui.WindowTempData).TextWrapPos, true)
+	engine.RegisterMethod("imgui.itemWidthStack", "ImGui WindowTempData.ItemWidthStack", (*imgui.WindowTempData).ItemWidthStack, true)
+	engine.RegisterMethod("imgui.textWrapPosStack", "ImGui WindowTempData.TextWrapPosStack", (*imgui.WindowTempData).TextWrapPosStack, true)
+	engine.RegisterMethod("imgui.contextopaqueGetData", "ImGui stbrpcontextopaque.ContextopaqueGetData", imguiReflectContextopaqueGetData, true)
+	engine.RegisterMethod("imgui.delete", "ImGui Texture.Delete", (*imgui.Texture).Delete, true)
+}
+
+func imguiReflectContextopaqueGetData(value interface{}) (result interface{}) {
+	defer func() {
+		if recover() != nil {
+			result = nil
+		}
+	}()
+	if value == nil {
+		return nil
+	}
+	method := reflect.ValueOf(value).MethodByName("ContextopaqueGetData")
+	if !method.IsValid() {
+		return nil
+	}
+	results := method.Call(nil)
+	if len(results) == 0 {
+		return nil
+	}
+	return results[0].Interface()
+}
+
+func bindImguiLuaFunc(fn reflect.Value) lua.LGFunction {
+	fnType := fn.Type()
+	return func(L *lua.LState) (resultCount int) {
+		defer func() {
+			if recover() != nil {
+				L.Push(lua.LNil)
+				resultCount = 1
+			}
+		}()
+		args := buildImguiLuaArgs(L, fnType)
+		if fnType.IsVariadic() {
+			return pushImguiLuaResults(L, fn.CallSlice(args))
+		}
+		return pushImguiLuaResults(L, fn.Call(args))
+	}
+}
+
+func bindImguiLuaMethod(value reflect.Value, methodName string) lua.LGFunction {
+	return func(L *lua.LState) (resultCount int) {
+		defer func() {
+			if recover() != nil {
+				L.Push(lua.LNil)
+				resultCount = 1
+			}
+		}()
+		method := value.MethodByName(methodName)
+		if !method.IsValid() {
+			L.Push(lua.LNil)
+			return 1
+		}
+		methodType := method.Type()
+		args := buildImguiLuaArgs(L, methodType)
+		if methodType.IsVariadic() {
+			return pushImguiLuaResults(L, method.CallSlice(args))
+		}
+		return pushImguiLuaResults(L, method.Call(args))
+	}
+}
+
+func buildImguiLuaArgs(L *lua.LState, fnType reflect.Type) []reflect.Value {
+	if !fnType.IsVariadic() {
+		args := make([]reflect.Value, fnType.NumIn())
+		for i := 0; i < fnType.NumIn(); i++ {
+			args[i] = imguiLuaToReflect(L, L.Get(i+1), fnType.In(i))
+		}
+		return args
+	}
+	fixedCount := fnType.NumIn() - 1
+	args := make([]reflect.Value, fnType.NumIn())
+	for i := 0; i < fixedCount; i++ {
+		args[i] = imguiLuaToReflect(L, L.Get(i+1), fnType.In(i))
+	}
+	variadicType := fnType.In(fnType.NumIn() - 1)
+	variadic := reflect.MakeSlice(variadicType, 0, imguiMaxInt(L.GetTop()-fixedCount, 0))
+	for i := fixedCount; i < L.GetTop(); i++ {
+		variadic = reflect.Append(variadic, imguiLuaToReflect(L, L.Get(i+1), variadicType.Elem()))
+	}
+	args[fnType.NumIn()-1] = variadic
+	return args
+}
+
+func imguiLuaToReflect(L *lua.LState, value lua.LValue, target reflect.Type) reflect.Value {
+	if target.Kind() == reflect.Interface {
+		return reflect.ValueOf(imguiLuaToInterface(value))
+	}
+	if target.Kind() == reflect.Func {
+		if fn, ok := value.(*lua.LFunction); ok {
+			return reflect.MakeFunc(target, func(args []reflect.Value) []reflect.Value {
+				luaArgs := make([]lua.LValue, 0, len(args))
+				for _, arg := range args {
+					luaArgs = append(luaArgs, imguiReflectToLua(L, arg))
+				}
+				_ = L.CallByParam(lua.P{Fn: fn, NRet: target.NumOut(), Protect: true}, luaArgs...)
+				results := make([]reflect.Value, target.NumOut())
+				for i := 0; i < target.NumOut(); i++ {
+					results[i] = imguiLuaToReflect(L, L.Get(-target.NumOut()+i), target.Out(i))
+				}
+				L.Pop(target.NumOut())
+				return results
+			})
+		}
+		return reflect.Zero(target)
+	}
+	if target.Kind() == reflect.Ptr {
+		if target.Elem().Kind() == reflect.Slice {
+			if target.Elem().Elem().Kind() != reflect.Uint8 {
+				ptr := reflect.New(target.Elem())
+				ptr.Elem().Set(imguiLuaToReflect(L, value, target.Elem()))
+				return ptr
+			}
+			bytes := []byte(lua.LVAsString(value))
+			ptr := reflect.New(target.Elem())
+			ptr.Elem().Set(reflect.ValueOf(bytes))
+			return ptr
+		}
+		if unwrapped, ok := unwrapImguiLuaGoValue(value); ok {
+			if unwrapped.Type().AssignableTo(target) {
+				return unwrapped
+			}
+			if unwrapped.Type().ConvertibleTo(target) {
+				return unwrapped.Convert(target)
+			}
+		}
+		if target.Elem().Kind() == reflect.Struct {
+			ptr := reflect.New(target.Elem())
+			fillImguiLuaStruct(L, ptr.Elem(), value)
+			return ptr
+		}
+		return reflect.Zero(target)
+	}
+	if unwrapped, ok := unwrapImguiLuaGoValue(value); ok {
+		if unwrapped.Type().AssignableTo(target) {
+			return unwrapped
+		}
+		if unwrapped.Type().ConvertibleTo(target) {
+			return unwrapped.Convert(target)
+		}
+	}
+	switch target.Kind() {
+	case reflect.Bool:
+		return reflect.ValueOf(lua.LVAsBool(value)).Convert(target)
+	case reflect.String:
+		return reflect.ValueOf(lua.LVAsString(value)).Convert(target)
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return reflect.ValueOf(int64(lua.LVAsNumber(value))).Convert(target)
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		return reflect.ValueOf(uint64(lua.LVAsNumber(value))).Convert(target)
+	case reflect.Float32, reflect.Float64:
+		return reflect.ValueOf(float64(lua.LVAsNumber(value))).Convert(target)
+	case reflect.Slice:
+		if target.Elem().Kind() == reflect.Uint8 {
+			return reflect.ValueOf([]byte(lua.LVAsString(value))).Convert(target)
+		}
+		table, ok := value.(*lua.LTable)
+		if !ok {
+			return reflect.Zero(target)
+		}
+		result := reflect.MakeSlice(target, 0, table.Len())
+		for i := 1; i <= table.Len(); i++ {
+			result = reflect.Append(result, imguiLuaToReflect(L, table.RawGetInt(i), target.Elem()))
+		}
+		return result
+	case reflect.Array:
+		table, ok := value.(*lua.LTable)
+		if !ok {
+			return reflect.Zero(target)
+		}
+		result := reflect.New(target).Elem()
+		for i := 0; i < target.Len(); i++ {
+			result.Index(i).Set(imguiLuaToReflect(L, table.RawGetInt(i+1), target.Elem()))
+		}
+		return result
+	case reflect.Map:
+		table, ok := value.(*lua.LTable)
+		if !ok {
+			return reflect.Zero(target)
+		}
+		result := reflect.MakeMap(target)
+		table.ForEach(func(key lua.LValue, item lua.LValue) {
+			result.SetMapIndex(imguiLuaToReflect(L, key, target.Key()), imguiLuaToReflect(L, item, target.Elem()))
+		})
+		return result
+	case reflect.Struct:
+		result := reflect.New(target).Elem()
+		fillImguiLuaStruct(L, result, value)
+		return result
+	}
+	return reflect.Zero(target)
+}
+
+func fillImguiLuaStruct(L *lua.LState, result reflect.Value, value lua.LValue) {
+	table, ok := value.(*lua.LTable)
+	if !ok {
+		return
+	}
+	resultType := result.Type()
+	for i := 0; i < result.NumField(); i++ {
+		field := result.Field(i)
+		if !field.CanSet() {
+			continue
+		}
+		fieldInfo := resultType.Field(i)
+		fieldValue := table.RawGetString(fieldInfo.Name)
+		if fieldValue == lua.LNil {
+			fieldValue = table.RawGetString(imguiLowerFirst(fieldInfo.Name))
+		}
+		if fieldValue == lua.LNil {
+			continue
+		}
+		field.Set(imguiLuaToReflect(L, fieldValue, field.Type()))
+	}
+}
+
+func imguiLowerFirst(value string) string {
+	if value == "" {
+		return ""
+	}
+	first := value[0]
+	if first >= 'A' && first <= 'Z' {
+		first += 'a' - 'A'
+	}
+	return string(first) + value[1:]
+}
+
+func unwrapImguiLuaGoValue(value lua.LValue) (reflect.Value, bool) {
+	if ud, ok := value.(*lua.LUserData); ok && ud.Value != nil {
+		return reflect.ValueOf(ud.Value), true
+	}
+	if table, ok := value.(*lua.LTable); ok {
+		if ud, ok := table.RawGetString("__go").(*lua.LUserData); ok && ud.Value != nil {
+			return reflect.ValueOf(ud.Value), true
+		}
+	}
+	return reflect.Value{}, false
+}
+
+func imguiLuaToInterface(value lua.LValue) interface{} {
+	if unwrapped, ok := unwrapImguiLuaGoValue(value); ok {
+		return unwrapped.Interface()
+	}
+	switch v := value.(type) {
+	case lua.LBool:
+		return bool(v)
+	case lua.LNumber:
+		return float64(v)
+	case lua.LString:
+		return string(v)
+	default:
+		return nil
+	}
+}
+
+func pushImguiLuaResults(L *lua.LState, results []reflect.Value) int {
+	if len(results) == 0 {
+		return 0
+	}
+	if len(results) == 1 {
+		L.Push(imguiReflectToLua(L, results[0]))
+		return 1
+	}
+	obj := L.NewTable()
+	for i, result := range results {
+		obj.RawSetString("r"+imguiStrconvItoa(i), imguiReflectToLua(L, result))
+	}
+	L.Push(obj)
+	return 1
+}
+
+func imguiReflectToLua(L *lua.LState, value reflect.Value) lua.LValue {
+	if !value.IsValid() {
+		return lua.LNil
+	}
+	if value.Kind() == reflect.Ptr && value.IsNil() {
+		return lua.LNil
+	}
+	switch value.Kind() {
+	case reflect.Bool:
+		return lua.LBool(value.Bool())
+	case reflect.String:
+		return lua.LString(value.String())
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return lua.LNumber(value.Int())
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		return lua.LNumber(value.Uint())
+	case reflect.Float32, reflect.Float64:
+		return lua.LNumber(value.Float())
+	case reflect.Slice, reflect.Array:
+		if value.Type().Elem().Kind() == reflect.Uint8 {
+			return lua.LString(string(value.Bytes()))
+		}
+		arr := L.NewTable()
+		for i := 0; i < value.Len(); i++ {
+			arr.RawSetInt(i+1, imguiReflectToLua(L, value.Index(i)))
+		}
+		return arr
+	case reflect.Map:
+		obj := L.NewTable()
+		iter := value.MapRange()
+		for iter.Next() {
+			obj.RawSet(imguiReflectToLua(L, iter.Key()), imguiReflectToLua(L, iter.Value()))
+		}
+		return obj
+	case reflect.Func:
+		return L.NewFunction(func(L *lua.LState) int {
+			fnType := value.Type()
+			args := buildImguiLuaArgs(L, fnType)
+			var results []reflect.Value
+			if fnType.IsVariadic() {
+				results = value.CallSlice(args)
+			} else {
+				results = value.Call(args)
+			}
+			return pushImguiLuaResults(L, results)
+		})
+	}
+	return wrapImguiLuaObject(L, value)
+}
+
+func wrapImguiLuaObject(L *lua.LState, value reflect.Value) lua.LValue {
+	if value.Kind() == reflect.Ptr && value.IsNil() {
+		return lua.LNil
+	}
+	obj := L.NewTable()
+	ud := L.NewUserData()
+	ud.Value = value.Interface()
+	obj.RawSetString("__go", ud)
+	typ := value.Type()
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	for _, entry := range imguiReflectMethods[typ.Name()] {
+		methodName := entry.goMethod
+		if obj.RawGetString(entry.name) == lua.LNil {
+			obj.RawSetString(entry.name, L.NewFunction(bindImguiLuaMethod(value, methodName)))
+		}
+	}
+	return obj
+}
+
+func imguiStrconvItoa(value int) string {
+	if value == 0 {
+		return "0"
+	}
+	digits := [20]byte{}
+	i := len(digits)
+	for value > 0 {
+		i--
+		digits[i] = byte('0' + value%10)
+		value /= 10
+	}
+	return string(digits[i:])
+}
+
+func imguiMaxInt(left int, right int) int {
+	if left > right {
+		return left
+	}
+	return right
+}

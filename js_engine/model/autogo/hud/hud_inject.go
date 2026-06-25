@@ -28,77 +28,10 @@ func (m *HUDModule) Register(engine model.Engine) error {
 
 	hudObj.Set("new", func(call goja.FunctionCall) goja.Value {
 		h := hud.New()
-		return vm.ToValue(h)
-	})
-
-	hudObj.Set("setPosition", func(call goja.FunctionCall) goja.Value {
-		h := call.Argument(0).Export().(*hud.HUD)
-		x1 := int(call.Argument(1).ToInteger())
-		y1 := int(call.Argument(2).ToInteger())
-		x2 := int(call.Argument(3).ToInteger())
-		y2 := int(call.Argument(4).ToInteger())
-		h.SetPosition(x1, y1, x2, y2)
-		return vm.ToValue(h)
-	})
-
-	hudObj.Set("setBackgroundColor", func(call goja.FunctionCall) goja.Value {
-		h := call.Argument(0).Export().(*hud.HUD)
-		color := call.Argument(1).String()
-		h.SetBackgroundColor(color)
-		return vm.ToValue(h)
-	})
-
-	hudObj.Set("setTextSize", func(call goja.FunctionCall) goja.Value {
-		h := call.Argument(0).Export().(*hud.HUD)
-		size := int(call.Argument(1).ToInteger())
-		h.SetTextSize(size)
-		return vm.ToValue(h)
-	})
-
-	hudObj.Set("setText", func(call goja.FunctionCall) goja.Value {
-		h := call.Argument(0).Export().(*hud.HUD)
-		itemsVal := call.Argument(1).Export()
-		var items []hud.TextItem
-		if arr, ok := itemsVal.([]interface{}); ok {
-			for _, item := range arr {
-				if m, ok := item.(map[string]interface{}); ok {
-					ti := hud.TextItem{}
-					if textColor, ok := m["TextColor"].(string); ok {
-						ti.TextColor = textColor
-					}
-					if text, ok := m["Text"].(string); ok {
-						ti.Text = text
-					}
-					items = append(items, ti)
-				}
-			}
+		if h == nil {
+			return goja.Null()
 		}
-		h.SetText(items)
-		return vm.ToValue(h)
-	})
-
-	hudObj.Set("show", func(call goja.FunctionCall) goja.Value {
-		h := call.Argument(0).Export().(*hud.HUD)
-		h.Show()
-		return goja.Undefined()
-	})
-
-	hudObj.Set("hide", func(call goja.FunctionCall) goja.Value {
-		h := call.Argument(0).Export().(*hud.HUD)
-		h.Hide()
-		return goja.Undefined()
-	})
-
-	hudObj.Set("isVisible", func(call goja.FunctionCall) goja.Value {
-		h := call.Argument(0).Export().(*hud.HUD)
-		result := h.IsVisible()
-		return vm.ToValue(result)
-	})
-
-	hudObj.Set("destroy", func(call goja.FunctionCall) goja.Value {
-		h := call.Argument(0).Export().(*hud.HUD)
-		h.Destroy()
-		return goja.Undefined()
+		return wrapHUD(vm, h)
 	})
 
 	engine.RegisterMethod("hud.new", "创建一个新的HUD对象", hud.New, true)
@@ -128,4 +61,82 @@ func (m *HUDModule) Register(engine model.Engine) error {
 	}, true)
 
 	return nil
+}
+
+func wrapHUD(vm *goja.Runtime, h *hud.HUD) goja.Value {
+	obj := vm.NewObject()
+	obj.Set("setPosition", func(call goja.FunctionCall) goja.Value {
+		next := h.SetPosition(
+			int(call.Argument(0).ToInteger()),
+			int(call.Argument(1).ToInteger()),
+			int(call.Argument(2).ToInteger()),
+			int(call.Argument(3).ToInteger()),
+		)
+		return hudChainValue(vm, obj, h, next)
+	})
+	obj.Set("setBackgroundColor", func(call goja.FunctionCall) goja.Value {
+		next := h.SetBackgroundColor(call.Argument(0).String())
+		return hudChainValue(vm, obj, h, next)
+	})
+	obj.Set("setTextSize", func(call goja.FunctionCall) goja.Value {
+		next := h.SetTextSize(int(call.Argument(0).ToInteger()))
+		return hudChainValue(vm, obj, h, next)
+	})
+	obj.Set("setText", func(call goja.FunctionCall) goja.Value {
+		next := h.SetText(jsValueToTextItems(call.Argument(0)))
+		return hudChainValue(vm, obj, h, next)
+	})
+	obj.Set("show", func(call goja.FunctionCall) goja.Value {
+		h.Show()
+		return goja.Undefined()
+	})
+	obj.Set("hide", func(call goja.FunctionCall) goja.Value {
+		h.Hide()
+		return goja.Undefined()
+	})
+	obj.Set("isVisible", func(call goja.FunctionCall) goja.Value {
+		return vm.ToValue(h.IsVisible())
+	})
+	obj.Set("destroy", func(call goja.FunctionCall) goja.Value {
+		h.Destroy()
+		return goja.Undefined()
+	})
+	return vm.ToValue(obj)
+}
+
+func hudChainValue(vm *goja.Runtime, current *goja.Object, original, next *hud.HUD) goja.Value {
+	if next != nil && next != original {
+		return wrapHUD(vm, next)
+	}
+	return current
+}
+
+func jsValueToTextItems(value goja.Value) []hud.TextItem {
+	exported := value.Export()
+	items := make([]hud.TextItem, 0)
+	arr, ok := exported.([]interface{})
+	if !ok {
+		return items
+	}
+	for _, item := range arr {
+		itemMap, ok := item.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		textItem := hud.TextItem{}
+		if textColor, ok := itemMap["textColor"].(string); ok {
+			textItem.TextColor = textColor
+		}
+		if textColor, ok := itemMap["TextColor"].(string); ok {
+			textItem.TextColor = textColor
+		}
+		if text, ok := itemMap["text"].(string); ok {
+			textItem.Text = text
+		}
+		if text, ok := itemMap["Text"].(string); ok {
+			textItem.Text = text
+		}
+		items = append(items, textItem)
+	}
+	return items
 }

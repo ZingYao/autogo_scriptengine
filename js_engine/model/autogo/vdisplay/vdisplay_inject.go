@@ -27,79 +27,15 @@ func (m *VdisplayModule) Register(engine model.Engine) error {
 	vm.Set("vdisplay", vdisplayObj)
 
 	vdisplayObj.Set("create", func(call goja.FunctionCall) goja.Value {
-		width := int(call.Argument(0).ToInteger())
-		height := int(call.Argument(1).ToInteger())
-		dpi := int(call.Argument(2).ToInteger())
-		result := vdisplay.Create(width, height, dpi)
-		return vm.ToValue(result)
-	})
-
-	vdisplayObj.Set("getDisplayId", func(call goja.FunctionCall) goja.Value {
-		v := call.Argument(0).Export().(*vdisplay.Vdisplay)
-		result := v.GetDisplayId()
-		return vm.ToValue(result)
-	})
-
-	vdisplayObj.Set("launchApp", func(call goja.FunctionCall) goja.Value {
-		v := call.Argument(0).Export().(*vdisplay.Vdisplay)
-		packageName := call.Argument(1).String()
-		result := v.LaunchApp(packageName)
-		return vm.ToValue(result)
-	})
-
-	vdisplayObj.Set("setTitle", func(call goja.FunctionCall) goja.Value {
-		v := call.Argument(0).Export().(*vdisplay.Vdisplay)
-		title := call.Argument(1).String()
-		v.SetTitle(title)
-		return goja.Undefined()
-	})
-
-	vdisplayObj.Set("setTouchCallback", func(call goja.FunctionCall) goja.Value {
-		v := call.Argument(0).Export().(*vdisplay.Vdisplay)
-		fn, ok := goja.AssertFunction(call.Argument(1))
-		if !ok {
-			return goja.Undefined()
+		v := vdisplay.Create(
+			int(call.Argument(0).ToInteger()),
+			int(call.Argument(1).ToInteger()),
+			int(call.Argument(2).ToInteger()),
+		)
+		if v == nil {
+			return goja.Null()
 		}
-		callback := func(x, y, action, displayId int) {
-			fn(nil, vm.ToValue(x), vm.ToValue(y), vm.ToValue(action), vm.ToValue(displayId))
-		}
-		v.SetTouchCallback(callback)
-		return goja.Undefined()
-	})
-
-	vdisplayObj.Set("showPreviewWindow", func(call goja.FunctionCall) goja.Value {
-		v := call.Argument(0).Export().(*vdisplay.Vdisplay)
-		rotated := call.Argument(1).ToBoolean()
-		v.ShowPreviewWindow(rotated)
-		return goja.Undefined()
-	})
-
-	vdisplayObj.Set("hidePreviewWindow", func(call goja.FunctionCall) goja.Value {
-		v := call.Argument(0).Export().(*vdisplay.Vdisplay)
-		v.HidePreviewWindow()
-		return goja.Undefined()
-	})
-
-	vdisplayObj.Set("setPreviewWindowSize", func(call goja.FunctionCall) goja.Value {
-		v := call.Argument(0).Export().(*vdisplay.Vdisplay)
-		width := int(call.Argument(1).ToInteger())
-		height := int(call.Argument(2).ToInteger())
-		v.SetPreviewWindowSize(width, height)
-		return goja.Undefined()
-	})
-
-	vdisplayObj.Set("setPreviewWindowPos", func(call goja.FunctionCall) goja.Value {
-		v := call.Argument(0).Export().(*vdisplay.Vdisplay)
-		x := int(call.Argument(1).ToInteger())
-		y := int(call.Argument(2).ToInteger())
-		v.SetPreviewWindowPos(x, y)
-		return goja.Undefined()
-	})
-
-	vdisplayObj.Set("destroy", func(call goja.FunctionCall) goja.Value {
-		v := call.Argument(0).Export().(*vdisplay.Vdisplay)
-		v.Destroy()
-		return goja.Undefined()
+		return wrapVdisplay(vm, v)
 	})
 
 	engine.RegisterMethod("vdisplay.create", "创建一个虚拟显示设备", vdisplay.Create, true)
@@ -114,4 +50,53 @@ func (m *VdisplayModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("vdisplay.destroy", "销毁指定的虚拟显示设备", (*vdisplay.Vdisplay).Destroy, true)
 
 	return nil
+}
+
+func wrapVdisplay(vm *goja.Runtime, v *vdisplay.Vdisplay) goja.Value {
+	obj := vm.NewObject()
+	obj.Set("getDisplayId", func(call goja.FunctionCall) goja.Value {
+		return vm.ToValue(v.GetDisplayId())
+	})
+	obj.Set("launchApp", func(call goja.FunctionCall) goja.Value {
+		return vm.ToValue(v.LaunchApp(call.Argument(0).String()))
+	})
+	obj.Set("setTitle", func(call goja.FunctionCall) goja.Value {
+		v.SetTitle(call.Argument(0).String())
+		return goja.Undefined()
+	})
+	obj.Set("setTouchCallback", func(call goja.FunctionCall) goja.Value {
+		fn, ok := goja.AssertFunction(call.Argument(0))
+		if !ok {
+			return goja.Undefined()
+		}
+		v.SetTouchCallback(func(x, y, action, displayId int) {
+			_, _ = fn(nil, vm.ToValue(x), vm.ToValue(y), vm.ToValue(action), vm.ToValue(displayId))
+		})
+		return goja.Undefined()
+	})
+	obj.Set("showPreviewWindow", func(call goja.FunctionCall) goja.Value {
+		rotated := false
+		if len(call.Arguments) > 0 {
+			rotated = call.Argument(0).ToBoolean()
+		}
+		v.ShowPreviewWindow(rotated)
+		return goja.Undefined()
+	})
+	obj.Set("hidePreviewWindow", func(call goja.FunctionCall) goja.Value {
+		v.HidePreviewWindow()
+		return goja.Undefined()
+	})
+	obj.Set("setPreviewWindowSize", func(call goja.FunctionCall) goja.Value {
+		v.SetPreviewWindowSize(int(call.Argument(0).ToInteger()), int(call.Argument(1).ToInteger()))
+		return goja.Undefined()
+	})
+	obj.Set("setPreviewWindowPos", func(call goja.FunctionCall) goja.Value {
+		v.SetPreviewWindowPos(int(call.Argument(0).ToInteger()), int(call.Argument(1).ToInteger()))
+		return goja.Undefined()
+	})
+	obj.Set("destroy", func(call goja.FunctionCall) goja.Value {
+		v.Destroy()
+		return goja.Undefined()
+	})
+	return vm.ToValue(obj)
 }

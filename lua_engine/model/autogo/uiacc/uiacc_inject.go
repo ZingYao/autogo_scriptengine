@@ -28,1017 +28,528 @@ func (m *UiaccModule) Register(engine model.Engine) error {
 	state.SetGlobal("uiacc", uiaccObj)
 
 	uiaccObj.RawSetString("new", state.NewFunction(func(L *lua.LState) int {
-		displayId := L.CheckInt(1)
-		u := uiacc.New(displayId)
-		ud := L.NewUserData()
-		ud.Value = u
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("text", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.Text(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("textContains", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.TextContains(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("textStartsWith", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.TextStartsWith(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("textEndsWith", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.TextEndsWith(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("textMatches", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.TextMatches(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("desc", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.Desc(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("descContains", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.DescContains(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("descStartsWith", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.DescStartsWith(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("descEndsWith", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.DescEndsWith(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("descMatches", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.DescMatches(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("id", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.Id(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("idContains", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.IdContains(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("idStartsWith", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.IdStartsWith(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("idEndsWith", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.IdEndsWith(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("idMatches", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.IdMatches(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("className", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.ClassName(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("classNameContains", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.ClassNameContains(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("classNameStartsWith", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.ClassNameStartsWith(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("classNameEndsWith", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.ClassNameEndsWith(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("classNameMatches", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.ClassNameMatches(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("packageName", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.PackageName(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("packageNameContains", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.PackageNameContains(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("packageNameStartsWith", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.PackageNameStartsWith(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("packageNameEndsWith", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.PackageNameEndsWith(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("packageNameMatches", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckString(2)
-		result := u.PackageNameMatches(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("bounds", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		left := L.CheckInt(2)
-		top := L.CheckInt(3)
-		right := L.CheckInt(4)
-		bottom := L.CheckInt(5)
-		result := u.Bounds(left, top, right, bottom)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("boundsInside", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		left := L.CheckInt(2)
-		top := L.CheckInt(3)
-		right := L.CheckInt(4)
-		bottom := L.CheckInt(5)
-		result := u.BoundsInside(left, top, right, bottom)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("boundsContains", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		left := L.CheckInt(2)
-		top := L.CheckInt(3)
-		right := L.CheckInt(4)
-		bottom := L.CheckInt(5)
-		result := u.BoundsContains(left, top, right, bottom)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("drawingOrder", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckInt(2)
-		result := u.DrawingOrder(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("clickable", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Clickable(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("longClickable", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.LongClickable(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("checkable", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Checkable(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("selected", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Selected(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("enabled", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Enabled(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("scrollable", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Scrollable(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("editable", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Editable(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("multiLine", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.MultiLine(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("checked", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Checked(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("focusable", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Focusable(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("dismissable", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Dismissable(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("focused", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Focused(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("contextClickable", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.ContextClickable(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("index", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckInt(2)
-		result := u.Index(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("visible", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Visible(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("password", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		value := L.CheckBool(2)
-		result := u.Password(value)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("click", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		text := L.CheckString(2)
-		result := u.Click(text)
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("waitFor", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		timeout := L.CheckInt(2)
-		result := u.WaitFor(timeout)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("findOnce", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		result := u.FindOnce()
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("find", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		result := u.Find()
-		resultTable := L.NewTable()
-		for i, item := range result {
-			ud := L.NewUserData()
-			ud.Value = item
-			resultTable.RawSetInt(i+1, ud)
-		}
-		L.Push(resultTable)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("release", state.NewFunction(func(L *lua.LState) int {
-		u := L.CheckUserData(1).Value.(*uiacc.Uiacc)
-		u.Release()
-		return 0
-	}))
-
-	uiaccObj.RawSetString("objClick", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.Click()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("clickCenter", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.ClickCenter()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("clickLongClick", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.ClickLongClick()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("copy", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.Copy()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("cut", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.Cut()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("paste", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.Paste()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("scrollForward", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.ScrollForward()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("scrollBackward", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.ScrollBackward()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("collapse", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.Collapse()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("expand", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.Expand()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("show", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.Show()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("select", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.Select()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("clearSelect", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.ClearSelect()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("setSelection", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		start := L.CheckInt(2)
-		end := L.CheckInt(3)
-		result := obj.SetSelection(start, end)
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("setVisibleToUser", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		isVisible := L.CheckBool(2)
-		result := obj.SetVisibleToUser(isVisible)
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("setText", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		str := L.CheckString(2)
-		result := obj.SetText(str)
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getClickable", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetClickable()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getLongClickable", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetLongClickable()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getCheckable", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetCheckable()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getSelected", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetSelected()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getEnabled", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetEnabled()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getScrollable", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetScrollable()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getEditable", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetEditable()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getMultiLine", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetMultiLine()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getChecked", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetChecked()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getFocused", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetFocused()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getFocusable", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetFocusable()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getDismissable", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetDismissable()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getContextClickable", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetContextClickable()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getAccessibilityFocused", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetAccessibilityFocused()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getChildCount", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetChildCount()
-		L.Push(lua.LNumber(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getDrawingOrder", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetDrawingOrder()
-		L.Push(lua.LNumber(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getIndex", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetIndex()
-		L.Push(lua.LNumber(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getBounds", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetBounds()
-		resultTable := L.NewTable()
-		resultTable.RawSetString("left", lua.LNumber(result.Left))
-		resultTable.RawSetString("top", lua.LNumber(result.Top))
-		resultTable.RawSetString("right", lua.LNumber(result.Right))
-		resultTable.RawSetString("bottom", lua.LNumber(result.Bottom))
-		L.Push(resultTable)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getBoundsInParent", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetBoundsInParent()
-		resultTable := L.NewTable()
-		resultTable.RawSetString("left", lua.LNumber(result.Left))
-		resultTable.RawSetString("top", lua.LNumber(result.Top))
-		resultTable.RawSetString("right", lua.LNumber(result.Right))
-		resultTable.RawSetString("bottom", lua.LNumber(result.Bottom))
-		L.Push(resultTable)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getId", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetId()
-		L.Push(lua.LString(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getText", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetText()
-		L.Push(lua.LString(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getDesc", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetDesc()
-		L.Push(lua.LString(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getPackageName", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetPackageName()
-		L.Push(lua.LString(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getClassName", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetClassName()
-		L.Push(lua.LString(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getParent", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetParent()
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getChild", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		index := L.CheckInt(2)
-		result := obj.GetChild(index)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getChildren", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetChildren()
-		resultTable := L.NewTable()
-		for i, item := range result {
-			ud := L.NewUserData()
-			ud.Value = item
-			resultTable.RawSetInt(i+1, ud)
-		}
-		L.Push(resultTable)
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getVisible", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetVisible()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("getPassword", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.GetPassword()
-		L.Push(lua.LBool(result))
-		return 1
-	}))
-
-	uiaccObj.RawSetString("toString", state.NewFunction(func(L *lua.LState) int {
-		obj := L.CheckUserData(1).Value.(*uiacc.UiObject)
-		result := obj.ToString()
-		L.Push(lua.LString(result))
+		displayId := L.OptInt(1, 0)
+		L.Push(wrapUiacc(L, uiacc.New(displayId)))
 		return 1
 	}))
 
 	engine.RegisterMethod("uiacc.new", "创建新的Uiacc对象", uiacc.New, true)
-	engine.RegisterMethod("uiacc.text", "根据text属性筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.Text(value)
-	}, true)
-	engine.RegisterMethod("uiacc.textContains", "根据text包含筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.TextContains(value)
-	}, true)
-	engine.RegisterMethod("uiacc.textStartsWith", "根据text前缀筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.TextStartsWith(value)
-	}, true)
-	engine.RegisterMethod("uiacc.textEndsWith", "根据text后缀筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.TextEndsWith(value)
-	}, true)
-	engine.RegisterMethod("uiacc.textMatches", "根据text正则筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.TextMatches(value)
-	}, true)
-	engine.RegisterMethod("uiacc.desc", "根据desc属性筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.Desc(value)
-	}, true)
-	engine.RegisterMethod("uiacc.descContains", "根据desc包含筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.DescContains(value)
-	}, true)
-	engine.RegisterMethod("uiacc.descStartsWith", "根据desc前缀筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.DescStartsWith(value)
-	}, true)
-	engine.RegisterMethod("uiacc.descEndsWith", "根据desc后缀筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.DescEndsWith(value)
-	}, true)
-	engine.RegisterMethod("uiacc.descMatches", "根据desc正则筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.DescMatches(value)
-	}, true)
-	engine.RegisterMethod("uiacc.id", "根据id属性筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.Id(value)
-	}, true)
-	engine.RegisterMethod("uiacc.idContains", "根据id包含筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.IdContains(value)
-	}, true)
-	engine.RegisterMethod("uiacc.idStartsWith", "根据id前缀筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.IdStartsWith(value)
-	}, true)
-	engine.RegisterMethod("uiacc.idEndsWith", "根据id后缀筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.IdEndsWith(value)
-	}, true)
-	engine.RegisterMethod("uiacc.idMatches", "根据id正则筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.IdMatches(value)
-	}, true)
-	engine.RegisterMethod("uiacc.className", "根据className属性筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.ClassName(value)
-	}, true)
-	engine.RegisterMethod("uiacc.classNameContains", "根据className包含筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.ClassNameContains(value)
-	}, true)
-	engine.RegisterMethod("uiacc.classNameStartsWith", "根据className前缀筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.ClassNameStartsWith(value)
-	}, true)
-	engine.RegisterMethod("uiacc.classNameEndsWith", "根据className后缀筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.ClassNameEndsWith(value)
-	}, true)
-	engine.RegisterMethod("uiacc.classNameMatches", "根据className正则筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.ClassNameMatches(value)
-	}, true)
-	engine.RegisterMethod("uiacc.packageName", "根据packageName属性筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.PackageName(value)
-	}, true)
-	engine.RegisterMethod("uiacc.packageNameContains", "根据packageName包含筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.PackageNameContains(value)
-	}, true)
-	engine.RegisterMethod("uiacc.packageNameStartsWith", "根据packageName前缀筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.PackageNameStartsWith(value)
-	}, true)
-	engine.RegisterMethod("uiacc.packageNameEndsWith", "根据packageName后缀筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.PackageNameEndsWith(value)
-	}, true)
-	engine.RegisterMethod("uiacc.packageNameMatches", "根据packageName正则筛选", func(u *uiacc.Uiacc, value string) *uiacc.Uiacc {
-		return u.PackageNameMatches(value)
-	}, true)
-	engine.RegisterMethod("uiacc.bounds", "根据bounds属性筛选", func(u *uiacc.Uiacc, left, top, right, bottom int) *uiacc.Uiacc {
-		return u.Bounds(left, top, right, bottom)
-	}, true)
-	engine.RegisterMethod("uiacc.boundsInside", "根据boundsInside属性筛选", func(u *uiacc.Uiacc, left, top, right, bottom int) *uiacc.Uiacc {
-		return u.BoundsInside(left, top, right, bottom)
-	}, true)
-	engine.RegisterMethod("uiacc.boundsContains", "根据boundsContains属性筛选", func(u *uiacc.Uiacc, left, top, right, bottom int) *uiacc.Uiacc {
-		return u.BoundsContains(left, top, right, bottom)
-	}, true)
-	engine.RegisterMethod("uiacc.drawingOrder", "根据drawingOrder属性筛选", func(u *uiacc.Uiacc, value int) *uiacc.Uiacc {
-		return u.DrawingOrder(value)
-	}, true)
-	engine.RegisterMethod("uiacc.clickable", "根据clickable属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Clickable(value)
-	}, true)
-	engine.RegisterMethod("uiacc.longClickable", "根据longClickable属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.LongClickable(value)
-	}, true)
-	engine.RegisterMethod("uiacc.checkable", "根据checkable属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Checkable(value)
-	}, true)
-	engine.RegisterMethod("uiacc.selected", "根据selected属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Selected(value)
-	}, true)
-	engine.RegisterMethod("uiacc.enabled", "根据enabled属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Enabled(value)
-	}, true)
-	engine.RegisterMethod("uiacc.scrollable", "根据scrollable属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Scrollable(value)
-	}, true)
-	engine.RegisterMethod("uiacc.editable", "根据editable属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Editable(value)
-	}, true)
-	engine.RegisterMethod("uiacc.multiLine", "根据multiLine属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.MultiLine(value)
-	}, true)
-	engine.RegisterMethod("uiacc.checked", "根据checked属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Checked(value)
-	}, true)
-	engine.RegisterMethod("uiacc.focusable", "根据focusable属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Focusable(value)
-	}, true)
-	engine.RegisterMethod("uiacc.dismissable", "根据dismissable属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Dismissable(value)
-	}, true)
-	engine.RegisterMethod("uiacc.focused", "根据focused属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Focused(value)
-	}, true)
-	engine.RegisterMethod("uiacc.contextClickable", "根据contextClickable属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.ContextClickable(value)
-	}, true)
-	engine.RegisterMethod("uiacc.index", "根据index属性筛选", func(u *uiacc.Uiacc, value int) *uiacc.Uiacc {
-		return u.Index(value)
-	}, true)
-	engine.RegisterMethod("uiacc.visible", "根据visible属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Visible(value)
-	}, true)
-	engine.RegisterMethod("uiacc.password", "根据password属性筛选", func(u *uiacc.Uiacc, value bool) *uiacc.Uiacc {
-		return u.Password(value)
-	}, true)
-	engine.RegisterMethod("uiacc.click", "点击匹配的控件", func(u *uiacc.Uiacc, text string) bool {
-		return u.Click(text)
-	}, true)
-	engine.RegisterMethod("uiacc.waitFor", "等待匹配的控件出现", func(u *uiacc.Uiacc, timeout int) *uiacc.UiObject {
-		return u.WaitFor(timeout)
-	}, true)
-	engine.RegisterMethod("uiacc.findOnce", "查找第一个匹配的控件", func(u *uiacc.Uiacc) *uiacc.UiObject {
-		return u.FindOnce()
-	}, true)
-	engine.RegisterMethod("uiacc.find", "查找所有匹配的控件", func(u *uiacc.Uiacc) []*uiacc.UiObject {
-		return u.Find()
-	}, true)
-	engine.RegisterMethod("uiacc.release", "释放Uiacc对象", func(u *uiacc.Uiacc) {
-		u.Release()
-	}, true)
+	engine.RegisterMethod("uiacc.text", "Uiacc.Text", (*uiacc.Uiacc).Text, true)
+	engine.RegisterMethod("uiacc.textContains", "Uiacc.TextContains", (*uiacc.Uiacc).TextContains, true)
+	engine.RegisterMethod("uiacc.textStartsWith", "Uiacc.TextStartsWith", (*uiacc.Uiacc).TextStartsWith, true)
+	engine.RegisterMethod("uiacc.textEndsWith", "Uiacc.TextEndsWith", (*uiacc.Uiacc).TextEndsWith, true)
+	engine.RegisterMethod("uiacc.textMatches", "Uiacc.TextMatches", (*uiacc.Uiacc).TextMatches, true)
+	engine.RegisterMethod("uiacc.desc", "Uiacc.Desc", (*uiacc.Uiacc).Desc, true)
+	engine.RegisterMethod("uiacc.descContains", "Uiacc.DescContains", (*uiacc.Uiacc).DescContains, true)
+	engine.RegisterMethod("uiacc.descStartsWith", "Uiacc.DescStartsWith", (*uiacc.Uiacc).DescStartsWith, true)
+	engine.RegisterMethod("uiacc.descEndsWith", "Uiacc.DescEndsWith", (*uiacc.Uiacc).DescEndsWith, true)
+	engine.RegisterMethod("uiacc.descMatches", "Uiacc.DescMatches", (*uiacc.Uiacc).DescMatches, true)
+	engine.RegisterMethod("uiacc.id", "Uiacc.Id", (*uiacc.Uiacc).Id, true)
+	engine.RegisterMethod("uiacc.idContains", "Uiacc.IdContains", (*uiacc.Uiacc).IdContains, true)
+	engine.RegisterMethod("uiacc.idStartsWith", "Uiacc.IdStartsWith", (*uiacc.Uiacc).IdStartsWith, true)
+	engine.RegisterMethod("uiacc.idEndsWith", "Uiacc.IdEndsWith", (*uiacc.Uiacc).IdEndsWith, true)
+	engine.RegisterMethod("uiacc.idMatches", "Uiacc.IdMatches", (*uiacc.Uiacc).IdMatches, true)
+	engine.RegisterMethod("uiacc.className", "Uiacc.ClassName", (*uiacc.Uiacc).ClassName, true)
+	engine.RegisterMethod("uiacc.classNameContains", "Uiacc.ClassNameContains", (*uiacc.Uiacc).ClassNameContains, true)
+	engine.RegisterMethod("uiacc.classNameStartsWith", "Uiacc.ClassNameStartsWith", (*uiacc.Uiacc).ClassNameStartsWith, true)
+	engine.RegisterMethod("uiacc.classNameEndsWith", "Uiacc.ClassNameEndsWith", (*uiacc.Uiacc).ClassNameEndsWith, true)
+	engine.RegisterMethod("uiacc.classNameMatches", "Uiacc.ClassNameMatches", (*uiacc.Uiacc).ClassNameMatches, true)
+	engine.RegisterMethod("uiacc.packageName", "Uiacc.PackageName", (*uiacc.Uiacc).PackageName, true)
+	engine.RegisterMethod("uiacc.packageNameContains", "Uiacc.PackageNameContains", (*uiacc.Uiacc).PackageNameContains, true)
+	engine.RegisterMethod("uiacc.packageNameStartsWith", "Uiacc.PackageNameStartsWith", (*uiacc.Uiacc).PackageNameStartsWith, true)
+	engine.RegisterMethod("uiacc.packageNameEndsWith", "Uiacc.PackageNameEndsWith", (*uiacc.Uiacc).PackageNameEndsWith, true)
+	engine.RegisterMethod("uiacc.packageNameMatches", "Uiacc.PackageNameMatches", (*uiacc.Uiacc).PackageNameMatches, true)
+	engine.RegisterMethod("uiacc.bounds", "Uiacc.Bounds", (*uiacc.Uiacc).Bounds, true)
+	engine.RegisterMethod("uiacc.boundsInside", "Uiacc.BoundsInside", (*uiacc.Uiacc).BoundsInside, true)
+	engine.RegisterMethod("uiacc.boundsContains", "Uiacc.BoundsContains", (*uiacc.Uiacc).BoundsContains, true)
+	engine.RegisterMethod("uiacc.drawingOrder", "Uiacc.DrawingOrder", (*uiacc.Uiacc).DrawingOrder, true)
+	engine.RegisterMethod("uiacc.index", "Uiacc.Index", (*uiacc.Uiacc).Index, true)
+	engine.RegisterMethod("uiacc.clickable", "Uiacc.Clickable", (*uiacc.Uiacc).Clickable, true)
+	engine.RegisterMethod("uiacc.longClickable", "Uiacc.LongClickable", (*uiacc.Uiacc).LongClickable, true)
+	engine.RegisterMethod("uiacc.checkable", "Uiacc.Checkable", (*uiacc.Uiacc).Checkable, true)
+	engine.RegisterMethod("uiacc.selected", "Uiacc.Selected", (*uiacc.Uiacc).Selected, true)
+	engine.RegisterMethod("uiacc.enabled", "Uiacc.Enabled", (*uiacc.Uiacc).Enabled, true)
+	engine.RegisterMethod("uiacc.scrollable", "Uiacc.Scrollable", (*uiacc.Uiacc).Scrollable, true)
+	engine.RegisterMethod("uiacc.editable", "Uiacc.Editable", (*uiacc.Uiacc).Editable, true)
+	engine.RegisterMethod("uiacc.multiLine", "Uiacc.MultiLine", (*uiacc.Uiacc).MultiLine, true)
+	engine.RegisterMethod("uiacc.checked", "Uiacc.Checked", (*uiacc.Uiacc).Checked, true)
+	engine.RegisterMethod("uiacc.focusable", "Uiacc.Focusable", (*uiacc.Uiacc).Focusable, true)
+	engine.RegisterMethod("uiacc.dismissable", "Uiacc.Dismissable", (*uiacc.Uiacc).Dismissable, true)
+	engine.RegisterMethod("uiacc.focused", "Uiacc.Focused", (*uiacc.Uiacc).Focused, true)
+	engine.RegisterMethod("uiacc.contextClickable", "Uiacc.ContextClickable", (*uiacc.Uiacc).ContextClickable, true)
+	engine.RegisterMethod("uiacc.visible", "Uiacc.Visible", (*uiacc.Uiacc).Visible, true)
+	engine.RegisterMethod("uiacc.password", "Uiacc.Password", (*uiacc.Uiacc).Password, true)
+	engine.RegisterMethod("uiacc.click", "Uiacc.Click", (*uiacc.Uiacc).Click, true)
+	engine.RegisterMethod("uiacc.waitFor", "Uiacc.WaitFor", (*uiacc.Uiacc).WaitFor, true)
+	engine.RegisterMethod("uiacc.findOnce", "Uiacc.FindOnce", (*uiacc.Uiacc).FindOnce, true)
+	engine.RegisterMethod("uiacc.find", "Uiacc.Find", (*uiacc.Uiacc).Find, true)
+	engine.RegisterMethod("uiacc.release", "Uiacc.Release", (*uiacc.Uiacc).Release, true)
+	engine.RegisterMethod("uiacc.clickCenter", "UiObject.ClickCenter", (*uiacc.UiObject).ClickCenter, true)
+	engine.RegisterMethod("uiacc.clickLongClick", "UiObject.ClickLongClick", (*uiacc.UiObject).ClickLongClick, true)
+	engine.RegisterMethod("uiacc.copy", "UiObject.Copy", (*uiacc.UiObject).Copy, true)
+	engine.RegisterMethod("uiacc.cut", "UiObject.Cut", (*uiacc.UiObject).Cut, true)
+	engine.RegisterMethod("uiacc.paste", "UiObject.Paste", (*uiacc.UiObject).Paste, true)
+	engine.RegisterMethod("uiacc.scrollForward", "UiObject.ScrollForward", (*uiacc.UiObject).ScrollForward, true)
+	engine.RegisterMethod("uiacc.scrollBackward", "UiObject.ScrollBackward", (*uiacc.UiObject).ScrollBackward, true)
+	engine.RegisterMethod("uiacc.collapse", "UiObject.Collapse", (*uiacc.UiObject).Collapse, true)
+	engine.RegisterMethod("uiacc.expand", "UiObject.Expand", (*uiacc.UiObject).Expand, true)
+	engine.RegisterMethod("uiacc.show", "UiObject.Show", (*uiacc.UiObject).Show, true)
+	engine.RegisterMethod("uiacc.select", "UiObject.Select", (*uiacc.UiObject).Select, true)
+	engine.RegisterMethod("uiacc.clearSelect", "UiObject.ClearSelect", (*uiacc.UiObject).ClearSelect, true)
+	engine.RegisterMethod("uiacc.getClickable", "UiObject.GetClickable", (*uiacc.UiObject).GetClickable, true)
+	engine.RegisterMethod("uiacc.getLongClickable", "UiObject.GetLongClickable", (*uiacc.UiObject).GetLongClickable, true)
+	engine.RegisterMethod("uiacc.getCheckable", "UiObject.GetCheckable", (*uiacc.UiObject).GetCheckable, true)
+	engine.RegisterMethod("uiacc.getSelected", "UiObject.GetSelected", (*uiacc.UiObject).GetSelected, true)
+	engine.RegisterMethod("uiacc.getEnabled", "UiObject.GetEnabled", (*uiacc.UiObject).GetEnabled, true)
+	engine.RegisterMethod("uiacc.getScrollable", "UiObject.GetScrollable", (*uiacc.UiObject).GetScrollable, true)
+	engine.RegisterMethod("uiacc.getEditable", "UiObject.GetEditable", (*uiacc.UiObject).GetEditable, true)
+	engine.RegisterMethod("uiacc.getMultiLine", "UiObject.GetMultiLine", (*uiacc.UiObject).GetMultiLine, true)
+	engine.RegisterMethod("uiacc.getChecked", "UiObject.GetChecked", (*uiacc.UiObject).GetChecked, true)
+	engine.RegisterMethod("uiacc.getFocused", "UiObject.GetFocused", (*uiacc.UiObject).GetFocused, true)
+	engine.RegisterMethod("uiacc.getFocusable", "UiObject.GetFocusable", (*uiacc.UiObject).GetFocusable, true)
+	engine.RegisterMethod("uiacc.getDismissable", "UiObject.GetDismissable", (*uiacc.UiObject).GetDismissable, true)
+	engine.RegisterMethod("uiacc.getContextClickable", "UiObject.GetContextClickable", (*uiacc.UiObject).GetContextClickable, true)
+	engine.RegisterMethod("uiacc.getVisible", "UiObject.GetVisible", (*uiacc.UiObject).GetVisible, true)
+	engine.RegisterMethod("uiacc.getPassword", "UiObject.GetPassword", (*uiacc.UiObject).GetPassword, true)
+	engine.RegisterMethod("uiacc.getAccessibilityFocused", "UiObject.GetAccessibilityFocused", (*uiacc.UiObject).GetAccessibilityFocused, true)
+	engine.RegisterMethod("uiacc.getChildCount", "UiObject.GetChildCount", (*uiacc.UiObject).GetChildCount, true)
+	engine.RegisterMethod("uiacc.getDrawingOrder", "UiObject.GetDrawingOrder", (*uiacc.UiObject).GetDrawingOrder, true)
+	engine.RegisterMethod("uiacc.getIndex", "UiObject.GetIndex", (*uiacc.UiObject).GetIndex, true)
+	engine.RegisterMethod("uiacc.getBounds", "UiObject.GetBounds", (*uiacc.UiObject).GetBounds, true)
+	engine.RegisterMethod("uiacc.getBoundsInParent", "UiObject.GetBoundsInParent", (*uiacc.UiObject).GetBoundsInParent, true)
+	engine.RegisterMethod("uiacc.getId", "UiObject.GetId", (*uiacc.UiObject).GetId, true)
+	engine.RegisterMethod("uiacc.getText", "UiObject.GetText", (*uiacc.UiObject).GetText, true)
+	engine.RegisterMethod("uiacc.getDesc", "UiObject.GetDesc", (*uiacc.UiObject).GetDesc, true)
+	engine.RegisterMethod("uiacc.getPackageName", "UiObject.GetPackageName", (*uiacc.UiObject).GetPackageName, true)
+	engine.RegisterMethod("uiacc.getClassName", "UiObject.GetClassName", (*uiacc.UiObject).GetClassName, true)
+	engine.RegisterMethod("uiacc.toString", "UiObject.ToString", (*uiacc.UiObject).ToString, true)
+	engine.RegisterMethod("uiacc.setSelection", "UiObject.SetSelection", (*uiacc.UiObject).SetSelection, true)
+	engine.RegisterMethod("uiacc.setVisibleToUser", "UiObject.SetVisibleToUser", (*uiacc.UiObject).SetVisibleToUser, true)
+	engine.RegisterMethod("uiacc.setText", "UiObject.SetText", (*uiacc.UiObject).SetText, true)
+	engine.RegisterMethod("uiacc.getParent", "UiObject.GetParent", (*uiacc.UiObject).GetParent, true)
+	engine.RegisterMethod("uiacc.getChild", "UiObject.GetChild", (*uiacc.UiObject).GetChild, true)
+	engine.RegisterMethod("uiacc.getChildren", "UiObject.GetChildren", (*uiacc.UiObject).GetChildren, true)
 
 	return nil
+}
+
+func wrapUiacc(L *lua.LState, u *uiacc.Uiacc) lua.LValue {
+	if u == nil {
+		return lua.LNil
+	}
+	obj := L.NewTable()
+	obj.RawSetString("text", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Text(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("textContains", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.TextContains(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("textStartsWith", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.TextStartsWith(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("textEndsWith", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.TextEndsWith(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("textMatches", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.TextMatches(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("desc", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Desc(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("descContains", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.DescContains(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("descStartsWith", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.DescStartsWith(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("descEndsWith", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.DescEndsWith(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("descMatches", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.DescMatches(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("id", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Id(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("idContains", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.IdContains(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("idStartsWith", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.IdStartsWith(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("idEndsWith", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.IdEndsWith(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("idMatches", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.IdMatches(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("className", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.ClassName(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("classNameContains", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.ClassNameContains(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("classNameStartsWith", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.ClassNameStartsWith(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("classNameEndsWith", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.ClassNameEndsWith(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("classNameMatches", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.ClassNameMatches(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("packageName", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.PackageName(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("packageNameContains", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.PackageNameContains(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("packageNameStartsWith", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.PackageNameStartsWith(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("packageNameEndsWith", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.PackageNameEndsWith(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("packageNameMatches", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.PackageNameMatches(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("bounds", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Bounds(L.CheckInt(1), L.CheckInt(2), L.CheckInt(3), L.CheckInt(4))))
+		return 1
+	}))
+	obj.RawSetString("boundsInside", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.BoundsInside(L.CheckInt(1), L.CheckInt(2), L.CheckInt(3), L.CheckInt(4))))
+		return 1
+	}))
+	obj.RawSetString("boundsContains", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.BoundsContains(L.CheckInt(1), L.CheckInt(2), L.CheckInt(3), L.CheckInt(4))))
+		return 1
+	}))
+	obj.RawSetString("drawingOrder", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.DrawingOrder(L.CheckInt(1))))
+		return 1
+	}))
+	obj.RawSetString("index", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Index(L.CheckInt(1))))
+		return 1
+	}))
+	obj.RawSetString("clickable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Clickable(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("longClickable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.LongClickable(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("checkable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Checkable(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("selected", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Selected(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("enabled", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Enabled(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("scrollable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Scrollable(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("editable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Editable(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("multiLine", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.MultiLine(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("checked", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Checked(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("focusable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Focusable(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("dismissable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Dismissable(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("focused", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Focused(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("contextClickable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.ContextClickable(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("visible", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Visible(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("password", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiacc(L, u.Password(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("click", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(u.Click(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("waitFor", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiObject(L, u.WaitFor(L.CheckInt(1))))
+		return 1
+	}))
+	obj.RawSetString("findOnce", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiObject(L, u.FindOnce()))
+		return 1
+	}))
+	obj.RawSetString("find", L.NewFunction(func(L *lua.LState) int {
+		result := L.NewTable()
+		for i, item := range u.Find() {
+			result.RawSetInt(i+1, wrapUiObject(L, item))
+		}
+		L.Push(result)
+		return 1
+	}))
+	obj.RawSetString("release", L.NewFunction(func(L *lua.LState) int {
+		u.Release()
+		return 0
+	}))
+	return obj
+}
+
+func wrapUiObject(L *lua.LState, node *uiacc.UiObject) lua.LValue {
+	if node == nil {
+		return lua.LNil
+	}
+	obj := L.NewTable()
+	obj.RawSetString("click", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.Click()))
+		return 1
+	}))
+	obj.RawSetString("clickCenter", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.ClickCenter()))
+		return 1
+	}))
+	obj.RawSetString("clickLongClick", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.ClickLongClick()))
+		return 1
+	}))
+	obj.RawSetString("copy", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.Copy()))
+		return 1
+	}))
+	obj.RawSetString("cut", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.Cut()))
+		return 1
+	}))
+	obj.RawSetString("paste", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.Paste()))
+		return 1
+	}))
+	obj.RawSetString("scrollForward", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.ScrollForward()))
+		return 1
+	}))
+	obj.RawSetString("scrollBackward", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.ScrollBackward()))
+		return 1
+	}))
+	obj.RawSetString("collapse", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.Collapse()))
+		return 1
+	}))
+	obj.RawSetString("expand", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.Expand()))
+		return 1
+	}))
+	obj.RawSetString("show", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.Show()))
+		return 1
+	}))
+	obj.RawSetString("select", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.Select()))
+		return 1
+	}))
+	obj.RawSetString("clearSelect", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.ClearSelect()))
+		return 1
+	}))
+	obj.RawSetString("getClickable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetClickable()))
+		return 1
+	}))
+	obj.RawSetString("getLongClickable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetLongClickable()))
+		return 1
+	}))
+	obj.RawSetString("getCheckable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetCheckable()))
+		return 1
+	}))
+	obj.RawSetString("getSelected", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetSelected()))
+		return 1
+	}))
+	obj.RawSetString("getEnabled", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetEnabled()))
+		return 1
+	}))
+	obj.RawSetString("getScrollable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetScrollable()))
+		return 1
+	}))
+	obj.RawSetString("getEditable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetEditable()))
+		return 1
+	}))
+	obj.RawSetString("getMultiLine", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetMultiLine()))
+		return 1
+	}))
+	obj.RawSetString("getChecked", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetChecked()))
+		return 1
+	}))
+	obj.RawSetString("getFocused", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetFocused()))
+		return 1
+	}))
+	obj.RawSetString("getFocusable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetFocusable()))
+		return 1
+	}))
+	obj.RawSetString("getDismissable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetDismissable()))
+		return 1
+	}))
+	obj.RawSetString("getContextClickable", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetContextClickable()))
+		return 1
+	}))
+	obj.RawSetString("getVisible", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetVisible()))
+		return 1
+	}))
+	obj.RawSetString("getPassword", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetPassword()))
+		return 1
+	}))
+	obj.RawSetString("getAccessibilityFocused", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.GetAccessibilityFocused()))
+		return 1
+	}))
+	obj.RawSetString("getChildCount", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LNumber(node.GetChildCount()))
+		return 1
+	}))
+	obj.RawSetString("getDrawingOrder", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LNumber(node.GetDrawingOrder()))
+		return 1
+	}))
+	obj.RawSetString("getIndex", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LNumber(node.GetIndex()))
+		return 1
+	}))
+	obj.RawSetString("getBounds", L.NewFunction(func(L *lua.LState) int {
+		L.Push(rectToLua(L, node.GetBounds()))
+		return 1
+	}))
+	obj.RawSetString("getBoundsInParent", L.NewFunction(func(L *lua.LState) int {
+		L.Push(rectToLua(L, node.GetBoundsInParent()))
+		return 1
+	}))
+	obj.RawSetString("getId", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LString(node.GetId()))
+		return 1
+	}))
+	obj.RawSetString("getText", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LString(node.GetText()))
+		return 1
+	}))
+	obj.RawSetString("getDesc", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LString(node.GetDesc()))
+		return 1
+	}))
+	obj.RawSetString("getPackageName", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LString(node.GetPackageName()))
+		return 1
+	}))
+	obj.RawSetString("getClassName", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LString(node.GetClassName()))
+		return 1
+	}))
+	obj.RawSetString("toString", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LString(node.ToString()))
+		return 1
+	}))
+	obj.RawSetString("setSelection", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.SetSelection(L.CheckInt(1), L.CheckInt(2))))
+		return 1
+	}))
+	obj.RawSetString("setVisibleToUser", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.SetVisibleToUser(L.CheckBool(1))))
+		return 1
+	}))
+	obj.RawSetString("setText", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(node.SetText(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("getParent", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiObject(L, node.GetParent()))
+		return 1
+	}))
+	obj.RawSetString("getChild", L.NewFunction(func(L *lua.LState) int {
+		L.Push(wrapUiObject(L, node.GetChild(L.CheckInt(1))))
+		return 1
+	}))
+	obj.RawSetString("getChildren", L.NewFunction(func(L *lua.LState) int {
+		result := L.NewTable()
+		for i, item := range node.GetChildren() {
+			result.RawSetInt(i+1, wrapUiObject(L, item))
+		}
+		L.Push(result)
+		return 1
+	}))
+	return obj
+}
+
+func rectToLua(L *lua.LState, rect uiacc.Rect) lua.LValue {
+	obj := L.NewTable()
+	obj.RawSetString("left", lua.LNumber(rect.Left))
+	obj.RawSetString("right", lua.LNumber(rect.Right))
+	obj.RawSetString("top", lua.LNumber(rect.Top))
+	obj.RawSetString("bottom", lua.LNumber(rect.Bottom))
+	obj.RawSetString("centerX", lua.LNumber(rect.CenterX))
+	obj.RawSetString("centerY", lua.LNumber(rect.CenterY))
+	obj.RawSetString("width", lua.LNumber(rect.Width))
+	obj.RawSetString("height", lua.LNumber(rect.Height))
+	return obj
 }

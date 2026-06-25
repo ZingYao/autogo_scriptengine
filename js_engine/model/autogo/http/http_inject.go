@@ -7,12 +7,12 @@ import (
 	"github.com/dop251/goja"
 )
 
-// HttpModule http 模块
+// HttpModule https 模块
 type HttpModule struct{}
 
 // Name 返回模块名称
 func (m *HttpModule) Name() string {
-	return "http"
+	return "https"
 }
 
 // IsAvailable 检查模块是否可用
@@ -24,12 +24,15 @@ func (m *HttpModule) IsAvailable() bool {
 func (m *HttpModule) Register(engine model.Engine) error {
 	vm := engine.GetVM()
 
-	httpObj := vm.NewObject()
-	vm.Set("http", httpObj)
+	httpsObj := vm.NewObject()
+	vm.Set("https", httpsObj)
 
-	httpObj.Set("get", func(call goja.FunctionCall) goja.Value {
+	httpsObj.Set("get", func(call goja.FunctionCall) goja.Value {
 		url := call.Argument(0).String()
-		timeout := int(call.Argument(1).ToInteger())
+		timeout := 5000
+		if len(call.Arguments) > 1 {
+			timeout = int(call.Argument(1).ToInteger())
+		}
 		code, data := https.Get(url, timeout)
 		result := vm.NewObject()
 		result.Set("code", code)
@@ -41,7 +44,7 @@ func (m *HttpModule) Register(engine model.Engine) error {
 		return result
 	})
 
-	httpObj.Set("post", func(call goja.FunctionCall) goja.Value {
+	httpsObj.Set("post", func(call goja.FunctionCall) goja.Value {
 		url := call.Argument(0).String()
 
 		// 处理第二个参数，支持字符串或字节数组
@@ -81,10 +84,13 @@ func (m *HttpModule) Register(engine model.Engine) error {
 		return result
 	})
 
-	httpObj.Set("postMultipart", func(call goja.FunctionCall) goja.Value {
+	httpsObj.Set("postMultipart", func(call goja.FunctionCall) goja.Value {
 		url := call.Argument(0).String()
 		fileName := call.Argument(1).String()
-		timeout := int(call.Argument(3).ToInteger())
+		timeout := 5000
+		if len(call.Arguments) > 3 {
+			timeout = int(call.Argument(3).ToInteger())
+		}
 
 		// 处理第三个参数，支持字符串或字节数组
 		var fileData []byte
@@ -106,11 +112,11 @@ func (m *HttpModule) Register(engine model.Engine) error {
 		return result
 	})
 
-	engine.RegisterMethod("http.get", "发送GET请求", func(url string, timeout int) (int, []byte) { return https.Get(url, timeout) }, true)
-	engine.RegisterMethod("http.post", "发送POST请求", func(url string, data []byte, headers map[string]string, timeout int) (int, []byte) {
+	engine.RegisterMethod("https.get", "发送GET请求", func(url string, timeout int) (int, []byte) { return https.Get(url, timeout) }, true)
+	engine.RegisterMethod("https.post", "发送POST请求", func(url string, data []byte, headers map[string]string, timeout int) (int, []byte) {
 		return https.Post(url, data, headers, timeout)
 	}, true)
-	engine.RegisterMethod("http.postMultipart", "发送Multipart POST请求", func(url, fileName string, fileData []byte, timeout int) (int, []byte) {
+	engine.RegisterMethod("https.postMultipart", "发送Multipart POST请求", func(url, fileName string, fileData []byte, timeout int) (int, []byte) {
 		return https.PostMultipart(url, fileName, fileData, timeout)
 	}, true)
 

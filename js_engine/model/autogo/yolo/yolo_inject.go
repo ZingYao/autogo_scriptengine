@@ -86,14 +86,17 @@ func (m *YoloModule) Register(engine model.Engine) error {
 		return arr
 	})
 
+	yoloObj.Set("setImage", func(call goja.FunctionCall) goja.Value {
+		y := call.Argument(0).Export().(*yolo.Yolo)
+		img := call.Argument(1).Export().(*image.NRGBA)
+		y.SetImage(img)
+		return goja.Undefined()
+	})
+
 	yoloObj.Set("detectFromBase64", func(call goja.FunctionCall) goja.Value {
 		y := call.Argument(0).Export().(*yolo.Yolo)
 		b64 := call.Argument(1).String()
-		colorStr := ""
-		if len(call.Arguments) > 2 {
-			colorStr = call.Argument(2).String()
-		}
-		result := y.DetectFromBase64(b64, colorStr)
+		result := y.DetectFromBase64(b64)
 		arr := vm.NewArray()
 		for i, item := range result {
 			obj := vm.NewObject()
@@ -111,11 +114,7 @@ func (m *YoloModule) Register(engine model.Engine) error {
 	yoloObj.Set("detectFromPath", func(call goja.FunctionCall) goja.Value {
 		y := call.Argument(0).Export().(*yolo.Yolo)
 		path := call.Argument(1).String()
-		colorStr := ""
-		if len(call.Arguments) > 2 {
-			colorStr = call.Argument(2).String()
-		}
-		result := y.DetectFromPath(path, colorStr)
+		result := y.DetectFromPath(path)
 		arr := vm.NewArray()
 		for i, item := range result {
 			obj := vm.NewObject()
@@ -145,11 +144,14 @@ func (m *YoloModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("yolo.detectFromImage", "检测图片中的对象", func(y *yolo.Yolo, img *image.NRGBA) []yolo.Result {
 		return y.DetectFromImage(img)
 	}, true)
-	engine.RegisterMethod("yolo.detectFromBase64", "检测Base64图片中的对象", func(y *yolo.Yolo, b64 string, colorStr string) []yolo.Result {
-		return y.DetectFromBase64(b64, colorStr)
+	engine.RegisterMethod("yolo.setImage", "设置下次Detect方法的原始图像", func(y *yolo.Yolo, img *image.NRGBA) {
+		y.SetImage(img)
 	}, true)
-	engine.RegisterMethod("yolo.detectFromPath", "检测文件图片中的对象", func(y *yolo.Yolo, path string, colorStr string) []yolo.Result {
-		return y.DetectFromPath(path, colorStr)
+	engine.RegisterMethod("yolo.detectFromBase64", "检测Base64图片中的对象", func(y *yolo.Yolo, b64 string) []yolo.Result {
+		return y.DetectFromBase64(b64)
+	}, true)
+	engine.RegisterMethod("yolo.detectFromPath", "检测文件图片中的对象", func(y *yolo.Yolo, path string) []yolo.Result {
+		return y.DetectFromPath(path)
 	}, true)
 	engine.RegisterMethod("yolo.close", "关闭YOLO实例", (*yolo.Yolo).Close, true)
 

@@ -28,87 +28,13 @@ func (m *VdisplayModule) Register(engine model.Engine) error {
 	state.SetGlobal("vdisplay", vdisplayObj)
 
 	vdisplayObj.RawSetString("create", state.NewFunction(func(L *lua.LState) int {
-		width := L.CheckInt(1)
-		height := L.CheckInt(2)
-		dpi := L.CheckInt(3)
-		v := vdisplay.Create(width, height, dpi)
-		ud := L.NewUserData()
-		ud.Value = v
-		L.Push(ud)
-		return 1
-	}))
-
-	vdisplayObj.RawSetString("getDisplayId", state.NewFunction(func(L *lua.LState) int {
-		v := L.CheckUserData(1).Value.(*vdisplay.Vdisplay)
-		result := v.GetDisplayId()
-		L.Push(lua.LNumber(result))
-		return 1
-	}))
-
-	vdisplayObj.RawSetString("launchApp", state.NewFunction(func(L *lua.LState) int {
-		v := L.CheckUserData(1).Value.(*vdisplay.Vdisplay)
-		packageName := L.CheckString(2)
-		v.LaunchApp(packageName)
-		return 0
-	}))
-
-	vdisplayObj.RawSetString("setTitle", state.NewFunction(func(L *lua.LState) int {
-		v := L.CheckUserData(1).Value.(*vdisplay.Vdisplay)
-		title := L.CheckString(2)
-		v.SetTitle(title)
-		return 0
-	}))
-
-	vdisplayObj.RawSetString("setTouchCallback", state.NewFunction(func(L *lua.LState) int {
-		v := L.CheckUserData(1).Value.(*vdisplay.Vdisplay)
-		callback := L.CheckFunction(2)
-		v.SetTouchCallback(func(x, y, action, displayId int) {
-			L.Push(callback)
-			L.Push(lua.LNumber(x))
-			L.Push(lua.LNumber(y))
-			L.Push(lua.LNumber(action))
-			L.Push(lua.LNumber(displayId))
-			L.Call(4, 0)
-		})
-		return 0
-	}))
-
-	vdisplayObj.RawSetString("showPreviewWindow", state.NewFunction(func(L *lua.LState) int {
-		v := L.CheckUserData(1).Value.(*vdisplay.Vdisplay)
-		rotated := false
-		if L.GetTop() > 1 {
-			rotated = L.CheckBool(2)
+		v := vdisplay.Create(L.CheckInt(1), L.CheckInt(2), L.CheckInt(3))
+		if v == nil {
+			L.Push(lua.LNil)
+			return 1
 		}
-		v.ShowPreviewWindow(rotated)
-		return 0
-	}))
-
-	vdisplayObj.RawSetString("hidePreviewWindow", state.NewFunction(func(L *lua.LState) int {
-		v := L.CheckUserData(1).Value.(*vdisplay.Vdisplay)
-		v.HidePreviewWindow()
-		return 0
-	}))
-
-	vdisplayObj.RawSetString("setPreviewWindowSize", state.NewFunction(func(L *lua.LState) int {
-		v := L.CheckUserData(1).Value.(*vdisplay.Vdisplay)
-		width := L.CheckInt(2)
-		height := L.CheckInt(3)
-		v.SetPreviewWindowSize(width, height)
-		return 0
-	}))
-
-	vdisplayObj.RawSetString("setPreviewWindowPos", state.NewFunction(func(L *lua.LState) int {
-		v := L.CheckUserData(1).Value.(*vdisplay.Vdisplay)
-		x := L.CheckInt(2)
-		y := L.CheckInt(3)
-		v.SetPreviewWindowPos(x, y)
-		return 0
-	}))
-
-	vdisplayObj.RawSetString("destroy", state.NewFunction(func(L *lua.LState) int {
-		v := L.CheckUserData(1).Value.(*vdisplay.Vdisplay)
-		v.Destroy()
-		return 0
+		L.Push(wrapVdisplay(L, v))
+		return 1
 	}))
 
 	engine.RegisterMethod("vdisplay.create", "创建一个虚拟显示设备", vdisplay.Create, true)
@@ -123,4 +49,53 @@ func (m *VdisplayModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("vdisplay.destroy", "销毁指定的虚拟显示设备", (*vdisplay.Vdisplay).Destroy, true)
 
 	return nil
+}
+
+func wrapVdisplay(L *lua.LState, v *vdisplay.Vdisplay) lua.LValue {
+	obj := L.NewTable()
+	obj.RawSetString("getDisplayId", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LNumber(v.GetDisplayId()))
+		return 1
+	}))
+	obj.RawSetString("launchApp", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(v.LaunchApp(L.CheckString(1))))
+		return 1
+	}))
+	obj.RawSetString("setTitle", L.NewFunction(func(L *lua.LState) int {
+		v.SetTitle(L.CheckString(1))
+		return 0
+	}))
+	obj.RawSetString("setTouchCallback", L.NewFunction(func(L *lua.LState) int {
+		callback := L.CheckFunction(1)
+		v.SetTouchCallback(func(x, y, action, displayId int) {
+			L.Push(callback)
+			L.Push(lua.LNumber(x))
+			L.Push(lua.LNumber(y))
+			L.Push(lua.LNumber(action))
+			L.Push(lua.LNumber(displayId))
+			L.Call(4, 0)
+		})
+		return 0
+	}))
+	obj.RawSetString("showPreviewWindow", L.NewFunction(func(L *lua.LState) int {
+		v.ShowPreviewWindow(L.OptBool(1, false))
+		return 0
+	}))
+	obj.RawSetString("hidePreviewWindow", L.NewFunction(func(L *lua.LState) int {
+		v.HidePreviewWindow()
+		return 0
+	}))
+	obj.RawSetString("setPreviewWindowSize", L.NewFunction(func(L *lua.LState) int {
+		v.SetPreviewWindowSize(L.CheckInt(1), L.CheckInt(2))
+		return 0
+	}))
+	obj.RawSetString("setPreviewWindowPos", L.NewFunction(func(L *lua.LState) int {
+		v.SetPreviewWindowPos(L.CheckInt(1), L.CheckInt(2))
+		return 0
+	}))
+	obj.RawSetString("destroy", L.NewFunction(func(L *lua.LState) int {
+		v.Destroy()
+		return 0
+	}))
+	return obj
 }

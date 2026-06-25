@@ -39,17 +39,21 @@ func (m *PpocrModule) Register(engine model.Engine) error {
 		return goja.Null()
 	})
 
-	engine.RegisterMethod("ppocr.ocr", "识别屏幕文字", func(x1, y1, x2, y2 int, colorStr string, displayId int) []map[string]interface{} {
-		return []map[string]interface{}{}
+	engine.RegisterMethod("ppocr.new", "创建Ppocr对象", ppocr.New, true)
+	engine.RegisterMethod("ppocr.ocr", "识别屏幕文字", func(p *ppocr.Ppocr, x1, y1, x2, y2 int, colorStr string, displayId int) []ppocr.Result {
+		return p.Ocr(x1, y1, x2, y2, colorStr, displayId)
 	}, true)
-	engine.RegisterMethod("ppocr.ocrFromImage", "识别图片文字", func(img interface{}, colorStr string) []map[string]interface{} {
-		return []map[string]interface{}{}
+	engine.RegisterMethod("ppocr.ocrFromImage", "识别图片文字", func(p *ppocr.Ppocr, img *image.NRGBA, colorStr string) []ppocr.Result {
+		return p.OcrFromImage(img, colorStr)
 	}, true)
-	engine.RegisterMethod("ppocr.ocrFromBase64", "识别Base64图片文字", func(b64, colorStr string) []map[string]interface{} {
-		return []map[string]interface{}{}
+	engine.RegisterMethod("ppocr.ocrFromBase64", "识别Base64图片文字", func(p *ppocr.Ppocr, b64, colorStr string) []ppocr.Result {
+		return p.OcrFromBase64(b64, colorStr)
 	}, true)
-	engine.RegisterMethod("ppocr.ocrFromPath", "识别文件图片文字", func(path, colorStr string) []map[string]interface{} {
-		return []map[string]interface{}{}
+	engine.RegisterMethod("ppocr.ocrFromPath", "识别文件图片文字", func(p *ppocr.Ppocr, path, colorStr string) []ppocr.Result {
+		return p.OcrFromPath(path, colorStr)
+	}, true)
+	engine.RegisterMethod("ppocr.close", "关闭Ppocr对象", func(p *ppocr.Ppocr) {
+		p.Close()
 	}, true)
 
 	return nil
@@ -73,6 +77,7 @@ func wrapPpocr(vm *goja.Runtime, p *ppocr.Ppocr) goja.Value {
 		for i, item := range result {
 			obj := vm.NewObject()
 			obj.Set("text", item.Label)
+			obj.Set("confidence", item.Score)
 			obj.Set("x", item.X)
 			obj.Set("y", item.Y)
 			obj.Set("w", item.Width)
@@ -90,6 +95,7 @@ func wrapPpocr(vm *goja.Runtime, p *ppocr.Ppocr) goja.Value {
 		for i, item := range result {
 			obj := vm.NewObject()
 			obj.Set("text", item.Label)
+			obj.Set("confidence", item.Score)
 			obj.Set("x", item.X)
 			obj.Set("y", item.Y)
 			obj.Set("w", item.Width)
@@ -107,6 +113,7 @@ func wrapPpocr(vm *goja.Runtime, p *ppocr.Ppocr) goja.Value {
 		for i, item := range result {
 			obj := vm.NewObject()
 			obj.Set("text", item.Label)
+			obj.Set("confidence", item.Score)
 			obj.Set("x", item.X)
 			obj.Set("y", item.Y)
 			obj.Set("w", item.Width)
@@ -124,6 +131,7 @@ func wrapPpocr(vm *goja.Runtime, p *ppocr.Ppocr) goja.Value {
 		for i, item := range result {
 			obj := vm.NewObject()
 			obj.Set("text", item.Label)
+			obj.Set("confidence", item.Score)
 			obj.Set("x", item.X)
 			obj.Set("y", item.Y)
 			obj.Set("w", item.Width)
