@@ -18,6 +18,29 @@
     .sidebar {
       padding: 1.5rem 0;
     }
+    .sidebar-nav li.sidebar-folder > p,
+    .sidebar-nav li.sidebar-folder > a,
+    .sidebar-nav li.sidebar-folder > .sidebar-folder-label {
+      cursor: pointer;
+      user-select: none;
+    }
+    .sidebar-nav li.sidebar-folder > p::before,
+    .sidebar-nav li.sidebar-folder > a::before,
+    .sidebar-nav li.sidebar-folder > .sidebar-folder-label::before {
+      content: "▸";
+      display: inline-block;
+      width: 1em;
+      color: #42b983;
+      transition: transform 0.15s ease;
+    }
+    .sidebar-nav li.sidebar-folder.open > p::before,
+    .sidebar-nav li.sidebar-folder.open > a::before,
+    .sidebar-nav li.sidebar-folder.open > .sidebar-folder-label::before {
+      content: "▾";
+    }
+    .sidebar-nav li.sidebar-folder.collapsed > ul {
+      display: none;
+    }
     /* 回到顶部按钮样式 */
     .to-top {
       position: fixed;
@@ -50,6 +73,74 @@
   <div id="app"></div>
   <div class="to-top">Top</div>
   <script>
+    function getSidebarDepth(item) {
+      let depth = 0;
+      let parent = item.parentElement;
+      while (parent && !parent.classList.contains('sidebar-nav')) {
+        if (parent.tagName === 'LI') {
+          depth += 1;
+        }
+        parent = parent.parentElement;
+      }
+      return depth;
+    }
+
+    function setupSidebarCollapse() {
+      const sidebar = document.querySelector('.sidebar-nav');
+      if (!sidebar) {
+        return;
+      }
+
+      sidebar.querySelectorAll('li').forEach(function(item) {
+        if (item.closest('.app-sub-sidebar')) {
+          return;
+        }
+
+        const childList = Array.prototype.find.call(item.children, function(child) {
+          return child.tagName === 'UL';
+        });
+        if (!childList || childList.classList.contains('app-sub-sidebar')) {
+          return;
+        }
+
+        item.classList.add('sidebar-folder');
+        let trigger = Array.prototype.find.call(item.children, function(child) {
+          return child.tagName === 'P' || child.tagName === 'A';
+        });
+        if (!trigger) {
+          const textNode = Array.prototype.find.call(item.childNodes, function(child) {
+            return child.nodeType === Node.TEXT_NODE && child.textContent.trim();
+          });
+          if (textNode) {
+            trigger = document.createElement('span');
+            trigger.className = 'sidebar-folder-label';
+            trigger.textContent = textNode.textContent.trim();
+            item.insertBefore(trigger, textNode);
+            item.removeChild(textNode);
+          }
+        }
+        if (!trigger || trigger.dataset.collapseBound === 'true') {
+          return;
+        }
+
+        const hasActiveChild = !!item.querySelector('li.active, a.active');
+        const shouldOpen = hasActiveChild || getSidebarDepth(item) <= 1;
+        item.classList.toggle('open', shouldOpen);
+        item.classList.toggle('collapsed', !shouldOpen);
+
+        trigger.dataset.collapseBound = 'true';
+        trigger.addEventListener('click', function(event) {
+          if (trigger.tagName === 'A') {
+            event.preventDefault();
+          }
+          event.stopPropagation();
+          const collapsed = !item.classList.contains('collapsed');
+          item.classList.toggle('collapsed', collapsed);
+          item.classList.toggle('open', !collapsed);
+        });
+      });
+    }
+
     window.$docsify = {
       name: 'AutoGo ScriptEngine',
       repo: 'https://github.com/ZingYao/autogo_scriptengine',
@@ -71,7 +162,14 @@
         buttonText: '复制',
         errorText: '错误',
         successText: '成功'
-      }
+      },
+      plugins: [
+        function(hook) {
+          hook.doneEach(function() {
+            window.setTimeout(setupSidebarCollapse, 0);
+          });
+        }
+      ]
     }
   </script>
   <!-- Docsify v4 -->
