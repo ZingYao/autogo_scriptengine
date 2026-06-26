@@ -49,6 +49,8 @@ import "github.com/ZingYao/autogo_scriptengine/lua_engine/define/ios/autogo/all_
 
 如果只需要安全模块或非安全模块，可以把 `all_models` 替换为 `safe_models` 或 `unsafe_models`。
 
+iOS 专用说明见 [Lua iOS autogo 概述](../autogo_ios/README.md)。iOS 当前不会注入 `uiacc`、`apkctl` 等 AutoGo iOS 参考目录不存在的模块，也不使用 Android 的 `displayId` 参数。
+
 ## 5. 使用方法
 
 ### 5.1 直接使用模块

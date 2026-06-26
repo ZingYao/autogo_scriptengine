@@ -13,6 +13,7 @@
 
 - **双引擎支持**：同时支持 JavaScript 和 Lua 脚本语言
 - **丰富的 API**：提供应用管理、设备控制、图像识别、OCR 等多种功能
+- **Android/iOS 隔离注入**：autogo 风格包按系统拆分 define，避免 Android 专用模块和参数污染 iOS
 - **方法注册系统**：支持动态注册、重写和恢复方法
 - **协程支持**：Lua 引擎支持协程操作
 - **风格包支持**：提供 autogo 和 lrappsoft 两种风格包
@@ -89,6 +90,7 @@ python3 scripts/convert_to_html.py
 #### JavaScript 引擎文档
 
 - [JavaScript 引擎完整文档](./js_engine/README.md) - 包含所有 API、配置选项和高级用法
+- [JavaScript iOS autogo 概述](./js_engine/model/autogo_ios/README.md) - iOS 模块清单、注册方式和参数返回值映射
 
 #### 模块文档
 
@@ -120,6 +122,7 @@ python3 scripts/convert_to_html.py
 #### 📖 Lua 引擎文档
 
 - [Lua 引擎完整文档](./lua_engine/README.md) - 包含所有 API、配置选项和高级用法
+- [Lua iOS autogo 概述](./lua_engine/model/autogo_ios/README.md) - iOS 模块清单、注册方式和参数返回值映射
 
 #### 模块文档
 

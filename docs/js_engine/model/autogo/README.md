@@ -47,13 +47,19 @@ autogo/
 
 ## 4. 注册方式
 
-JavaScript 当前使用统一的 autogo define 包：
+JavaScript 的 autogo define 已按系统隔离。Android 项目使用 Android define，iOS 项目使用 iOS define：
 
 ```go
-import "github.com/ZingYao/autogo_scriptengine/js_engine/define/autogo/all_models"
+// Android 全量 autogo 模块
+import "github.com/ZingYao/autogo_scriptengine/js_engine/define/android/autogo/all_models"
+
+// iOS 全量 autogo 模块
+import "github.com/ZingYao/autogo_scriptengine/js_engine/define/ios/autogo/all_models"
 ```
 
-如果只需要安全模块或非安全模块，可以把 `all_models` 替换为 `safe_models` 或 `unsafe_models`。Lua 侧已额外拆分 Android/iOS define 包；JavaScript 侧如果后续也拆分系统目录，示例 import 需要同步调整。
+如果只需要安全模块或非安全模块，可以把 `all_models` 替换为 `safe_models` 或 `unsafe_models`。
+
+iOS 专用说明见 [JavaScript iOS autogo 概述](../autogo_ios/README.md)。iOS 当前不会注入 `uiacc`、`apkctl` 等 AutoGo iOS 参考目录不存在的模块，也不使用 Android 的 `displayId` 参数。
 
 ## 5. 使用方法
 
