@@ -191,16 +191,17 @@ Debug Core 放在 `lua_engine` 通用层，不区分 Android/iOS。
 
 ## 12. 阶段计划
 
-### 阶段 1：Debug Core 最小闭环
+### 阶段 1：Debug Core + DAP 最小闭环
 
-- [ ] 新增 `lua_engine/debugger` 子包。
-- [ ] 新增 `DebugConfig`、`DebugEvent`、`Breakpoint`、`Controller`。
-- [ ] `LuaEngine` 支持启用 debug hook。
-- [ ] 支持文件行断点。
-- [ ] 支持 `continue`、`pause`、`stop`、`stepInto`。
-- [ ] 支持命中断点后阻塞等待命令。
-- [ ] 支持异常事件回传。
-- [ ] 新增 `examples/lua_engine/debugger`。
+- [x] 新增 `lua_engine/debugger` 子包。
+- [x] 新增 `Config`、`Event`、`Breakpoint`、`Frame`。
+- [x] `LuaEngine` 支持启用 Debug Core。
+- [x] 支持文件行断点。
+- [x] 支持 `continue`、`pause`、`stop`、`stepInto`。
+- [x] 支持命中断点后阻塞等待命令。
+- [x] 支持异常事件回传。
+- [x] 新增 DAP 基础会话，支持 `initialize`、`setBreakpoints`、`configurationDone`、`threads`、`continue`、`next`、`stepIn`、`pause`、`stackTrace`、`scopes`、`variables`、`disconnect`。
+- [x] 新增 `examples/lua_engine/debugger`。
 - [ ] 更新 `docs/debugger/README.md` 与 Lua 引擎文档。
 
 验收：
@@ -210,6 +211,13 @@ Debug Core 放在 `lua_engine` 通用层，不区分 Android/iOS。
 - 调用 `stepInto` 后停在下一条 Lua 行。
 - 调用 `stop` 后脚本退出。
 - 错误脚本可以回传异常事件与堆栈。
+
+当前实现说明：
+
+- `gopher-lua v1.1.1` 没有公开 Go 侧逐行 VM hook，因此第一版使用源码插桩实现断点命中。
+- 插桩函数为内部全局函数 `__autogo_debug_hit(file, line)`。
+- `ExecuteFile` 会保留文件名用于断点匹配；`ExecuteString` 默认使用 `<string>`。
+- 第一版插桩策略偏保守，只在常见语句行插入命中调用，避免破坏多行表达式、table literal 和闭合语句。
 
 ### 阶段 2：变量与调用栈
 

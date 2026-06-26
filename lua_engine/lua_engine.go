@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/debugger"
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 	lua "github.com/yuin/gopher-lua"
 	"github.com/yuin/gopher-lua/parse"
@@ -75,6 +76,10 @@ func (e *LuaEngine) init() {
 	e.engineState = StateStopped
 	e.ctx, e.cancel = context.WithCancel(context.Background())
 	e.pauseChan = make(chan struct{})
+	if e.config.Debug != nil && e.config.Debug.Enabled {
+		e.debugger = debugger.New(*e.config.Debug)
+		e.debugger.Install(e.state)
+	}
 
 	e.registerCoreFunctions()
 
@@ -147,7 +152,7 @@ func (e *LuaEngine) GetState() *lua.LState {
 func (e *LuaEngine) AddRequirePath(path string) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
-	
+
 	e.config.RequirePaths = append(e.config.RequirePaths, path)
 }
 
@@ -155,7 +160,7 @@ func (e *LuaEngine) AddRequirePath(path string) {
 func (e *LuaEngine) SetRequirePaths(paths []string) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
-	
+
 	e.config.RequirePaths = paths
 }
 
@@ -191,6 +196,11 @@ func (e *LuaEngine) setupPackagePath() {
 
 func (e *LuaEngine) GetLuaState() *lua.LState {
 	return e.state
+}
+
+// GetDebugger 获取当前 Lua 调试器实例，未启用调试时返回 nil。
+func (e *LuaEngine) GetDebugger() *debugger.Debugger {
+	return e.debugger
 }
 
 func (e *LuaEngine) registerCoreFunctions() {
@@ -336,11 +346,11 @@ func (e *LuaEngine) loadBytecodeModule(L *lua.LState, data []byte, name string) 
 	// 尝试将数据解析为预编译的字节码
 	// 由于 gopher-lua 不支持直接加载字节码文件
 	// 我们需要先尝试编译为字节码，然后执行
-	
+
 	// 首先尝试作为源码编译（因为 gopher-lua 的字节码格式是内部的）
 	// 如果用户想要使用字节码功能，应该先编译源码，然后在运行时使用
 	// 这里我们提供一个兼容的加载方式
-	
+
 	// 尝试直接加载为 Lua 源码
 	reader := strings.NewReader(string(data))
 	chunk, err := parse.Parse(reader, name)
@@ -503,6 +513,11 @@ func (e *LuaEngine) executeStringLoop(script string, searchPaths ...string) erro
 
 // executeStringOnce 执行一次 Lua 代码字符串
 func (e *LuaEngine) executeStringOnce(script string, searchPaths ...string) error {
+	return e.executeNamedStringOnce(script, "<string>", searchPaths...)
+}
+
+// executeNamedStringOnce 执行一次带脚本名的 Lua 代码字符串。
+func (e *LuaEngine) executeNamedStringOnce(script string, name string, searchPaths ...string) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
@@ -518,7 +533,24 @@ func (e *LuaEngine) executeStringOnce(script string, searchPaths ...string) erro
 	// 注册特殊的 os.exit 函数，用于控制退出动作
 	e.registerExitControl()
 
-	return e.state.DoString(script)
+	if e.debugger != nil && e.debugger.Enabled() {
+		e.debugger.Install(e.state)
+		script = debugger.InstrumentSource(script, name)
+	}
+
+	fn, err := e.state.Load(strings.NewReader(script), name)
+	if err != nil {
+		if e.debugger != nil {
+			e.debugger.NotifyError(name, err)
+		}
+		return err
+	}
+	e.state.Push(fn)
+	err = e.state.PCall(0, lua.MultRet, nil)
+	if err != nil && e.debugger != nil {
+		e.debugger.NotifyError(name, err)
+	}
+	return err
 }
 
 // addSearchPaths 添加模块搜索路径
@@ -617,13 +649,57 @@ func (e *LuaEngine) ExecuteFileWithMode(path string, mode ExecuteMode) error {
 	// 异步执行
 	if mode == ExecuteModeAsync {
 		go func() {
-			e.ExecuteStringWithMode(content, ExecuteModeSync, searchPaths...)
+			e.executeNamedStringWithMode(content, path, ExecuteModeSync, searchPaths...)
 		}()
 		return nil
 	}
 
 	// 同步执行
-	return e.ExecuteStringWithMode(content, ExecuteModeSync, searchPaths...)
+	return e.executeNamedStringWithMode(content, path, ExecuteModeSync, searchPaths...)
+}
+
+func (e *LuaEngine) executeNamedStringWithMode(script string, name string, mode ExecuteMode, searchPaths ...string) error {
+	e.Start()
+	e.currentScript = name
+	e.currentSearchPaths = searchPaths
+	e.skipExitAction = false
+
+	if mode == ExecuteModeAsync {
+		go func() {
+			_ = e.executeNamedStringLoop(script, name, searchPaths...)
+		}()
+		return nil
+	}
+	return e.executeNamedStringLoop(script, name, searchPaths...)
+}
+
+func (e *LuaEngine) executeNamedStringLoop(script string, name string, searchPaths ...string) error {
+	for {
+		err := e.executeNamedStringOnce(script, name, searchPaths...)
+		if err != nil {
+			fmt.Printf("脚本异常退出: %v\n", err)
+			e.Stop()
+			return err
+		}
+		if e.skipExitAction {
+			e.Stop()
+			return nil
+		}
+		switch e.config.OnExit {
+		case ExitActionNone:
+			e.Stop()
+			return nil
+		case ExitActionRestart:
+			fmt.Println("脚本正常退出，正在重新启动...")
+			time.Sleep(1 * time.Second)
+		case ExitActionCustom:
+			if e.config.CustomExitAction != nil {
+				e.config.CustomExitAction()
+			}
+			e.Stop()
+			return nil
+		}
+	}
 }
 
 // executeFileOnce 执行一次 Lua 文件

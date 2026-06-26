@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"sync"
 
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/debugger"
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	lua "github.com/yuin/gopher-lua"
@@ -54,15 +55,16 @@ const (
 
 // EngineConfig 引擎配置选项
 type EngineConfig struct {
-	WhiteList        []string    // 白名单：只加载这些模块，空列表 = 加载所有
-	BlackList        []string    // 黑名单：跳过这些模块，空列表 = 不跳过任何
-	FailFast         bool        // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
-	SearchPaths      []string    // 模块搜索路径，用于 require 查找模块
-	FileSystem       fs.FS       // 虚拟文件系统（embed.FS），用于从嵌入文件中加载模块
-	OnExit           ExitAction  // 脚本退出后的动作，默认为 ExitActionNone
-	CustomExitAction func()      // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
-	ExecuteMode      ExecuteMode // 执行模式，默认为同步执行
-	RequirePaths     []string    // 自定义 require 路径
+	WhiteList        []string         // 白名单：只加载这些模块，空列表 = 加载所有
+	BlackList        []string         // 黑名单：跳过这些模块，空列表 = 不跳过任何
+	FailFast         bool             // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
+	SearchPaths      []string         // 模块搜索路径，用于 require 查找模块
+	FileSystem       fs.FS            // 虚拟文件系统（embed.FS），用于从嵌入文件中加载模块
+	OnExit           ExitAction       // 脚本退出后的动作，默认为 ExitActionNone
+	CustomExitAction func()           // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
+	ExecuteMode      ExecuteMode      // 执行模式，默认为同步执行
+	RequirePaths     []string         // 自定义 require 路径
+	Debug            *debugger.Config // Lua VM 级调试配置，nil 表示关闭调试能力
 }
 
 // LuaEngine Lua 引擎
@@ -79,6 +81,7 @@ type LuaEngine struct {
 	ctx                context.Context       // 上下文，用于控制执行
 	cancel             context.CancelFunc    // 取消函数，用于停止执行
 	pauseChan          chan struct{}         // 暂停通道，用于恢复执行
+	debugger           *debugger.Debugger    // Lua 调试器，启用后支持 DAP/断点/单步
 }
 
 // DefaultConfig 返回默认配置
