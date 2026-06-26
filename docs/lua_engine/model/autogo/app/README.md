@@ -116,13 +116,13 @@ app.startService();
 
 ---
 
-### app.openAppSetting
+### app.openSetting
 打开应用的详情页(设置页)
 
 **使用示例：**
 ```lua
--- 调用 app.openAppSetting 方法
-app.openAppSetting();
+-- 调用 app.openSetting 方法
+app.openSetting();
 ```
 
 ---

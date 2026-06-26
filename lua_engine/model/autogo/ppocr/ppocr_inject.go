@@ -32,102 +32,82 @@ func (m *PpocrModule) Register(engine model.Engine) error {
 	ppocrObj.RawSetString("new", state.NewFunction(func(L *lua.LState) int {
 		version := L.CheckString(1)
 		p := ppocr.New(version)
-		ud := L.NewUserData()
-		ud.Value = p
-		L.Push(ud)
-		return 1
-	}))
-
-	ppocrObj.RawSetString("ocr", state.NewFunction(func(L *lua.LState) int {
-		p := L.CheckUserData(1).Value.(*ppocr.Ppocr)
-		x1 := L.CheckInt(2)
-		y1 := L.CheckInt(3)
-		x2 := L.CheckInt(4)
-		y2 := L.CheckInt(5)
-		colorStr := L.CheckString(6)
-		displayId := L.CheckInt(7)
-		result := p.Ocr(x1, y1, x2, y2, colorStr, displayId)
-		resultTable := L.NewTable()
-		for i, item := range result {
-			itemTable := L.NewTable()
-			itemTable.RawSetString("text", lua.LString(item.Label))
-			itemTable.RawSetString("confidence", lua.LNumber(item.Score))
-			resultTable.RawSetInt(i+1, itemTable)
+		if p == nil {
+			L.Push(lua.LNil)
+			return 1
 		}
-		L.Push(resultTable)
+		L.Push(wrapPpocr(L, p))
 		return 1
-	}))
-
-	ppocrObj.RawSetString("ocrFromImage", state.NewFunction(func(L *lua.LState) int {
-		p := L.CheckUserData(1).Value.(*ppocr.Ppocr)
-		img := L.CheckUserData(2).Value.(*image.NRGBA)
-		colorStr := L.CheckString(3)
-		result := p.OcrFromImage(img, colorStr)
-		resultTable := L.NewTable()
-		for i, item := range result {
-			itemTable := L.NewTable()
-			itemTable.RawSetString("text", lua.LString(item.Label))
-			itemTable.RawSetString("confidence", lua.LNumber(item.Score))
-			resultTable.RawSetInt(i+1, itemTable)
-		}
-		L.Push(resultTable)
-		return 1
-	}))
-
-	ppocrObj.RawSetString("ocrFromBase64", state.NewFunction(func(L *lua.LState) int {
-		p := L.CheckUserData(1).Value.(*ppocr.Ppocr)
-		b64 := L.CheckString(2)
-		colorStr := L.CheckString(3)
-		result := p.OcrFromBase64(b64, colorStr)
-		resultTable := L.NewTable()
-		for i, item := range result {
-			itemTable := L.NewTable()
-			itemTable.RawSetString("text", lua.LString(item.Label))
-			itemTable.RawSetString("confidence", lua.LNumber(item.Score))
-			resultTable.RawSetInt(i+1, itemTable)
-		}
-		L.Push(resultTable)
-		return 1
-	}))
-
-	ppocrObj.RawSetString("ocrFromPath", state.NewFunction(func(L *lua.LState) int {
-		p := L.CheckUserData(1).Value.(*ppocr.Ppocr)
-		path := L.CheckString(2)
-		colorStr := L.CheckString(3)
-		result := p.OcrFromPath(path, colorStr)
-		resultTable := L.NewTable()
-		for i, item := range result {
-			itemTable := L.NewTable()
-			itemTable.RawSetString("text", lua.LString(item.Label))
-			itemTable.RawSetString("confidence", lua.LNumber(item.Score))
-			resultTable.RawSetInt(i+1, itemTable)
-		}
-		L.Push(resultTable)
-		return 1
-	}))
-
-	ppocrObj.RawSetString("close", state.NewFunction(func(L *lua.LState) int {
-		p := L.CheckUserData(1).Value.(*ppocr.Ppocr)
-		p.Close()
-		return 0
 	}))
 
 	engine.RegisterMethod("ppocr.new", "创建Ppocr对象", ppocr.New, true)
-	engine.RegisterMethod("ppocr.ocr", "识别屏幕文字", func(x1, y1, x2, y2 int, colorStr string, displayId int) []map[string]interface{} {
-		return []map[string]interface{}{}
+	engine.RegisterMethod("ppocr.ocr", "识别屏幕文字", func(p *ppocr.Ppocr, x1, y1, x2, y2 int, colorStr string, displayId int) []ppocr.Result {
+		return p.Ocr(x1, y1, x2, y2, colorStr, displayId)
 	}, true)
-	engine.RegisterMethod("ppocr.ocrFromImage", "识别图片文字", func(img interface{}, colorStr string) []map[string]interface{} {
-		return []map[string]interface{}{}
+	engine.RegisterMethod("ppocr.ocrFromImage", "识别图片文字", func(p *ppocr.Ppocr, img *image.NRGBA, colorStr string) []ppocr.Result {
+		return p.OcrFromImage(img, colorStr)
 	}, true)
-	engine.RegisterMethod("ppocr.ocrFromBase64", "识别Base64图片文字", func(b64, colorStr string) []map[string]interface{} {
-		return []map[string]interface{}{}
+	engine.RegisterMethod("ppocr.ocrFromBase64", "识别Base64图片文字", func(p *ppocr.Ppocr, b64, colorStr string) []ppocr.Result {
+		return p.OcrFromBase64(b64, colorStr)
 	}, true)
-	engine.RegisterMethod("ppocr.ocrFromPath", "识别文件图片文字", func(path, colorStr string) []map[string]interface{} {
-		return []map[string]interface{}{}
+	engine.RegisterMethod("ppocr.ocrFromPath", "识别文件图片文字", func(p *ppocr.Ppocr, path, colorStr string) []ppocr.Result {
+		return p.OcrFromPath(path, colorStr)
 	}, true)
 	engine.RegisterMethod("ppocr.close", "关闭Ppocr对象", func(p *ppocr.Ppocr) {
 		p.Close()
 	}, true)
 
 	return nil
+}
+
+func wrapPpocr(L *lua.LState, p *ppocr.Ppocr) lua.LValue {
+	obj := L.NewTable()
+	obj.RawSetString("ocr", L.NewFunction(func(L *lua.LState) int {
+		x1 := L.CheckInt(1)
+		y1 := L.CheckInt(2)
+		x2 := L.CheckInt(3)
+		y2 := L.CheckInt(4)
+		colorStr := L.CheckString(5)
+		displayId := L.OptInt(6, 0)
+		L.Push(ppocrResultsToLua(L, p.Ocr(x1, y1, x2, y2, colorStr, displayId)))
+		return 1
+	}))
+	obj.RawSetString("ocrFromImage", L.NewFunction(func(L *lua.LState) int {
+		img := L.CheckUserData(1).Value.(*image.NRGBA)
+		colorStr := L.CheckString(2)
+		L.Push(ppocrResultsToLua(L, p.OcrFromImage(img, colorStr)))
+		return 1
+	}))
+	obj.RawSetString("ocrFromBase64", L.NewFunction(func(L *lua.LState) int {
+		b64 := L.CheckString(1)
+		colorStr := L.CheckString(2)
+		L.Push(ppocrResultsToLua(L, p.OcrFromBase64(b64, colorStr)))
+		return 1
+	}))
+	obj.RawSetString("ocrFromPath", L.NewFunction(func(L *lua.LState) int {
+		path := L.CheckString(1)
+		colorStr := L.CheckString(2)
+		L.Push(ppocrResultsToLua(L, p.OcrFromPath(path, colorStr)))
+		return 1
+	}))
+	obj.RawSetString("close", L.NewFunction(func(L *lua.LState) int {
+		p.Close()
+		return 0
+	}))
+	return obj
+}
+
+func ppocrResultsToLua(L *lua.LState, result []ppocr.Result) lua.LValue {
+	resultTable := L.NewTable()
+	for i, item := range result {
+		itemTable := L.NewTable()
+		itemTable.RawSetString("text", lua.LString(item.Label))
+		itemTable.RawSetString("confidence", lua.LNumber(item.Score))
+		itemTable.RawSetString("x", lua.LNumber(item.X))
+		itemTable.RawSetString("y", lua.LNumber(item.Y))
+		itemTable.RawSetString("w", lua.LNumber(item.Width))
+		itemTable.RawSetString("h", lua.LNumber(item.Height))
+		resultTable.RawSetInt(i+1, itemTable)
+	}
+	return resultTable
 }

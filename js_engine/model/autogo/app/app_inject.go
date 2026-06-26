@@ -240,6 +240,15 @@ func (m *AppModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("app.getVersion", "获取应用版本", func(packageName string) string {
 		return app.GetVersion(packageName)
 	}, true)
+	engine.RegisterMethod("app.startActivity", "启动Activity", func(options app.IntentOptions) {
+		app.StartActivity(options)
+	}, true)
+	engine.RegisterMethod("app.sendBroadcast", "发送广播", func(options app.IntentOptions) {
+		app.SendBroadcast(options)
+	}, true)
+	engine.RegisterMethod("app.startService", "启动服务", func(options app.IntentOptions) {
+		app.StartService(options)
+	}, true)
 	engine.RegisterMethod("app.openSetting", "打开应用的详情页(设置页)", func(packageName string) bool {
 		return app.OpenSetting(packageName)
 	}, true)

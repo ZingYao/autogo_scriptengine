@@ -29,91 +29,12 @@ func (m *HUDModule) Register(engine model.Engine) error {
 
 	hudObj.RawSetString("new", state.NewFunction(func(L *lua.LState) int {
 		h := hud.New()
-		ud := L.NewUserData()
-		ud.Value = h
-		L.Push(ud)
+		if h == nil {
+			L.Push(lua.LNil)
+			return 1
+		}
+		L.Push(wrapHUD(L, h))
 		return 1
-	}))
-
-	hudObj.RawSetString("setPosition", state.NewFunction(func(L *lua.LState) int {
-		h := L.CheckUserData(1).Value.(*hud.HUD)
-		x1 := L.CheckInt(2)
-		y1 := L.CheckInt(3)
-		x2 := L.CheckInt(4)
-		y2 := L.CheckInt(5)
-		result := h.SetPosition(x1, y1, x2, y2)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	hudObj.RawSetString("setBackgroundColor", state.NewFunction(func(L *lua.LState) int {
-		h := L.CheckUserData(1).Value.(*hud.HUD)
-		color := L.CheckString(2)
-		result := h.SetBackgroundColor(color)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	hudObj.RawSetString("setTextSize", state.NewFunction(func(L *lua.LState) int {
-		h := L.CheckUserData(1).Value.(*hud.HUD)
-		size := L.CheckInt(2)
-		result := h.SetTextSize(size)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	hudObj.RawSetString("setText", state.NewFunction(func(L *lua.LState) int {
-		h := L.CheckUserData(1).Value.(*hud.HUD)
-		itemsTable := L.CheckTable(2)
-		items := make([]hud.TextItem, 0)
-		itemsTable.ForEach(func(key lua.LValue, value lua.LValue) {
-			if itemTable, ok := value.(*lua.LTable); ok {
-				item := hud.TextItem{}
-				if text := itemTable.RawGetString("text"); text.Type() == lua.LTString {
-					item.Text = string(text.(lua.LString))
-				}
-				if textColor := itemTable.RawGetString("textColor"); textColor.Type() == lua.LTString {
-					item.TextColor = string(textColor.(lua.LString))
-				}
-				items = append(items, item)
-			}
-		})
-		result := h.SetText(items)
-		ud := L.NewUserData()
-		ud.Value = result
-		L.Push(ud)
-		return 1
-	}))
-
-	hudObj.RawSetString("show", state.NewFunction(func(L *lua.LState) int {
-		h := L.CheckUserData(1).Value.(*hud.HUD)
-		h.Show()
-		return 0
-	}))
-
-	hudObj.RawSetString("hide", state.NewFunction(func(L *lua.LState) int {
-		h := L.CheckUserData(1).Value.(*hud.HUD)
-		h.Hide()
-		return 0
-	}))
-
-	hudObj.RawSetString("isVisible", state.NewFunction(func(L *lua.LState) int {
-		h := L.CheckUserData(1).Value.(*hud.HUD)
-		visible := h.IsVisible()
-		L.Push(lua.LBool(visible))
-		return 1
-	}))
-
-	hudObj.RawSetString("destroy", state.NewFunction(func(L *lua.LState) int {
-		h := L.CheckUserData(1).Value.(*hud.HUD)
-		h.Destroy()
-		return 0
 	}))
 
 	engine.RegisterMethod("hud.new", "创建一个新的HUD对象", hud.New, true)
@@ -143,4 +64,80 @@ func (m *HUDModule) Register(engine model.Engine) error {
 	}, true)
 
 	return nil
+}
+
+func wrapHUD(L *lua.LState, h *hud.HUD) lua.LValue {
+	obj := L.NewTable()
+	obj.RawSetString("setPosition", L.NewFunction(func(L *lua.LState) int {
+		next := h.SetPosition(L.CheckInt(1), L.CheckInt(2), L.CheckInt(3), L.CheckInt(4))
+		if next != nil && next != h {
+			L.Push(wrapHUD(L, next))
+			return 1
+		}
+		L.Push(obj)
+		return 1
+	}))
+	obj.RawSetString("setBackgroundColor", L.NewFunction(func(L *lua.LState) int {
+		next := h.SetBackgroundColor(L.CheckString(1))
+		if next != nil && next != h {
+			L.Push(wrapHUD(L, next))
+			return 1
+		}
+		L.Push(obj)
+		return 1
+	}))
+	obj.RawSetString("setTextSize", L.NewFunction(func(L *lua.LState) int {
+		next := h.SetTextSize(L.CheckInt(1))
+		if next != nil && next != h {
+			L.Push(wrapHUD(L, next))
+			return 1
+		}
+		L.Push(obj)
+		return 1
+	}))
+	obj.RawSetString("setText", L.NewFunction(func(L *lua.LState) int {
+		next := h.SetText(luaTableToTextItems(L.CheckTable(1)))
+		if next != nil && next != h {
+			L.Push(wrapHUD(L, next))
+			return 1
+		}
+		L.Push(obj)
+		return 1
+	}))
+	obj.RawSetString("show", L.NewFunction(func(L *lua.LState) int {
+		h.Show()
+		return 0
+	}))
+	obj.RawSetString("hide", L.NewFunction(func(L *lua.LState) int {
+		h.Hide()
+		return 0
+	}))
+	obj.RawSetString("isVisible", L.NewFunction(func(L *lua.LState) int {
+		L.Push(lua.LBool(h.IsVisible()))
+		return 1
+	}))
+	obj.RawSetString("destroy", L.NewFunction(func(L *lua.LState) int {
+		h.Destroy()
+		return 0
+	}))
+	return obj
+}
+
+func luaTableToTextItems(itemsTable *lua.LTable) []hud.TextItem {
+	items := make([]hud.TextItem, 0)
+	itemsTable.ForEach(func(key lua.LValue, value lua.LValue) {
+		itemTable, ok := value.(*lua.LTable)
+		if !ok {
+			return
+		}
+		item := hud.TextItem{}
+		if text := itemTable.RawGetString("text"); text.Type() == lua.LTString {
+			item.Text = string(text.(lua.LString))
+		}
+		if textColor := itemTable.RawGetString("textColor"); textColor.Type() == lua.LTString {
+			item.TextColor = string(textColor.(lua.LString))
+		}
+		items = append(items, item)
+	})
+	return items
 }

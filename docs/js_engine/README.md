@@ -44,7 +44,7 @@ import (
     "log"
 
     "github.com/ZingYao/autogo_scriptengine/js_engine"
-    "github.com/ZingYao/autogo_scriptengine/js_engine/define/autogo/all_models"
+    "github.com/ZingYao/autogo_scriptengine/js_engine/define/android/autogo/all_models"
 )
 
 //go:embed scripts/*
@@ -86,7 +86,7 @@ import (
     "log"
 
     "github.com/ZingYao/autogo_scriptengine/js_engine"
-    "github.com/ZingYao/autogo_scriptengine/js_engine/define/autogo/all_models"
+    "github.com/ZingYao/autogo_scriptengine/js_engine/define/android/autogo/all_models"
 )
 
 func main() {
@@ -122,7 +122,7 @@ import (
     "log"
 
     "github.com/ZingYao/autogo_scriptengine/js_engine"
-    "github.com/ZingYao/autogo_scriptengine/js_engine/define/autogo/all_models"
+    "github.com/ZingYao/autogo_scriptengine/js_engine/define/android/autogo/all_models"
 )
 
 func main() {
@@ -208,7 +208,7 @@ console.log("屏幕宽度: " + device.width);
 app.launch("com.example.app");
 
 // motion 模块：触摸操作
-click(100, 200);
+motion.click(100, 200);
 
 // websocket 模块：WebSocket 客户端
 var handle = websocket.connect(
@@ -219,6 +219,12 @@ var handle = websocket.connect(
     function(h, msg) { console.log("收到: " + msg); }
 );
 ```
+
+autogo 风格遵循 Go API 映射规则：Go 导出函数挂到对应模块对象下，方法名按常规小驼峰转换。例如 `app.OpenUrl` 映射为 `app.openUrl`，不会额外保留历史别名，也不会注册 `click(...)` 这类全局入口。
+
+JavaScript autogo define 已按系统拆分。Android 项目使用 `js_engine/define/android/autogo/...`，iOS 项目使用 `js_engine/define/ios/autogo/...`。iOS 项目可参考 `examples/js_engine/autogo_ios`，不要使用 Android-only 的 `app.startActivity`、`uiacc`、`apkctl` 或 `displayId` 参数。
+
+autogo 风格遵循 Go API 映射规则：Go 导出函数挂到对应模块对象下，方法名按常规小驼峰转换。例如 `app.OpenSetting` 映射为 `app.openSetting`，不会额外保留 `app.openAppSetting` 等历史别名，也不会注册 `click(...)` 这类全局入口。
 
 ### 6.4 模块导出
 
@@ -384,7 +390,7 @@ import (
     "log"
 
     "github.com/ZingYao/autogo_scriptengine/js_engine"
-    "github.com/ZingYao/autogo_scriptengine/js_engine/define/autogo/all_models"
+    "github.com/ZingYao/autogo_scriptengine/js_engine/define/android/autogo/all_models"
 )
 
 //go:embed scripts/*
@@ -427,7 +433,7 @@ import (
     "log"
 
     "github.com/ZingYao/autogo_scriptengine/js_engine"
-    "github.com/ZingYao/autogo_scriptengine/js_engine/define/autogo/all_models"
+    "github.com/ZingYao/autogo_scriptengine/js_engine/define/android/autogo/all_models"
 )
 
 func main() {

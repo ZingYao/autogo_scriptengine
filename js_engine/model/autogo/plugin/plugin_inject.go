@@ -49,6 +49,31 @@ func (m *PluginModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("plugin.loadApk", "加载外部APK", plugin.LoadApk, true)
 	engine.RegisterMethod("plugin.newContext", "创建Context参数", plugin.NewContext, true)
 	engine.RegisterMethod("plugin.newAssetManager", "创建AssetManager参数", plugin.NewAssetManager, true)
+	engine.RegisterMethod("plugin.newInstance", "创建类实例", func(cl *plugin.ClassLoader, className string, args ...interface{}) *plugin.Instance {
+		return cl.NewInstance(className, args...)
+	}, true)
+	engine.RegisterMethod("plugin.callString", "调用返回String的方法", func(inst *plugin.Instance, methodName string, args ...interface{}) (string, error) {
+		return inst.CallString(methodName, args...)
+	}, true)
+	engine.RegisterMethod("plugin.callInt", "调用返回int的方法", func(inst *plugin.Instance, methodName string, args ...interface{}) (int, error) {
+		return inst.CallInt(methodName, args...)
+	}, true)
+	engine.RegisterMethod("plugin.callLong", "调用返回long的方法", func(inst *plugin.Instance, methodName string, args ...interface{}) (int64, error) {
+		return inst.CallLong(methodName, args...)
+	}, true)
+	engine.RegisterMethod("plugin.callFloat", "调用返回float的方法", func(inst *plugin.Instance, methodName string, args ...interface{}) (float32, error) {
+		return inst.CallFloat(methodName, args...)
+	}, true)
+	engine.RegisterMethod("plugin.callDouble", "调用返回double的方法", func(inst *plugin.Instance, methodName string, args ...interface{}) (float64, error) {
+		return inst.CallDouble(methodName, args...)
+	}, true)
+	engine.RegisterMethod("plugin.callBool", "调用返回boolean的方法", func(inst *plugin.Instance, methodName string, args ...interface{}) (bool, error) {
+		return inst.CallBool(methodName, args...)
+	}, true)
+	engine.RegisterMethod("plugin.callVoid", "调用无返回值的方法", func(inst *plugin.Instance, methodName string, args ...interface{}) error {
+		return inst.CallVoid(methodName, args...)
+	}, true)
+	engine.RegisterMethod("plugin.release", "释放实例或类加载器", nil, true)
 
 	return nil
 }

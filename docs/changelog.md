@@ -1,5 +1,14 @@
 # 更新日志
 
+## Unreleased
+
+### iOS autogo 风格包
+
+- 新增 Lua/JavaScript iOS autogo define 与 `autogo_ios` 模块隔离目录。
+- iOS Lua/JavaScript API 按 AutoGo Go 导出名映射为模块对象小驼峰方法，不保留历史别名和全局入口。
+- 补充 iOS examples，覆盖模块对象入口、struct/map/slice 入参、返回值解析、对象生命周期和 `opencv/imgui` 构造调用。
+- 补充 iOS autogo 风格包文档，明确 `uiacc/apkctl` 暂不注入以及不得使用 Android-only `displayId` 参数。
+
 ## v0.0.15 (2026-03-25)
 
 ### 文档优化与 lrappsoft 风格兼容

@@ -178,7 +178,7 @@ var text = dotocr.ocrFromPath("/sdcard/screenshot.png", "FFFFFF-000000", 5, 5, 0
 ```javascript
 var pos = dotocr.findStr(0, 0, 1000, 500, "确定", "FFFFFF-000000", 5, 5, 0.9, "default", 0);
 if (pos.x !== -1) {
-    click(pos.x, pos.y);
+    motion.click(pos.x, pos.y);
 }
 ```
 
@@ -280,7 +280,7 @@ var pos = dotocr.findStrFromPath("/sdcard/screenshot.png", "登录", "FFFFFF-000
 function clickText(text, x1, y1, x2, y2) {
     var pos = dotocr.findStr(x1, y1, x2, y2, text, "FFFFFF-000000", 5, 5, 0.9, "default", 0);
     if (pos.x !== -1) {
-        click(pos.x, pos.y);
+        motion.click(pos.x, pos.y);
         return true;
     }
     return false;

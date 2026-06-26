@@ -44,7 +44,7 @@ import (
     "log"
 
     "github.com/ZingYao/autogo_scriptengine/lua_engine"
-    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/android/autogo/all_models"
 )
 
 //go:embed scripts/*
@@ -86,7 +86,7 @@ import (
     "log"
 
     "github.com/ZingYao/autogo_scriptengine/lua_engine"
-    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/android/autogo/all_models"
 )
 
 func main() {
@@ -122,7 +122,7 @@ import (
     "log"
 
     "github.com/ZingYao/autogo_scriptengine/lua_engine"
-    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/android/autogo/all_models"
 )
 
 func main() {
@@ -202,12 +202,19 @@ AutoGo 脚本引擎提供了两种风格包，所有模块都已通过 Go 代码
 console.log("Hello")
 device.width
 motion.click(100, 200)
+app.openSetting("com.example.app")
 
 -- lrappsoft 风格：直接使用全局模块
 log("Hello")
 getScreenWidth()
-touchDown(1, 100, 200)
+motion.touchDown(1, 100, 200)
 ```
+
+autogo 风格遵循 Go API 映射规则：Go 导出函数挂到对应模块对象下，方法名按常规小驼峰转换。例如 `app.OpenSetting` 映射为 `app.openSetting`，不会额外保留 `app.openAppSetting` 等历史别名，也不会注册 `click(...)` 这类全局入口。
+
+Lua autogo define 已按系统拆分。Android 项目使用 `lua_engine/define/android/autogo/...`，iOS 项目使用 `lua_engine/define/ios/autogo/...`。
+
+iOS 项目可参考 `examples/lua_engine/autogo_ios`。iOS 示例只使用 `app.openUrl`、`device.getDisplayInfo`、`files.*`、`https.*`、`opencv/imgui` 等 iOS 已实现模块，不使用 Android-only 的 `app.startActivity`、`uiacc`、`apkctl` 或 `displayId` 参数。
 
 ### 6.4 模块导出
 
@@ -359,7 +366,7 @@ import (
     "log"
 
     "github.com/ZingYao/autogo_scriptengine/lua_engine"
-    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/android/autogo/all_models"
 )
 
 //go:embed scripts/*
@@ -402,7 +409,7 @@ import (
     "log"
 
     "github.com/ZingYao/autogo_scriptengine/lua_engine"
-    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/autogo/all_models"
+    "github.com/ZingYao/autogo_scriptengine/lua_engine/define/android/autogo/all_models"
 )
 
 func main() {

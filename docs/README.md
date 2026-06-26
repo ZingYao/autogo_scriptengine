@@ -13,6 +13,7 @@
 
 - **双引擎支持**：同时支持 JavaScript 和 Lua 脚本语言
 - **丰富的 API**：提供应用管理、设备控制、图像识别、OCR 等多种功能
+- **Android/iOS 隔离注入**：autogo 风格包按系统拆分 define，避免 Android 专用模块和参数污染 iOS
 - **方法注册系统**：支持动态注册、重写和恢复方法
 - **协程支持**：Lua 引擎支持协程操作
 - **风格包支持**：提供 autogo 和 lrappsoft 两种风格包
@@ -89,65 +90,69 @@ python3 scripts/convert_to_html.py
 #### JavaScript 引擎文档
 
 - [JavaScript 引擎完整文档](./js_engine/README.md) - 包含所有 API、配置选项和高级用法
+- [JavaScript Android autogo 概述](./js_engine/model/autogo/README.md) - Android 模块注册方式与模块 API 导航
+- [JavaScript iOS autogo 概述](./js_engine/model/autogo_ios/README.md) - iOS 模块清单、注册方式和参数返回值映射
 
-#### 模块文档
+#### JavaScript Android 模块文档
 
-- [app 模块](./js_engine/model/app/README.md) - 应用管理（启动、安装、卸载、强制停止等）
-- [device 模块](./js_engine/model/device/README.md) - 设备信息（分辨率、SDK 版本、屏幕方向等）
-- [motion 模块](./js_engine/model/motion/README.md) - 触摸操作（点击、滑动、手势等）
-- [files 模块](./js_engine/model/files/README.md) - 文件操作（读写、复制、删除等）
-- [images 模块](./js_engine/model/images/README.md) - 图像处理（截图、找色、找图等）
-- [storages 模块](./js_engine/model/storages/README.md) - 数据存储（键值对存储）
-- [system 模块](./js_engine/model/system/README.md) - 系统功能（剪贴板、通知等）
-- [http 模块](./js_engine/model/http/README.md) - 网络请求（GET、POST 等）
-- [websocket 模块](./js_engine/model/websocket/README.md) - WebSocket 客户端（连接、发送、接收消息等）
-- [media 模块](./js_engine/model/media/README.md) - 媒体控制（音量、播放等）
-- [opencv 模块](./js_engine/model/opencv/README.md) - 计算机视觉（图像处理、特征检测等）
-- [ppocr 模块](./js_engine/model/ppocr/README.md) - OCR 文字识别
-- [console 模块](./js_engine/model/console/README.md) - 控制台窗口（显示、隐藏、日志输出等）
-- [dotocr 模块](./js_engine/model/dotocr/README.md) - 点字 OCR 识别（基于字库的 OCR）
-- [hud 模块](./js_engine/model/hud/README.md) - HUD 悬浮显示（脚本状态显示等）
-- [ime 模块](./js_engine/model/ime/README.md) - 输入法控制（剪切板、文本输入等）
-- [plugin 模块](./js_engine/model/plugin/README.md) - 插件加载（加载外部 APK 调用 Java 方法）
-- [rhino 模块](./js_engine/model/rhino/README.md) - JavaScript 执行引擎（Rhino）
-- [uiacc 模块](./js_engine/model/uiacc/README.md) - 无障碍 UI 操作（控件查找、点击、输入等）
-- [utils 模块](./js_engine/model/utils/README.md) - 工具方法（日志、Toast、类型转换等）
-- [vdisplay 模块](./js_engine/model/vdisplay/README.md) - 虚拟显示（虚拟屏操作）
-- [yolo 模块](./js_engine/model/yolo/README.md) - YOLO 目标检测（v5/v8 模型）
-- [imgui 模块](./js_engine/model/imgui/README.md) - Dear ImGui GUI 库（窗口、按钮、输入框等控件）
-- [coroutine 模块](./js_engine/model/coroutine/README.md) - 协程支持
+- [app 模块](./js_engine/model/autogo/app/README.md) - 应用管理（启动、安装、卸载、强制停止等）
+- [device 模块](./js_engine/model/autogo/device/README.md) - 设备信息（分辨率、SDK 版本、屏幕方向等）
+- [motion 模块](./js_engine/model/autogo/motion/README.md) - 触摸操作（点击、滑动、手势等）
+- [files 模块](./js_engine/model/autogo/files/README.md) - 文件操作（读写、复制、删除等）
+- [images 模块](./js_engine/model/autogo/images/README.md) - 图像处理（截图、找色、找图等）
+- [storages 模块](./js_engine/model/autogo/storages/README.md) - 数据存储（键值对存储）
+- [system 模块](./js_engine/model/autogo/system/README.md) - 系统功能（剪贴板、通知等）
+- [http 模块](./js_engine/model/autogo/http/README.md) - 网络请求（GET、POST 等）
+- [websocket 模块](./js_engine/model/autogo/websocket/README.md) - WebSocket 客户端（连接、发送、接收消息等）
+- [media 模块](./js_engine/model/autogo/media/README.md) - 媒体控制（音量、播放等）
+- [opencv 模块](./js_engine/model/autogo/opencv/README.md) - 计算机视觉（图像处理、特征检测等）
+- [ppocr 模块](./js_engine/model/autogo/ppocr/README.md) - OCR 文字识别
+- [console 模块](./js_engine/model/autogo/console/README.md) - 控制台窗口（显示、隐藏、日志输出等）
+- [dotocr 模块](./js_engine/model/autogo/dotocr/README.md) - 点字 OCR 识别（基于字库的 OCR）
+- [hud 模块](./js_engine/model/autogo/hud/README.md) - HUD 悬浮显示（脚本状态显示等）
+- [ime 模块](./js_engine/model/autogo/ime/README.md) - 输入法控制（剪切板、文本输入等）
+- [plugin 模块](./js_engine/model/autogo/plugin/README.md) - 插件加载（加载外部 APK 调用 Java 方法）
+- [rhino 模块](./js_engine/model/autogo/rhino/README.md) - JavaScript 执行引擎（Rhino）
+- [uiacc 模块](./js_engine/model/autogo/uiacc/README.md) - 无障碍 UI 操作（控件查找、点击、输入等）
+- [utils 模块](./js_engine/model/autogo/utils/README.md) - 工具方法（日志、Toast、类型转换等）
+- [vdisplay 模块](./js_engine/model/autogo/vdisplay/README.md) - 虚拟显示（虚拟屏操作）
+- [yolo 模块](./js_engine/model/autogo/yolo/README.md) - YOLO 目标检测（v5/v8 模型）
+- [imgui 模块](./js_engine/model/autogo/imgui/README.md) - Dear ImGui GUI 库（窗口、按钮、输入框等控件）
+- [coroutine 模块](./js_engine/model/autogo/coroutine/README.md) - 协程支持
 
 #### 📖 Lua 引擎文档
 
 - [Lua 引擎完整文档](./lua_engine/README.md) - 包含所有 API、配置选项和高级用法
+- [Lua Android autogo 概述](./lua_engine/model/autogo/README.md) - Android 模块注册方式与模块 API 导航
+- [Lua iOS autogo 概述](./lua_engine/model/autogo_ios/README.md) - iOS 模块清单、注册方式和参数返回值映射
 
-#### 模块文档
+#### Lua Android 模块文档
 
-- [app 模块](./lua_engine/model/app/README.md) - 应用管理（启动、安装、卸载、强制停止等）
-- [device 模块](./lua_engine/model/device/README.md) - 设备信息（分辨率、SDK 版本、屏幕方向等）
-- [motion 模块](./lua_engine/model/motion/README.md) - 触摸操作（点击、滑动、手势等）
-- [files 模块](./lua_engine/model/files/README.md) - 文件操作（读写、复制、删除等）
-- [images 模块](./lua_engine/model/images/README.md) - 图像处理（截图、找色、找图等）
-- [storages 模块](./lua_engine/model/storages/README.md) - 数据存储（键值对存储）
-- [system 模块](./lua_engine/model/system/README.md) - 系统功能（剪贴板、通知等）
-- [http 模块](./lua_engine/model/http/README.md) - 网络请求（GET、POST 等）
-- [websocket 模块](./lua_engine/model/websocket/README.md) - WebSocket 客户端（连接、发送、接收消息等）
-- [media 模块](./lua_engine/model/media/README.md) - 媒体控制（音量、播放等）
-- [opencv 模块](./lua_engine/model/opencv/README.md) - 计算机视觉（图像处理、特征检测等）
-- [ppocr 模块](./lua_engine/model/ppocr/README.md) - OCR 文字识别
-- [console 模块](./lua_engine/model/console/README.md) - 控制台窗口（显示、隐藏、日志输出等）
-- [dotocr 模块](./lua_engine/model/dotocr/README.md) - 点字 OCR 识别（基于字库的 OCR）
-- [hud 模块](./lua_engine/model/hud/README.md) - HUD 悬浮显示（脚本状态显示等）
-- [ime 模块](./lua_engine/model/ime/README.md) - 输入法控制（剪切板、文本输入等）
-- [plugin 模块](./lua_engine/model/plugin/README.md) - 插件加载（加载外部 APK 调用 Java 方法）
-- [rhino 模块](./lua_engine/model/rhino/README.md) - JavaScript 执行引擎（Rhino）
-- [uiacc 模块](./lua_engine/model/uiacc/README.md) - 无障碍 UI 操作（控件查找、点击、输入等）
-- [utils 模块](./lua_engine/model/utils/README.md) - 工具方法（日志、Toast、类型转换等）
-- [vdisplay 模块](./lua_engine/model/vdisplay/README.md) - 虚拟显示（虚拟屏操作）
-- [yolo 模块](./lua_engine/model/yolo/README.md) - YOLO 目标检测（v5/v8 模型）
-- [imgui 模块](./lua_engine/model/imgui/README.md) - Dear ImGui GUI 库（窗口、按钮、输入框等控件）
-- [coroutine 模块](./lua_engine/model/coroutine/README.md) - 协程支持
-- [json 模块](./lua_engine/model/json/README.md) - JSON 处理
+- [app 模块](./lua_engine/model/autogo/app/README.md) - 应用管理（启动、安装、卸载、强制停止等）
+- [device 模块](./lua_engine/model/autogo/device/README.md) - 设备信息（分辨率、SDK 版本、屏幕方向等）
+- [motion 模块](./lua_engine/model/autogo/motion/README.md) - 触摸操作（点击、滑动、手势等）
+- [files 模块](./lua_engine/model/autogo/files/README.md) - 文件操作（读写、复制、删除等）
+- [images 模块](./lua_engine/model/autogo/images/README.md) - 图像处理（截图、找色、找图等）
+- [storages 模块](./lua_engine/model/autogo/storages/README.md) - 数据存储（键值对存储）
+- [system 模块](./lua_engine/model/autogo/system/README.md) - 系统功能（剪贴板、通知等）
+- [http 模块](./lua_engine/model/autogo/http/README.md) - 网络请求（GET、POST 等）
+- [websocket 模块](./lua_engine/model/autogo/websocket/README.md) - WebSocket 客户端（连接、发送、接收消息等）
+- [media 模块](./lua_engine/model/autogo/media/README.md) - 媒体控制（音量、播放等）
+- [opencv 模块](./lua_engine/model/autogo/opencv/README.md) - 计算机视觉（图像处理、特征检测等）
+- [ppocr 模块](./lua_engine/model/autogo/ppocr/README.md) - OCR 文字识别
+- [console 模块](./lua_engine/model/autogo/console/README.md) - 控制台窗口（显示、隐藏、日志输出等）
+- [dotocr 模块](./lua_engine/model/autogo/dotocr/README.md) - 点字 OCR 识别（基于字库的 OCR）
+- [hud 模块](./lua_engine/model/autogo/hud/README.md) - HUD 悬浮显示（脚本状态显示等）
+- [ime 模块](./lua_engine/model/autogo/ime/README.md) - 输入法控制（剪切板、文本输入等）
+- [plugin 模块](./lua_engine/model/autogo/plugin/README.md) - 插件加载（加载外部 APK 调用 Java 方法）
+- [rhino 模块](./lua_engine/model/autogo/rhino/README.md) - JavaScript 执行引擎（Rhino）
+- [uiacc 模块](./lua_engine/model/autogo/uiacc/README.md) - 无障碍 UI 操作（控件查找、点击、输入等）
+- [utils 模块](./lua_engine/model/autogo/utils/README.md) - 工具方法（日志、Toast、类型转换等）
+- [vdisplay 模块](./lua_engine/model/autogo/vdisplay/README.md) - 虚拟显示（虚拟屏操作）
+- [yolo 模块](./lua_engine/model/autogo/yolo/README.md) - YOLO 目标检测（v5/v8 模型）
+- [imgui 模块](./lua_engine/model/autogo/imgui/README.md) - Dear ImGui GUI 库（窗口、按钮、输入框等控件）
+- [coroutine 模块](./lua_engine/model/autogo/coroutine/README.md) - 协程支持
+- [json 模块](./lua_engine/model/autogo/json/README.md) - JSON 处理
 
 ## 环境要求
 

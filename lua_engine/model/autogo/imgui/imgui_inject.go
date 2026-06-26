@@ -4601,6 +4601,8 @@ func (m *ImGuiModule) Register(engine model.Engine) error {
 		return 0
 	}))
 
+	registerImguiReflectBridgeLua(engine, imguiObj)
+
 	return nil
 }
 

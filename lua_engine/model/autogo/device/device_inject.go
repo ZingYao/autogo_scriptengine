@@ -54,6 +54,21 @@ func (m *DeviceModule) Register(engine model.Engine) error {
 		return 1
 	}))
 
+	deviceObj.RawSetString("getDisplayInfo", state.NewFunction(func(L *lua.LState) int {
+		displayId := 0
+		if L.GetTop() >= 1 {
+			displayId = L.CheckInt(1)
+		}
+		width, height, dpi, rotation := device.GetDisplayInfo(displayId)
+		result := L.NewTable()
+		result.RawSetString("width", lua.LNumber(width))
+		result.RawSetString("height", lua.LNumber(height))
+		result.RawSetString("dpi", lua.LNumber(dpi))
+		result.RawSetString("rotation", lua.LNumber(rotation))
+		L.Push(result)
+		return 1
+	}))
+
 	deviceObj.RawSetString("getAndroidId", state.NewFunction(func(L *lua.LState) int {
 		result := device.GetAndroidId()
 		L.Push(lua.LString(result))
@@ -250,6 +265,9 @@ func (m *DeviceModule) Register(engine model.Engine) error {
 	}, true)
 	engine.RegisterMethod("device.sdkInt", "安卓系统API版本", func() int { return device.SdkInt }, true)
 	engine.RegisterMethod("device.cpuAbi", "设备的CPU架构", func() string { return device.CpuAbi }, true)
+	engine.RegisterMethod("device.getDisplayInfo", "获取指定屏幕的分辨率信息", func(displayId int) (int, int, int, int) {
+		return device.GetDisplayInfo(displayId)
+	}, true)
 	engine.RegisterMethod("device.getImei", "返回设备的IMEI", device.GetImei, true)
 	engine.RegisterMethod("device.getAndroidId", "返回设备的Android ID", device.GetAndroidId, true)
 	engine.RegisterMethod("device.getWifiMac", "获取设备WIFI-MAC", device.GetWifiMac, true)
