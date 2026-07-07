@@ -25,12 +25,7 @@ func main() {
 	// 注册 iOS autogo 风格模块，避免注入 Android-only 模块。
 	engine.RegisterModule(all_models.AllModules...)
 
-	// 执行工具脚本，主脚本可通过 require("utils") 引用。
-	if err := engine.ExecuteFile("scripts/utils.lua"); err != nil {
-		log.Fatalf("Failed to execute utils.lua: %v", err)
-	}
-
-	// 执行 iOS 主脚本。
+	// 执行 iOS 主脚本，工具脚本由 main.lua 中的 require("utils") 自动加载。
 	if err := engine.ExecuteFile("scripts/main.lua"); err != nil {
 		log.Fatalf("Failed to execute main.lua: %v", err)
 	}

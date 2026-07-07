@@ -1,154 +1,102 @@
+//go:build !android || !cgo
+
 package utils
 
 import (
-	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
+	"fmt"
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
 
-	"github.com/Dasongzi1366/AutoGo/utils"
+	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 	"github.com/dop251/goja"
 )
 
-// UtilsModule utils 模块
+// UtilsModule 在非 Android CGO 环境下提供纯 Go 可验证实现。
 type UtilsModule struct{}
 
-// Name 返回模块名称
-func (m *UtilsModule) Name() string {
-	return "utils"
-}
+func (m *UtilsModule) Name() string { return "utils" }
 
-// IsAvailable 检查模块是否可用
-func (m *UtilsModule) IsAvailable() bool {
-	return true
-}
+func (m *UtilsModule) IsAvailable() bool { return true }
 
-// Register 向引擎注册方法
 func (m *UtilsModule) Register(engine model.Engine) error {
 	vm := engine.GetVM()
-
 	utilsObj := vm.NewObject()
 	vm.Set("utils", utilsObj)
 
 	utilsObj.Set("logI", func(call goja.FunctionCall) goja.Value {
-		label := call.Argument(0).String()
-		message := ""
-		for i := 1; i < len(call.Arguments); i++ {
-			message += call.Argument(i).String() + " "
-		}
-		utils.LogI(label, message)
+		fmt.Println(joinArgs(call.Arguments))
 		return goja.Undefined()
 	})
-
 	utilsObj.Set("logE", func(call goja.FunctionCall) goja.Value {
-		label := call.Argument(0).String()
-		message := ""
-		for i := 1; i < len(call.Arguments); i++ {
-			message += call.Argument(i).String() + " "
-		}
-		utils.LogE(label, message)
+		fmt.Println(joinArgs(call.Arguments))
 		return goja.Undefined()
 	})
-
 	utilsObj.Set("toast", func(call goja.FunctionCall) goja.Value {
-		message := call.Argument(0).String()
-		x := 0
-		y := 0
-		duration := -1
-		if len(call.Arguments) > 1 {
-			x = int(call.Argument(1).ToInteger())
-		}
-		if len(call.Arguments) > 2 {
-			y = int(call.Argument(2).ToInteger())
-		}
-		if len(call.Arguments) > 3 {
-			duration = int(call.Argument(3).ToInteger())
-		}
-		utils.Toast(message, x, y, duration)
+		fmt.Println(call.Argument(0).String())
 		return goja.Undefined()
 	})
-
-	utilsObj.Set("alert", func(call goja.FunctionCall) goja.Value {
-		title := call.Argument(0).String()
-		content := call.Argument(1).String()
-		btn1Text := ""
-		if len(call.Arguments) > 2 {
-			btn1Text = call.Argument(2).String()
-		}
-		btn2Text := ""
-		if len(call.Arguments) > 3 {
-			btn2Text = call.Argument(3).String()
-		}
-		result := utils.Alert(title, content, btn1Text, btn2Text)
-		return vm.ToValue(result)
-	})
-
+	utilsObj.Set("alert", func(call goja.FunctionCall) goja.Value { return vm.ToValue(0) })
 	utilsObj.Set("shell", func(call goja.FunctionCall) goja.Value {
-		cmd := call.Argument(0).String()
-		result := utils.Shell(cmd)
-		return vm.ToValue(result)
+		panic(vm.NewGoError(fmt.Errorf("utils.shell requires Android AutoGo runtime")))
 	})
-
 	utilsObj.Set("random", func(call goja.FunctionCall) goja.Value {
-		min := int(call.Argument(0).ToInteger())
-		max := int(call.Argument(1).ToInteger())
-		result := utils.Random(min, max)
-		return vm.ToValue(result)
+		return vm.ToValue(random(int(call.Argument(0).ToInteger()), int(call.Argument(1).ToInteger())))
 	})
-
 	utilsObj.Set("sleep", func(call goja.FunctionCall) goja.Value {
-		i := int(call.Argument(0).ToInteger())
-		utils.Sleep(i)
+		time.Sleep(time.Duration(call.Argument(0).ToInteger()) * time.Millisecond)
 		return goja.Undefined()
 	})
-
 	utilsObj.Set("i2s", func(call goja.FunctionCall) goja.Value {
-		i := int(call.Argument(0).ToInteger())
-		result := utils.I2s(i)
-		return vm.ToValue(result)
+		return vm.ToValue(strconv.Itoa(int(call.Argument(0).ToInteger())))
 	})
-
 	utilsObj.Set("s2i", func(call goja.FunctionCall) goja.Value {
-		s := call.Argument(0).String()
-		result := utils.S2i(s)
-		return vm.ToValue(result)
+		v, _ := strconv.Atoi(strings.TrimSpace(call.Argument(0).String()))
+		return vm.ToValue(v)
 	})
-
 	utilsObj.Set("f2s", func(call goja.FunctionCall) goja.Value {
-		f := call.Argument(0).ToFloat()
-		result := utils.F2s(f)
-		return vm.ToValue(result)
+		return vm.ToValue(strconv.FormatFloat(call.Argument(0).ToFloat(), 'f', -1, 64))
 	})
-
 	utilsObj.Set("s2f", func(call goja.FunctionCall) goja.Value {
-		s := call.Argument(0).String()
-		result := utils.S2f(s)
-		return vm.ToValue(result)
+		v, _ := strconv.ParseFloat(strings.TrimSpace(call.Argument(0).String()), 64)
+		return vm.ToValue(v)
 	})
-
 	utilsObj.Set("b2s", func(call goja.FunctionCall) goja.Value {
-		b := call.Argument(0).ToBoolean()
-		result := utils.B2s(b)
-		return vm.ToValue(result)
+		return vm.ToValue(strconv.FormatBool(call.Argument(0).ToBoolean()))
 	})
-
 	utilsObj.Set("s2b", func(call goja.FunctionCall) goja.Value {
-		s := call.Argument(0).String()
-		result := utils.S2b(s)
-		return vm.ToValue(result)
+		v, _ := strconv.ParseBool(strings.TrimSpace(call.Argument(0).String()))
+		return vm.ToValue(v)
 	})
 
-	engine.RegisterMethod("utils.logI", "记录一条INFO级别的日志", utils.LogI, true)
-	engine.RegisterMethod("utils.logE", "记录一条ERROR级别的日志", utils.LogE, true)
-	engine.RegisterMethod("utils.toast", "显示Toast提示", func(message string, x, y, duration int) { utils.Toast(message, x, y, duration) }, true)
-	engine.RegisterMethod("utils.alert", "显示Alert对话框", func(title, content, btn1Text, btn2Text string) int {
-		return utils.Alert(title, content, btn1Text, btn2Text)
-	}, true)
-	engine.RegisterMethod("utils.shell", "执行shell命令并返回输出", utils.Shell, true)
-	engine.RegisterMethod("utils.random", "返回指定范围内的随机整数", utils.Random, true)
-	engine.RegisterMethod("utils.sleep", "暂停当前线程指定的毫秒数", utils.Sleep, true)
-	engine.RegisterMethod("utils.i2s", "将整数转换为字符串", utils.I2s, true)
-	engine.RegisterMethod("utils.s2i", "将字符串转换为整数", utils.S2i, true)
-	engine.RegisterMethod("utils.f2s", "将浮点数转换为字符串", utils.F2s, true)
-	engine.RegisterMethod("utils.s2f", "将字符串转换为浮点数", utils.S2f, true)
-	engine.RegisterMethod("utils.b2s", "将布尔值转换为字符串", utils.B2s, true)
-	engine.RegisterMethod("utils.s2b", "将字符串转换为布尔值", utils.S2b, true)
+	engine.RegisterMethod("utils.logI", "记录一条 INFO 级别日志", func(args ...interface{}) { fmt.Println(args...) }, true)
+	engine.RegisterMethod("utils.logE", "记录一条 ERROR 级别日志", func(args ...interface{}) { fmt.Println(args...) }, true)
+	engine.RegisterMethod("utils.toast", "非 Android 环境输出 Toast 内容", func(message string, args ...int) { fmt.Println(message) }, true)
+	engine.RegisterMethod("utils.alert", "非 Android 环境返回默认按钮", func(title, content string, buttons ...string) int { return 0 }, true)
+	engine.RegisterMethod("utils.shell", "非 Android 环境禁用 shell 桥", func(cmd string) (string, error) { return "", fmt.Errorf("utils.shell requires Android AutoGo runtime") }, true)
+	engine.RegisterMethod("utils.random", "返回指定范围内的随机整数", random, true)
+	engine.RegisterMethod("utils.sleep", "暂停指定毫秒数", func(i int) { time.Sleep(time.Duration(i) * time.Millisecond) }, true)
+	engine.RegisterMethod("utils.i2s", "整数转字符串", strconv.Itoa, true)
+	engine.RegisterMethod("utils.s2i", "字符串转整数", func(s string) int { v, _ := strconv.Atoi(strings.TrimSpace(s)); return v }, true)
+	engine.RegisterMethod("utils.f2s", "浮点数转字符串", func(f float64) string { return strconv.FormatFloat(f, 'f', -1, 64) }, true)
+	engine.RegisterMethod("utils.s2f", "字符串转浮点数", func(s string) float64 { v, _ := strconv.ParseFloat(strings.TrimSpace(s), 64); return v }, true)
+	engine.RegisterMethod("utils.b2s", "布尔值转字符串", strconv.FormatBool, true)
+	engine.RegisterMethod("utils.s2b", "字符串转布尔值", func(s string) bool { v, _ := strconv.ParseBool(strings.TrimSpace(s)); return v }, true)
 	return nil
+}
+
+func joinArgs(values []goja.Value) string {
+	parts := make([]string, 0, len(values))
+	for _, value := range values {
+		parts = append(parts, value.String())
+	}
+	return strings.Join(parts, " ")
+}
+
+func random(min, max int) int {
+	if min > max {
+		min, max = max, min
+	}
+	return rand.Intn(max-min+1) + min
 }

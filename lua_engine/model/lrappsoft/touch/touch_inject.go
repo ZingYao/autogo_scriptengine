@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package touch
 
 import (
@@ -15,10 +18,10 @@ import (
 
 // TouchModule touch 模块（懒人精灵兼容）
 type TouchModule struct {
-	imeLocked     bool
+	imeLocked      bool
 	ThrowException bool // 是否抛出异常
 	ShowWarning    bool // 是否显示警告信息
-	Debug         bool // 是否开启调试模式（打印脚本堆栈信息）
+	Debug          bool // 是否开启调试模式（打印脚本堆栈信息）
 }
 
 // checkRootPermission 检查是否有 root 权限
@@ -54,10 +57,10 @@ func GetKeyCodeFromString(keyStr string) int {
 // New 创建一个新的 TouchModule 实例
 func New() *TouchModule {
 	return &TouchModule{
-		imeLocked:     false,
+		imeLocked:      false,
 		ThrowException: false,
 		ShowWarning:    true,
-		Debug:         false,
+		Debug:          false,
 	}
 }
 

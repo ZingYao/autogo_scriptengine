@@ -76,6 +76,7 @@ go get github.com/ZingYao/autogo_scriptengine@v0.0.22
 
 - [📖 文档索引](./docs/index.html) - 所有文档的导航页面
 - [🏠 项目主页](./docs/README.md) - 项目介绍和功能特性
+- [🧪 示例工程](./examples/README.md) - Android/iOS、Lua/JavaScript 示例入口
 
 **使用方法**：
 ```bash
@@ -210,7 +211,7 @@ The command line is too long.
 
 - [AutoGo](https://github.com/Dasongzi1366/AutoGo) - Android 自动化框架（核心依赖）
 - [goja](https://github.com/dop251/goja) - JavaScript 解释器
-- [gopher-lua](https://github.com/yuin/gopher-lua) - Lua 解释器
+- [go-lua-vm](https://github.com/ZingYao/go-lua-vm) - Lua 5.3 VM
 
 ## 风格包说明
 

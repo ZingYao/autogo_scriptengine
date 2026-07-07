@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package json
 
 import (
@@ -65,17 +68,20 @@ func (m *JsonModule) Register(engine model.Engine) error {
 	state.SetGlobal("jsonLib", jsonLib)
 
 	// 注册到方法注册表
-	engine.RegisterMethod("jsonLib.encode", "把lua表格编码成json字符串", func(value lua.LValue) (string, error) {
-		return luaValueToJSON(value)
+	engine.RegisterMethod("jsonLib.encode", "把lua表格编码成json字符串", func(value interface{}) (string, error) {
+		result, err := json.Marshal(value)
+		if err != nil {
+			return "", err
+		}
+		return string(result), nil
 	}, true)
-	engine.RegisterMethod("jsonLib.decode", "把json字符串转换成lua表格", func(jsonStr string) (lua.LValue, error) {
-		L := state
+	engine.RegisterMethod("jsonLib.decode", "把json字符串转换成lua表格", func(jsonStr string) (interface{}, error) {
 		var result interface{}
 		err := json.Unmarshal([]byte(jsonStr), &result)
 		if err != nil {
 			return nil, err
 		}
-		return jsonToLuaValue(L, result)
+		return result, nil
 	}, true)
 
 	return nil

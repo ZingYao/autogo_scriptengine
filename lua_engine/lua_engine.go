@@ -2,20 +2,25 @@ package lua_engine
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
-	lua "github.com/yuin/gopher-lua"
-	"github.com/yuin/gopher-lua/parse"
+	"github.com/ZingYao/go-lua-vm/bridge"
+	glua "github.com/ZingYao/go-lua-vm/lua"
+	gruntime "github.com/ZingYao/go-lua-vm/runtime"
+	gluaos "github.com/ZingYao/go-lua-vm/stdlib/os"
 )
 
 var (
-	engine *LuaEngine
-	once   sync.Once
+	engine          *LuaEngine
+	once            sync.Once
+	errorReturnType = reflect.TypeOf((*error)(nil)).Elem()
 )
 
 // GetLuaEngine 获取默认引擎实例（使用默认配置，自动注入所有方法）
@@ -60,13 +65,15 @@ func (e *LuaEngine) init() {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	e.state = lua.NewState(lua.Options{
-		SkipOpenLibs:        false,
-		IncludeGoStackTrace: true,
-	})
-
-	// 初始化模块缓存
-	e.moduleCache = make(map[string]lua.LValue)
+	options := glua.DefaultOptions()
+	options.AllowHostFilesystem = true
+	options.AllowEnvironment = true
+	options.VirtualFilesystem = e.config.FileSystem
+	options.PreferHostFilesystem = e.config.FileSystem == nil
+	e.vmState = glua.NewStateWithOptions(options)
+	if err := glua.OpenLibs(e.vmState); err != nil {
+		fmt.Printf("[ERROR] open go-lua-vm libs failed: %v\n", err)
+	}
 
 	// 设置模块搜索路径
 	e.setupPackagePath()
@@ -76,10 +83,8 @@ func (e *LuaEngine) init() {
 	e.ctx, e.cancel = context.WithCancel(context.Background())
 	e.pauseChan = make(chan struct{})
 
-	e.registerCoreFunctions()
-
-	// 注册自定义 require 函数，支持从 embed.FS 加载模块
-	e.registerCustomRequire()
+	e.registerCoreFunctionsForVM()
+	e.reinstallVMMethodsFromRegistry()
 }
 
 // Start 启动引擎
@@ -138,243 +143,76 @@ func (e *LuaEngine) GetEngineState() EngineState {
 	return e.engineState
 }
 
-// GetState 获取 Lua 状态机，满足模型接口要求
-func (e *LuaEngine) GetState() *lua.LState {
-	return e.state
-}
-
 // AddRequirePath 添加自定义 require 路径
 func (e *LuaEngine) AddRequirePath(path string) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
-	
+
+	for _, existingPath := range e.config.RequirePaths {
+		if existingPath == path {
+			return
+		}
+	}
 	e.config.RequirePaths = append(e.config.RequirePaths, path)
+	e.setupPackagePath()
 }
 
 // SetRequirePaths 设置自定义 require 路径
 func (e *LuaEngine) SetRequirePaths(paths []string) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
-	
+
 	e.config.RequirePaths = paths
+	e.setupPackagePath()
 }
 
 // setupPackagePath 设置 Lua 的模块搜索路径
 func (e *LuaEngine) setupPackagePath() {
-	// 获取当前的 package.path
-	packageTable := e.state.GetGlobal("package").(*lua.LTable)
-	currentPathValue := packageTable.RawGetString("path")
-	currentPath := ""
-	if currentPathValue != lua.LNil {
-		currentPath = currentPathValue.String()
-	}
-
-	// 添加配置的搜索路径
-	for _, searchPath := range e.config.SearchPaths {
-		if currentPath != "" {
-			currentPath += ";"
-		}
-		currentPath += searchPath + "/?.lua;" + searchPath + "/?/init.lua"
-	}
-
-	// 添加自定义的 require 路径
-	for _, requirePath := range e.config.RequirePaths {
-		if currentPath != "" {
-			currentPath += ";"
-		}
-		currentPath += requirePath + "/?.lua;" + requirePath + "/?/init.lua"
-	}
-
-	// 设置新的 package.path
-	packageTable.RawSetString("path", lua.LString(currentPath))
+	e.setupVMPackagePath()
 }
 
-func (e *LuaEngine) GetLuaState() *lua.LState {
-	return e.state
-}
-
-func (e *LuaEngine) registerCoreFunctions() {
-	state := e.state
-
-	state.Register("registerMethod", e.registerMethodLua)
-	state.Register("unregisterMethod", e.unregisterMethodLua)
-	state.Register("listMethods", e.listMethodsLua)
-	state.Register("overrideMethod", e.overrideMethodLua)
-	state.Register("restoreMethod", e.restoreMethodLua)
-	state.Register("sleep", e.sleepLua)
-	state.Register("console.log", e.consoleLogLua)
-	state.Register("console.error", e.consoleErrorLua)
-}
-
-// registerCustomRequire 注册自定义 require 函数，支持从 embed.FS 加载模块
-func (e *LuaEngine) registerCustomRequire() {
-	if e.config.FileSystem == nil {
+func (e *LuaEngine) setupVMPackagePath() {
+	if e.vmState == nil {
 		return
 	}
-
-	// 保存原始 require 函数
-	originalRequire := e.state.GetGlobal("require")
-
-	// 注册自定义 require 函数
-	e.state.Register("require", func(L *lua.LState) int {
-		moduleName := L.CheckString(1)
-
-		// 检查缓存
-		if cachedModule, exists := e.moduleCache[moduleName]; exists {
-			L.Push(cachedModule)
-			return 1
-		}
-
-		// 尝试从 embed.FS 加载模块
-		if moduleValue, ok := e.loadModuleFromFS(L, moduleName); ok {
-			// 缓存模块
-			e.moduleCache[moduleName] = moduleValue
-
-			L.Push(moduleValue)
-			return 1
-		}
-
-		// 如果 embed.FS 中没有找到，使用原始 require
-		if originalRequire != lua.LNil {
-			L.Push(originalRequire)
-			L.Push(lua.LString(moduleName))
-			L.Call(1, 1)
-			return 1
-		}
-
-		// 返回 nil 表示模块未找到
-		L.Push(lua.LNil)
-		return 1
-	})
-}
-
-// loadModuleFromFS 从 embed.FS 加载模块
-// 支持加载 .lua 源码文件和 .gluac 字节码文件
-func (e *LuaEngine) loadModuleFromFS(L *lua.LState, moduleName string) (lua.LValue, bool) {
-	if e.config.FileSystem == nil {
-		return lua.LNil, false
+	packageValue, err := glua.GetGlobal(e.vmState, "package")
+	if err != nil || packageValue.Kind != gruntime.KindTable {
+		return
 	}
-
-	// 尝试不同的路径模式
-	// 优先加载字节码文件（.gluac），然后是源码文件（.lua）
-	possiblePaths := []string{
-		moduleName + ".gluac",      // gopher-lua 字节码文件
-		moduleName + ".lua",        // Lua 源码文件
-		moduleName + "/init.gluac", // 目录形式的字节码模块
-		moduleName + "/init.lua",   // 目录形式的源码模块
+	packageTable, ok := packageValue.Ref.(*gruntime.Table)
+	if !ok || packageTable == nil {
+		return
 	}
-
-	// 在所有搜索路径中查找
+	currentPathValue := packageTable.RawGetString("path")
+	if e.vmPackagePath == "" && currentPathValue.Kind == gruntime.KindString {
+		e.vmPackagePath = currentPathValue.String
+	}
+	currentPath := e.vmPackagePath
+	if currentPathValue.Kind == gruntime.KindString {
+		currentPath = e.vmPackagePath
+	}
 	for _, searchPath := range e.config.SearchPaths {
-		for _, pathPattern := range possiblePaths {
-			var fullPath string
-			// 如果搜索路径是 "."，直接使用文件名（表示文件系统根目录）
-			if searchPath == "." {
-				fullPath = pathPattern
-			} else {
-				fullPath = searchPath + "/" + pathPattern
-			}
-
-			content, err := e.config.FileSystem.Open(fullPath)
-			if err == nil {
-				defer content.Close()
-				data := make([]byte, 0)
-				buf := make([]byte, 1024)
-				for {
-					n, err := content.Read(buf)
-					if err != nil {
-						break
-					}
-					data = append(data, buf[:n]...)
-				}
-
-				// 根据文件扩展名决定加载方式
-				var fn *lua.LFunction
-				if len(fullPath) > 6 && fullPath[len(fullPath)-6:] == ".gluac" {
-					// 尝试加载字节码文件
-					// 注意：gopher-lua 的字节码需要特殊处理
-					// 由于 gopher-lua 不支持直接加载预编译的字节码文件
-					// 我们需要将字节码数据转换为 FunctionProto
-					// 这里我们尝试解析为源码，如果不是有效的字节码格式
-					// 如果是预编译的字节码，需要使用特殊方式加载
-					loadedFn, err := e.loadBytecodeModule(L, data, fullPath)
-					if err != nil {
-						// 如果字节码加载失败，尝试作为源码加载
-						fn, err = L.LoadString(string(data))
-						if err != nil {
-							continue
-						}
-					} else {
-						fn = loadedFn
-					}
-				} else {
-					// 加载源码文件
-					fn, err = L.LoadString(string(data))
-					if err != nil {
-						continue
-					}
-				}
-
-				// 调用函数并获取返回值
-				L.Push(fn)
-				if err := L.PCall(0, 1, nil); err == nil {
-					// 获取模块的返回值（模块应该返回一个 table）
-					result := L.Get(-1)
-					L.Pop(1)
-					return result, true
-				}
-			}
-		}
+		currentPath = appendLuaPackagePath(currentPath, searchPath)
 	}
-
-	return lua.LNil, false
+	for _, requirePath := range e.config.RequirePaths {
+		currentPath = appendLuaPackagePath(currentPath, requirePath)
+	}
+	packageTable.RawSetString("path", gruntime.StringValue(currentPath))
 }
 
-// loadBytecodeModule 从字节数据加载字节码模块
-// 这是一个内部方法，用于支持 require 加载字节码模块
-func (e *LuaEngine) loadBytecodeModule(L *lua.LState, data []byte, name string) (*lua.LFunction, error) {
-	// 尝试将数据解析为预编译的字节码
-	// 由于 gopher-lua 不支持直接加载字节码文件
-	// 我们需要先尝试编译为字节码，然后执行
-	
-	// 首先尝试作为源码编译（因为 gopher-lua 的字节码格式是内部的）
-	// 如果用户想要使用字节码功能，应该先编译源码，然后在运行时使用
-	// 这里我们提供一个兼容的加载方式
-	
-	// 尝试直接加载为 Lua 源码
-	reader := strings.NewReader(string(data))
-	chunk, err := parse.Parse(reader, name)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse bytecode module: %v", err)
+func appendLuaPackagePath(currentPath string, root string) string {
+	if root == "" {
+		return currentPath
 	}
-
-	// 编译为函数原型
-	proto, err := lua.Compile(chunk, name)
-	if err != nil {
-		return nil, fmt.Errorf("failed to compile bytecode module: %v", err)
+	if currentPath != "" {
+		currentPath += ";"
 	}
-
-	// 从函数原型创建 Lua 函数
-	return L.NewFunctionFromProto(proto), nil
+	return currentPath + root + "/?.lua;" + root + "/?/init.lua"
 }
 
-func (e *LuaEngine) consoleLogLua(L *lua.LState) int {
-	n := L.GetTop()
-	for i := 1; i <= n; i++ {
-		fmt.Print(L.ToString(i), " ")
-	}
-	fmt.Println()
-	return 0
-}
-
-func (e *LuaEngine) consoleErrorLua(L *lua.LState) int {
-	n := L.GetTop()
-	fmt.Print("[ERROR] ")
-	for i := 1; i <= n; i++ {
-		fmt.Print(L.ToString(i), " ")
-	}
-	fmt.Println()
-	return 0
+// GetVMState 获取 go-lua-vm 状态机，供新 Lua 引擎桥接模块逐步迁移使用。
+func (e *LuaEngine) GetVMState() *glua.State {
+	return e.vmState
 }
 
 // InjectModule 注入指定模块的方法
@@ -424,6 +262,29 @@ func (e *LuaEngine) RegisterModule(modules ...model.Module) {
 
 func (e *LuaEngine) RegisterMethod(name, description string, goFunc interface{}, overridable bool) {
 	RegisterMethod(name, description, goFunc, overridable)
+	if err := e.installVMMethod(name, goFunc); err != nil && e.config.FailFast {
+		fmt.Printf("[ERROR] install go-lua-vm method %s failed: %v\n", name, err)
+	}
+}
+
+// RegisterValue 注册 Lua 模块字段值，支持 device.width 这类非函数字段。
+func (e *LuaEngine) RegisterValue(name string, value interface{}) error {
+	if e.vmState == nil {
+		return fmt.Errorf("Lua engine not initialized")
+	}
+	parts := strings.Split(name, ".")
+	if len(parts) < 2 || parts[0] == "" || parts[len(parts)-1] == "" {
+		return fmt.Errorf("invalid lua value name: %s", name)
+	}
+	moduleTable, err := e.ensureVMModuleTable(parts[:len(parts)-1])
+	if err != nil {
+		return err
+	}
+	luaValue, err := e.reflectToVMValue(reflect.ValueOf(value))
+	if err != nil {
+		return err
+	}
+	return moduleTable.RawSet(gruntime.StringValue(parts[len(parts)-1]), luaValue)
 }
 
 // ExecuteString 执行 Lua 代码字符串（实例方法）
@@ -506,7 +367,7 @@ func (e *LuaEngine) executeStringOnce(script string, searchPaths ...string) erro
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	if e.state == nil {
+	if e.vmState == nil {
 		return fmt.Errorf("Lua engine not initialized")
 	}
 
@@ -515,16 +376,12 @@ func (e *LuaEngine) executeStringOnce(script string, searchPaths ...string) erro
 		e.addSearchPaths(searchPaths...)
 	}
 
-	// 注册特殊的 os.exit 函数，用于控制退出动作
-	e.registerExitControl()
-
-	return e.state.DoString(script)
+	return e.handleLuaVMError(glua.DoString(e.vmState, script))
 }
 
 // addSearchPaths 添加模块搜索路径
 func (e *LuaEngine) addSearchPaths(paths ...string) {
-	// 只更新 config.SearchPaths，不更新 package.path
-	// 因为我们使用自定义的 require 函数，它会从 config.SearchPaths 和文件系统中加载模块
+	changed := false
 	for _, searchPath := range paths {
 		// 避免重复
 		found := false
@@ -536,7 +393,11 @@ func (e *LuaEngine) addSearchPaths(paths ...string) {
 		}
 		if !found {
 			e.config.SearchPaths = append(e.config.SearchPaths, searchPath)
+			changed = true
 		}
+	}
+	if changed {
+		e.setupPackagePath()
 	}
 }
 
@@ -631,7 +492,7 @@ func (e *LuaEngine) executeFileOnce(path string) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	if e.state == nil {
+	if e.vmState == nil {
 		return fmt.Errorf("Lua engine not initialized")
 	}
 
@@ -657,20 +518,14 @@ func (e *LuaEngine) executeFileOnce(path string) error {
 		// 自动检测文件所在目录并添加到搜索路径
 		e.addSearchPathsFromPath(path)
 
-		// 注册特殊的 os.exit 函数，用于控制自动重启
-		e.registerExitControl()
-
 		// 执行文件内容
-		return e.state.DoString(string(data))
+		return e.handleLuaVMError(glua.DoString(e.vmState, string(data)))
 	}
 
 	// 自动检测文件所在目录并添加到搜索路径
 	e.addSearchPathsFromPath(path)
 
-	// 注册特殊的 os.exit 函数，用于控制自动重启
-	e.registerExitControl()
-
-	return e.state.DoFile(path)
+	return e.handleLuaVMError(glua.DoFile(e.vmState, path))
 }
 
 // addSearchPathsFromPath 从文件路径中提取目录并添加到搜索路径
@@ -707,41 +562,32 @@ func (e *LuaEngine) Close() {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	if e.state != nil {
-		e.state.Close()
-		e.state = nil
+	if e.engineState != StateStopped {
+		if e.cancel != nil {
+			e.cancel()
+		}
+		e.engineState = StateStopped
+		close(e.pauseChan)
+		e.pauseChan = make(chan struct{})
+	}
+	if e.vmState != nil {
+		_ = glua.Close(e.vmState)
+		e.vmState = nil
 	}
 }
 
-// registerExitControl 注册特殊的 os.exit 函数，用于控制退出动作
-// os.exit(0) - 正常退出，执行配置的退出动作（重启/自定义/无动作）
-// os.exit(-1) - 强制退出，不执行任何退出动作
-// os.exit(其他值) - 正常退出，执行配置的退出动作
-func (e *LuaEngine) registerExitControl() {
-	// 获取 os 表
-	osTable := e.state.GetGlobal("os").(*lua.LTable)
-
-	// 保存原始的 os.exit 函数
-	originalExit := osTable.RawGetString("exit")
-
-	// 注册新的 os.exit 函数
-	osTable.RawSetString("exit", e.state.NewFunction(func(L *lua.LState) int {
-		code := L.CheckInt(1)
-
-		// 如果退出码为 -1，跳过退出动作
-		if code == -1 {
+func (e *LuaEngine) handleLuaVMError(err error) error {
+	if err == nil {
+		return nil
+	}
+	var exitErr *gluaos.ExitError
+	if errors.As(err, &exitErr) {
+		if exitErr.Code == -1 {
 			e.skipExitAction = true
 		}
-
-		// 调用原始的 os.exit 函数
-		if originalExit.Type() == lua.LTFunction {
-			L.Push(originalExit)
-			L.Push(lua.LNumber(code))
-			L.Call(1, 0)
-		}
-
-		return 0
-	}))
+		return nil
+	}
+	return err
 }
 
 // Restart 重启 Lua 引擎
@@ -750,33 +596,42 @@ func (e *LuaEngine) Restart() error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	// 保存模块缓存
-	oldModuleCache := e.moduleCache
-
 	// 关闭当前状态
-	if e.state != nil {
-		e.state.Close()
+	if e.vmState != nil {
+		_ = glua.Close(e.vmState)
 	}
+	e.vmPackagePath = ""
 
-	// 重新初始化状态
-	e.state = lua.NewState(lua.Options{
-		SkipOpenLibs:        false,
-		IncludeGoStackTrace: true,
-	})
-
-	// 恢复模块缓存
-	e.moduleCache = oldModuleCache
+	options := glua.DefaultOptions()
+	options.AllowHostFilesystem = true
+	options.AllowEnvironment = true
+	options.VirtualFilesystem = e.config.FileSystem
+	options.PreferHostFilesystem = e.config.FileSystem == nil
+	e.vmState = glua.NewStateWithOptions(options)
+	if err := glua.OpenLibs(e.vmState); err != nil {
+		return fmt.Errorf("open go-lua-vm libs: %w", err)
+	}
 
 	// 重新设置模块搜索路径
 	e.setupPackagePath()
 
 	// 重新注册核心函数
-	e.registerCoreFunctions()
-
-	// 重新注册自定义 require 函数
-	e.registerCustomRequire()
+	e.registerCoreFunctionsForVM()
+	e.reinstallVMMethodsFromRegistry()
 
 	return nil
+}
+
+func (e *LuaEngine) reinstallVMMethodsFromRegistry() {
+	initRegistry()
+	for _, method := range registry.ListMethods() {
+		if method.GoFunc == nil {
+			continue
+		}
+		if err := e.installVMMethod(method.Name, method.GoFunc); err != nil && e.config.FailFast {
+			fmt.Printf("[ERROR] reinstall go-lua-vm method %s failed: %v\n", method.Name, err)
+		}
+	}
 }
 
 func (e *LuaEngine) GetRegistry() *MethodRegistry {
@@ -803,58 +658,850 @@ func ExecuteFile(path string) error {
 func Close() {
 	if engine != nil {
 		engine.Close()
+		engine = nil
+		once = sync.Once{}
 	}
 }
 
-func (e *LuaEngine) registerMethodLua(L *lua.LState) int {
-	name := L.CheckString(1)
-	description := L.CheckString(2)
-	overridable := L.CheckBool(3)
-
-	e.RegisterMethod(name, description, nil, overridable)
-	L.Push(lua.LBool(true))
-	return 1
-}
-
-func (e *LuaEngine) unregisterMethodLua(L *lua.LState) int {
-	name := L.CheckString(1)
-	result := registry.RemoveMethod(name)
-	L.Push(lua.LBool(result))
-	return 1
-}
-
-func (e *LuaEngine) listMethodsLua(L *lua.LState) int {
-	methods := registry.ListMethods()
-	tbl := L.NewTable()
-	for i, method := range methods {
-		item := L.NewTable()
-		L.SetField(item, "name", lua.LString(method.Name))
-		L.SetField(item, "description", lua.LString(method.Description))
-		L.SetField(item, "overridable", lua.LBool(method.Overridable))
-		L.SetField(item, "overridden", lua.LBool(method.Overridden))
-		L.SetTable(tbl, lua.LNumber(i+1), item)
+func (e *LuaEngine) registerCoreFunctionsForVM() {
+	if e.vmState == nil {
+		return
 	}
-	L.Push(tbl)
-	return 1
+	_ = glua.Register(e.vmState, "registerMethod", func(args ...glua.Value) ([]glua.Value, error) {
+		name := gluaStringArg(args, 0)
+		description := gluaStringArg(args, 1)
+		overridable := gluaBoolArg(args, 2)
+		e.RegisterMethod(name, description, nil, overridable)
+		return []glua.Value{gruntime.BooleanValue(true)}, nil
+	})
+	_ = glua.Register(e.vmState, "unregisterMethod", func(args ...glua.Value) ([]glua.Value, error) {
+		name := gluaStringArg(args, 0)
+		result := registry.RemoveMethod(name)
+		_ = e.uninstallVMMethod(name)
+		return []glua.Value{gruntime.BooleanValue(result)}, nil
+	})
+	_ = glua.Register(e.vmState, "listMethods", func(args ...glua.Value) ([]glua.Value, error) {
+		table := gruntime.NewTable()
+		for index, method := range registry.ListMethods() {
+			item := gruntime.NewTable()
+			_ = item.RawSet(gruntime.StringValue("name"), gruntime.StringValue(method.Name))
+			_ = item.RawSet(gruntime.StringValue("description"), gruntime.StringValue(method.Description))
+			_ = item.RawSet(gruntime.StringValue("overridable"), gruntime.BooleanValue(method.Overridable))
+			_ = item.RawSet(gruntime.StringValue("overridden"), gruntime.BooleanValue(method.Overridden))
+			_ = table.RawSet(gruntime.IntegerValue(int64(index+1)), gruntime.ReferenceValue(gruntime.KindTable, item))
+		}
+		return []glua.Value{gruntime.ReferenceValue(gruntime.KindTable, table)}, nil
+	})
+	_ = glua.Register(e.vmState, "sleep", func(args ...glua.Value) ([]glua.Value, error) {
+		ms := int64(0)
+		if len(args) > 0 {
+			ms, _ = args[0].ToInteger()
+		}
+		time.Sleep(time.Duration(ms) * time.Millisecond)
+		return nil, nil
+	})
+	_ = glua.Register(e.vmState, "overrideMethod", func(args ...glua.Value) ([]glua.Value, error) {
+		return []glua.Value{gruntime.BooleanValue(false)}, nil
+	})
+	_ = glua.Register(e.vmState, "restoreMethod", func(args ...glua.Value) ([]glua.Value, error) {
+		name := gluaStringArg(args, 0)
+		return []glua.Value{gruntime.BooleanValue(registry.RestoreMethod(name))}, nil
+	})
+	_ = e.installVMCoreTable("console", map[string]gruntime.GoResultsFunction{
+		"log": func(args ...gruntime.Value) ([]gruntime.Value, error) {
+			e.printVMConsole("", args)
+			return nil, nil
+		},
+		"error": func(args ...gruntime.Value) ([]gruntime.Value, error) {
+			e.printVMConsole("[ERROR] ", args)
+			return nil, nil
+		},
+	})
 }
 
-func (e *LuaEngine) overrideMethodLua(L *lua.LState) int {
-	name := L.CheckString(1)
-	fn := L.CheckFunction(2)
-	result := registry.OverrideMethod(name, fn)
-	L.Push(lua.LBool(result))
-	return 1
+func (e *LuaEngine) installVMMethod(name string, goFunc interface{}) error {
+	if e.vmState == nil || goFunc == nil {
+		return nil
+	}
+	parts := strings.Split(name, ".")
+	if len(parts) < 2 || parts[0] == "" || parts[len(parts)-1] == "" {
+		return nil
+	}
+	functionValue, err := e.bindVMMethodValue(goFunc)
+	if err != nil {
+		return err
+	}
+	moduleTable, err := e.ensureVMModuleTable(parts[:len(parts)-1])
+	if err != nil {
+		return err
+	}
+	return moduleTable.RawSet(gruntime.StringValue(parts[len(parts)-1]), functionValue)
 }
 
-func (e *LuaEngine) restoreMethodLua(L *lua.LState) int {
-	name := L.CheckString(1)
-	result := registry.RestoreMethod(name)
-	L.Push(lua.LBool(result))
-	return 1
+func (e *LuaEngine) ensureVMModuleTable(parts []string) (*gruntime.Table, error) {
+	var currentTable *gruntime.Table
+	for index, part := range parts {
+		if part == "" {
+			return nil, nil
+		}
+		var currentValue gruntime.Value
+		var err error
+		if index == 0 {
+			currentValue, err = glua.GetGlobal(e.vmState, part)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			currentValue = currentTable.RawGetString(part)
+		}
+		nextTable, _ := currentValue.Ref.(*gruntime.Table)
+		if currentValue.Kind != gruntime.KindTable || nextTable == nil {
+			nextTable = gruntime.NewTable()
+			nextValue := gruntime.ReferenceValue(gruntime.KindTable, nextTable)
+			if index == 0 {
+				if err := glua.SetGlobal(e.vmState, part, nextValue); err != nil {
+					return nil, err
+				}
+			} else {
+				currentTable.RawSetString(part, nextValue)
+			}
+		}
+		currentTable = nextTable
+		if err := e.setVMLoadedModule(strings.Join(parts[:index+1], "."), currentTable); err != nil {
+			return nil, err
+		}
+	}
+	return currentTable, nil
 }
 
-func (e *LuaEngine) sleepLua(L *lua.LState) int {
-	ms := L.CheckInt(1)
-	time.Sleep(time.Duration(ms) * time.Millisecond)
-	return 0
+func (e *LuaEngine) setVMLoadedModule(name string, moduleTable *gruntime.Table) error {
+	if name == "" || moduleTable == nil {
+		return nil
+	}
+	packageValue, err := glua.GetGlobal(e.vmState, "package")
+	if err != nil {
+		return err
+	}
+	packageTable, _ := packageValue.Ref.(*gruntime.Table)
+	if packageValue.Kind != gruntime.KindTable || packageTable == nil {
+		packageTable = gruntime.NewTable()
+		packageValue = gruntime.ReferenceValue(gruntime.KindTable, packageTable)
+		if err := glua.SetGlobal(e.vmState, "package", packageValue); err != nil {
+			return err
+		}
+	}
+	loadedValue := packageTable.RawGetString("loaded")
+	loadedTable, _ := loadedValue.Ref.(*gruntime.Table)
+	if loadedValue.Kind != gruntime.KindTable || loadedTable == nil {
+		loadedTable = gruntime.NewTable()
+		packageTable.RawSetString("loaded", gruntime.ReferenceValue(gruntime.KindTable, loadedTable))
+	}
+	loadedTable.RawSetString(name, gruntime.ReferenceValue(gruntime.KindTable, moduleTable))
+	return nil
+}
+
+func (e *LuaEngine) lookupVMModuleTable(parts []string) (*gruntime.Table, error) {
+	var currentTable *gruntime.Table
+	for index, part := range parts {
+		if part == "" {
+			return nil, nil
+		}
+		var currentValue gruntime.Value
+		var err error
+		if index == 0 {
+			currentValue, err = glua.GetGlobal(e.vmState, part)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			currentValue = currentTable.RawGetString(part)
+		}
+		nextTable, _ := currentValue.Ref.(*gruntime.Table)
+		if currentValue.Kind != gruntime.KindTable || nextTable == nil {
+			return nil, nil
+		}
+		currentTable = nextTable
+	}
+	return currentTable, nil
+}
+
+func (e *LuaEngine) uninstallVMMethod(name string) error {
+	if e.vmState == nil {
+		return nil
+	}
+	parts := strings.Split(name, ".")
+	if len(parts) < 2 || parts[0] == "" || parts[len(parts)-1] == "" {
+		return nil
+	}
+	moduleTable, err := e.lookupVMModuleTable(parts[:len(parts)-1])
+	if err != nil || moduleTable == nil {
+		return err
+	}
+	return moduleTable.RawSet(gruntime.StringValue(parts[len(parts)-1]), gruntime.NilValue())
+}
+
+func (e *LuaEngine) bindVMMethodValue(goFunc interface{}) (glua.Value, error) {
+	functionType := reflect.TypeOf(goFunc)
+	if functionType == nil || functionType.Kind() != reflect.Func {
+		return gruntime.NilValue(), fmt.Errorf("goFunc must be function")
+	}
+	if !needsCustomVMBridge(functionType) {
+		return bridge.BindReflectFunction(e.vmState, goFunc)
+	}
+	functionValue := reflect.ValueOf(goFunc)
+	return gruntime.ReferenceValue(gruntime.KindGoClosure, gruntime.GoResultsFunction(func(args ...gruntime.Value) (results []gruntime.Value, err error) {
+		defer func() {
+			if recovered := recover(); recovered != nil {
+				results = nil
+				err = fmt.Errorf("panic in bridge function: %v", recovered)
+			}
+		}()
+		callArgs, err := e.vmCallArgsToReflect(args, functionType)
+		if err != nil {
+			return nil, err
+		}
+		var goResults []reflect.Value
+		if functionType.IsVariadic() {
+			goResults = functionValue.CallSlice(callArgs)
+		} else {
+			goResults = functionValue.Call(callArgs)
+		}
+		luaResults := make([]gruntime.Value, 0, len(goResults))
+		for index, result := range goResults {
+			if result.Type().Implements(errorReturnType) {
+				if !result.IsNil() {
+					return nil, result.Interface().(error)
+				}
+				continue
+			}
+			convertedResult, err := e.reflectToVMValue(result)
+			if err != nil {
+				return nil, fmt.Errorf("return %d: %w", index+1, err)
+			}
+			luaResults = append(luaResults, convertedResult)
+		}
+		return luaResults, nil
+	})), nil
+}
+
+func (e *LuaEngine) vmCallArgsToReflect(args []gruntime.Value, functionType reflect.Type) ([]reflect.Value, error) {
+	if !functionType.IsVariadic() {
+		if len(args) != functionType.NumIn() {
+			return nil, fmt.Errorf("argument count mismatch: got %d, want %d", len(args), functionType.NumIn())
+		}
+		callArgs := make([]reflect.Value, 0, functionType.NumIn())
+		for index := 0; index < functionType.NumIn(); index++ {
+			convertedArg, err := e.vmValueToReflect(args[index], functionType.In(index))
+			if err != nil {
+				return nil, fmt.Errorf("argument %d: %w", index+1, err)
+			}
+			callArgs = append(callArgs, convertedArg)
+		}
+		return callArgs, nil
+	}
+
+	fixedArgCount := functionType.NumIn() - 1
+	if len(args) < fixedArgCount {
+		return nil, fmt.Errorf("argument count mismatch: got %d, want at least %d", len(args), fixedArgCount)
+	}
+	callArgs := make([]reflect.Value, 0, functionType.NumIn())
+	for index := 0; index < fixedArgCount; index++ {
+		convertedArg, err := e.vmValueToReflect(args[index], functionType.In(index))
+		if err != nil {
+			return nil, fmt.Errorf("argument %d: %w", index+1, err)
+		}
+		callArgs = append(callArgs, convertedArg)
+	}
+	variadicType := functionType.In(functionType.NumIn() - 1)
+	variadicValues := reflect.MakeSlice(variadicType, 0, len(args)-fixedArgCount)
+	for index := fixedArgCount; index < len(args); index++ {
+		convertedArg, err := e.vmValueToReflect(args[index], variadicType.Elem())
+		if err != nil {
+			return nil, fmt.Errorf("argument %d: %w", index+1, err)
+		}
+		variadicValues = reflect.Append(variadicValues, convertedArg)
+	}
+	callArgs = append(callArgs, variadicValues)
+	return callArgs, nil
+}
+
+func needsCustomVMBridge(functionType reflect.Type) bool {
+	for index := 0; index < functionType.NumIn(); index++ {
+		if needsCustomVMBridgeType(functionType.In(index)) {
+			return true
+		}
+	}
+	for index := 0; index < functionType.NumOut(); index++ {
+		outputType := functionType.Out(index)
+		if outputType.Implements(errorReturnType) {
+			continue
+		}
+		if needsCustomVMBridgeType(outputType) {
+			return true
+		}
+	}
+	return false
+}
+
+func needsCustomVMBridgeType(valueType reflect.Type) bool {
+	if valueType.Kind() == reflect.Interface && valueType.NumMethod() == 0 {
+		return true
+	}
+	switch valueType.Kind() {
+	case reflect.Map:
+		return true
+	case reflect.Func:
+		return true
+	case reflect.Struct:
+		return true
+	case reflect.Pointer:
+		return valueType.Elem().Kind() == reflect.Struct
+	case reflect.Slice:
+		return valueType.Elem().Kind() != reflect.Uint8
+	default:
+		return false
+	}
+}
+
+func (e *LuaEngine) vmValueToReflect(value gruntime.Value, targetType reflect.Type) (reflect.Value, error) {
+	if value.IsNil() {
+		return reflect.Zero(targetType), nil
+	}
+	switch targetType.Kind() {
+	case reflect.Bool:
+		return reflect.ValueOf(value.Truthy()).Convert(targetType), nil
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		intValue, ok := value.ToInteger()
+		if !ok {
+			return reflect.Value{}, fmt.Errorf("expected integer, got %s", value.DebugString())
+		}
+		return reflect.ValueOf(intValue).Convert(targetType), nil
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		intValue, ok := value.ToInteger()
+		if !ok || intValue < 0 {
+			return reflect.Value{}, fmt.Errorf("expected unsigned integer, got %s", value.DebugString())
+		}
+		return reflect.ValueOf(uint64(intValue)).Convert(targetType), nil
+	case reflect.Float32, reflect.Float64:
+		if value.Kind == gruntime.KindNumber {
+			return reflect.ValueOf(value.Number).Convert(targetType), nil
+		}
+		intValue, ok := value.ToInteger()
+		if !ok {
+			return reflect.Value{}, fmt.Errorf("expected number, got %s", value.DebugString())
+		}
+		return reflect.ValueOf(float64(intValue)).Convert(targetType), nil
+	case reflect.String:
+		text, err := gruntime.ToString(value)
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		return reflect.ValueOf(text.String).Convert(targetType), nil
+	case reflect.Slice:
+		return e.vmTableToReflectSlice(value, targetType)
+	case reflect.Map:
+		return e.vmTableToReflectMap(value, targetType)
+	case reflect.Struct:
+		return e.vmTableToReflectStruct(value, targetType)
+	case reflect.Pointer:
+		return e.vmObjectToReflect(value, targetType)
+	case reflect.Func:
+		return e.vmFunctionToReflect(value, targetType)
+	case reflect.Interface:
+		return e.vmValueToInterface(value, targetType)
+	default:
+		return reflect.Value{}, fmt.Errorf("unsupported argument type %s", targetType.String())
+	}
+}
+
+func (e *LuaEngine) vmTableToReflectSlice(value gruntime.Value, targetType reflect.Type) (reflect.Value, error) {
+	if targetType.Elem().Kind() == reflect.Uint8 {
+		text, err := gruntime.ToString(value)
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		return reflect.ValueOf([]byte(text.String)).Convert(targetType), nil
+	}
+	if value.Kind != gruntime.KindTable {
+		return reflect.Value{}, fmt.Errorf("expected table, got %s", value.DebugString())
+	}
+	table, ok := value.Ref.(*gruntime.Table)
+	if !ok || table == nil {
+		return reflect.Zero(targetType), nil
+	}
+	result := reflect.MakeSlice(targetType, 0, 0)
+	for index := int64(1); ; index++ {
+		item := table.RawGetInteger(index)
+		if item.IsNil() {
+			break
+		}
+		convertedItem, err := e.vmValueToReflect(item, targetType.Elem())
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		result = reflect.Append(result, convertedItem)
+	}
+	return result, nil
+}
+
+func (e *LuaEngine) vmTableToReflectStruct(value gruntime.Value, targetType reflect.Type) (reflect.Value, error) {
+	if value.Kind != gruntime.KindTable {
+		return reflect.Value{}, fmt.Errorf("expected table, got %s", value.DebugString())
+	}
+	table, ok := value.Ref.(*gruntime.Table)
+	if !ok || table == nil {
+		return reflect.Zero(targetType), nil
+	}
+	result := reflect.New(targetType).Elem()
+	for index := 0; index < targetType.NumField(); index++ {
+		field := targetType.Field(index)
+		if field.PkgPath != "" || !result.Field(index).CanSet() {
+			continue
+		}
+		fieldValue := vmTableField(table, field)
+		if fieldValue.IsNil() {
+			continue
+		}
+		convertedValue, err := e.vmValueToReflect(fieldValue, field.Type)
+		if err != nil {
+			return reflect.Value{}, fmt.Errorf("field %s: %w", field.Name, err)
+		}
+		result.Field(index).Set(convertedValue)
+	}
+	return result, nil
+}
+
+func (e *LuaEngine) vmObjectToReflect(value gruntime.Value, targetType reflect.Type) (reflect.Value, error) {
+	if object, ok := vmObjectFromValue(value); ok {
+		objectValue := reflect.ValueOf(object)
+		if objectValue.Type().AssignableTo(targetType) {
+			return objectValue, nil
+		}
+		if objectValue.Type().ConvertibleTo(targetType) {
+			return objectValue.Convert(targetType), nil
+		}
+		return reflect.Value{}, fmt.Errorf("object %s cannot convert to %s", objectValue.Type().String(), targetType.String())
+	}
+	if value.Kind == gruntime.KindTable && targetType.Elem().Kind() == reflect.Struct {
+		structValue, err := e.vmTableToReflectStruct(value, targetType.Elem())
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		pointerValue := reflect.New(targetType.Elem())
+		pointerValue.Elem().Set(structValue)
+		return pointerValue, nil
+	}
+	return reflect.Value{}, fmt.Errorf("reflect object proxy expected")
+}
+
+func (e *LuaEngine) vmFunctionToReflect(value gruntime.Value, targetType reflect.Type) (reflect.Value, error) {
+	if value.Kind != gruntime.KindGoClosure && value.Kind != gruntime.KindLuaClosure {
+		return reflect.Value{}, fmt.Errorf("callable expected, got %s", value.DebugString())
+	}
+	callback := reflect.MakeFunc(targetType, func(args []reflect.Value) []reflect.Value {
+		luaArgs := make([]gruntime.Value, 0, len(args))
+		for _, arg := range args {
+			luaArg, err := e.reflectToVMValue(arg)
+			if err != nil {
+				return reflectCallbackErrorResults(targetType, err)
+			}
+			luaArgs = append(luaArgs, luaArg)
+		}
+		luaResults, err := glua.Call(e.vmState, value, luaArgs...)
+		if err != nil {
+			return reflectCallbackErrorResults(targetType, err)
+		}
+		results := make([]reflect.Value, targetType.NumOut())
+		luaResultIndex := 0
+		for index := 0; index < targetType.NumOut(); index++ {
+			outputType := targetType.Out(index)
+			if outputType.Implements(errorReturnType) {
+				results[index] = reflect.Zero(outputType)
+				continue
+			}
+			if luaResultIndex >= len(luaResults) {
+				results[index] = reflect.Zero(outputType)
+				continue
+			}
+			convertedResult, err := e.vmValueToReflect(luaResults[luaResultIndex], outputType)
+			if err != nil {
+				return reflectCallbackErrorResults(targetType, err)
+			}
+			results[index] = convertedResult
+			luaResultIndex++
+		}
+		return results
+	})
+	return callback, nil
+}
+
+func reflectCallbackErrorResults(targetType reflect.Type, err error) []reflect.Value {
+	results := make([]reflect.Value, targetType.NumOut())
+	for index := 0; index < targetType.NumOut(); index++ {
+		outputType := targetType.Out(index)
+		if outputType.Implements(errorReturnType) {
+			results[index] = reflect.ValueOf(err)
+			continue
+		}
+		results[index] = reflect.Zero(outputType)
+	}
+	return results
+}
+
+func (e *LuaEngine) vmTableToReflectMap(value gruntime.Value, targetType reflect.Type) (reflect.Value, error) {
+	if value.Kind != gruntime.KindTable {
+		return reflect.Value{}, fmt.Errorf("expected table, got %s", value.DebugString())
+	}
+	table, ok := value.Ref.(*gruntime.Table)
+	if !ok || table == nil {
+		return reflect.Zero(targetType), nil
+	}
+	result := reflect.MakeMap(targetType)
+	key := gruntime.NilValue()
+	for {
+		nextKey, nextValue, ok, err := table.RawNext(key)
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		if !ok {
+			break
+		}
+		convertedKey, err := e.vmValueToReflect(nextKey, targetType.Key())
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		convertedValue, err := e.vmValueToReflect(nextValue, targetType.Elem())
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		result.SetMapIndex(convertedKey, convertedValue)
+		key = nextKey
+	}
+	return result, nil
+}
+
+func (e *LuaEngine) vmValueToInterface(value gruntime.Value, targetType reflect.Type) (reflect.Value, error) {
+	var result interface{}
+	if object, ok := vmObjectFromValue(value); ok {
+		result = object
+		if result == nil {
+			return reflect.Zero(targetType), nil
+		}
+		return reflect.ValueOf(result), nil
+	}
+	switch value.Kind {
+	case gruntime.KindNil:
+		result = nil
+	case gruntime.KindBoolean:
+		result = value.Bool
+	case gruntime.KindInteger:
+		result = value.Integer
+	case gruntime.KindNumber:
+		result = value.Number
+	case gruntime.KindString:
+		result = value.String
+	case gruntime.KindTable:
+		table, ok := value.Ref.(*gruntime.Table)
+		if !ok || table == nil {
+			result = nil
+			break
+		}
+		var err error
+		result, err = e.vmTableToInterface(table)
+		if err != nil {
+			return reflect.Value{}, err
+		}
+	default:
+		result = value
+	}
+	if result == nil {
+		return reflect.Zero(targetType), nil
+	}
+	return reflect.ValueOf(result), nil
+}
+
+func (e *LuaEngine) vmTableToInterface(table *gruntime.Table) (interface{}, error) {
+	if vmTableLooksLikeArray(table) {
+		values := make([]interface{}, 0)
+		for index := int64(1); ; index++ {
+			item := table.RawGetInteger(index)
+			if item.IsNil() {
+				break
+			}
+			convertedItem, err := e.vmValueToInterface(item, reflect.TypeOf((*interface{})(nil)).Elem())
+			if err != nil {
+				return nil, err
+			}
+			values = append(values, convertedItem.Interface())
+		}
+		return values, nil
+	}
+	values := make(map[string]interface{})
+	key := gruntime.NilValue()
+	for {
+		nextKey, nextValue, ok, err := table.RawNext(key)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			break
+		}
+		if nextKey.Kind != gruntime.KindString {
+			key = nextKey
+			continue
+		}
+		convertedValue, err := e.vmValueToInterface(nextValue, reflect.TypeOf((*interface{})(nil)).Elem())
+		if err != nil {
+			return nil, err
+		}
+		values[nextKey.String] = convertedValue.Interface()
+		key = nextKey
+	}
+	return values, nil
+}
+
+func vmTableLooksLikeArray(table *gruntime.Table) bool {
+	count := int64(0)
+	key := gruntime.NilValue()
+	for {
+		nextKey, _, ok, err := table.RawNext(key)
+		if err != nil || !ok {
+			break
+		}
+		index, isInteger := nextKey.ToInteger()
+		if !isInteger || index <= 0 {
+			return false
+		}
+		count++
+		key = nextKey
+	}
+	if count == 0 {
+		return false
+	}
+	for index := int64(1); index <= count; index++ {
+		if table.RawGetInteger(index).IsNil() {
+			return false
+		}
+	}
+	return true
+}
+
+func (e *LuaEngine) reflectToVMValue(value reflect.Value) (gruntime.Value, error) {
+	if !value.IsValid() {
+		return gruntime.NilValue(), nil
+	}
+	if value.Kind() == reflect.Interface {
+		if value.IsNil() {
+			return gruntime.NilValue(), nil
+		}
+		return e.reflectToVMValue(value.Elem())
+	}
+	switch value.Kind() {
+	case reflect.Bool:
+		return gruntime.BooleanValue(value.Bool()), nil
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return gruntime.IntegerValue(value.Int()), nil
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		uintValue := value.Uint()
+		if uintValue > uint64(^uint64(0)>>1) {
+			return gruntime.NilValue(), fmt.Errorf("uint value overflows lua integer")
+		}
+		return gruntime.IntegerValue(int64(uintValue)), nil
+	case reflect.Float32, reflect.Float64:
+		return gruntime.NumberValue(value.Convert(reflect.TypeOf(float64(0))).Float()), nil
+	case reflect.String:
+		return gruntime.StringValue(value.String()), nil
+	case reflect.Slice:
+		if value.IsNil() {
+			return gruntime.NilValue(), nil
+		}
+		if value.Type().Elem().Kind() == reflect.Uint8 {
+			return gruntime.StringValue(string(value.Bytes())), nil
+		}
+		table := gruntime.NewTable()
+		for index := 0; index < value.Len(); index++ {
+			item, err := e.reflectToVMValue(value.Index(index))
+			if err != nil {
+				return gruntime.NilValue(), err
+			}
+			table.RawSetInteger(int64(index+1), item)
+		}
+		return gruntime.ReferenceValue(gruntime.KindTable, table), nil
+	case reflect.Map:
+		return e.reflectMapToVMTable(value)
+	case reflect.Struct:
+		return e.reflectStructToVMTable(value)
+	case reflect.Pointer:
+		if value.IsNil() {
+			return gruntime.NilValue(), nil
+		}
+		return bridge.BindReflectStruct(e.vmState, value.Interface())
+	case reflect.Func:
+		return e.bindVMMethodValue(value.Interface())
+	default:
+		valueInterface := value.Interface()
+		return bridge.ValueOf(e.vmState, valueInterface)
+	}
+}
+
+func (e *LuaEngine) reflectMapToVMTable(value reflect.Value) (gruntime.Value, error) {
+	if value.IsNil() {
+		return gruntime.NilValue(), nil
+	}
+	table := gruntime.NewTable()
+	for _, key := range value.MapKeys() {
+		luaKey, err := e.reflectToVMValue(key)
+		if err != nil {
+			return gruntime.NilValue(), err
+		}
+		luaValue, err := e.reflectToVMValue(value.MapIndex(key))
+		if err != nil {
+			return gruntime.NilValue(), err
+		}
+		if err := table.RawSet(luaKey, luaValue); err != nil {
+			return gruntime.NilValue(), err
+		}
+	}
+	return gruntime.ReferenceValue(gruntime.KindTable, table), nil
+}
+
+func (e *LuaEngine) reflectStructToVMTable(value reflect.Value) (gruntime.Value, error) {
+	table := gruntime.NewTable()
+	valueType := value.Type()
+	for index := 0; index < value.NumField(); index++ {
+		field := valueType.Field(index)
+		if field.PkgPath != "" {
+			continue
+		}
+		fieldValue, err := e.reflectToVMValue(value.Field(index))
+		if err != nil {
+			return gruntime.NilValue(), fmt.Errorf("field %s: %w", field.Name, err)
+		}
+		for _, name := range vmStructFieldNames(field) {
+			table.RawSetString(name, fieldValue)
+		}
+	}
+	return gruntime.ReferenceValue(gruntime.KindTable, table), nil
+}
+
+func vmObjectFromValue(value gruntime.Value) (interface{}, bool) {
+	if value.Kind != gruntime.KindTable {
+		return nil, false
+	}
+	table, ok := value.Ref.(*gruntime.Table)
+	if !ok || table == nil {
+		return nil, false
+	}
+	userdataValue := table.RawGetString("__userdata")
+	if userdataValue.Kind != gruntime.KindUserdata {
+		return nil, false
+	}
+	userdata, ok := userdataValue.Ref.(*gruntime.Userdata)
+	if !ok || userdata == nil {
+		return nil, false
+	}
+	proxy, ok := userdata.Data.(*bridge.ObjectProxy)
+	if !ok || proxy == nil {
+		return nil, false
+	}
+	return proxy.Object(), true
+}
+
+func (e *LuaEngine) installVMCoreTable(name string, methods map[string]gruntime.GoResultsFunction) error {
+	if e.vmState == nil {
+		return nil
+	}
+	moduleValue, err := glua.GetGlobal(e.vmState, name)
+	if err != nil {
+		return err
+	}
+	var moduleTable *gruntime.Table
+	if moduleValue.Kind == gruntime.KindTable {
+		if table, ok := moduleValue.Ref.(*gruntime.Table); ok {
+			moduleTable = table
+		}
+	}
+	if moduleTable == nil {
+		moduleTable = gruntime.NewTable()
+		if err := glua.SetGlobal(e.vmState, name, gruntime.ReferenceValue(gruntime.KindTable, moduleTable)); err != nil {
+			return err
+		}
+	}
+	for methodName, method := range methods {
+		moduleTable.RawSetString(methodName, gruntime.ReferenceValue(gruntime.KindGoClosure, method))
+	}
+	return nil
+}
+
+func (e *LuaEngine) printVMConsole(prefix string, args []gruntime.Value) {
+	if prefix != "" {
+		fmt.Print(prefix)
+	}
+	for index, arg := range args {
+		if index > 0 {
+			fmt.Print(" ")
+		}
+		text, err := gruntime.ToString(arg)
+		if err != nil {
+			fmt.Print(arg.DebugString())
+			continue
+		}
+		fmt.Print(text.String)
+	}
+	fmt.Println()
+}
+
+func vmTableField(table *gruntime.Table, field reflect.StructField) gruntime.Value {
+	for _, name := range vmStructFieldNames(field) {
+		value := table.RawGetString(name)
+		if !value.IsNil() {
+			return value
+		}
+	}
+	return gruntime.NilValue()
+}
+
+func vmStructFieldNames(field reflect.StructField) []string {
+	names := []string{field.Name, lowerFirstASCII(field.Name)}
+	for _, tagName := range []string{"lua", "json"} {
+		tagValue := field.Tag.Get(tagName)
+		if tagValue == "" || tagValue == "-" {
+			continue
+		}
+		if commaIndex := strings.IndexByte(tagValue, ','); commaIndex >= 0 {
+			tagValue = tagValue[:commaIndex]
+		}
+		if tagValue != "" {
+			names = append(names, tagValue)
+		}
+	}
+	return names
+}
+
+func lowerFirstASCII(value string) string {
+	if value == "" {
+		return ""
+	}
+	first := value[0]
+	if first >= 'A' && first <= 'Z' {
+		return string(first+'a'-'A') + value[1:]
+	}
+	return value
+}
+
+func gluaStringArg(args []glua.Value, index int) string {
+	if index >= len(args) {
+		return ""
+	}
+	if args[index].Kind == gruntime.KindString {
+		return args[index].String
+	}
+	return args[index].DebugString()
+}
+
+func gluaBoolArg(args []glua.Value, index int) bool {
+	if index >= len(args) {
+		return false
+	}
+	return args[index].Truthy()
 }

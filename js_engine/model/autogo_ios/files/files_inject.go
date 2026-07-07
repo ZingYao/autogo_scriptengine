@@ -1,6 +1,8 @@
 package files
 
 import (
+	"fmt"
+
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	autogofiles "github.com/Dasongzi1366/AutoGo/files"
@@ -114,7 +116,7 @@ func (m *FilesModule) Register(engine model.Engine) error {
 		return vm.ToValue(autogofiles.GetExtension(call.Argument(0).String()))
 	})
 	filesObj.Set("getMd5", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(autogofiles.GetMd5(call.Argument(0).String()))
+		panic(vm.NewGoError(fmt.Errorf("files.getMd5 is unavailable in remote AutoGo/files")))
 	})
 	filesObj.Set("remove", func(call goja.FunctionCall) goja.Value {
 		return vm.ToValue(autogofiles.Remove(call.Argument(0).String()))
@@ -144,7 +146,9 @@ func (m *FilesModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("files.getName", "返回文件名", autogofiles.GetName, true)
 	engine.RegisterMethod("files.getNameWithoutExtension", "返回不含扩展名的文件名", autogofiles.GetNameWithoutExtension, true)
 	engine.RegisterMethod("files.getExtension", "返回文件扩展名", autogofiles.GetExtension, true)
-	engine.RegisterMethod("files.getMd5", "返回文件 MD5", autogofiles.GetMd5, true)
+	engine.RegisterMethod("files.getMd5", "远程 AutoGo/files 不包含 GetMd5", func(path string) (string, error) {
+		return "", fmt.Errorf("files.getMd5 is unavailable in remote AutoGo/files")
+	}, true)
 	engine.RegisterMethod("files.remove", "删除文件或文件夹", autogofiles.Remove, true)
 	engine.RegisterMethod("files.path", "返回相对路径对应的绝对路径", autogofiles.Path, true)
 	engine.RegisterMethod("files.listDir", "列出文件夹下的文件和文件夹", autogofiles.ListDir, true)

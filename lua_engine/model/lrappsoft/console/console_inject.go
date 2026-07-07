@@ -1,7 +1,11 @@
+//go:build ignore
+// +build ignore
+
 package console
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
@@ -11,8 +15,8 @@ import (
 // ConsoleModule console 模块（懒人精灵兼容）
 type ConsoleModule struct {
 	consoleInstance interface{}
-	titleVisible   bool
-	locked         bool
+	titleVisible    bool
+	locked          bool
 }
 
 // Name 返回模块名称
@@ -78,14 +82,14 @@ func (m *ConsoleModule) Register(engine model.Engine) error {
 		y := L.CheckInt(2)
 		width := 0
 		height := 0
-		
+
 		if L.GetTop() >= 3 {
 			width = L.CheckInt(3)
 		}
 		if L.GetTop() >= 4 {
 			height = L.CheckInt(4)
 		}
-		
+
 		m.consoleSetPos(L, x, y, width, height)
 		return 0
 	}))
@@ -96,12 +100,12 @@ func (m *ConsoleModule) Register(engine model.Engine) error {
 		if L.GetTop() >= 1 {
 			level = L.CheckInt(1)
 		}
-		
+
 		log := ""
 		if L.GetTop() >= 2 {
 			log = L.CheckString(2)
 		}
-		
+
 		m.consolePrintln(L, level, log)
 		return 0
 	}))
@@ -129,7 +133,11 @@ func (m *ConsoleModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("console.show", "显示控制台悬浮窗", func() bool {
 		return true
 	}, true)
-	engine.RegisterMethod("console.showTitle", "显示或者隐藏控制台标题栏", func(show bool) bool {
+	engine.RegisterMethod("console.showTitle", "显示或者隐藏控制台标题栏", func(args ...interface{}) bool {
+		show := true
+		if len(args) > 0 {
+			show = consoleBoolArg(args[0])
+		}
 		m.titleVisible = show
 		return true
 	}, true)
@@ -142,9 +150,15 @@ func (m *ConsoleModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("console.dismiss", "关闭控制台窗口", func() bool {
 		return true
 	}, true)
-	engine.RegisterMethod("console.setPos", "设置控制台窗口的位置和大小", func(x, y, width, height int) {
+	engine.RegisterMethod("console.setPos", "设置控制台窗口的位置和大小", func(args ...interface{}) {
+		_ = consoleIntArg(args, 0)
+		_ = consoleIntArg(args, 1)
+		_ = consoleIntArg(args, 2)
+		_ = consoleIntArg(args, 3)
 	}, true)
-	engine.RegisterMethod("console.println", "打印日志到控制台窗口", func(level int, log string) {
+	engine.RegisterMethod("console.println", "打印日志到控制台窗口", func(args ...interface{}) {
+		_ = consoleIntArg(args, 0)
+		_ = consoleStringArg(args, 1)
 	}, true)
 	engine.RegisterMethod("console.clearLog", "清除日志", func() {
 	}, true)
@@ -182,6 +196,43 @@ func (m *ConsoleModule) consoleClearLog(L *lua.LState) {
 // consoleSetTitle 设置控制台标题
 func (m *ConsoleModule) consoleSetTitle(L *lua.LState, title string) {
 	fmt.Printf("[console] 设置标题: %s\n", title)
+}
+
+func consoleBoolArg(value interface{}) bool {
+	switch typedValue := value.(type) {
+	case bool:
+		return typedValue
+	case string:
+		return typedValue == "true" || typedValue == "1"
+	default:
+		return false
+	}
+}
+
+func consoleIntArg(args []interface{}, index int) int {
+	if index >= len(args) {
+		return 0
+	}
+	switch value := args[index].(type) {
+	case int:
+		return value
+	case int64:
+		return int(value)
+	case float64:
+		return int(value)
+	case string:
+		parsed, _ := strconv.Atoi(value)
+		return parsed
+	default:
+		return 0
+	}
+}
+
+func consoleStringArg(args []interface{}, index int) string {
+	if index >= len(args) {
+		return ""
+	}
+	return fmt.Sprint(args[index])
 }
 
 // GetModule 获取模块实例

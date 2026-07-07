@@ -9,7 +9,7 @@ import (
 
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
-	lua "github.com/yuin/gopher-lua"
+	glua "github.com/ZingYao/go-lua-vm/lua"
 )
 
 // EngineState 引擎状态
@@ -67,10 +67,10 @@ type EngineConfig struct {
 
 // LuaEngine Lua 引擎
 type LuaEngine struct {
-	state              *lua.LState
+	vmState            *glua.State
 	mu                 sync.RWMutex
 	config             EngineConfig
-	moduleCache        map[string]lua.LValue // 模块缓存，用于 require 功能
+	vmPackagePath      string                // go-lua-vm 初始 package.path，用于重算搜索路径避免重复追加
 	currentScript      string                // 当前执行的脚本
 	currentSearchPaths []string              // 当前脚本的搜索路径
 	skipExitAction     bool                  // 是否跳过退出动作（当 os.exit(-1) 时）
@@ -103,7 +103,7 @@ type MethodInfo struct {
 	GoFunc      interface{}
 	Overridable bool
 	Overridden  bool
-	LuaFunc     *lua.LFunction
+	LuaFunc     interface{}
 }
 
 var (
@@ -143,7 +143,7 @@ func (r *MethodRegistry) GetMethod(name string) (MethodInfo, bool) {
 	return method, exists
 }
 
-func (r *MethodRegistry) OverrideMethod(name string, luaFunc *lua.LFunction) bool {
+func (r *MethodRegistry) OverrideMethod(name string, luaFunc interface{}) bool {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -211,14 +211,19 @@ func (r *MethodRegistry) Count() int {
 func RegisterMethod(name, description string, goFunc interface{}, overridable bool) {
 	initRegistry()
 	registry.mu.Lock()
-	defer registry.mu.Unlock()
-
 	registry.methods[name] = MethodInfo{
 		Name:        name,
 		Description: description,
 		GoFunc:      goFunc,
 		Overridable: overridable,
 		Overridden:  false,
+	}
+	registry.mu.Unlock()
+
+	if engine != nil && goFunc != nil {
+		if err := engine.installVMMethod(name, goFunc); err != nil && engine.config.FailFast {
+			fmt.Printf("[ERROR] install go-lua-vm method %s failed: %v\n", name, err)
+		}
 	}
 }
 

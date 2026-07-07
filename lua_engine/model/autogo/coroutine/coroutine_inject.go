@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package coroutine
 
 import (
@@ -214,6 +217,7 @@ func (p *CoroutinePool) scheduleTasks() {
 		return
 	}
 
+scheduleLoop:
 	for len(p.taskQueue) > 0 && atomic.LoadInt32(&p.active) < int32(p.maxWorkers) {
 		task := p.taskQueue[0]
 		p.taskQueue = p.taskQueue[1:]
@@ -223,7 +227,7 @@ func (p *CoroutinePool) scheduleTasks() {
 			atomic.AddInt64(&manager.totalTasks, 1)
 		default:
 			p.taskQueue = append([]*Task{task}, p.taskQueue...)
-			break
+			break scheduleLoop
 		}
 	}
 }
@@ -835,24 +839,210 @@ func (m *CoroutineModule) Register(engine model.Engine) error {
 	// 注册方法文档
 	engine.RegisterMethod("coroutine.launch", "启动一个新的协程", nil, true)
 	engine.RegisterMethod("coroutine.delay", "延迟执行函数", nil, true)
-	engine.RegisterMethod("coroutine.async", "异步执行函数并返回结果（同步等待）", nil, true)
-	engine.RegisterMethod("coroutine.await", "等待并返回传入的值（简化版本）", nil, true)
-	engine.RegisterMethod("coroutine.cancel", "取消指定的协程", nil, true)
-	engine.RegisterMethod("coroutine.sleep", "在协程中睡眠指定的毫秒数", nil, true)
-	engine.RegisterMethod("coroutine.getActiveCoroutines", "获取活跃的协程数量", nil, true)
-	engine.RegisterMethod("coroutine.getCoroutineList", "获取协程列表", nil, true)
-	engine.RegisterMethod("coroutine.getCoroutineInfo", "获取指定协程的详细信息", nil, true)
-	engine.RegisterMethod("coroutine.cancelAll", "取消所有协程", nil, true)
-	engine.RegisterMethod("coroutine.getStats", "获取全局统计信息", nil, true)
-	engine.RegisterMethod("coroutine.createPool", "创建协程池", nil, true)
+	engine.RegisterMethod("coroutine.async", "异步执行函数并返回结果（同步等待）", asyncCoroutineValue, true)
+	engine.RegisterMethod("coroutine.await", "等待并返回传入的值（简化版本）", awaitCoroutineValue, true)
+	engine.RegisterMethod("coroutine.cancel", "取消指定的协程", cancelCoroutineValue, true)
+	engine.RegisterMethod("coroutine.sleep", "在协程中睡眠指定的毫秒数", sleepCoroutineValue, true)
+	engine.RegisterMethod("coroutine.getActiveCoroutines", "获取活跃的协程数量", getActiveCoroutinesValue, true)
+	engine.RegisterMethod("coroutine.getCoroutineList", "获取协程列表", getCoroutineListValue, true)
+	engine.RegisterMethod("coroutine.getCoroutineInfo", "获取指定协程的详细信息", getCoroutineInfoValue, true)
+	engine.RegisterMethod("coroutine.cancelAll", "取消所有协程", cancelAllCoroutinesValue, true)
+	engine.RegisterMethod("coroutine.getStats", "获取全局统计信息", getCoroutineStatsValue, true)
+	engine.RegisterMethod("coroutine.createPool", "创建协程池", createCoroutinePoolValue, true)
 	engine.RegisterMethod("coroutine.submitToPool", "提交任务到协程池", nil, true)
-	engine.RegisterMethod("coroutine.getPoolStats", "获取协程池统计信息", nil, true)
-	engine.RegisterMethod("coroutine.closePool", "关闭协程池", nil, true)
-	engine.RegisterMethod("coroutine.listPools", "列出所有协程池", nil, true)
-	engine.RegisterMethod("coroutine.setScheduleStrategy", "设置调度策略", nil, true)
-	engine.RegisterMethod("coroutine.getScheduleStrategy", "获取当前调度策略", nil, true)
-	engine.RegisterMethod("coroutine.setPriority", "设置协程优先级", nil, true)
-	engine.RegisterMethod("coroutine.getPriority", "获取协程优先级", nil, true)
+	engine.RegisterMethod("coroutine.getPoolStats", "获取协程池统计信息", getPoolStatsValue, true)
+	engine.RegisterMethod("coroutine.closePool", "关闭协程池", closePoolValue, true)
+	engine.RegisterMethod("coroutine.listPools", "列出所有协程池", listPoolsValue, true)
+	engine.RegisterMethod("coroutine.setScheduleStrategy", "设置调度策略", setScheduleStrategyValue, true)
+	engine.RegisterMethod("coroutine.getScheduleStrategy", "获取当前调度策略", getScheduleStrategyValue, true)
+	engine.RegisterMethod("coroutine.setPriority", "设置协程优先级", setPriorityValue, true)
+	engine.RegisterMethod("coroutine.getPriority", "获取协程优先级", getPriorityValue, true)
 
 	return nil
+}
+
+func sleepCoroutineValue(delayMs int) {
+	if delayMs > 0 {
+		time.Sleep(time.Duration(delayMs) * time.Millisecond)
+	}
+}
+
+func asyncCoroutineValue(callback func() (interface{}, error)) interface{} {
+	result, err := callback()
+	if err != nil {
+		atomic.AddInt64(&manager.failed, 1)
+		return err.Error()
+	}
+	atomic.AddInt64(&manager.completed, 1)
+	return result
+}
+
+func awaitCoroutineValue(value interface{}) interface{} {
+	return value
+}
+
+func cancelCoroutineValue(coroutineID string) bool {
+	manager.mu.RLock()
+	coroutine, exists := manager.coroutines[coroutineID]
+	manager.mu.RUnlock()
+	if exists && coroutine.Cancel != nil {
+		coroutine.Cancel()
+		return true
+	}
+	return false
+}
+
+func getActiveCoroutinesValue() int {
+	manager.mu.RLock()
+	defer manager.mu.RUnlock()
+	return len(manager.coroutines)
+}
+
+func getCoroutineListValue() []map[string]interface{} {
+	manager.mu.RLock()
+	defer manager.mu.RUnlock()
+	result := make([]map[string]interface{}, 0, len(manager.coroutines))
+	for id, coro := range manager.coroutines {
+		result = append(result, map[string]interface{}{
+			"id":       id,
+			"name":     coro.Name,
+			"state":    coro.State.String(),
+			"priority": coro.Priority,
+			"duration": time.Since(coro.StartedAt).Milliseconds(),
+		})
+	}
+	return result
+}
+
+func getCoroutineInfoValue(coroutineID string) interface{} {
+	manager.mu.RLock()
+	coroutine, exists := manager.coroutines[coroutineID]
+	manager.mu.RUnlock()
+	if !exists {
+		return nil
+	}
+	info := map[string]interface{}{
+		"id":        coroutine.ID,
+		"name":      coroutine.Name,
+		"state":     coroutine.State.String(),
+		"priority":  coroutine.Priority,
+		"startedAt": coroutine.StartedAt.Format("2006-01-02 15:04:05"),
+	}
+	if !coroutine.CompletedAt.IsZero() {
+		info["completedAt"] = coroutine.CompletedAt.Format("2006-01-02 15:04:05")
+		info["duration"] = coroutine.CompletedAt.Sub(coroutine.StartedAt).Milliseconds()
+	} else {
+		info["duration"] = time.Since(coroutine.StartedAt).Milliseconds()
+	}
+	if coroutine.Error != nil {
+		info["error"] = coroutine.Error.Error()
+	}
+	return info
+}
+
+func cancelAllCoroutinesValue() int {
+	manager.mu.Lock()
+	defer manager.mu.Unlock()
+	count := 0
+	for _, coro := range manager.coroutines {
+		if coro.Cancel != nil {
+			coro.Cancel()
+			count++
+		}
+	}
+	return count
+}
+
+func getCoroutineStatsValue() map[string]interface{} {
+	manager.mu.RLock()
+	active := len(manager.coroutines)
+	pools := len(manager.pools)
+	manager.mu.RUnlock()
+	return map[string]interface{}{
+		"totalTasks": atomic.LoadInt64(&manager.totalTasks),
+		"completed":  atomic.LoadInt64(&manager.completed),
+		"failed":     atomic.LoadInt64(&manager.failed),
+		"cancelled":  atomic.LoadInt64(&manager.cancelled),
+		"active":     active,
+		"pools":      pools,
+	}
+}
+
+func createCoroutinePoolValue(name string, maxWorkers int, args ...interface{}) string {
+	maxTasks := 100
+	if len(args) > 0 {
+		if value, ok := coroutineIntValue(args[0]); ok {
+			maxTasks = value
+		}
+	}
+	pool := NewCoroutinePool(name, maxWorkers, maxTasks)
+	manager.mu.Lock()
+	manager.pools[name] = pool
+	manager.mu.Unlock()
+	return name
+}
+
+func getPoolStatsValue(poolName string) interface{} {
+	manager.mu.RLock()
+	pool, exists := manager.pools[poolName]
+	manager.mu.RUnlock()
+	if !exists {
+		return nil
+	}
+	return pool.GetStats()
+}
+
+func closePoolValue(poolName string) bool {
+	manager.mu.Lock()
+	pool, exists := manager.pools[poolName]
+	if exists {
+		delete(manager.pools, poolName)
+	}
+	manager.mu.Unlock()
+	if exists {
+		pool.Close()
+		return true
+	}
+	return false
+}
+
+func listPoolsValue() []string {
+	manager.mu.RLock()
+	defer manager.mu.RUnlock()
+	result := make([]string, 0, len(manager.pools))
+	for name := range manager.pools {
+		result = append(result, name)
+	}
+	return result
+}
+
+func setScheduleStrategyValue(strategy string) {
+	manager.scheduler.SetStrategy(strategy)
+}
+
+func getScheduleStrategyValue() string {
+	return manager.scheduler.GetStrategy()
+}
+
+func setPriorityValue(name string, priority int) {
+	manager.scheduler.SetPriority(name, priority)
+}
+
+func getPriorityValue(name string) int {
+	return manager.scheduler.GetPriority(name)
+}
+
+func coroutineIntValue(value interface{}) (int, bool) {
+	switch typedValue := value.(type) {
+	case int:
+		return typedValue, true
+	case int64:
+		return int(typedValue), true
+	case int32:
+		return int(typedValue), true
+	case float64:
+		return int(typedValue), true
+	default:
+		return 0, false
+	}
 }

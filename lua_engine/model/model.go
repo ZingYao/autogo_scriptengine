@@ -1,7 +1,5 @@
 package model
 
-import "github.com/yuin/gopher-lua"
-
 // Module 模块接口，所有注入模块都需要实现此接口
 type Module interface {
 	// Name 返回模块名称
@@ -17,11 +15,11 @@ type Module interface {
 
 // Engine 引擎接口
 type Engine interface {
-	// GetState 获取 Lua 状态机
-	GetState() *lua.LState
-
 	// RegisterMethod 注册方法
 	RegisterMethod(name, description string, fn interface{}, overridable bool)
+
+	// RegisterValue 注册模块字段值
+	RegisterValue(name string, value interface{}) error
 
 	// Restart 重启引擎
 	Restart() error

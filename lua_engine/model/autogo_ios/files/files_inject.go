@@ -1,6 +1,11 @@
+//go:build ignore
+// +build ignore
+
 package files
 
 import (
+	"fmt"
+
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	autogofiles "github.com/Dasongzi1366/AutoGo/files"
@@ -133,7 +138,7 @@ func (m *FilesModule) Register(engine model.Engine) error {
 		return 1
 	}))
 	filesObj.RawSetString("getMd5", state.NewFunction(func(L *lua.LState) int {
-		L.Push(lua.LString(autogofiles.GetMd5(L.CheckString(1))))
+		L.RaiseError("files.getMd5 is unavailable in remote AutoGo/files")
 		return 1
 	}))
 	filesObj.RawSetString("remove", state.NewFunction(func(L *lua.LState) int {
@@ -167,7 +172,9 @@ func (m *FilesModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("files.getName", "返回文件名", autogofiles.GetName, true)
 	engine.RegisterMethod("files.getNameWithoutExtension", "返回不含扩展名的文件名", autogofiles.GetNameWithoutExtension, true)
 	engine.RegisterMethod("files.getExtension", "返回文件扩展名", autogofiles.GetExtension, true)
-	engine.RegisterMethod("files.getMd5", "返回文件 MD5", autogofiles.GetMd5, true)
+	engine.RegisterMethod("files.getMd5", "远程 AutoGo/files 不包含 GetMd5", func(path string) (string, error) {
+		return "", fmt.Errorf("files.getMd5 is unavailable in remote AutoGo/files")
+	}, true)
 	engine.RegisterMethod("files.remove", "删除文件或文件夹", autogofiles.Remove, true)
 	engine.RegisterMethod("files.path", "返回相对路径对应的绝对路径", autogofiles.Path, true)
 	engine.RegisterMethod("files.listDir", "列出文件夹下的文件和文件夹", autogofiles.ListDir, true)

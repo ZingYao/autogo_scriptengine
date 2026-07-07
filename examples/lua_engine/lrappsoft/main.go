@@ -25,15 +25,8 @@ func main() {
 	// 注册所有 lrappsoft 风格模块
 	engine.RegisterModule(lrappsoft_models.LrappsoftModules...)
 
-	// 执行工具脚本（以便主脚本可以引用）
-	err := engine.ExecuteFile("scripts/utils.lua")
-	if err != nil {
-		log.Fatalf("Failed to execute utils.lua: %v", err)
-	}
-
-	// 执行主脚本
-	err = engine.ExecuteFile("scripts/main.lua")
-	if err != nil {
+	// 执行主脚本，工具脚本由 main.lua 中的 require("utils") 自动加载
+	if err := engine.ExecuteFile("scripts/main.lua"); err != nil {
 		log.Fatalf("Failed to execute main.lua: %v", err)
 	}
 

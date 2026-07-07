@@ -37,6 +37,7 @@ go get github.com/ZingYao/autogo_scriptengine@v0.0.22
 
 - [📖 文档索引](./docs/index.html) - 所有文档的导航页面
 - [🏠 项目主页](./docs/README.md) - 项目介绍和功能特性
+- [🧪 示例工程](./docs/examples/README.md) - Android/iOS、Lua/JavaScript 示例入口
 
 **使用方法**：
 ```bash
@@ -50,64 +51,31 @@ python3 scripts/convert_to_html.py
 
 #### JavaScript 引擎文档
 
-- [JavaScript 引擎完整文档](./js_engine/README.md) - 包含所有 API、配置选项和高级用法
+- [JavaScript 引擎完整文档](./docs/js_engine/README.md) - 包含所有 API、配置选项和高级用法
+- [JavaScript Android autogo 概述](./docs/js_engine/model/autogo/README.md) - Android 模块注册方式与模块 API 导航
+- [JavaScript iOS autogo 概述](./docs/js_engine/model/autogo_ios/README.md) - iOS 模块清单、注册方式和参数返回值映射
 
-#### 模块文档
+#### JavaScript Android 模块文档
 
-- [app 模块](./js_engine/model/app/README.md) - 应用管理（启动、安装、卸载、强制停止等）
-- [device 模块](./js_engine/model/device/README.md) - 设备信息（分辨率、SDK 版本、屏幕方向等）
-- [motion 模块](./js_engine/model/motion/README.md) - 触摸操作（点击、滑动、手势等）
-- [files 模块](./js_engine/model/files/README.md) - 文件操作（读写、复制、删除等）
-- [images 模块](./js_engine/model/images/README.md) - 图像处理（截图、找色、找图等）
-- [storages 模块](./js_engine/model/storages/README.md) - 数据存储（键值对存储）
-- [system 模块](./js_engine/model/system/README.md) - 系统功能（剪贴板、通知等）
-- [http 模块](./js_engine/model/http/README.md) - 网络请求（GET、POST 等）
-- [media 模块](./js_engine/model/media/README.md) - 媒体控制（音量、播放等）
-- [opencv 模块](./js_engine/model/opencv/README.md) - 计算机视觉（图像处理、特征检测等）
-- [ppocr 模块](./js_engine/model/ppocr/README.md) - OCR 文字识别
-- [console 模块](./js_engine/model/console/README.md) - 控制台窗口（显示、隐藏、日志输出等）
-- [dotocr 模块](./js_engine/model/dotocr/README.md) - 点字 OCR 识别（基于字库的 OCR）
-- [hud 模块](./js_engine/model/hud/README.md) - HUD 悬浮显示（脚本状态显示等）
-- [ime 模块](./js_engine/model/ime/README.md) - 输入法控制（剪切板、文本输入等）
-- [plugin 模块](./js_engine/model/plugin/README.md) - 插件加载（加载外部 APK 调用 Java 方法）
-- [rhino 模块](./js_engine/model/rhino/README.md) - JavaScript 执行引擎（Rhino）
-- [uiacc 模块](./js_engine/model/uiacc/README.md) - 无障碍 UI 操作（控件查找、点击、输入等）
-- [utils 模块](./js_engine/model/utils/README.md) - 工具方法（日志、Toast、类型转换等）
-- [vdisplay 模块](./js_engine/model/vdisplay/README.md) - 虚拟显示（虚拟屏操作）
-- [yolo 模块](./js_engine/model/yolo/README.md) - YOLO 目标检测（v5/v8 模型）
-- [imgui 模块](./js_engine/model/imgui/README.md) - Dear ImGui GUI 库（窗口、按钮、输入框等控件）
-- [coroutine 模块](./js_engine/model/coroutine/README.md) - 协程支持
+- [Android 模块总览](./docs/js_engine/model/autogo/README.md)
 
 #### 📖 Lua 引擎文档
 
-- [Lua 引擎完整文档](./lua_engine/README.md) - 包含所有 API、配置选项和高级用法
+- [Lua 引擎完整文档](./docs/lua_engine/README.md) - 包含所有 API、配置选项和高级用法
+- [Lua Android autogo 概述](./docs/lua_engine/model/autogo/README.md) - Android 模块注册方式与模块 API 导航
+- [Lua iOS autogo 概述](./docs/lua_engine/model/autogo_ios/README.md) - iOS 模块清单、注册方式和参数返回值映射
 
-#### 模块文档
+#### Lua Android 模块文档
 
-- [app 模块](./lua_engine/model/app/README.md) - 应用管理（启动、安装、卸载、强制停止等）
-- [device 模块](./lua_engine/model/device/README.md) - 设备信息（分辨率、SDK 版本、屏幕方向等）
-- [motion 模块](./lua_engine/model/motion/README.md) - 触摸操作（点击、滑动、手势等）
-- [files 模块](./lua_engine/model/files/README.md) - 文件操作（读写、复制、删除等）
-- [images 模块](./lua_engine/model/images/README.md) - 图像处理（截图、找色、找图等）
-- [storages 模块](./lua_engine/model/storages/README.md) - 数据存储（键值对存储）
-- [system 模块](./lua_engine/model/system/README.md) - 系统功能（剪贴板、通知等）
-- [http 模块](./lua_engine/model/http/README.md) - 网络请求（GET、POST 等）
-- [media 模块](./lua_engine/model/media/README.md) - 媒体控制（音量、播放等）
-- [opencv 模块](./lua_engine/model/opencv/README.md) - 计算机视觉（图像处理、特征检测等）
-- [ppocr 模块](./lua_engine/model/ppocr/README.md) - OCR 文字识别
-- [console 模块](./lua_engine/model/console/README.md) - 控制台窗口（显示、隐藏、日志输出等）
-- [dotocr 模块](./lua_engine/model/dotocr/README.md) - 点字 OCR 识别（基于字库的 OCR）
-- [hud 模块](./lua_engine/model/hud/README.md) - HUD 悬浮显示（脚本状态显示等）
-- [ime 模块](./lua_engine/model/ime/README.md) - 输入法控制（剪切板、文本输入等）
-- [plugin 模块](./lua_engine/model/plugin/README.md) - 插件加载（加载外部 APK 调用 Java 方法）
-- [rhino 模块](./lua_engine/model/rhino/README.md) - JavaScript 执行引擎（Rhino）
-- [uiacc 模块](./lua_engine/model/uiacc/README.md) - 无障碍 UI 操作（控件查找、点击、输入等）
-- [utils 模块](./lua_engine/model/utils/README.md) - 工具方法（日志、Toast、类型转换等）
-- [vdisplay 模块](./lua_engine/model/vdisplay/README.md) - 虚拟显示（虚拟屏操作）
-- [yolo 模块](./lua_engine/model/yolo/README.md) - YOLO 目标检测（v5/v8 模型）
-- [imgui 模块](./lua_engine/model/imgui/README.md) - Dear ImGui GUI 库（窗口、按钮、输入框等控件）
-- [coroutine 模块](./lua_engine/model/coroutine/README.md) - 协程支持
-- [json 模块](./lua_engine/model/json/README.md) - JSON 处理
+- [Android 模块总览](./docs/lua_engine/model/autogo/README.md)
+
+### 示例工程
+
+- [示例工程说明](./docs/examples/README.md) - Android/iOS、Lua/JavaScript、lrappsoft 和字节码示例入口
+- [Lua Android autogo 示例](./examples/lua_engine/autogo/)
+- [JavaScript Android autogo 示例](./examples/js_engine/autogo/)
+- [Lua iOS autogo 示例](./examples/lua_engine/autogo_ios/)
+- [JavaScript iOS autogo 示例](./examples/js_engine/autogo_ios/)
 
 ## 环境要求
 
@@ -149,8 +117,8 @@ The command line is too long.
 3. 或者使用 WSL (Windows Subsystem for Linux) 环境进行开发
 
 详细的白名单使用示例和模块依赖列表，请查看：
-- [JavaScript 引擎文档](./js_engine/README.md) - 包含完整的白名单使用示例
-- [Lua 引擎文档](./lua_engine/README.md) - 包含完整的白名单使用示例
+- [JavaScript 引擎文档](./docs/js_engine/README.md) - 包含完整的白名单使用示例
+- [Lua 引擎文档](./docs/lua_engine/README.md) - 包含完整的白名单使用示例
 
 ### 常见问题处理
 
@@ -165,7 +133,7 @@ The command line is too long.
 
 - [AutoGo](https://github.com/Dasongzi1366/AutoGo) - Android 自动化框架（核心依赖）
 - [goja](https://github.com/dop251/goja) - JavaScript 解释器
-- [gopher-lua](https://github.com/yuin/gopher-lua) - Lua 解释器
+- [go-lua-vm](https://github.com/ZingYao/go-lua-vm) - Lua 5.3 VM
 
 ## 风格包说明
 

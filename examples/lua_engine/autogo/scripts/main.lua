@@ -1,8 +1,9 @@
--- AutoGo Lua 风格示例：模块对象入口、复杂参数和返回值解析
-local utils = require('utils')
+-- AutoGo Lua 风格示例：模块对象入口、用户 require、复杂参数和返回值解析。
+-- AutoGo 的 utils 是全局模块对象；用户工具模块建议使用业务化变量名，避免遮蔽全局 utils。
+local helpers = require('utils')
 
-local sum = utils.add(5, 3)
-local difference = utils.subtract(10, 4)
+local sum = helpers.add(5, 3)
+local difference = helpers.subtract(10, 4)
 
 local function safeCall(title, fn)
     local ok, result = pcall(fn)
@@ -16,8 +17,8 @@ end
 
 function main()
     console.log('Hello from Lua autogo style')
-    console.log('utils.add: ' .. sum)
-    console.log('utils.subtract: ' .. difference)
+    console.log('helpers.add: ' .. sum)
+    console.log('helpers.subtract: ' .. difference)
 
     safeCall('basic modules', function()
         console.log('screen: ' .. device.width .. 'x' .. device.height)

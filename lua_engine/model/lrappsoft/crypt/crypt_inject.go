@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package crypt
 
 import (
@@ -167,7 +170,7 @@ func (m *CryptModule) Register(engine model.Engine) error {
 	cryptLibTable.RawSetString("rsa_encrypt", state.NewFunction(func(L *lua.LState) int {
 		data := L.CheckString(1)
 		key := L.CheckString(2)
-		
+
 		isPublicKey := true
 		if L.GetTop() >= 3 {
 			isPublicKey = L.CheckBool(3)
@@ -188,7 +191,7 @@ func (m *CryptModule) Register(engine model.Engine) error {
 	cryptLibTable.RawSetString("rsa_decrypt", state.NewFunction(func(L *lua.LState) int {
 		data := L.CheckString(1)
 		key := L.CheckString(2)
-		
+
 		isPublicKey := false
 		if L.GetTop() >= 3 {
 			isPublicKey = L.CheckBool(3)
@@ -294,7 +297,23 @@ func (m *CryptModule) Register(engine model.Engine) error {
 	}))
 
 	// 注册到方法注册表
-	engine.RegisterMethod("cryptLib.aes_crypt", "AES 加密/解密", func(data, key, operation, mode string, iv string, padding bool) (string, error) {
+	engine.RegisterMethod("cryptLib.aes_crypt", "AES 加密/解密", func(data, key, operation, mode string, options ...interface{}) (string, error) {
+		iv := ""
+		if len(options) >= 1 {
+			optionIV, ok := options[0].(string)
+			if !ok {
+				return "", errors.New("iv 参数必须为字符串")
+			}
+			iv = optionIV
+		}
+		padding := true
+		if len(options) >= 2 {
+			optionPadding, ok := options[1].(bool)
+			if !ok {
+				return "", errors.New("padding 参数必须为布尔值")
+			}
+			padding = optionPadding
+		}
 		return aesCrypt(data, key, operation, mode, iv, padding)
 	}, true)
 
@@ -319,25 +338,12 @@ func (m *CryptModule) Register(engine model.Engine) error {
 		return string(iv), nil
 	}, true)
 
-	engine.RegisterMethod("cryptLib.rsa_generate_key", "生成 RSA 密钥对", func(keyBits int) (string, string, error) {
-		if keyBits == 0 {
-			keyBits = 2048
-		}
-		privateKey, err := rsa.GenerateKey(rand.Reader, keyBits)
-		if err != nil {
-			return "", "", err
-		}
-		pubKeyBytes := x509.MarshalPKCS1PublicKey(&privateKey.PublicKey)
-		pubKeyPEM := pem.EncodeToMemory(&pem.Block{
-			Type:  "RSA PUBLIC KEY",
-			Bytes: pubKeyBytes,
-		})
-		privKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
-		privKeyPEM := pem.EncodeToMemory(&pem.Block{
-			Type:  "RSA PRIVATE KEY",
-			Bytes: privKeyBytes,
-		})
-		return string(pubKeyPEM), string(privKeyPEM), nil
+	engine.RegisterMethod("cryptLib.rsa_generate_key", "生成 RSA 密钥对", func(keyBits ...int) (string, string, error) {
+		return generateRSAKeyPair(keyBits...)
+	}, true)
+
+	engine.RegisterMethod("cryptLib.rsa_keygen", "生成 RSA 密钥对（兼容别名）", func(keyBits ...int) (string, string, error) {
+		return generateRSAKeyPair(keyBits...)
 	}, true)
 
 	engine.RegisterMethod("cryptLib.rsa_encrypt", "RSA 加密", func(data, key string, isPublicKey bool) (string, error) {
@@ -346,6 +352,33 @@ func (m *CryptModule) Register(engine model.Engine) error {
 
 	engine.RegisterMethod("cryptLib.rsa_decrypt", "RSA 解密", func(data, key string, isPublicKey bool) (string, error) {
 		return rsaDecrypt(data, key, isPublicKey)
+	}, true)
+	engine.RegisterMethod("cryptLib.base64_encode", "Base64 编码", func(data string) string {
+		return base64.StdEncoding.EncodeToString([]byte(data))
+	}, true)
+	engine.RegisterMethod("cryptLib.base64_decode", "Base64 解码", func(data string) (string, error) {
+		decoded, err := base64.StdEncoding.DecodeString(data)
+		if err != nil {
+			return "", err
+		}
+		return string(decoded), nil
+	}, true)
+	engine.RegisterMethod("cryptLib.md5", "MD5 哈希", func(data string) string {
+		hash := md5.Sum([]byte(data))
+		return hex.EncodeToString(hash[:])
+	}, true)
+	engine.RegisterMethod("cryptLib.sha256", "SHA256 哈希", func(data string) string {
+		hash := sha256.Sum256([]byte(data))
+		return hex.EncodeToString(hash[:])
+	}, true)
+	engine.RegisterMethod("cryptLib.sha512", "SHA512 哈希", func(data string) string {
+		hash := sha512.Sum512([]byte(data))
+		return hex.EncodeToString(hash[:])
+	}, true)
+	engine.RegisterMethod("cryptLib.hmac_sha256", "HMAC-SHA256", func(data, key string) string {
+		h := hmac.New(sha256.New, []byte(key))
+		h.Write([]byte(data))
+		return hex.EncodeToString(h.Sum(nil))
 	}, true)
 
 	return nil
@@ -388,6 +421,30 @@ func aesCrypt(data, key, operation, mode, iv string, padding bool) (string, erro
 	}
 
 	return string(result), nil
+}
+
+// generateRSAKeyPair 生成 RSA 公钥与私钥 PEM 文本
+func generateRSAKeyPair(keyBits ...int) (string, string, error) {
+	bits := 2048
+	if len(keyBits) > 0 && keyBits[0] != 0 {
+		bits = keyBits[0]
+	}
+
+	privateKey, err := rsa.GenerateKey(rand.Reader, bits)
+	if err != nil {
+		return "", "", err
+	}
+	pubKeyBytes := x509.MarshalPKCS1PublicKey(&privateKey.PublicKey)
+	pubKeyPEM := pem.EncodeToMemory(&pem.Block{
+		Type:  "RSA PUBLIC KEY",
+		Bytes: pubKeyBytes,
+	})
+	privKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
+	privKeyPEM := pem.EncodeToMemory(&pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: privKeyBytes,
+	})
+	return string(pubKeyPEM), string(privKeyPEM), nil
 }
 
 // pkcs7Pad PKCS#7 填充

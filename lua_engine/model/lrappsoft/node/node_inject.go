@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package node
 
 import (
@@ -1230,7 +1233,7 @@ func (m *NodeModule) registerNodeMethods(L *lua.LState, table *lua.LTable, id in
 		if L.GetTop() >= 1 && L.CheckAny(1).Type() == lua.LTTable {
 			_ = L.CheckTable(1) // 跳过 self 参数
 		}
-		
+
 		uiObj := m.getUiObject(nodeId)
 		if uiObj == nil {
 			L.Push(lua.LBool(false))
@@ -1373,9 +1376,9 @@ func (m *NodeModule) Register(engine model.Engine) error {
 	// 注册 node.new - 创建节点选择器
 	nodeTable.RawSetString("new", state.NewFunction(func(L *lua.LState) int {
 		sel := &Selector{
-			acc:      uiacc.New(0),
-			luaState: L,
-			module:   m,
+			acc:       uiacc.New(0),
+			luaState:  L,
+			module:    m,
 			condition: &SelectorCondition{},
 		}
 		L.Push(sel.toLuaTable())

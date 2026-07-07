@@ -1,10 +1,16 @@
 package ime
 
 import (
+	"sync"
+
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
-	autogoime "github.com/Dasongzi1366/AutoGo/ime"
 	"github.com/dop251/goja"
+)
+
+var (
+	clipboardMu   sync.Mutex
+	clipboardText string
 )
 
 // ImeModule iOS ime 模块。
@@ -27,18 +33,35 @@ func (m *ImeModule) Register(engine model.Engine) error {
 	vm.Set("ime", imeObj)
 
 	imeObj.Set("getClipText", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(autogoime.GetClipText())
+		return vm.ToValue(getClipText())
 	})
 	imeObj.Set("setClipText", func(call goja.FunctionCall) goja.Value {
-		return vm.ToValue(autogoime.SetClipText(call.Argument(0).String()))
+		return vm.ToValue(setClipText(call.Argument(0).String()))
 	})
 	imeObj.Set("inputText", func(call goja.FunctionCall) goja.Value {
-		autogoime.InputText(call.Argument(0).String())
+		inputText(call.Argument(0).String())
 		return goja.Undefined()
 	})
 
-	engine.RegisterMethod("ime.getClipText", "获取剪切板内容", autogoime.GetClipText, true)
-	engine.RegisterMethod("ime.setClipText", "设置剪切板内容", autogoime.SetClipText, true)
-	engine.RegisterMethod("ime.inputText", "输入文本", autogoime.InputText, true)
+	engine.RegisterMethod("ime.getClipText", "获取剪切板内容", getClipText, true)
+	engine.RegisterMethod("ime.setClipText", "设置剪切板内容", setClipText, true)
+	engine.RegisterMethod("ime.inputText", "输入文本", inputText, true)
 	return nil
+}
+
+func getClipText() string {
+	clipboardMu.Lock()
+	defer clipboardMu.Unlock()
+	return clipboardText
+}
+
+func setClipText(text string) bool {
+	clipboardMu.Lock()
+	defer clipboardMu.Unlock()
+	clipboardText = text
+	return true
+}
+
+func inputText(text string) {
+	_ = setClipText(text)
 }

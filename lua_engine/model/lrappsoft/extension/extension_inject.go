@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package extension
 
 import (
@@ -31,16 +34,16 @@ import (
 
 // ExtensionModule extension 模块（懒人精灵兼容）
 type ExtensionModule struct {
-	threads       map[int]*ThreadInfo
-	threadMutex   sync.Mutex
-	threadCounter int
-	cache         map[string]interface{}
-	cacheMutex    sync.RWMutex
-	mysqlConns    map[string]*sql.DB
-	mysqlMutex    sync.Mutex
+	threads        map[int]*ThreadInfo
+	threadMutex    sync.Mutex
+	threadCounter  int
+	cache          map[string]interface{}
+	cacheMutex     sync.RWMutex
+	mysqlConns     map[string]*sql.DB
+	mysqlMutex     sync.Mutex
 	ThrowException bool // 是否抛出异常
 	ShowWarning    bool // 是否显示警告信息
-	Debug         bool // 是否开启调试模式（打印脚本堆栈信息）
+	Debug          bool // 是否开启调试模式（打印脚本堆栈信息）
 }
 
 // ThreadInfo 线程信息
@@ -53,12 +56,12 @@ type ThreadInfo struct {
 // New 创建一个新的 ExtensionModule 实例
 func New() *ExtensionModule {
 	return &ExtensionModule{
-		threads:    make(map[int]*ThreadInfo),
-		cache:      make(map[string]interface{}),
-		mysqlConns: make(map[string]*sql.DB),
+		threads:        make(map[int]*ThreadInfo),
+		cache:          make(map[string]interface{}),
+		mysqlConns:     make(map[string]*sql.DB),
 		ThrowException: false,
 		ShowWarning:    true,
-		Debug:         false,
+		Debug:          false,
 	}
 }
 
@@ -185,7 +188,7 @@ func (m *ExtensionModule) Register(engine model.Engine) error {
 	// 注册 extension.fileMD5 - 获取文件的 MD5 码
 	extensionTable.RawSetString("fileMD5", state.NewFunction(func(L *lua.LState) int {
 		filepath := L.CheckString(1)
-		md5Str := files.GetMd5(filepath)
+		md5Str := extensionFileMD5(filepath)
 		L.Push(lua.LString(md5Str))
 		return 1
 	}))
@@ -290,7 +293,7 @@ func (m *ExtensionModule) Register(engine model.Engine) error {
 	// 注册 extension.jsonEncode - JSON 编码
 	extensionTable.RawSetString("jsonEncode", state.NewFunction(func(L *lua.LState) int {
 		value := L.CheckAny(1)
-		
+
 		// 将 Lua 值转换为 JSON
 		jsonStr, err := luaValueToJson(L, value)
 		if err != nil {
@@ -304,7 +307,7 @@ func (m *ExtensionModule) Register(engine model.Engine) error {
 	// 注册 extension.jsonDecode - JSON 解码
 	extensionTable.RawSetString("jsonDecode", state.NewFunction(func(L *lua.LState) int {
 		jsonStr := L.CheckString(1)
-		
+
 		// 将 JSON 字符串转换为 Lua 值
 		value, err := jsonToLua(L, jsonStr)
 		if err != nil {
@@ -505,7 +508,7 @@ func (m *ExtensionModule) Register(engine model.Engine) error {
 		}
 
 		// 截图
-		img := images.CaptureScreen(l, t, r, b, 0)
+		img := images.CaptureScreen(l, t, r, b)
 		if img == nil {
 			L.Push(lua.LNumber(0))
 			return 1
@@ -647,7 +650,6 @@ func (m *ExtensionModule) Register(engine model.Engine) error {
 
 	// 注册 LuaEngine.getContext - 获取 android 上下文对象
 	luaEngineTable.RawSetString("getContext", state.NewFunction(func(L *lua.LState) int {
-		_ = plugin.NewContext()
 		// 返回一个包装的 Lua 表
 		table := L.NewTable()
 		L.Push(table)
@@ -1040,6 +1042,26 @@ func (m *ExtensionModule) Register(engine model.Engine) error {
 
 	state.SetGlobal("Thread", threadTable)
 
+	engine.RegisterMethod("extension.md5", "字符串 MD5", extensionMD5, true)
+	engine.RegisterMethod("extension.fileMD5", "获取文件 MD5", extensionFileMD5, true)
+	engine.RegisterMethod("extension.base64Encode", "Base64 编码", extensionBase64Encode, true)
+	engine.RegisterMethod("extension.base64Decode", "Base64 解码", extensionBase64Decode, true)
+	engine.RegisterMethod("extension.encodeUrl", "URL 编码", extensionURLEncode, true)
+	engine.RegisterMethod("extension.decodeUrl", "URL 解码", extensionURLDecode, true)
+	engine.RegisterMethod("extension.urlEncode", "URL 编码别名", extensionURLEncode, true)
+	engine.RegisterMethod("extension.urlDecode", "URL 解码别名", extensionURLDecode, true)
+	engine.RegisterMethod("extension.htmlEncode", "HTML 编码", extensionHTMLEncode, true)
+	engine.RegisterMethod("extension.htmlDecode", "HTML 解码", extensionHTMLDecode, true)
+	engine.RegisterMethod("extension.jsonEncode", "JSON 编码", extensionJSONEncode, true)
+	engine.RegisterMethod("extension.jsonDecode", "JSON 解码", extensionJSONDecode, true)
+	engine.RegisterMethod("extension.getFileBase64", "获取文件 Base64 编码", extensionGetFileBase64, true)
+	engine.RegisterMethod("extension.fileExist", "文件或目录是否存在", extensionFileExist, true)
+	engine.RegisterMethod("extension.mkdir", "创建目录", extensionMkdir, true)
+	engine.RegisterMethod("extension.delfile", "删除文件或目录", extensionDeleteFile, true)
+	engine.RegisterMethod("extension.readFile", "读取文件内容", extensionReadFile, true)
+	engine.RegisterMethod("extension.writeFile", "写入文件内容", extensionWriteFile, true)
+	engine.RegisterMethod("extension.fileSize", "获取文件大小", extensionFileSize, true)
+
 	return nil
 }
 
@@ -1048,12 +1070,150 @@ func GetModule() model.Module {
 	return New()
 }
 
+func extensionMD5(str string) string {
+	hash := md5.Sum([]byte(str))
+	return hex.EncodeToString(hash[:])
+}
+
+func extensionFileMD5(path string) string {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+	hash := md5.Sum(data)
+	return hex.EncodeToString(hash[:])
+}
+
+func extensionBase64Encode(str string) string {
+	return base64.StdEncoding.EncodeToString([]byte(str))
+}
+
+func extensionBase64Decode(str string) interface{} {
+	decoded, err := base64.StdEncoding.DecodeString(str)
+	if err != nil {
+		return nil
+	}
+	return string(decoded)
+}
+
+func extensionURLEncode(str string) string {
+	return url.QueryEscape(str)
+}
+
+func extensionURLDecode(str string) interface{} {
+	decoded, err := url.QueryUnescape(str)
+	if err != nil {
+		return nil
+	}
+	return decoded
+}
+
+func extensionHTMLEncode(str string) string {
+	encoded := ""
+	for _, c := range str {
+		switch c {
+		case '<':
+			encoded += "&lt;"
+		case '>':
+			encoded += "&gt;"
+		case '&':
+			encoded += "&amp;"
+		case '"':
+			encoded += "&quot;"
+		case '\'':
+			encoded += "&#39;"
+		default:
+			encoded += string(c)
+		}
+	}
+	return encoded
+}
+
+func extensionHTMLDecode(str string) string {
+	decoded := str
+	decoded = strings.ReplaceAll(decoded, "&lt;", "<")
+	decoded = strings.ReplaceAll(decoded, "&gt;", ">")
+	decoded = strings.ReplaceAll(decoded, "&amp;", "&")
+	decoded = strings.ReplaceAll(decoded, "&quot;", "\"")
+	decoded = strings.ReplaceAll(decoded, "&#39;", "'")
+	return decoded
+}
+
+func extensionJSONEncode(value interface{}) interface{} {
+	data, err := json.Marshal(value)
+	if err != nil {
+		return nil
+	}
+	return string(data)
+}
+
+func extensionJSONDecode(jsonStr string) interface{} {
+	var result interface{}
+	if err := json.Unmarshal([]byte(jsonStr), &result); err != nil {
+		return nil
+	}
+	return result
+}
+
+func extensionGetFileBase64(path string) interface{} {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil
+	}
+	return base64.StdEncoding.EncodeToString(data)
+}
+
+func extensionFileExist(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
+}
+
+func extensionMkdir(path string) bool {
+	return os.MkdirAll(path, 0755) == nil
+}
+
+func extensionDeleteFile(path string) bool {
+	return os.RemoveAll(path) == nil
+}
+
+func extensionReadFile(path string) string {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+func extensionWriteFile(path, str string, appendFlag ...bool) bool {
+	flag := os.O_CREATE | os.O_WRONLY
+	if len(appendFlag) > 0 && appendFlag[0] {
+		flag |= os.O_APPEND
+	} else {
+		flag |= os.O_TRUNC
+	}
+	file, err := os.OpenFile(path, flag, 0644)
+	if err != nil {
+		return false
+	}
+	defer file.Close()
+	_, err = file.WriteString(str)
+	return err == nil
+}
+
+func extensionFileSize(path string) int {
+	info, err := os.Stat(path)
+	if err != nil {
+		return 0
+	}
+	return int(info.Size())
+}
+
 // luaValueToJson 将 Lua 值转换为 JSON 字符串
 func luaValueToJson(L *lua.LState, value lua.LValue) (string, error) {
 	if value == lua.LNil {
 		return "null", nil
 	}
-	
+
 	switch v := value.(type) {
 	case lua.LBool:
 		if bool(v) {

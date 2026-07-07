@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package math
 
 import (
@@ -103,6 +106,10 @@ func (m *MathModule) Register(engine model.Engine) error {
 	// 注册到方法注册表
 	engine.RegisterMethod("math.tointeger", "将值转换为整数", func(value interface{}) (interface{}, error) {
 		switch v := value.(type) {
+		case int:
+			return int64(v), nil
+		case int64:
+			return v, nil
 		case float64:
 			return int64(v), nil
 		case string:
@@ -117,6 +124,8 @@ func (m *MathModule) Register(engine model.Engine) error {
 
 	engine.RegisterMethod("math.type", "获取数字的类型", func(value interface{}) (string, error) {
 		switch v := value.(type) {
+		case int, int64:
+			return "integer", nil
 		case float64:
 			if v == math.Trunc(v) {
 				return "integer", nil

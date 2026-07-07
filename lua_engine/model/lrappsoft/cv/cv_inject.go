@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package cv
 
 import (
@@ -14,11 +17,11 @@ import (
 
 // CvModule cv 模块（懒人精灵兼容）
 type CvModule struct {
-	pointCounter  int64
+	pointCounter   int64
 	point2fCounter int64
-	pointMap     map[int64]*image.Point
-	point2fMap   map[int64]*image.Point
-	mu           sync.RWMutex
+	pointMap       map[int64]*image.Point
+	point2fMap     map[int64]*image.Point
+	mu             sync.RWMutex
 }
 
 // Name 返回模块名称

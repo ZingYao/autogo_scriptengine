@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package gobridge
 
 /*
@@ -35,6 +38,7 @@ char* call_bytes(void* ptr, void* data, size_t len) {
 */
 import "C"
 import (
+	"encoding/hex"
 	"fmt"
 	"sync"
 	"unsafe"
@@ -127,37 +131,27 @@ func (m *GoBridgeModule) Register(engine model.Engine) error {
 
 	// 注册 gobridge.tobytes - 将字符串转换为字节数组
 	gobridgeTable.RawSetString("tobytes", state.NewFunction(func(L *lua.LState) int {
-		str := L.CheckString(1)
-		bytes := []byte(str)
-
-		L.Push(lua.LString(fmt.Sprintf("%x", bytes)))
+		L.Push(lua.LString(bytesToHex(L.CheckString(1))))
 		return 1
 	}))
 
 	// 注册 gobridge.tostring - 将字节数组转换为字符串
 	gobridgeTable.RawSetString("tostring", state.NewFunction(func(L *lua.LState) int {
-		hexStr := L.CheckString(1)
-
-		bytes := make([]byte, 0)
-		for i := 0; i < len(hexStr); i += 2 {
-			if i+1 >= len(hexStr) {
-				break
-			}
-			b := 0
-			fmt.Sscanf(hexStr[i:i+2], "%x", &b)
-			bytes = append(bytes, byte(b))
-		}
-
-		L.Push(lua.LString(string(bytes)))
+		L.Push(lua.LString(hexToString(L.CheckString(1))))
 		return 1
 	}))
+
+	engine.RegisterMethod("gobridge.tobytes", "将字符串转换为十六进制字节串", bytesToHex, true)
+	engine.RegisterMethod("gobridge.tostring", "将十六进制字节串转换为字符串", hexToString, true)
+	engine.RegisterMethod("gobridge.call", "调用动态库函数", m.callSoFunctionValue, true)
 
 	return nil
 }
 
 // register 注册 Lua 回调函数
 // 参数: funcname (string) - 注册的函数名称
-//       function (function) - Lua回调函数
+//
+//	function (function) - Lua回调函数
 func (m *GoBridgeModule) register(L *lua.LState) int {
 	funcName := L.CheckString(1)
 	callback := L.CheckFunction(2)
@@ -171,7 +165,9 @@ func (m *GoBridgeModule) register(L *lua.LState) int {
 
 // CallLuaCallback 从 Go 代码调用已注册的 Lua 回调函数
 // 参数: funcName (string) - 函数名称
-//       args (...interface{}) - 传递给 Lua 函数的参数
+//
+//	args (...interface{}) - 传递给 Lua 函数的参数
+//
 // 返回值: ([]interface{}, error) - Lua 函数的返回值和错误
 func (m *GoBridgeModule) CallLuaCallback(funcName string, args ...interface{}) ([]interface{}, error) {
 	m.callbackMux.RLock()
@@ -208,8 +204,10 @@ func (m *GoBridgeModule) CallLuaCallback(funcName string, args ...interface{}) (
 
 // call 调用 Go 动态库中的函数
 // 参数: libpath (string) - Go编译的动态库路径(如"libgo.so")
-//       funcname (string) - Go导出的函数名
-//       ... (any) - 传递给Go函数的参数(可变参数)
+//
+//	funcname (string) - Go导出的函数名
+//	... (any) - 传递给Go函数的参数(可变参数)
+//
 // 返回值: (any) - 返回Go函数的执行结果(多种类型)
 func (m *GoBridgeModule) call(L *lua.LState) int {
 	libPath := L.CheckString(1)
@@ -237,8 +235,10 @@ func (m *GoBridgeModule) call(L *lua.LState) int {
 
 // callSoFunction 调用 .so 文件中的函数
 // 参数: libPath (string) - 动态库路径
-//       funcName (string) - 函数名称
-//       args (...interface{}) - 函数参数
+//
+//	funcName (string) - 函数名称
+//	args (...interface{}) - 函数参数
+//
 // 返回值: ([]interface{}, error) - 函数返回值和错误
 func (m *GoBridgeModule) callSoFunction(libPath, funcName string, args ...interface{}) ([]interface{}, error) {
 	m.libMux.Lock()
@@ -267,9 +267,25 @@ func (m *GoBridgeModule) callSoFunction(libPath, funcName string, args ...interf
 	return m.callFunction(funcPtr, args...)
 }
 
+func (m *GoBridgeModule) callSoFunctionValue(libPath, funcName string, args ...interface{}) (interface{}, error) {
+	results, err := m.callSoFunction(libPath, funcName, args...)
+	if err != nil {
+		return nil, err
+	}
+	if len(results) == 0 {
+		return nil, nil
+	}
+	if len(results) == 1 {
+		return results[0], nil
+	}
+	return results, nil
+}
+
 // callFunction 调用 C 函数指针
 // 参数: funcPtr (unsafe.Pointer) - 函数指针
-//       args (...interface{}) - 函数参数
+//
+//	args (...interface{}) - 函数参数
+//
 // 返回值: ([]interface{}, error) - 函数返回值和错误
 func (m *GoBridgeModule) callFunction(funcPtr unsafe.Pointer, args ...interface{}) ([]interface{}, error) {
 	if len(args) == 0 {
@@ -277,18 +293,20 @@ func (m *GoBridgeModule) callFunction(funcPtr unsafe.Pointer, args ...interface{
 		return []interface{}{}, nil
 	}
 
-	switch v := args[0].(type) {
-	case int:
+	if arg1, ok := bridgeIntArg(args[0]); ok {
 		if len(args) == 1 {
-			result := C.call_int_int(funcPtr, C.int(v))
+			result := C.call_int_int(funcPtr, C.int(arg1))
 			return []interface{}{int(result)}, nil
 		}
 		if len(args) == 2 {
-			if arg2, ok := args[1].(int); ok {
-				result := C.call_int_int_int(funcPtr, C.int(v), C.int(arg2))
+			if arg2, ok := bridgeIntArg(args[1]); ok {
+				result := C.call_int_int_int(funcPtr, C.int(arg1), C.int(arg2))
 				return []interface{}{int(result)}, nil
 			}
 		}
+	}
+
+	switch v := args[0].(type) {
 	case string:
 		if len(args) == 1 {
 			cStr := C.CString(v)
@@ -310,14 +328,40 @@ func (m *GoBridgeModule) callFunction(funcPtr unsafe.Pointer, args ...interface{
 	return nil, fmt.Errorf("unsupported function signature or argument types")
 }
 
+func bridgeIntArg(value interface{}) (int, bool) {
+	switch v := value.(type) {
+	case int:
+		return v, true
+	case int8:
+		return int(v), true
+	case int16:
+		return int(v), true
+	case int32:
+		return int(v), true
+	case int64:
+		return int(v), true
+	case uint:
+		return int(v), true
+	case uint8:
+		return int(v), true
+	case uint16:
+		return int(v), true
+	case uint32:
+		return int(v), true
+	case uint64:
+		return int(v), true
+	case float64:
+		return int(v), true
+	default:
+		return 0, false
+	}
+}
+
 // tobytes 将字符串转换为字节数组
 // 参数: str (string) - 要转换的字符串
 // 返回值: (string) - 字节数组的十六进制表示
 func (m *GoBridgeModule) tobytes(L *lua.LState) int {
-	str := L.CheckString(1)
-	bytes := []byte(str)
-
-	L.Push(lua.LString(fmt.Sprintf("%x", bytes)))
+	L.Push(lua.LString(bytesToHex(L.CheckString(1))))
 	return 1
 }
 
@@ -325,20 +369,27 @@ func (m *GoBridgeModule) tobytes(L *lua.LState) int {
 // 参数: hexStr (string) - 字节数组的十六进制表示
 // 返回值: (string) - 转换后的字符串
 func (m *GoBridgeModule) tostring(L *lua.LState) int {
-	hexStr := L.CheckString(1)
-
-	bytes := make([]byte, 0)
-	for i := 0; i < len(hexStr); i += 2 {
-		if i+1 >= len(hexStr) {
-			break
-		}
-		b := 0
-		fmt.Sscanf(hexStr[i:i+2], "%x", &b)
-		bytes = append(bytes, byte(b))
-	}
-
-	L.Push(lua.LString(string(bytes)))
+	L.Push(lua.LString(hexToString(L.CheckString(1))))
 	return 1
+}
+
+func bytesToHex(str string) string {
+	return hex.EncodeToString([]byte(str))
+}
+
+func hexToString(hexStr string) string {
+	bytes, err := hex.DecodeString(evenHexPrefix(hexStr))
+	if err != nil {
+		return ""
+	}
+	return string(bytes)
+}
+
+func evenHexPrefix(hexStr string) string {
+	if len(hexStr)%2 == 0 {
+		return hexStr
+	}
+	return hexStr[:len(hexStr)-1]
 }
 
 // GoValueToLua 将 Go 值转换为 Lua 值

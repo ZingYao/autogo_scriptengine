@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package http
 
 import (
@@ -36,7 +39,7 @@ func (m *HttpModule) Register(engine model.Engine) error {
 		packagePreload = state.NewTable()
 		state.SetGlobal("package", packagePreload)
 	}
-	
+
 	packageTable := packagePreload.(*lua.LTable)
 	preloadTable := packageTable.RawGetString("preload")
 	if preloadTable == lua.LNil {
@@ -450,63 +453,66 @@ func (m *HttpModule) Register(engine model.Engine) error {
 	sslTable.RawSetString("https", httpsTable)
 	state.SetGlobal("ssl", sslTable)
 
-	// 注册到方法注册表
-	engine.RegisterMethod("http.request", "发起网络请求", func(url, method string, headers map[string]string, body string, timeout int, sslVerify bool) (int, string, map[string]string, string, error) {
-		if method == "" {
-			method = "GET"
-		}
-		if timeout == 0 {
-			timeout = 30
-		}
-
-		client := &http.Client{
-			Timeout: time.Duration(timeout) * time.Second,
-			Transport: &http.Transport{
-				TLSClientConfig: &tls.Config{
-					InsecureSkipVerify: !sslVerify,
-				},
-			},
-		}
-
-		var req *http.Request
-		var err error
-
-		if body != "" {
-			req, err = http.NewRequest(method, url, strings.NewReader(body))
-		} else {
-			req, err = http.NewRequest(method, url, nil)
-		}
-
-		if err != nil {
-			return 0, "", nil, "", err
-		}
-
-		for key, value := range headers {
-			req.Header.Set(key, value)
-		}
-
-		resp, err := client.Do(req)
-		if err != nil {
-			return 0, "", nil, "", err
-		}
-		defer resp.Body.Close()
-
-		respBody, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return 0, "", nil, "", err
-		}
-
-		respHeaders := make(map[string]string)
-		for key, values := range resp.Header {
-			if len(values) > 0 {
-				respHeaders[key] = values[0]
-			}
-		}
-
-		return resp.StatusCode, resp.Status, respHeaders, string(respBody), nil
-	}, true)
+	engine.RegisterMethod("http.request", "发起 HTTP 网络请求", httpRequest, true)
+	engine.RegisterMethod("https.request", "发起 HTTPS 网络请求", httpRequest, true)
+	engine.RegisterMethod("ssl.https.request", "发起 SSL HTTPS 网络请求", httpRequest, true)
 
 	return nil
+}
+
+func httpRequest(url, method string, headers map[string]string, body string, timeout int, sslVerify bool) (int, string, map[string]string, string, error) {
+	if method == "" {
+		method = "GET"
+	}
+	if timeout == 0 {
+		timeout = 30
+	}
+
+	client := &http.Client{
+		Timeout: time.Duration(timeout) * time.Second,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: !sslVerify,
+			},
+		},
+	}
+
+	var req *http.Request
+	var err error
+
+	if body != "" {
+		req, err = http.NewRequest(method, url, strings.NewReader(body))
+	} else {
+		req, err = http.NewRequest(method, url, nil)
+	}
+
+	if err != nil {
+		return 0, "", nil, "", err
+	}
+
+	for key, value := range headers {
+		req.Header.Set(key, value)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return 0, "", nil, "", err
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return 0, "", nil, "", err
+	}
+
+	respHeaders := make(map[string]string)
+	for key, values := range resp.Header {
+		if len(values) > 0 {
+			respHeaders[key] = values[0]
+		}
+	}
+
+	return resp.StatusCode, resp.Status, respHeaders, string(respBody), nil
 }
 
 // getTableString 从表中获取字符串值

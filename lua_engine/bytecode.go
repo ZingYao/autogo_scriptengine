@@ -6,18 +6,20 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 
-	lua "github.com/yuin/gopher-lua"
-	"github.com/yuin/gopher-lua/parse"
+	gluaBytecode "github.com/ZingYao/go-lua-vm/bytecode"
+	"github.com/ZingYao/go-lua-vm/compiler/codegen"
+	"github.com/ZingYao/go-lua-vm/compiler/parser"
+	glua "github.com/ZingYao/go-lua-vm/lua"
 )
 
 // Bytecode 表示编译后的 Lua 字节码
-// 注意：gopher-lua 的字节码格式与标准 Lua 字节码不兼容
-// 这是 gopher-lua 特有的字节码格式，仅能在 gopher-lua 虚拟机中执行
+// 当前可执行内容使用 go-lua-vm 的 Lua 5.3 binary chunk，Proto 仅保留旧 API 兼容。
 type Bytecode struct {
-	// Proto 是编译后的函数原型
-	Proto *lua.FunctionProto
+	// Chunk 是 go-lua-vm 可直接加载执行的 Lua 5.3 binary chunk。
+	Chunk []byte
+	// Source 保存原始源码，便于后续调试和旧序列化兼容。
+	Source string
 	// Name 是字节码的名称（通常是文件名或脚本名）
 	Name string
 }
@@ -30,7 +32,7 @@ func (e *LuaEngine) CompileString(source string, name ...string) (*Bytecode, err
 	e.mu.RLock()
 	defer e.mu.RUnlock()
 
-	if e.state == nil {
+	if e.vmState == nil {
 		return nil, fmt.Errorf("Lua engine not initialized")
 	}
 
@@ -40,22 +42,22 @@ func (e *LuaEngine) CompileString(source string, name ...string) (*Bytecode, err
 		scriptName = name[0]
 	}
 
-	// 解析 Lua 源码
-	reader := strings.NewReader(source)
-	chunk, err := parse.Parse(reader, scriptName)
+	// 使用 go-lua-vm parser 解析源码，确保预编译阶段暴露语法错误。
+	chunk, err := parser.NewWithSyntax(source, e.vmState.Options().SyntaxExtensions).ParseChunk()
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse Lua source: %v", err)
 	}
 
-	// 编译为函数原型
-	proto, err := lua.Compile(chunk, scriptName)
+	// 编译为 Lua 5.3 Proto 并 dump 成 binary chunk，执行时不再回到 gopher-lua。
+	proto, err := codegen.CompileChunk(chunk, scriptName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to compile Lua source: %v", err)
 	}
 
 	return &Bytecode{
-		Proto: proto,
-		Name:  scriptName,
+		Chunk:  gluaBytecode.DumpBinaryChunk(proto),
+		Source: source,
+		Name:   scriptName,
 	}, nil
 }
 
@@ -66,7 +68,7 @@ func (e *LuaEngine) CompileFile(path string) (*Bytecode, error) {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
 
-	if e.state == nil {
+	if e.vmState == nil {
 		return nil, fmt.Errorf("Lua engine not initialized")
 	}
 
@@ -109,7 +111,7 @@ func (e *LuaEngine) ExecuteBytecode(bytecode *Bytecode) error {
 // bytecode: 编译后的字节码对象
 // mode: 执行模式（同步或异步）
 func (e *LuaEngine) ExecuteBytecodeWithMode(bytecode *Bytecode, mode ExecuteMode) error {
-	if bytecode == nil || bytecode.Proto == nil {
+	if bytecode == nil || len(bytecode.Chunk) == 0 {
 		return fmt.Errorf("invalid bytecode: nil")
 	}
 
@@ -171,19 +173,27 @@ func (e *LuaEngine) executeBytecodeOnce(bytecode *Bytecode) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	if e.state == nil {
+	if e.vmState == nil {
 		return fmt.Errorf("Lua engine not initialized")
 	}
 
-	// 从函数原型创建 Lua 函数
-	lfunc := e.state.NewFunctionFromProto(bytecode.Proto)
-
-	// 注册特殊的 os.exit 函数，用于控制退出动作
-	e.registerExitControl()
-
-	// 压入函数并调用
-	e.state.Push(lfunc)
-	return e.state.PCall(0, lua.MultRet, nil)
+	// 从 go-lua-vm binary chunk 加载 closure，并在 protected call 边界内执行。
+	chunkName := bytecode.Name
+	if chunkName == "" {
+		chunkName = "=(bytecode)"
+	}
+	err := glua.ProtectedCall(e.vmState, func(callState *glua.State) error {
+		if err := glua.LoadString(callState, string(bytecode.Chunk), chunkName); err != nil {
+			return err
+		}
+		closureValue, err := callState.Pop()
+		if err != nil {
+			return err
+		}
+		_, err = glua.Call(callState, closureValue)
+		return err
+	})
+	return e.handleLuaVMError(err)
 }
 
 // SerializeBytecode 将字节码序列化为字节数组
@@ -191,24 +201,22 @@ func (e *LuaEngine) executeBytecodeOnce(bytecode *Bytecode) error {
 // bytecode: 要序列化的字节码对象
 // 返回序列化后的字节数组和可能的错误
 func SerializeBytecode(bytecode *Bytecode) ([]byte, error) {
-	if bytecode == nil || bytecode.Proto == nil {
+	if bytecode == nil || len(bytecode.Chunk) == 0 {
 		return nil, fmt.Errorf("invalid bytecode: nil")
 	}
 
 	var buf bytes.Buffer
 	encoder := gob.NewEncoder(&buf)
 
-	// 注册 FunctionProto 类型
-	gob.Register(&lua.FunctionProto{})
-
 	// 序列化字节码
 	err := encoder.Encode(struct {
-		Name string
-		// 注意：FunctionProto 的序列化需要特殊处理
-		// 这里我们保存原始源码信息，以便后续重新编译
+		Name   string
+		Chunk  []byte
 		Source string
 	}{
-		Name: bytecode.Name,
+		Name:   bytecode.Name,
+		Chunk:  bytecode.Chunk,
+		Source: bytecode.Source,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to serialize bytecode: %v", err)
@@ -228,7 +236,9 @@ func DeserializeBytecode(data []byte) (*Bytecode, error) {
 	}
 
 	var result struct {
-		Name string
+		Name   string
+		Chunk  []byte
+		Source string
 	}
 
 	buf := bytes.NewBuffer(data)
@@ -239,17 +249,15 @@ func DeserializeBytecode(data []byte) (*Bytecode, error) {
 		return nil, fmt.Errorf("failed to deserialize bytecode: %v", err)
 	}
 
-	// 注意：由于无法直接反序列化 FunctionProto
-	// 这里返回一个空的字节码对象，实际使用时需要重新编译
 	return &Bytecode{
-		Name:  result.Name,
-		Proto: nil,
+		Name:   result.Name,
+		Chunk:  result.Chunk,
+		Source: result.Source,
 	}, nil
 }
 
 // SaveBytecodeToFile 将字节码保存到文件
-// 注意：由于 gopher-lua 的限制，这个方法主要用于保存元数据
-// 实际的字节码执行需要保留源码并重新编译
+// 保存的内容包含 go-lua-vm Lua 5.3 binary chunk，后续可直接加载执行。
 // bytecode: 要保存的字节码对象
 // path: 目标文件路径
 func (e *LuaEngine) SaveBytecodeToFile(bytecode *Bytecode, path string) error {
@@ -273,8 +281,7 @@ func (e *LuaEngine) SaveBytecodeToFile(bytecode *Bytecode, path string) error {
 }
 
 // LoadBytecodeFromFile 从文件加载字节码
-// 注意：由于 gopher-lua 的限制，这个方法主要用于加载元数据
-// 实际的字节码执行需要保留源码并重新编译
+// 加载结果包含 go-lua-vm Lua 5.3 binary chunk，可直接传给 ExecuteBytecode。
 // path: 字节码文件路径
 func (e *LuaEngine) LoadBytecodeFromFile(path string) (*Bytecode, error) {
 	// 读取文件
@@ -292,21 +299,18 @@ func (e *LuaEngine) LoadBytecodeFromFile(path string) (*Bytecode, error) {
 	return bytecode, nil
 }
 
-// GetFunctionProto 获取字节码中的函数原型
-// 这允许高级用户直接访问 gopher-lua 的底层字节码结构
-func (b *Bytecode) GetFunctionProto() *lua.FunctionProto {
-	if b == nil {
-		return nil
-	}
-	return b.Proto
-}
-
 // GetName 获取字节码的名称
 func (b *Bytecode) GetName() string {
 	if b == nil {
 		return ""
 	}
 	return b.Name
+}
+
+// GetFunctionProto 兼容旧 API。
+// go-lua-vm 不暴露 gopher-lua FunctionProto，迁移后固定返回 nil。
+func (b *Bytecode) GetFunctionProto() interface{} {
+	return nil
 }
 
 // CompileString 全局函数：将 Lua 源码字符串编译为字节码

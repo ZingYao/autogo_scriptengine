@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package network
 
 import (
@@ -747,5 +750,194 @@ func (m *NetworkModule) Register(engine model.Engine) error {
 		return 1
 	}))
 
+	engine.RegisterMethod("network.httpGet", "HTTP GET请求", networkHTTPGet, true)
+	engine.RegisterMethod("network.httpPost", "HTTP POST请求", networkHTTPPost, true)
+	engine.RegisterMethod("network.httpPostData", "HTTP POST任意数据", networkHTTPPostData, true)
+	engine.RegisterMethod("network.downloadFile", "下载文件", networkDownloadFile, true)
+	engine.RegisterMethod("network.uploadFile", "上传文件", networkUploadFile, true)
+	engine.RegisterMethod("network.httpUpload", "HTTP 文件上传", networkHTTPUpload, true)
+	engine.RegisterMethod("network.httpDownload", "HTTP 文件下载", networkHTTPDownload, true)
+
 	return nil
+}
+
+func networkHTTPGet(urlStr string, timeout ...int) (map[string]interface{}, error) {
+	client := &http.Client{Timeout: networkTimeout(timeout...)}
+	resp, err := client.Get(urlStr)
+	if err != nil {
+		return map[string]interface{}{"body": "", "statusCode": 0}, nil
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return map[string]interface{}{"body": "", "statusCode": 0}, nil
+	}
+	return map[string]interface{}{
+		"body":       string(body),
+		"statusCode": resp.StatusCode,
+	}, nil
+}
+
+func networkHTTPPost(urlStr, postData string, timeout ...int) (map[string]interface{}, error) {
+	client := &http.Client{Timeout: networkTimeout(timeout...)}
+	resp, err := client.Post(urlStr, "application/x-www-form-urlencoded", strings.NewReader(postData))
+	if err != nil {
+		return map[string]interface{}{"body": "", "statusCode": 0}, nil
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return map[string]interface{}{"body": "", "statusCode": 0}, nil
+	}
+	return map[string]interface{}{
+		"body":       string(body),
+		"statusCode": resp.StatusCode,
+	}, nil
+}
+
+func networkHTTPPostData(urlStr, params, contentType string, timeout ...int) string {
+	req, err := http.NewRequest("POST", urlStr, strings.NewReader(params))
+	if err != nil {
+		return ""
+	}
+	req.Header.Set("Content-Type", contentType)
+
+	client := &http.Client{Timeout: networkTimeout(timeout...)}
+	resp, err := client.Do(req)
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return ""
+	}
+	return string(body)
+}
+
+func networkDownloadFile(urlStr, savePath string) bool {
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Get(urlStr)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+	dir := filepath.Dir(savePath)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return false
+	}
+	file, err := os.Create(savePath)
+	if err != nil {
+		return false
+	}
+	defer file.Close()
+	_, err = io.Copy(file, resp.Body)
+	return err == nil
+}
+
+func networkUploadFile(urlStr, uploadFile string, timeout ...int) string {
+	options := make([]interface{}, 0, len(timeout))
+	for _, timeoutValue := range timeout {
+		options = append(options, timeoutValue)
+	}
+	body, statusCode := networkHTTPUpload(urlStr, "file", uploadFile, options...)
+	if statusCode == 0 {
+		return ""
+	}
+	return body
+}
+
+func networkHTTPUpload(urlStr, fieldName, uploadFile string, options ...interface{}) (string, int) {
+	headers, timeout := networkUploadOptions(options...)
+	file, err := os.Open(uploadFile)
+	if err != nil {
+		return "", 0
+	}
+	defer file.Close()
+
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile(fieldName, filepath.Base(uploadFile))
+	if err != nil {
+		return "", 0
+	}
+	if _, err := io.Copy(part, file); err != nil {
+		return "", 0
+	}
+	if err := writer.Close(); err != nil {
+		return "", 0
+	}
+
+	req, err := http.NewRequest("POST", urlStr, body)
+	if err != nil {
+		return "", 0
+	}
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	for key, value := range headers {
+		req.Header.Set(key, fmt.Sprint(value))
+	}
+
+	client := &http.Client{Timeout: networkTimeout(timeout)}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", 0
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", 0
+	}
+	return string(respBody), resp.StatusCode
+}
+
+func networkUploadOptions(options ...interface{}) (map[string]interface{}, int) {
+	headers := map[string]interface{}{}
+	timeout := 30
+	for _, option := range options {
+		switch value := option.(type) {
+		case map[string]interface{}:
+			headers = value
+		case map[string]string:
+			for key, item := range value {
+				headers[key] = item
+			}
+		case int:
+			timeout = value
+		case int64:
+			timeout = int(value)
+		case float64:
+			timeout = int(value)
+		}
+	}
+	return headers, timeout
+}
+
+func networkHTTPDownload(urlStr, savePath string, timeout ...int) bool {
+	client := &http.Client{Timeout: networkTimeout(timeout...)}
+	resp, err := client.Get(urlStr)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+	dir := filepath.Dir(savePath)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return false
+	}
+	file, err := os.Create(savePath)
+	if err != nil {
+		return false
+	}
+	defer file.Close()
+	_, err = io.Copy(file, resp.Body)
+	return err == nil
+}
+
+func networkTimeout(timeout ...int) time.Duration {
+	seconds := 30
+	if len(timeout) > 0 && timeout[0] > 0 {
+		seconds = timeout[0]
+	}
+	return time.Duration(seconds) * time.Second
 }

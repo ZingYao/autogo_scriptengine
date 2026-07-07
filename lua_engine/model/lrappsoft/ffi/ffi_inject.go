@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package ffi
 
 import (
@@ -78,6 +81,19 @@ func (m *FfiModule) Register(engine model.Engine) error {
 
 	// 同时注册为全局变量 ffi（兼容直接调用）
 	state.SetGlobal("ffi", ffiModuleTable)
+
+	engine.RegisterMethod("ffi.cdef", "定义 C 类型和函数占位实现", func(string) (interface{}, string) {
+		return nil, "ffi.cdef 在 AutoGo 中不可用，因为 gopher-lua 不支持 LuaJIT 的 FFI 特性"
+	}, true)
+	engine.RegisterMethod("ffi.load", "加载动态库占位实现", func(string) (interface{}, string) {
+		return nil, "ffi.load 在 AutoGo 中不可用，因为 gopher-lua 不支持 LuaJIT 的 FFI 特性"
+	}, true)
+	engine.RegisterMethod("ffi.sizeof", "获取类型大小占位实现", func(string) int {
+		return 0
+	}, true)
+	engine.RegisterMethod("ffi.new", "创建 cdata 对象占位实现", func(string) interface{} {
+		return nil
+	}, true)
 
 	return nil
 }

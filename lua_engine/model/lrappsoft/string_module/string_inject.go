@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package string_module
 
 import (
@@ -279,5 +282,131 @@ func (m *StringModule) Register(engine model.Engine) error {
 	// 注册 splitStr 到全局（可以直接调用，不需要 string.splitStr）
 	state.SetGlobal("splitStr", stringTable.(*lua.LTable).RawGetString("splitStr"))
 
+	engine.RegisterMethod("string.splitStr", "字符串分割", func(src, sep string) []string {
+		return strings.Split(src, sep)
+	}, true)
+	engine.RegisterMethod("utf8.inStr", "UTF-8 字符串查找", utf8InStr, true)
+	engine.RegisterMethod("utf8.inStrRev", "UTF-8 字符串反向查找", utf8InStrRev, true)
+	engine.RegisterMethod("utf8.strReverse", "UTF-8 字符串反转", utf8StrReverse, true)
+	engine.RegisterMethod("utf8.length", "UTF-8 字符串长度", func(s string) int {
+		return utf8.RuneCountInString(s)
+	}, true)
+	engine.RegisterMethod("utf8.left", "UTF-8 字符串左侧截取", utf8Left, true)
+	engine.RegisterMethod("utf8.right", "UTF-8 字符串右侧截取", utf8Right, true)
+	engine.RegisterMethod("utf8.mid", "UTF-8 字符串中间截取", utf8Mid, true)
+	engine.RegisterMethod("utf8.strCut", "UTF-8 字符串裁剪", utf8StrCut, true)
+
 	return nil
+}
+
+func utf8InStr(start int, s, pattern string) int {
+	runes := []rune(s)
+	patternRunes := []rune(pattern)
+	if start < 1 || start > len(runes) {
+		return 0
+	}
+	for i := start - 1; i < len(runes); i++ {
+		if i+len(patternRunes) <= len(runes) {
+			match := true
+			for j := 0; j < len(patternRunes); j++ {
+				if runes[i+j] != patternRunes[j] {
+					match = false
+					break
+				}
+			}
+			if match {
+				return i + 1
+			}
+		}
+	}
+	return 0
+}
+
+func utf8InStrRev(s, pattern string, start int) int {
+	runes := []rune(s)
+	patternRunes := []rune(pattern)
+	if start < 1 || start > len(runes) {
+		start = len(runes)
+	}
+	for i := start - 1; i >= 0; i-- {
+		if i+len(patternRunes) <= len(runes) {
+			match := true
+			for j := 0; j < len(patternRunes); j++ {
+				if runes[i+j] != patternRunes[j] {
+					match = false
+					break
+				}
+			}
+			if match {
+				return i + 1
+			}
+		}
+	}
+	return 0
+}
+
+func utf8StrReverse(s string) string {
+	runes := []rune(s)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
+}
+
+func utf8Left(s string, n int) string {
+	runes := []rune(s)
+	if n < 0 {
+		n = 0
+	}
+	if n > len(runes) {
+		n = len(runes)
+	}
+	return string(runes[:n])
+}
+
+func utf8Right(s string, n int) string {
+	runes := []rune(s)
+	if n < 0 {
+		n = 0
+	}
+	if n > len(runes) {
+		n = len(runes)
+	}
+	return string(runes[len(runes)-n:])
+}
+
+func utf8Mid(s string, start, length int) string {
+	runes := []rune(s)
+	if start < 0 {
+		start = 0
+	}
+	if start >= len(runes) {
+		return ""
+	}
+	if length < 0 {
+		length = 0
+	}
+	end := start + length
+	if end > len(runes) {
+		end = len(runes)
+	}
+	return string(runes[start:end])
+}
+
+func utf8StrCut(s string, start, length int) string {
+	runes := []rune(s)
+	if start < 0 {
+		start = 0
+	}
+	if start >= len(runes) {
+		return s
+	}
+	if length < 0 {
+		length = 0
+	}
+	end := start + length
+	if end > len(runes) {
+		end = len(runes)
+	}
+	return string(runes[:start]) + string(runes[end:])
 }

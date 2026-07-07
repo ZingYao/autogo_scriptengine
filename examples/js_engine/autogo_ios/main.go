@@ -25,12 +25,7 @@ func main() {
 	// 注册 iOS autogo 风格模块，避免注入 Android-only 模块。
 	engine.RegisterModule(all_models.AllModules...)
 
-	// 执行工具脚本，主脚本可通过 require("./utils") 引用。
-	if err := engine.ExecuteFile("scripts/utils.js"); err != nil {
-		log.Fatalf("Failed to execute utils.js: %v", err)
-	}
-
-	// 执行 iOS 主脚本。
+	// 只执行 iOS 主脚本；用户工具脚本由 main.js 中的 require("./utils") 自动加载。
 	if err := engine.ExecuteFile("scripts/main.js"); err != nil {
 		log.Fatalf("Failed to execute main.js: %v", err)
 	}

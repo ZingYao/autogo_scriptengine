@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package ui
 
 import (
@@ -12,7 +15,7 @@ import (
 type UIModule struct {
 	ThrowException bool // 是否抛出异常
 	ShowWarning    bool // 是否显示警告信息
-	Debug         bool // 是否开启调试模式（打印脚本堆栈信息）
+	Debug          bool // 是否开启调试模式（打印脚本堆栈信息）
 }
 
 // New 创建一个新的 UIModule 实例
@@ -20,7 +23,7 @@ func New() *UIModule {
 	return &UIModule{
 		ThrowException: false,
 		ShowWarning:    true,
-		Debug:         false,
+		Debug:          false,
 	}
 }
 

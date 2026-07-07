@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package json
 
 import (
@@ -96,29 +99,61 @@ func (m *JsonModule) Register(engine model.Engine) error {
 		return 1
 	}))
 
-	engine.RegisterMethod("json.stringify", "将 Lua 值序列化为 JSON 字符串（自动判断数组或对象）", func(value lua.LValue) (string, error) {
-		return luaValueToJSON(value)
-	}, true)
-	engine.RegisterMethod("json.stringifyArr", "将 Lua 值强制序列化为 JSON 数组", func(value lua.LValue) (string, error) {
-		return luaValueToJSONArray(value)
-	}, true)
-	engine.RegisterMethod("json.stringifyObj", "将 Lua 值强制序列化为 JSON 对象", func(value lua.LValue) (string, error) {
-		return luaValueToJSONObject(value)
-	}, true)
-	engine.RegisterMethod("json.parse", "将 JSON 字符串解析为 Lua 值", func(jsonStr string) (lua.LValue, error) {
-		L := state
-		var result interface{}
-		err := json.Unmarshal([]byte(jsonStr), &result)
-		if err != nil {
-			return nil, err
-		}
-		return jsonToLuaValue(L, result)
-	}, true)
-	engine.RegisterMethod("json.format", "将 Lua 值格式化序列化为 JSON 字符串", func(value lua.LValue) (string, error) {
-		return luaValueToJSONFormatted(value)
-	}, true)
+	engine.RegisterMethod("json.stringify", "将 Lua 值序列化为 JSON 字符串（自动判断数组或对象）", jsonStringifyValue, true)
+	engine.RegisterMethod("json.stringifyArr", "将 Lua 值强制序列化为 JSON 数组", jsonStringifyArrayValue, true)
+	engine.RegisterMethod("json.stringifyObj", "将 Lua 值强制序列化为 JSON 对象", jsonStringifyObjectValue, true)
+	engine.RegisterMethod("json.parse", "将 JSON 字符串解析为 Lua 值", jsonParseValue, true)
+	engine.RegisterMethod("json.format", "将 Lua 值格式化序列化为 JSON 字符串", jsonFormatValue, true)
 
 	return nil
+}
+
+func jsonStringifyValue(value interface{}) (string, error) {
+	result, err := json.Marshal(value)
+	if err != nil {
+		return "", err
+	}
+	return string(result), nil
+}
+
+func jsonStringifyArrayValue(value interface{}) (string, error) {
+	array, ok := value.([]interface{})
+	if !ok {
+		array = []interface{}{value}
+	}
+	result, err := json.Marshal(array)
+	if err != nil {
+		return "", err
+	}
+	return string(result), nil
+}
+
+func jsonStringifyObjectValue(value interface{}) (string, error) {
+	object, ok := value.(map[string]interface{})
+	if !ok {
+		return "", fmt.Errorf("value is not a table")
+	}
+	result, err := json.Marshal(object)
+	if err != nil {
+		return "", err
+	}
+	return string(result), nil
+}
+
+func jsonParseValue(jsonStr string) (interface{}, error) {
+	var result interface{}
+	if err := json.Unmarshal([]byte(jsonStr), &result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func jsonFormatValue(value interface{}) (string, error) {
+	result, err := json.MarshalIndent(value, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(result), nil
 }
 
 func luaValueToJSON(value lua.LValue) (string, error) {

@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package lfs
 
 import (
@@ -327,6 +330,33 @@ func (m *LfsModule) Register(engine model.Engine) error {
 		return os.Getwd()
 	}, true)
 
+	engine.RegisterMethod("lfs.dir", "列出目录下的文件名", func(path string) ([]string, error) {
+		entries, err := os.ReadDir(path)
+		if err != nil {
+			return nil, err
+		}
+
+		names := make([]string, 0, len(entries))
+		for _, entry := range entries {
+			names = append(names, entry.Name())
+		}
+		return names, nil
+	}, true)
+
+	engine.RegisterMethod("lfs.link", "创建硬链接", func(src, dest string) (bool, error) {
+		if err := os.Link(src, dest); err != nil {
+			return false, err
+		}
+		return true, nil
+	}, true)
+
+	engine.RegisterMethod("lfs.symlink", "创建符号链接", func(src, dest string) (bool, error) {
+		if err := os.Symlink(src, dest); err != nil {
+			return false, err
+		}
+		return true, nil
+	}, true)
+
 	engine.RegisterMethod("lfs.mkdir", "创建目录", func(path string) error {
 		return os.Mkdir(path, 0755)
 	}, true)
@@ -338,6 +368,34 @@ func (m *LfsModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("lfs.touch", "更新文件时间", func(path string) error {
 		now := time.Now()
 		return os.Chtimes(path, now, now)
+	}, true)
+
+	engine.RegisterMethod("lfs.symlinkattributes", "获取符号链接属性", func(path string) (map[string]interface{}, error) {
+		fileInfo, err := os.Lstat(path)
+		if err != nil {
+			return nil, err
+		}
+
+		return map[string]interface{}{
+			"mode":         getFileMode(fileInfo.Mode()),
+			"size":         fileInfo.Size(),
+			"modification": fileInfo.ModTime().Unix(),
+			"access":       fileInfo.ModTime().Unix(),
+		}, nil
+	}, true)
+
+	engine.RegisterMethod("lfs.lock_dir", "锁定目录", func(path string) (bool, error) {
+		lockFilePath := filepath.Join(path, ".lock")
+		file, err := os.Create(lockFilePath)
+		if err != nil {
+			return false, err
+		}
+		defer file.Close()
+
+		if err := lockFileFunc(file, "w"); err != nil {
+			return false, err
+		}
+		return true, nil
 	}, true)
 
 	return nil

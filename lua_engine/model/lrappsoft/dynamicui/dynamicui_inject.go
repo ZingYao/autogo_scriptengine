@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package dynamicui
 
 import (
@@ -12,7 +15,7 @@ import (
 type DynamicUIModule struct {
 	ThrowException bool // 是否抛出异常
 	ShowWarning    bool // 是否显示警告信息
-	Debug         bool // 是否开启调试模式（打印脚本堆栈信息）
+	Debug          bool // 是否开启调试模式（打印脚本堆栈信息）
 }
 
 // Name 返回模块名称
@@ -36,6 +39,9 @@ func (m *DynamicUIModule) Register(engine model.Engine) error {
 
 	state := engine.GetState()
 	m.Inject(state)
+	for _, methodName := range dynamicUIMethodNames {
+		engine.RegisterMethod("ui."+methodName, "dynamicui 占位方法", m.placeholderMethod(methodName), true)
+	}
 	return nil
 }
 
@@ -44,7 +50,7 @@ func New() *DynamicUIModule {
 	return &DynamicUIModule{
 		ThrowException: false,
 		ShowWarning:    true,
-		Debug:         false,
+		Debug:          false,
 	}
 }
 
@@ -64,7 +70,7 @@ func (m *DynamicUIModule) handleEmptyMethod(methodName string, L *lua.LState) in
 			fmt.Printf("       源文件: %s\n", dbg.Source)
 			fmt.Printf("       What: %s, 调用行: %d\n", dbg.What, dbg.LineDefined)
 		}
-		fmt.Println("=== 堆栈结束 ===\n")
+		fmt.Println("=== 堆栈结束 ===")
 	}
 
 	// 打印警告信息
@@ -445,6 +451,91 @@ func (m *DynamicUIModule) Inject(state *lua.LState) {
 
 	// 将 ui 表注册到全局环境
 	state.SetGlobal("ui", uiTable)
+}
+
+func (m *DynamicUIModule) placeholderMethod(methodName string) func(...interface{}) (bool, error) {
+	return func(...interface{}) (bool, error) {
+		if m.ShowWarning {
+			fmt.Printf("[警告] dynamicui.%s 方法未实现，此功能在 AutoGo 中不支持\n", methodName)
+		}
+		if m.ThrowException {
+			return false, fmt.Errorf("dynamicui.%s 方法未实现，此功能在 AutoGo 中不支持", methodName)
+		}
+		return true, nil
+	}
+}
+
+var dynamicUIMethodNames = []string{
+	"newLayout",
+	"show",
+	"dismiss",
+	"newRow",
+	"addButton",
+	"addTextView",
+	"addEditText",
+	"addCheckBox",
+	"addRadioGroup",
+	"addSpinner",
+	"addSeekBar",
+	"addProgressBar",
+	"addImageView",
+	"addLine",
+	"addWebView",
+	"addTimePicker",
+	"addDatePicker",
+	"addSwitch",
+	"addColorPicker",
+	"addRatingBar",
+	"addSpace",
+	"callJs",
+	"addTabView",
+	"addTab",
+	"setLine",
+	"setButton",
+	"setEditText",
+	"setEditHintText",
+	"setTextView",
+	"setCheckBox",
+	"setRadioGroup",
+	"setSpinner",
+	"setWebView",
+	"setImageView",
+	"setImageViewEx",
+	"setText",
+	"setTitleText",
+	"setTextSize",
+	"setEnable",
+	"setVisiblity",
+	"setRowVisibleByGid",
+	"setBackground",
+	"setTitleBackground",
+	"setTextColor",
+	"setInputType",
+	"getText",
+	"getEnable",
+	"getVisible",
+	"getTextColor",
+	"setFullScreen",
+	"setPadding",
+	"setGravity",
+	"setOnClick",
+	"setOnBackEvent",
+	"setOnClose",
+	"setOnChange",
+	"getValue",
+	"getData",
+	"loadProfile",
+	"saveProfile",
+	"beginUiQueue",
+	"endUiQueue",
+	"addTableView",
+	"setTableViewAttrib",
+	"getTableViewAllData",
+	"getTableViewRowData",
+	"addTableViewRow",
+	"removeTableViewRow",
+	"getTableViewRowCnt",
+	"getTableViewSelectIndex",
 }
 
 // GetModule 获取模块实例

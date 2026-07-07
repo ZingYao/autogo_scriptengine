@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package time
 
 import (
@@ -114,6 +117,20 @@ func (m *TimeModule) Register(engine model.Engine) error {
 		L.Push(lua.LNumber(duration))
 		return 1
 	}))
+
+	engine.RegisterMethod("time.systemTime", "返回系统当前时间戳（毫秒）", func() int64 {
+		return time.Now().UnixMilli()
+	}, true)
+	engine.RegisterMethod("time.getNetWorkTime", "从网络获取当前时间", func() string {
+		networkTime, err := getNetworkTime()
+		if err != nil {
+			networkTime = time.Now()
+		}
+		return networkTime.Format("2006-01-02_15-04-05")
+	}, true)
+	engine.RegisterMethod("time.tickCount", "返回脚本自启动以来的运行时长（毫秒）", func() int64 {
+		return time.Since(m.startTime).Milliseconds()
+	}, true)
 
 	return nil
 }

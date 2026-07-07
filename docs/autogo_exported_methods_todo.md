@@ -24,8 +24,13 @@
 - [x] 滚动复查 2026-06-25 13:46：`imgui/opencv` Lua/JS RegisterMethod 集合一致，均无重复注册项；未发现非模块全局入口；`gopls check` 通过。
 - [x] 入参/出参静态扫描 2026-06-25：反射桥已补齐 `func` 入参/返回、普通 slice/array/map 入参、map 返回、variadic 调用；`opencv` 的 `[]int`、`[]Mat`、`[]Point*`、`map[string]float64` 与 `imgui.Run(func())`、`Handle/C` finalizer 返回均有通用转换路径。
 - [x] 静态遗留已处理：`imgui` 的 141 个 `New*FromC[SRC any]` 泛型 C 指针构造函数已生成 `uintptr` 专用包装，并纳入 Lua/JS 运行时对象与 RegisterMethod 动态注册；包含泛型函数的覆盖复扫结果为 `issues 0`。
+- [x] Lua VM 迁移复查 2026-07-07：Android `lua_engine/model/autogo` 已切换到 `github.com/ZingYao/go-lua-vm v0.9.1`，`go.mod/go.sum` 不再使用本地 replace；`app/device/files/http/hud/images/media/motion/plugin/ppocr/storages/system/uiacc/utils/vdisplay/yolo/dotocr/console/json/rhino/coroutine/websocket` 已复用真实 AutoGo 调用语义。
+- [x] Lua VM 大模块复查 2026-07-07：`opencv` Android+CGO 注册桥覆盖旧绑定 `361/361` 个 `opencv.*` 入口；`imgui` Android+CGO 注册桥覆盖反射桥 `4592/4592` 个 Go API 小驼峰入口。非 Android/非 CGO 环境下 `opencv/imgui` 返回明确不可用错误，不再返回假对象。
+- [x] Lua VM 对象生命周期复查 2026-07-07：`plugin` 已补齐 `release` 并保留 `releaseInstance/releaseClassLoader` 对象释放入口；nil instance 调用返回明确错误。`websocket` 已恢复真实 `gorilla/websocket` 连接、handle 生命周期、`onOpened/onClosed/onError/onRecv` 回调和对象式 `send/close`。
+- [x] Lua VM 阻塞项记录 2026-07-07：`ime` 因当前 `AutoGo/ime` 依赖缺失 `github.com/Dasongzi1366/AutoGo/core`，Lua VM 入口保留同名方法并返回明确阻塞错误，待 AutoGo 参考目录补齐 core 后恢复真实调用。
+- [x] Lua VM 覆盖复扫 2026-07-07：`coroutine/device/plugin/uiacc/opencv` 与旧绑定 RegisterMethod 集合对齐；`imgui` 不再回填旧手写便捷 wrapper 别名，按新规则保留真实 Go API 小驼峰入口；静态扫描未发现 VM 文件中的 `gopher-lua` 残留、空 Register、硬编码假对象或前缀错误。
 
-验证记录：`gopls check` 已覆盖本轮改动文件；已改小模块定向 `go test` 通过；`js_engine/model/autogo/app` 定向测试通过；最终覆盖脚本复扫结果 `issues 0`。`opencv/imgui` 定向 `go test` 与 Android define 聚合包、全量 `go test ./lua_engine/... ./js_engine/...` 目前被既有环境问题阻塞，包括 `AutoGo/core` 缺失、Android `jni.h` 缺失、opencv cgo 类型缺失与 lrappsoft 既有 vet 问题。
+验证记录：`gopls check` 已覆盖本轮改动文件；已改小模块定向 `go test` 通过；`js_engine/model/autogo/app` 定向测试通过；最终覆盖脚本复扫结果 `issues 0`。2026-07-07 Lua VM 迁移复查已执行 `gopls check`、`go test ./lua_engine -count=1`、`GOOS=android GOARCH=arm64 CGO_ENABLED=0 go test -c ./lua_engine`，均通过。`opencv/imgui` Android+CGO 真编译仍需 Android NDK、JNI 与 OpenCV CGO 环境；`ime` 真实调用仍被 AutoGo/core 缺失阻塞；全量 `go test ./lua_engine/... ./js_engine/...` 仍可能被既有 Android CGO 与 lrappsoft vet 问题阻塞。
 
 ## TODO 层级
 
@@ -270,6 +275,7 @@
 
 - 官网文档：`https://autogo.cc/API/ime.md`
 - 本地目录：`AutoGo/ime`
+- Lua VM：当前 `AutoGo/ime` 依赖缺失 `github.com/Dasongzi1366/AutoGo/core`，不能直接导入真实包；VM 侧保留同名方法并返回明确不可用错误，避免假成功。待 AutoGo 参考目录补齐 `core` 后恢复真实调用。
 - [ ] `func GetClipText() string`（AutoGo/ime/ime.go:37）
 - [ ] `func GetIMEList() []string`（AutoGo/ime/ime.go:91）
 - [ ] `func InputText(text string, displayId int)`（AutoGo/ime/ime.go:77）
@@ -6599,6 +6605,7 @@
 
 - 官网文档：`https://autogo.cc/API/ime.md`
 - 本地目录：`AutoGo/ime`
+- Lua VM：当前 `AutoGo/ime` 依赖缺失 `github.com/Dasongzi1366/AutoGo/core`，不能直接导入真实包；VM 侧保留同名方法并返回明确不可用错误，避免假成功。待 AutoGo 参考目录补齐 `core` 后恢复真实调用。
 - [ ] `func GetClipText() string`（AutoGo/ime/ime.go:37）
 - [ ] `func GetIMEList() []string`（AutoGo/ime/ime.go:91）
 - [ ] `func InputText(text string, displayId int)`（AutoGo/ime/ime.go:77）

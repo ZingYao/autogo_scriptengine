@@ -25,15 +25,8 @@ func main() {
 	// 注册所有 autogo 风格模块
 	engine.RegisterModule(all_models.AllModules...)
 
-	// 执行工具脚本（以便主脚本可以引用）
-	err := engine.ExecuteFile("scripts/utils.js")
-	if err != nil {
-		log.Fatalf("Failed to execute utils.js: %v", err)
-	}
-
-	// 执行主脚本
-	err = engine.ExecuteFile("scripts/main.js")
-	if err != nil {
+	// 只执行主脚本；用户工具脚本由 main.js 中的 require("./utils") 自动加载。
+	if err := engine.ExecuteFile("scripts/main.js"); err != nil {
 		log.Fatalf("Failed to execute main.js: %v", err)
 	}
 
