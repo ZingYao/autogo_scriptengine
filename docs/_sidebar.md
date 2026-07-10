@@ -129,3 +129,4 @@
 
 - 调试工具
   - [快速调试工具](debugger/README.md)
+  - [Lua Debug 支持规划](lua_debugger_support_plan.md)

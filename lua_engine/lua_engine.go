@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ZingYao/autogo_scriptengine/lua_engine/debugger"
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 	"github.com/ZingYao/go-lua-vm/bridge"
 	glua "github.com/ZingYao/go-lua-vm/lua"
@@ -82,6 +83,10 @@ func (e *LuaEngine) init() {
 	e.engineState = StateStopped
 	e.ctx, e.cancel = context.WithCancel(context.Background())
 	e.pauseChan = make(chan struct{})
+	if e.config.Debug != nil && e.config.Debug.Enabled {
+		e.debugger = debugger.New(*e.config.Debug)
+		e.debugger.InstallVM(e.vmState)
+	}
 
 	e.registerCoreFunctionsForVM()
 	e.reinstallVMMethodsFromRegistry()
@@ -169,6 +174,11 @@ func (e *LuaEngine) SetRequirePaths(paths []string) {
 // setupPackagePath 设置 Lua 的模块搜索路径
 func (e *LuaEngine) setupPackagePath() {
 	e.setupVMPackagePath()
+}
+
+// GetDebugger 获取当前 Lua 调试器实例，未启用调试时返回 nil。
+func (e *LuaEngine) GetDebugger() *debugger.Debugger {
+	return e.debugger
 }
 
 func (e *LuaEngine) setupVMPackagePath() {
@@ -376,7 +386,16 @@ func (e *LuaEngine) executeStringOnce(script string, searchPaths ...string) erro
 		e.addSearchPaths(searchPaths...)
 	}
 
-	return e.handleLuaVMError(glua.DoString(e.vmState, script))
+	if e.debugger != nil && e.debugger.Enabled() {
+		e.debugger.InstallVM(e.vmState)
+		script = debugger.InstrumentSource(script, "<string>")
+	}
+
+	err := e.handleLuaVMError(glua.DoString(e.vmState, script))
+	if err != nil && e.debugger != nil {
+		e.debugger.NotifyError("<string>", err)
+	}
+	return err
 }
 
 // addSearchPaths 添加模块搜索路径
@@ -616,6 +635,10 @@ func (e *LuaEngine) Restart() error {
 	e.setupPackagePath()
 
 	// 重新注册核心函数
+	if e.config.Debug != nil && e.config.Debug.Enabled {
+		e.debugger = debugger.New(*e.config.Debug)
+		e.debugger.InstallVM(e.vmState)
+	}
 	e.registerCoreFunctionsForVM()
 	e.reinstallVMMethodsFromRegistry()
 

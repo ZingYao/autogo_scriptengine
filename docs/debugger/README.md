@@ -27,6 +27,27 @@ https://github.com/ZingYao/autogo_scriptengine_debugger.git
 - **实时调试**: 日志输出、暂停、恢复、停止脚本
 - **AG 管理**: 自动下载和更新 AutoGo 工具
 
+### Lua DAP 调试支持
+
+`lua_engine` 已提供第一版 Lua Debug Core 与 DAP 会话能力，可用于上层调试工具接入断点调试。
+
+当前能力：
+
+- DAP 基础协议收发。
+- 文件行断点。
+- `continue`、`pause`、`stepIn/next`、`disconnect/terminate`。
+- `threads`、`stackTrace`、`scopes`、`variables`。
+- 异常事件回传。
+- 局部变量与全局变量快照。
+
+当前边界：
+
+- 第一版基于 Lua 源码插桩，不修改 `gopher-lua` 内部 VM。
+- 断点只会命中被插桩器识别为语句的源码行。
+- Go 注入方法内部不能按 Lua 行单步，只能停在 Lua 调用前后。
+
+示例见 `examples/lua_engine/debugger`。
+
 ### 🔧 开发工具
 
 - **代码风格支持**: AutoGo、LrAppSoft、NodeJS
