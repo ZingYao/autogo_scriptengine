@@ -1,0 +1,4735 @@
+{
+  "_schema": "glua builtin function docs. Generated from AutoGo ScriptEngine static registrations.",
+  "functions": {
+    "console.clearLog": {
+      "signature": {
+        "en": "console.clearLog()",
+        "zh-CN": "console.clearLog()"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "清除日志 Source: lua_engine/model/lrappsoft/console/console_vm_inject.go:48",
+        "zh-CN": "清除日志 来源：lua_engine/model/lrappsoft/console/console_vm_inject.go:48"
+      },
+      "example": {
+        "en": "-- console.clearLog(...)",
+        "zh-CN": "-- console.clearLog(...)"
+      }
+    },
+    "console.dismiss": {
+      "signature": {
+        "en": "console.dismiss()",
+        "zh-CN": "console.dismiss()"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "关闭控制台窗口 Source: lua_engine/model/lrappsoft/console/console_vm_inject.go:38",
+        "zh-CN": "关闭控制台窗口 来源：lua_engine/model/lrappsoft/console/console_vm_inject.go:38"
+      },
+      "example": {
+        "en": "-- console.dismiss(...)",
+        "zh-CN": "-- console.dismiss(...)"
+      }
+    },
+    "console.lockConsole": {
+      "signature": {
+        "en": "console.lockConsole()",
+        "zh-CN": "console.lockConsole()"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "锁定控制台窗口 Source: lua_engine/model/lrappsoft/console/console_vm_inject.go:32",
+        "zh-CN": "锁定控制台窗口 来源：lua_engine/model/lrappsoft/console/console_vm_inject.go:32"
+      },
+      "example": {
+        "en": "-- console.lockConsole(...)",
+        "zh-CN": "-- console.lockConsole(...)"
+      }
+    },
+    "console.println": {
+      "signature": {
+        "en": "console.println(...)",
+        "zh-CN": "console.println(...)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "...: ...any."
+        ],
+        "zh-CN": [
+          "...：...any。"
+        ]
+      },
+      "description": {
+        "en": "打印日志到控制台窗口 Source: lua_engine/model/lrappsoft/console/console_vm_inject.go:43",
+        "zh-CN": "打印日志到控制台窗口 来源：lua_engine/model/lrappsoft/console/console_vm_inject.go:43"
+      },
+      "example": {
+        "en": "-- console.println(...)",
+        "zh-CN": "-- console.println(...)"
+      }
+    },
+    "console.setPos": {
+      "signature": {
+        "en": "console.setPos(...)",
+        "zh-CN": "console.setPos(...)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "...: ...any."
+        ],
+        "zh-CN": [
+          "...：...any。"
+        ]
+      },
+      "description": {
+        "en": "设置控制台窗口的位置和大小 Source: lua_engine/model/lrappsoft/console/console_vm_inject.go:41",
+        "zh-CN": "设置控制台窗口的位置和大小 来源：lua_engine/model/lrappsoft/console/console_vm_inject.go:41"
+      },
+      "example": {
+        "en": "-- console.setPos(...)",
+        "zh-CN": "-- console.setPos(...)"
+      }
+    },
+    "console.setTitle": {
+      "signature": {
+        "en": "console.setTitle(title)",
+        "zh-CN": "console.setTitle(title)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "title: string."
+        ],
+        "zh-CN": [
+          "title：string。"
+        ]
+      },
+      "description": {
+        "en": "设置控制台标题 Source: lua_engine/model/lrappsoft/console/console_vm_inject.go:50",
+        "zh-CN": "设置控制台标题 来源：lua_engine/model/lrappsoft/console/console_vm_inject.go:50"
+      },
+      "example": {
+        "en": "-- console.setTitle(...)",
+        "zh-CN": "-- console.setTitle(...)"
+      }
+    },
+    "console.show": {
+      "signature": {
+        "en": "console.show()",
+        "zh-CN": "console.show()"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "显示控制台悬浮窗 Source: lua_engine/model/lrappsoft/console/console_vm_inject.go:22",
+        "zh-CN": "显示控制台悬浮窗 来源：lua_engine/model/lrappsoft/console/console_vm_inject.go:22"
+      },
+      "example": {
+        "en": "-- console.show(...)",
+        "zh-CN": "-- console.show(...)"
+      }
+    },
+    "console.showTitle": {
+      "signature": {
+        "en": "console.showTitle(...)",
+        "zh-CN": "console.showTitle(...)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "...: ...any."
+        ],
+        "zh-CN": [
+          "...：...any。"
+        ]
+      },
+      "description": {
+        "en": "显示或者隐藏控制台标题栏 Source: lua_engine/model/lrappsoft/console/console_vm_inject.go:25",
+        "zh-CN": "显示或者隐藏控制台标题栏 来源：lua_engine/model/lrappsoft/console/console_vm_inject.go:25"
+      },
+      "example": {
+        "en": "-- console.showTitle(...)",
+        "zh-CN": "-- console.showTitle(...)"
+      }
+    },
+    "console.unlockConsole": {
+      "signature": {
+        "en": "console.unlockConsole()",
+        "zh-CN": "console.unlockConsole()"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "解除锁定控制台窗口 Source: lua_engine/model/lrappsoft/console/console_vm_inject.go:35",
+        "zh-CN": "解除锁定控制台窗口 来源：lua_engine/model/lrappsoft/console/console_vm_inject.go:35"
+      },
+      "example": {
+        "en": "-- console.unlockConsole(...)",
+        "zh-CN": "-- console.unlockConsole(...)"
+      }
+    },
+    "cryptLib.aes_crypt": {
+      "signature": {
+        "en": "cryptLib.aes_crypt(data, key, operation, mode, ...)",
+        "zh-CN": "cryptLib.aes_crypt(data, key, operation, mode, ...)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "data: string.",
+          "key: string.",
+          "operation: string.",
+          "mode: string.",
+          "...: ...any."
+        ],
+        "zh-CN": [
+          "data：string。",
+          "key：string。",
+          "operation：string。",
+          "mode：string。",
+          "...：...any。"
+        ]
+      },
+      "description": {
+        "en": "AES 加密/解密 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:32",
+        "zh-CN": "AES 加密/解密 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:32"
+      },
+      "example": {
+        "en": "-- cryptLib.aes_crypt(...)",
+        "zh-CN": "-- cryptLib.aes_crypt(...)"
+      }
+    },
+    "cryptLib.aes_ivgen": {
+      "signature": {
+        "en": "cryptLib.aes_ivgen()",
+        "zh-CN": "cryptLib.aes_ivgen()"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "生成随机 IV Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:61",
+        "zh-CN": "生成随机 IV 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:61"
+      },
+      "example": {
+        "en": "-- cryptLib.aes_ivgen(...)",
+        "zh-CN": "-- cryptLib.aes_ivgen(...)"
+      }
+    },
+    "cryptLib.aes_keygen": {
+      "signature": {
+        "en": "cryptLib.aes_keygen(keyLength)",
+        "zh-CN": "cryptLib.aes_keygen(keyLength)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "keyLength: number."
+        ],
+        "zh-CN": [
+          "keyLength：number。"
+        ]
+      },
+      "description": {
+        "en": "生成 AES 密钥 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:51",
+        "zh-CN": "生成 AES 密钥 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:51"
+      },
+      "example": {
+        "en": "-- cryptLib.aes_keygen(...)",
+        "zh-CN": "-- cryptLib.aes_keygen(...)"
+      }
+    },
+    "cryptLib.base64_decode": {
+      "signature": {
+        "en": "cryptLib.base64_decode(data)",
+        "zh-CN": "cryptLib.base64_decode(data)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "data: string."
+        ],
+        "zh-CN": [
+          "data：string。"
+        ]
+      },
+      "description": {
+        "en": "Base64 解码 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:83",
+        "zh-CN": "Base64 解码 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:83"
+      },
+      "example": {
+        "en": "-- cryptLib.base64_decode(...)",
+        "zh-CN": "-- cryptLib.base64_decode(...)"
+      }
+    },
+    "cryptLib.base64_encode": {
+      "signature": {
+        "en": "cryptLib.base64_encode(data)",
+        "zh-CN": "cryptLib.base64_encode(data)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "data: string."
+        ],
+        "zh-CN": [
+          "data：string。"
+        ]
+      },
+      "description": {
+        "en": "Base64 编码 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:80",
+        "zh-CN": "Base64 编码 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:80"
+      },
+      "example": {
+        "en": "-- cryptLib.base64_encode(...)",
+        "zh-CN": "-- cryptLib.base64_encode(...)"
+      }
+    },
+    "cryptLib.hmac_sha256": {
+      "signature": {
+        "en": "cryptLib.hmac_sha256(data, key)",
+        "zh-CN": "cryptLib.hmac_sha256(data, key)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "data: string.",
+          "key: string."
+        ],
+        "zh-CN": [
+          "data：string。",
+          "key：string。"
+        ]
+      },
+      "description": {
+        "en": "HMAC-SHA256 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:102",
+        "zh-CN": "HMAC-SHA256 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:102"
+      },
+      "example": {
+        "en": "-- cryptLib.hmac_sha256(...)",
+        "zh-CN": "-- cryptLib.hmac_sha256(...)"
+      }
+    },
+    "cryptLib.md5": {
+      "signature": {
+        "en": "cryptLib.md5(data)",
+        "zh-CN": "cryptLib.md5(data)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "data: string."
+        ],
+        "zh-CN": [
+          "data：string。"
+        ]
+      },
+      "description": {
+        "en": "MD5 哈希 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:90",
+        "zh-CN": "MD5 哈希 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:90"
+      },
+      "example": {
+        "en": "-- cryptLib.md5(...)",
+        "zh-CN": "-- cryptLib.md5(...)"
+      }
+    },
+    "cryptLib.rsa_decrypt": {
+      "signature": {
+        "en": "cryptLib.rsa_decrypt(data, key, isPublicKey)",
+        "zh-CN": "cryptLib.rsa_decrypt(data, key, isPublicKey)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "data: string.",
+          "key: string.",
+          "isPublicKey: boolean."
+        ],
+        "zh-CN": [
+          "data：string。",
+          "key：string。",
+          "isPublicKey：boolean。"
+        ]
+      },
+      "description": {
+        "en": "RSA 解密 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:77",
+        "zh-CN": "RSA 解密 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:77"
+      },
+      "example": {
+        "en": "-- cryptLib.rsa_decrypt(...)",
+        "zh-CN": "-- cryptLib.rsa_decrypt(...)"
+      }
+    },
+    "cryptLib.rsa_encrypt": {
+      "signature": {
+        "en": "cryptLib.rsa_encrypt(data, key, isPublicKey)",
+        "zh-CN": "cryptLib.rsa_encrypt(data, key, isPublicKey)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "data: string.",
+          "key: string.",
+          "isPublicKey: boolean."
+        ],
+        "zh-CN": [
+          "data：string。",
+          "key：string。",
+          "isPublicKey：boolean。"
+        ]
+      },
+      "description": {
+        "en": "RSA 加密 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:74",
+        "zh-CN": "RSA 加密 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:74"
+      },
+      "example": {
+        "en": "-- cryptLib.rsa_encrypt(...)",
+        "zh-CN": "-- cryptLib.rsa_encrypt(...)"
+      }
+    },
+    "cryptLib.rsa_generate_key": {
+      "signature": {
+        "en": "cryptLib.rsa_generate_key(...)",
+        "zh-CN": "cryptLib.rsa_generate_key(...)"
+      },
+      "returns": {
+        "en": "returns: string, string.",
+        "zh-CN": "返回：string, string。"
+      },
+      "params": {
+        "en": [
+          "...: ...number."
+        ],
+        "zh-CN": [
+          "...：...number。"
+        ]
+      },
+      "description": {
+        "en": "生成 RSA 密钥对 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:68",
+        "zh-CN": "生成 RSA 密钥对 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:68"
+      },
+      "example": {
+        "en": "-- cryptLib.rsa_generate_key(...)",
+        "zh-CN": "-- cryptLib.rsa_generate_key(...)"
+      }
+    },
+    "cryptLib.rsa_keygen": {
+      "signature": {
+        "en": "cryptLib.rsa_keygen(...)",
+        "zh-CN": "cryptLib.rsa_keygen(...)"
+      },
+      "returns": {
+        "en": "returns: string, string.",
+        "zh-CN": "返回：string, string。"
+      },
+      "params": {
+        "en": [
+          "...: ...number."
+        ],
+        "zh-CN": [
+          "...：...number。"
+        ]
+      },
+      "description": {
+        "en": "生成 RSA 密钥对（兼容别名） Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:71",
+        "zh-CN": "生成 RSA 密钥对（兼容别名） 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:71"
+      },
+      "example": {
+        "en": "-- cryptLib.rsa_keygen(...)",
+        "zh-CN": "-- cryptLib.rsa_keygen(...)"
+      }
+    },
+    "cryptLib.sha256": {
+      "signature": {
+        "en": "cryptLib.sha256(data)",
+        "zh-CN": "cryptLib.sha256(data)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "data: string."
+        ],
+        "zh-CN": [
+          "data：string。"
+        ]
+      },
+      "description": {
+        "en": "SHA256 哈希 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:94",
+        "zh-CN": "SHA256 哈希 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:94"
+      },
+      "example": {
+        "en": "-- cryptLib.sha256(...)",
+        "zh-CN": "-- cryptLib.sha256(...)"
+      }
+    },
+    "cryptLib.sha512": {
+      "signature": {
+        "en": "cryptLib.sha512(data)",
+        "zh-CN": "cryptLib.sha512(data)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "data: string."
+        ],
+        "zh-CN": [
+          "data：string。"
+        ]
+      },
+      "description": {
+        "en": "SHA512 哈希 Source: lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:98",
+        "zh-CN": "SHA512 哈希 来源：lua_engine/model/lrappsoft/crypt/crypt_vm_inject.go:98"
+      },
+      "example": {
+        "en": "-- cryptLib.sha512(...)",
+        "zh-CN": "-- cryptLib.sha512(...)"
+      }
+    },
+    "extension.base64Decode": {
+      "signature": {
+        "en": "extension.base64Decode(str)",
+        "zh-CN": "extension.base64Decode(str)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "str: string."
+        ],
+        "zh-CN": [
+          "str：string。"
+        ]
+      },
+      "description": {
+        "en": "Base64 解码 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1047",
+        "zh-CN": "Base64 解码 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1047"
+      },
+      "example": {
+        "en": "-- extension.base64Decode(...)",
+        "zh-CN": "-- extension.base64Decode(...)"
+      }
+    },
+    "extension.base64Encode": {
+      "signature": {
+        "en": "extension.base64Encode(str)",
+        "zh-CN": "extension.base64Encode(str)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "str: string."
+        ],
+        "zh-CN": [
+          "str：string。"
+        ]
+      },
+      "description": {
+        "en": "Base64 编码 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1046",
+        "zh-CN": "Base64 编码 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1046"
+      },
+      "example": {
+        "en": "-- extension.base64Encode(...)",
+        "zh-CN": "-- extension.base64Encode(...)"
+      }
+    },
+    "extension.decodeUrl": {
+      "signature": {
+        "en": "extension.decodeUrl(str)",
+        "zh-CN": "extension.decodeUrl(str)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "str: string."
+        ],
+        "zh-CN": [
+          "str：string。"
+        ]
+      },
+      "description": {
+        "en": "URL 解码 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1049",
+        "zh-CN": "URL 解码 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1049"
+      },
+      "example": {
+        "en": "-- extension.decodeUrl(...)",
+        "zh-CN": "-- extension.decodeUrl(...)"
+      }
+    },
+    "extension.delfile": {
+      "signature": {
+        "en": "extension.delfile(path)",
+        "zh-CN": "extension.delfile(path)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "删除文件或目录 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1059",
+        "zh-CN": "删除文件或目录 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1059"
+      },
+      "example": {
+        "en": "-- extension.delfile(...)",
+        "zh-CN": "-- extension.delfile(...)"
+      }
+    },
+    "extension.encodeUrl": {
+      "signature": {
+        "en": "extension.encodeUrl(str)",
+        "zh-CN": "extension.encodeUrl(str)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "str: string."
+        ],
+        "zh-CN": [
+          "str：string。"
+        ]
+      },
+      "description": {
+        "en": "URL 编码 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1048",
+        "zh-CN": "URL 编码 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1048"
+      },
+      "example": {
+        "en": "-- extension.encodeUrl(...)",
+        "zh-CN": "-- extension.encodeUrl(...)"
+      }
+    },
+    "extension.fileExist": {
+      "signature": {
+        "en": "extension.fileExist(path)",
+        "zh-CN": "extension.fileExist(path)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "文件或目录是否存在 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1057",
+        "zh-CN": "文件或目录是否存在 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1057"
+      },
+      "example": {
+        "en": "-- extension.fileExist(...)",
+        "zh-CN": "-- extension.fileExist(...)"
+      }
+    },
+    "extension.fileMD5": {
+      "signature": {
+        "en": "extension.fileMD5(path)",
+        "zh-CN": "extension.fileMD5(path)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "获取文件 MD5 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1045",
+        "zh-CN": "获取文件 MD5 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1045"
+      },
+      "example": {
+        "en": "-- extension.fileMD5(...)",
+        "zh-CN": "-- extension.fileMD5(...)"
+      }
+    },
+    "extension.fileSize": {
+      "signature": {
+        "en": "extension.fileSize(path)",
+        "zh-CN": "extension.fileSize(path)"
+      },
+      "returns": {
+        "en": "returns: number.",
+        "zh-CN": "返回：number。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "获取文件大小 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1062",
+        "zh-CN": "获取文件大小 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1062"
+      },
+      "example": {
+        "en": "-- extension.fileSize(...)",
+        "zh-CN": "-- extension.fileSize(...)"
+      }
+    },
+    "extension.getFileBase64": {
+      "signature": {
+        "en": "extension.getFileBase64(path)",
+        "zh-CN": "extension.getFileBase64(path)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "获取文件 Base64 编码 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1056",
+        "zh-CN": "获取文件 Base64 编码 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1056"
+      },
+      "example": {
+        "en": "-- extension.getFileBase64(...)",
+        "zh-CN": "-- extension.getFileBase64(...)"
+      }
+    },
+    "extension.htmlDecode": {
+      "signature": {
+        "en": "extension.htmlDecode(str)",
+        "zh-CN": "extension.htmlDecode(str)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "str: string."
+        ],
+        "zh-CN": [
+          "str：string。"
+        ]
+      },
+      "description": {
+        "en": "HTML 解码 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1053",
+        "zh-CN": "HTML 解码 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1053"
+      },
+      "example": {
+        "en": "-- extension.htmlDecode(...)",
+        "zh-CN": "-- extension.htmlDecode(...)"
+      }
+    },
+    "extension.htmlEncode": {
+      "signature": {
+        "en": "extension.htmlEncode(str)",
+        "zh-CN": "extension.htmlEncode(str)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "str: string."
+        ],
+        "zh-CN": [
+          "str：string。"
+        ]
+      },
+      "description": {
+        "en": "HTML 编码 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1052",
+        "zh-CN": "HTML 编码 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1052"
+      },
+      "example": {
+        "en": "-- extension.htmlEncode(...)",
+        "zh-CN": "-- extension.htmlEncode(...)"
+      }
+    },
+    "extension.jsonDecode": {
+      "signature": {
+        "en": "extension.jsonDecode(jsonStr)",
+        "zh-CN": "extension.jsonDecode(jsonStr)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "jsonStr: string."
+        ],
+        "zh-CN": [
+          "jsonStr：string。"
+        ]
+      },
+      "description": {
+        "en": "JSON 解码 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1055",
+        "zh-CN": "JSON 解码 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1055"
+      },
+      "example": {
+        "en": "-- extension.jsonDecode(...)",
+        "zh-CN": "-- extension.jsonDecode(...)"
+      }
+    },
+    "extension.jsonEncode": {
+      "signature": {
+        "en": "extension.jsonEncode(value)",
+        "zh-CN": "extension.jsonEncode(value)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "value: any."
+        ],
+        "zh-CN": [
+          "value：any。"
+        ]
+      },
+      "description": {
+        "en": "JSON 编码 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1054",
+        "zh-CN": "JSON 编码 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1054"
+      },
+      "example": {
+        "en": "-- extension.jsonEncode(...)",
+        "zh-CN": "-- extension.jsonEncode(...)"
+      }
+    },
+    "extension.md5": {
+      "signature": {
+        "en": "extension.md5(str)",
+        "zh-CN": "extension.md5(str)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "str: string."
+        ],
+        "zh-CN": [
+          "str：string。"
+        ]
+      },
+      "description": {
+        "en": "字符串 MD5 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1043",
+        "zh-CN": "字符串 MD5 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1043"
+      },
+      "example": {
+        "en": "-- extension.md5(...)",
+        "zh-CN": "-- extension.md5(...)"
+      }
+    },
+    "extension.mkdir": {
+      "signature": {
+        "en": "extension.mkdir(path)",
+        "zh-CN": "extension.mkdir(path)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "创建目录 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1058",
+        "zh-CN": "创建目录 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1058"
+      },
+      "example": {
+        "en": "-- extension.mkdir(...)",
+        "zh-CN": "-- extension.mkdir(...)"
+      }
+    },
+    "extension.readFile": {
+      "signature": {
+        "en": "extension.readFile(path)",
+        "zh-CN": "extension.readFile(path)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "读取文件内容 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1060",
+        "zh-CN": "读取文件内容 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1060"
+      },
+      "example": {
+        "en": "-- extension.readFile(...)",
+        "zh-CN": "-- extension.readFile(...)"
+      }
+    },
+    "extension.urlDecode": {
+      "signature": {
+        "en": "extension.urlDecode(str)",
+        "zh-CN": "extension.urlDecode(str)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "str: string."
+        ],
+        "zh-CN": [
+          "str：string。"
+        ]
+      },
+      "description": {
+        "en": "URL 解码别名 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1051",
+        "zh-CN": "URL 解码别名 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1051"
+      },
+      "example": {
+        "en": "-- extension.urlDecode(...)",
+        "zh-CN": "-- extension.urlDecode(...)"
+      }
+    },
+    "extension.urlEncode": {
+      "signature": {
+        "en": "extension.urlEncode(str)",
+        "zh-CN": "extension.urlEncode(str)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "str: string."
+        ],
+        "zh-CN": [
+          "str：string。"
+        ]
+      },
+      "description": {
+        "en": "URL 编码别名 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1050",
+        "zh-CN": "URL 编码别名 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1050"
+      },
+      "example": {
+        "en": "-- extension.urlEncode(...)",
+        "zh-CN": "-- extension.urlEncode(...)"
+      }
+    },
+    "extension.writeFile": {
+      "signature": {
+        "en": "extension.writeFile(path, str, ...)",
+        "zh-CN": "extension.writeFile(path, str, ...)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "path: string.",
+          "str: string.",
+          "...: ...boolean."
+        ],
+        "zh-CN": [
+          "path：string。",
+          "str：string。",
+          "...：...boolean。"
+        ]
+      },
+      "description": {
+        "en": "写入文件内容 Source: lua_engine/model/lrappsoft/extension/extension_inject.go:1061",
+        "zh-CN": "写入文件内容 来源：lua_engine/model/lrappsoft/extension/extension_inject.go:1061"
+      },
+      "example": {
+        "en": "-- extension.writeFile(...)",
+        "zh-CN": "-- extension.writeFile(...)"
+      }
+    },
+    "ffi.cdef": {
+      "signature": {
+        "en": "ffi.cdef(_)",
+        "zh-CN": "ffi.cdef(_)"
+      },
+      "returns": {
+        "en": "returns: any, string.",
+        "zh-CN": "返回：any, string。"
+      },
+      "params": {
+        "en": [
+          "_: string."
+        ],
+        "zh-CN": [
+          "_：string。"
+        ]
+      },
+      "description": {
+        "en": "声明 C 定义（兼容占位） Source: lua_engine/model/lrappsoft/ffi/ffi_vm_inject.go:19",
+        "zh-CN": "声明 C 定义（兼容占位） 来源：lua_engine/model/lrappsoft/ffi/ffi_vm_inject.go:19"
+      },
+      "example": {
+        "en": "-- ffi.cdef(...)",
+        "zh-CN": "-- ffi.cdef(...)"
+      }
+    },
+    "ffi.load": {
+      "signature": {
+        "en": "ffi.load(name)",
+        "zh-CN": "ffi.load(name)"
+      },
+      "returns": {
+        "en": "returns: any, string.",
+        "zh-CN": "返回：any, string。"
+      },
+      "params": {
+        "en": [
+          "name: string."
+        ],
+        "zh-CN": [
+          "name：string。"
+        ]
+      },
+      "description": {
+        "en": "加载动态库（兼容占位） Source: lua_engine/model/lrappsoft/ffi/ffi_vm_inject.go:22",
+        "zh-CN": "加载动态库（兼容占位） 来源：lua_engine/model/lrappsoft/ffi/ffi_vm_inject.go:22"
+      },
+      "example": {
+        "en": "-- ffi.load(...)",
+        "zh-CN": "-- ffi.load(...)"
+      }
+    },
+    "ffi.new": {
+      "signature": {
+        "en": "ffi.new(_)",
+        "zh-CN": "ffi.new(_)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "_: string."
+        ],
+        "zh-CN": [
+          "_：string。"
+        ]
+      },
+      "description": {
+        "en": "创建 C 对象（兼容占位） Source: lua_engine/model/lrappsoft/ffi/ffi_vm_inject.go:28",
+        "zh-CN": "创建 C 对象（兼容占位） 来源：lua_engine/model/lrappsoft/ffi/ffi_vm_inject.go:28"
+      },
+      "example": {
+        "en": "-- ffi.new(...)",
+        "zh-CN": "-- ffi.new(...)"
+      }
+    },
+    "ffi.sizeof": {
+      "signature": {
+        "en": "ffi.sizeof(_)",
+        "zh-CN": "ffi.sizeof(_)"
+      },
+      "returns": {
+        "en": "returns: number.",
+        "zh-CN": "返回：number。"
+      },
+      "params": {
+        "en": [
+          "_: string."
+        ],
+        "zh-CN": [
+          "_：string。"
+        ]
+      },
+      "description": {
+        "en": "返回 C 类型大小（兼容占位） Source: lua_engine/model/lrappsoft/ffi/ffi_vm_inject.go:25",
+        "zh-CN": "返回 C 类型大小（兼容占位） 来源：lua_engine/model/lrappsoft/ffi/ffi_vm_inject.go:25"
+      },
+      "example": {
+        "en": "-- ffi.sizeof(...)",
+        "zh-CN": "-- ffi.sizeof(...)"
+      }
+    },
+    "gobridge.call": {
+      "signature": {
+        "en": "gobridge.call(libraryPath, functionName, ...)",
+        "zh-CN": "gobridge.call(libraryPath, functionName, ...)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "libraryPath: string.",
+          "functionName: string.",
+          "...: ...any."
+        ],
+        "zh-CN": [
+          "libraryPath：string。",
+          "functionName：string。",
+          "...：...any。"
+        ]
+      },
+      "description": {
+        "en": "调用动态库函数 Source: lua_engine/model/lrappsoft/gobridge/gobridge_vm_inject.go:32",
+        "zh-CN": "调用动态库函数 来源：lua_engine/model/lrappsoft/gobridge/gobridge_vm_inject.go:32"
+      },
+      "example": {
+        "en": "-- gobridge.call(...)",
+        "zh-CN": "-- gobridge.call(...)"
+      }
+    },
+    "gobridge.tobytes": {
+      "signature": {
+        "en": "gobridge.tobytes(value)",
+        "zh-CN": "gobridge.tobytes(value)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "value: string."
+        ],
+        "zh-CN": [
+          "value：string。"
+        ]
+      },
+      "description": {
+        "en": "字符串转十六进制 Source: lua_engine/model/lrappsoft/gobridge/gobridge_vm_inject.go:19",
+        "zh-CN": "字符串转十六进制 来源：lua_engine/model/lrappsoft/gobridge/gobridge_vm_inject.go:19"
+      },
+      "example": {
+        "en": "-- gobridge.tobytes(...)",
+        "zh-CN": "-- gobridge.tobytes(...)"
+      }
+    },
+    "gobridge.tostring": {
+      "signature": {
+        "en": "gobridge.tostring(value)",
+        "zh-CN": "gobridge.tostring(value)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "value: string."
+        ],
+        "zh-CN": [
+          "value：string。"
+        ]
+      },
+      "description": {
+        "en": "十六进制转字符串 Source: lua_engine/model/lrappsoft/gobridge/gobridge_vm_inject.go:22",
+        "zh-CN": "十六进制转字符串 来源：lua_engine/model/lrappsoft/gobridge/gobridge_vm_inject.go:22"
+      },
+      "example": {
+        "en": "-- gobridge.tostring(...)",
+        "zh-CN": "-- gobridge.tostring(...)"
+      }
+    },
+    "http.request": {
+      "signature": {
+        "en": "http.request(...)",
+        "zh-CN": "http.request(...)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "...: any."
+        ],
+        "zh-CN": [
+          "...：any。"
+        ]
+      },
+      "description": {
+        "en": "发送 HTTP 请求 Source: lua_engine/model/lrappsoft/http/http_vm_inject.go:25",
+        "zh-CN": "发送 HTTP 请求 来源：lua_engine/model/lrappsoft/http/http_vm_inject.go:25"
+      },
+      "example": {
+        "en": "-- http.request(...)",
+        "zh-CN": "-- http.request(...)"
+      }
+    },
+    "https.request": {
+      "signature": {
+        "en": "https.request(...)",
+        "zh-CN": "https.request(...)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "...: any."
+        ],
+        "zh-CN": [
+          "...：any。"
+        ]
+      },
+      "description": {
+        "en": "发送 HTTPS 请求 Source: lua_engine/model/lrappsoft/http/http_vm_inject.go:26",
+        "zh-CN": "发送 HTTPS 请求 来源：lua_engine/model/lrappsoft/http/http_vm_inject.go:26"
+      },
+      "example": {
+        "en": "-- https.request(...)",
+        "zh-CN": "-- https.request(...)"
+      }
+    },
+    "imgui.addOptionItem": {
+      "signature": {
+        "en": "imgui.addOptionItem(handle, item)",
+        "zh-CN": "imgui.addOptionItem(handle, item)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "item: string."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "item：string。"
+        ]
+      },
+      "description": {
+        "en": "添加选项 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:87",
+        "zh-CN": "添加选项 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:87"
+      },
+      "example": {
+        "en": "-- imgui.addOptionItem(...)",
+        "zh-CN": "-- imgui.addOptionItem(...)"
+      }
+    },
+    "imgui.addRadioBox": {
+      "signature": {
+        "en": "imgui.addRadioBox(handle, text, checked)",
+        "zh-CN": "imgui.addRadioBox(handle, text, checked)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "text: string.",
+          "checked: boolean."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "text：string。",
+          "checked：boolean。"
+        ]
+      },
+      "description": {
+        "en": "添加单选项 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:118",
+        "zh-CN": "添加单选项 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:118"
+      },
+      "example": {
+        "en": "-- imgui.addRadioBox(...)",
+        "zh-CN": "-- imgui.addRadioBox(...)"
+      }
+    },
+    "imgui.addTabBarItem": {
+      "signature": {
+        "en": "imgui.addTabBarItem(_, _)",
+        "zh-CN": "imgui.addTabBarItem(_, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: string."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：string。"
+        ]
+      },
+      "description": {
+        "en": "添加标签项 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:227",
+        "zh-CN": "添加标签项 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:227"
+      },
+      "example": {
+        "en": "-- imgui.addTabBarItem(...)",
+        "zh-CN": "-- imgui.addTabBarItem(...)"
+      }
+    },
+    "imgui.clearTable": {
+      "signature": {
+        "en": "imgui.clearTable(handle)",
+        "zh-CN": "imgui.clearTable(handle)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "清空表格 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:162",
+        "zh-CN": "清空表格 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:162"
+      },
+      "example": {
+        "en": "-- imgui.clearTable(...)",
+        "zh-CN": "-- imgui.clearTable(...)"
+      }
+    },
+    "imgui.close": {
+      "signature": {
+        "en": "imgui.close()",
+        "zh-CN": "imgui.close()"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "关闭 imgui Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:239",
+        "zh-CN": "关闭 imgui 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:239"
+      },
+      "example": {
+        "en": "-- imgui.close(...)",
+        "zh-CN": "-- imgui.close(...)"
+      }
+    },
+    "imgui.createBitmapShape": {
+      "signature": {
+        "en": "imgui.createBitmapShape(_, _, _, _, text)",
+        "zh-CN": "imgui.createBitmapShape(_, _, _, _, text)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "text: string."
+        ],
+        "zh-CN": [
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "text：string。"
+        ]
+      },
+      "description": {
+        "en": "创建位图形状 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:183",
+        "zh-CN": "创建位图形状 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:183"
+      },
+      "example": {
+        "en": "-- imgui.createBitmapShape(...)",
+        "zh-CN": "-- imgui.createBitmapShape(...)"
+      }
+    },
+    "imgui.createButton": {
+      "signature": {
+        "en": "imgui.createButton(_, _, _, _, text)",
+        "zh-CN": "imgui.createButton(_, _, _, _, text)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "text: string."
+        ],
+        "zh-CN": [
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "text：string。"
+        ]
+      },
+      "description": {
+        "en": "创建按钮 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:40",
+        "zh-CN": "创建按钮 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:40"
+      },
+      "example": {
+        "en": "-- imgui.createButton(...)",
+        "zh-CN": "-- imgui.createButton(...)"
+      }
+    },
+    "imgui.createCheckBox": {
+      "signature": {
+        "en": "imgui.createCheckBox(_, text, checked)",
+        "zh-CN": "imgui.createCheckBox(_, text, checked)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "text: string.",
+          "checked: boolean."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "text：string。",
+          "checked：boolean。"
+        ]
+      },
+      "description": {
+        "en": "创建复选框 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:52",
+        "zh-CN": "创建复选框 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:52"
+      },
+      "example": {
+        "en": "-- imgui.createCheckBox(...)",
+        "zh-CN": "-- imgui.createCheckBox(...)"
+      }
+    },
+    "imgui.createCircle": {
+      "signature": {
+        "en": "imgui.createCircle(_, _, _, _, visible)",
+        "zh-CN": "imgui.createCircle(_, _, _, _, visible)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "visible: boolean."
+        ],
+        "zh-CN": [
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "visible：boolean。"
+        ]
+      },
+      "description": {
+        "en": "创建圆形 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:174",
+        "zh-CN": "创建圆形 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:174"
+      },
+      "example": {
+        "en": "-- imgui.createCircle(...)",
+        "zh-CN": "-- imgui.createCircle(...)"
+      }
+    },
+    "imgui.createColorPicker": {
+      "signature": {
+        "en": "imgui.createColorPicker(_, text, _, _, _)",
+        "zh-CN": "imgui.createColorPicker(_, text, _, _, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "text: string.",
+          "_: number.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "text：string。",
+          "_：number。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "创建颜色选择器 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:67",
+        "zh-CN": "创建颜色选择器 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:67"
+      },
+      "example": {
+        "en": "-- imgui.createColorPicker(...)",
+        "zh-CN": "-- imgui.createColorPicker(...)"
+      }
+    },
+    "imgui.createComboBox": {
+      "signature": {
+        "en": "imgui.createComboBox(_, items, _)",
+        "zh-CN": "imgui.createComboBox(_, items, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "items: string.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "items：string。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "创建下拉框 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:84",
+        "zh-CN": "创建下拉框 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:84"
+      },
+      "example": {
+        "en": "-- imgui.createComboBox(...)",
+        "zh-CN": "-- imgui.createComboBox(...)"
+      }
+    },
+    "imgui.createHorticalLayout": {
+      "signature": {
+        "en": "imgui.createHorticalLayout(_, _, _)",
+        "zh-CN": "imgui.createHorticalLayout(_, _, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "创建水平布局 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:224",
+        "zh-CN": "创建水平布局 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:224"
+      },
+      "example": {
+        "en": "-- imgui.createHorticalLayout(...)",
+        "zh-CN": "-- imgui.createHorticalLayout(...)"
+      }
+    },
+    "imgui.createImage": {
+      "signature": {
+        "en": "imgui.createImage(_, path, _, _)",
+        "zh-CN": "imgui.createImage(_, path, _, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "path: string.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "path：string。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "创建图片 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:229",
+        "zh-CN": "创建图片 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:229"
+      },
+      "example": {
+        "en": "-- imgui.createImage(...)",
+        "zh-CN": "-- imgui.createImage(...)"
+      }
+    },
+    "imgui.createInputText": {
+      "signature": {
+        "en": "imgui.createInputText(_, _, text)",
+        "zh-CN": "imgui.createInputText(_, _, text)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: string.",
+          "text: string."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：string。",
+          "text：string。"
+        ]
+      },
+      "description": {
+        "en": "创建输入框 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:70",
+        "zh-CN": "创建输入框 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:70"
+      },
+      "example": {
+        "en": "-- imgui.createInputText(...)",
+        "zh-CN": "-- imgui.createInputText(...)"
+      }
+    },
+    "imgui.createLabel": {
+      "signature": {
+        "en": "imgui.createLabel(_, text)",
+        "zh-CN": "imgui.createLabel(_, text)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "text: string."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "text：string。"
+        ]
+      },
+      "description": {
+        "en": "创建标签 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:81",
+        "zh-CN": "创建标签 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:81"
+      },
+      "example": {
+        "en": "-- imgui.createLabel(...)",
+        "zh-CN": "-- imgui.createLabel(...)"
+      }
+    },
+    "imgui.createLine": {
+      "signature": {
+        "en": "imgui.createLine(_, _, _, _, _)",
+        "zh-CN": "imgui.createLine(_, _, _, _, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "创建线条 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:177",
+        "zh-CN": "创建线条 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:177"
+      },
+      "example": {
+        "en": "-- imgui.createLine(...)",
+        "zh-CN": "-- imgui.createLine(...)"
+      }
+    },
+    "imgui.createProgressBar": {
+      "signature": {
+        "en": "imgui.createProgressBar(_, progress)",
+        "zh-CN": "imgui.createProgressBar(_, progress)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "progress: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "progress：number。"
+        ]
+      },
+      "description": {
+        "en": "创建进度条 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:76",
+        "zh-CN": "创建进度条 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:76"
+      },
+      "example": {
+        "en": "-- imgui.createProgressBar(...)",
+        "zh-CN": "-- imgui.createProgressBar(...)"
+      }
+    },
+    "imgui.createRadioGroup": {
+      "signature": {
+        "en": "imgui.createRadioGroup(_, text)",
+        "zh-CN": "imgui.createRadioGroup(_, text)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "text: string."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "text：string。"
+        ]
+      },
+      "description": {
+        "en": "创建单选组 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:115",
+        "zh-CN": "创建单选组 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:115"
+      },
+      "example": {
+        "en": "-- imgui.createRadioGroup(...)",
+        "zh-CN": "-- imgui.createRadioGroup(...)"
+      }
+    },
+    "imgui.createRectangle": {
+      "signature": {
+        "en": "imgui.createRectangle(_, _, _, _, _, visible)",
+        "zh-CN": "imgui.createRectangle(_, _, _, _, _, visible)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "visible: boolean."
+        ],
+        "zh-CN": [
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "visible：boolean。"
+        ]
+      },
+      "description": {
+        "en": "创建矩形 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:171",
+        "zh-CN": "创建矩形 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:171"
+      },
+      "example": {
+        "en": "-- imgui.createRectangle(...)",
+        "zh-CN": "-- imgui.createRectangle(...)"
+      }
+    },
+    "imgui.createShapeText": {
+      "signature": {
+        "en": "imgui.createShapeText(_, _, _, _, text, _, _, visible)",
+        "zh-CN": "imgui.createShapeText(_, _, _, _, text, _, _, visible)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "_: number.",
+          "text: string.",
+          "_: number.",
+          "_: number.",
+          "visible: boolean."
+        ],
+        "zh-CN": [
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "_：number。",
+          "text：string。",
+          "_：number。",
+          "_：number。",
+          "visible：boolean。"
+        ]
+      },
+      "description": {
+        "en": "创建形状文本 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:180",
+        "zh-CN": "创建形状文本 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:180"
+      },
+      "example": {
+        "en": "-- imgui.createShapeText(...)",
+        "zh-CN": "-- imgui.createShapeText(...)"
+      }
+    },
+    "imgui.createSlider": {
+      "signature": {
+        "en": "imgui.createSlider(_, _, _, _, value)",
+        "zh-CN": "imgui.createSlider(_, _, _, _, value)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: string.",
+          "_: number.",
+          "_: number.",
+          "value: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：string。",
+          "_：number。",
+          "_：number。",
+          "value：number。"
+        ]
+      },
+      "description": {
+        "en": "创建滑块 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:125",
+        "zh-CN": "创建滑块 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:125"
+      },
+      "example": {
+        "en": "-- imgui.createSlider(...)",
+        "zh-CN": "-- imgui.createSlider(...)"
+      }
+    },
+    "imgui.createSwitch": {
+      "signature": {
+        "en": "imgui.createSwitch(_, text, checked, _)",
+        "zh-CN": "imgui.createSwitch(_, text, checked, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "text: string.",
+          "checked: boolean.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "text：string。",
+          "checked：boolean。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "创建开关 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:55",
+        "zh-CN": "创建开关 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:55"
+      },
+      "example": {
+        "en": "-- imgui.createSwitch(...)",
+        "zh-CN": "-- imgui.createSwitch(...)"
+      }
+    },
+    "imgui.createTabBar": {
+      "signature": {
+        "en": "imgui.createTabBar(_, _, _)",
+        "zh-CN": "imgui.createTabBar(_, _, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "创建标签栏 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:226",
+        "zh-CN": "创建标签栏 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:226"
+      },
+      "example": {
+        "en": "-- imgui.createTabBar(...)",
+        "zh-CN": "-- imgui.createTabBar(...)"
+      }
+    },
+    "imgui.createTableView": {
+      "signature": {
+        "en": "imgui.createTableView(_, _, _, _)",
+        "zh-CN": "imgui.createTableView(_, _, _, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: string.",
+          "_: number.",
+          "_: boolean."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：string。",
+          "_：number。",
+          "_：boolean。"
+        ]
+      },
+      "description": {
+        "en": "创建表格 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:130",
+        "zh-CN": "创建表格 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:130"
+      },
+      "example": {
+        "en": "-- imgui.createTableView(...)",
+        "zh-CN": "-- imgui.createTableView(...)"
+      }
+    },
+    "imgui.createTreeBoxLayout": {
+      "signature": {
+        "en": "imgui.createTreeBoxLayout(_, _, _)",
+        "zh-CN": "imgui.createTreeBoxLayout(_, _, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "创建树布局 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:225",
+        "zh-CN": "创建树布局 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:225"
+      },
+      "example": {
+        "en": "-- imgui.createTreeBoxLayout(...)",
+        "zh-CN": "-- imgui.createTreeBoxLayout(...)"
+      }
+    },
+    "imgui.createVerticalLayout": {
+      "signature": {
+        "en": "imgui.createVerticalLayout(_, _, _)",
+        "zh-CN": "imgui.createVerticalLayout(_, _, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "创建垂直布局 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:223",
+        "zh-CN": "创建垂直布局 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:223"
+      },
+      "example": {
+        "en": "-- imgui.createVerticalLayout(...)",
+        "zh-CN": "-- imgui.createVerticalLayout(...)"
+      }
+    },
+    "imgui.createWindow": {
+      "signature": {
+        "en": "imgui.createWindow(name, x, y, _, _)",
+        "zh-CN": "imgui.createWindow(name, x, y, _, _)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "name: string.",
+          "x: number.",
+          "y: number.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "name：string。",
+          "x：number。",
+          "y：number。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "创建窗口 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:208",
+        "zh-CN": "创建窗口 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:208"
+      },
+      "example": {
+        "en": "-- imgui.createWindow(...)",
+        "zh-CN": "-- imgui.createWindow(...)"
+      }
+    },
+    "imgui.deleteTableRow": {
+      "signature": {
+        "en": "imgui.deleteTableRow(handle, row)",
+        "zh-CN": "imgui.deleteTableRow(handle, row)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "row: number."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "row：number。"
+        ]
+      },
+      "description": {
+        "en": "删除表格行 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:156",
+        "zh-CN": "删除表格行 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:156"
+      },
+      "example": {
+        "en": "-- imgui.deleteTableRow(...)",
+        "zh-CN": "-- imgui.deleteTableRow(...)"
+      }
+    },
+    "imgui.destroyWindow": {
+      "signature": {
+        "en": "imgui.destroyWindow(handle)",
+        "zh-CN": "imgui.destroyWindow(handle)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "销毁窗口 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:238",
+        "zh-CN": "销毁窗口 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:238"
+      },
+      "example": {
+        "en": "-- imgui.destroyWindow(...)",
+        "zh-CN": "-- imgui.destroyWindow(...)"
+      }
+    },
+    "imgui.getInputText": {
+      "signature": {
+        "en": "imgui.getInputText(handle)",
+        "zh-CN": "imgui.getInputText(handle)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "获取输入文本 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:73",
+        "zh-CN": "获取输入文本 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:73"
+      },
+      "example": {
+        "en": "-- imgui.getInputText(...)",
+        "zh-CN": "-- imgui.getInputText(...)"
+      }
+    },
+    "imgui.getItemCount": {
+      "signature": {
+        "en": "imgui.getItemCount(handle)",
+        "zh-CN": "imgui.getItemCount(handle)"
+      },
+      "returns": {
+        "en": "returns: number.",
+        "zh-CN": "返回：number。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "获取条目数量 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:88",
+        "zh-CN": "获取条目数量 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:88"
+      },
+      "example": {
+        "en": "-- imgui.getItemCount(...)",
+        "zh-CN": "-- imgui.getItemCount(...)"
+      }
+    },
+    "imgui.getItemText": {
+      "signature": {
+        "en": "imgui.getItemText(handle, index)",
+        "zh-CN": "imgui.getItemText(handle, index)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "index: number."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "index：number。"
+        ]
+      },
+      "description": {
+        "en": "获取条目文本 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:95",
+        "zh-CN": "获取条目文本 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:95"
+      },
+      "example": {
+        "en": "-- imgui.getItemText(...)",
+        "zh-CN": "-- imgui.getItemText(...)"
+      }
+    },
+    "imgui.getLastError": {
+      "signature": {
+        "en": "imgui.getLastError()",
+        "zh-CN": "imgui.getLastError()"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "返回最后错误 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:38",
+        "zh-CN": "返回最后错误 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:38"
+      },
+      "example": {
+        "en": "-- imgui.getLastError(...)",
+        "zh-CN": "-- imgui.getLastError(...)"
+      }
+    },
+    "imgui.getProgressBarPos": {
+      "signature": {
+        "en": "imgui.getProgressBarPos(handle)",
+        "zh-CN": "imgui.getProgressBarPos(handle)"
+      },
+      "returns": {
+        "en": "returns: number.",
+        "zh-CN": "返回：number。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "获取进度条位置 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:79",
+        "zh-CN": "获取进度条位置 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:79"
+      },
+      "example": {
+        "en": "-- imgui.getProgressBarPos(...)",
+        "zh-CN": "-- imgui.getProgressBarPos(...)"
+      }
+    },
+    "imgui.getSelectedItemIndex": {
+      "signature": {
+        "en": "imgui.getSelectedItemIndex(handle)",
+        "zh-CN": "imgui.getSelectedItemIndex(handle)"
+      },
+      "returns": {
+        "en": "returns: number.",
+        "zh-CN": "返回：number。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "获取选中条目 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:103",
+        "zh-CN": "获取选中条目 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:103"
+      },
+      "example": {
+        "en": "-- imgui.getSelectedItemIndex(...)",
+        "zh-CN": "-- imgui.getSelectedItemIndex(...)"
+      }
+    },
+    "imgui.getSlider": {
+      "signature": {
+        "en": "imgui.getSlider(handle)",
+        "zh-CN": "imgui.getSlider(handle)"
+      },
+      "returns": {
+        "en": "returns: number.",
+        "zh-CN": "返回：number。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "获取滑块值 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:128",
+        "zh-CN": "获取滑块值 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:128"
+      },
+      "example": {
+        "en": "-- imgui.getSlider(...)",
+        "zh-CN": "-- imgui.getSlider(...)"
+      }
+    },
+    "imgui.getTableItemText": {
+      "signature": {
+        "en": "imgui.getTableItemText(handle, row, column)",
+        "zh-CN": "imgui.getTableItemText(handle, row, column)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "row: number.",
+          "column: number."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "row：number。",
+          "column：number。"
+        ]
+      },
+      "description": {
+        "en": "获取表格单元格 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:149",
+        "zh-CN": "获取表格单元格 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:149"
+      },
+      "example": {
+        "en": "-- imgui.getTableItemText(...)",
+        "zh-CN": "-- imgui.getTableItemText(...)"
+      }
+    },
+    "imgui.getWidgetText": {
+      "signature": {
+        "en": "imgui.getWidgetText(handle)",
+        "zh-CN": "imgui.getWidgetText(handle)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "获取控件文本 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:43",
+        "zh-CN": "获取控件文本 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:43"
+      },
+      "example": {
+        "en": "-- imgui.getWidgetText(...)",
+        "zh-CN": "-- imgui.getWidgetText(...)"
+      }
+    },
+    "imgui.getWindowPos": {
+      "signature": {
+        "en": "imgui.getWindowPos(handle)",
+        "zh-CN": "imgui.getWindowPos(handle)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "获取窗口位置 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:217",
+        "zh-CN": "获取窗口位置 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:217"
+      },
+      "example": {
+        "en": "-- imgui.getWindowPos(...)",
+        "zh-CN": "-- imgui.getWindowPos(...)"
+      }
+    },
+    "imgui.insertTableRow": {
+      "signature": {
+        "en": "imgui.insertTableRow(handle, _)",
+        "zh-CN": "imgui.insertTableRow(handle, _)"
+      },
+      "returns": {
+        "en": "returns: number.",
+        "zh-CN": "返回：number。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "插入表格行 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:134",
+        "zh-CN": "插入表格行 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:134"
+      },
+      "example": {
+        "en": "-- imgui.insertTableRow(...)",
+        "zh-CN": "-- imgui.insertTableRow(...)"
+      }
+    },
+    "imgui.isChecked": {
+      "signature": {
+        "en": "imgui.isChecked(handle)",
+        "zh-CN": "imgui.isChecked(handle)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "获取选中状态 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:58",
+        "zh-CN": "获取选中状态 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:58"
+      },
+      "example": {
+        "en": "-- imgui.isChecked(...)",
+        "zh-CN": "-- imgui.isChecked(...)"
+      }
+    },
+    "imgui.isShapeVisibility": {
+      "signature": {
+        "en": "imgui.isShapeVisibility(handle)",
+        "zh-CN": "imgui.isShapeVisibility(handle)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "获取形状可见性 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:192",
+        "zh-CN": "获取形状可见性 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:192"
+      },
+      "example": {
+        "en": "-- imgui.isShapeVisibility(...)",
+        "zh-CN": "-- imgui.isShapeVisibility(...)"
+      }
+    },
+    "imgui.isSupport": {
+      "signature": {
+        "en": "imgui.isSupport()",
+        "zh-CN": "imgui.isSupport()"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "返回 imgui 支持状态 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:37",
+        "zh-CN": "返回 imgui 支持状态 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:37"
+      },
+      "example": {
+        "en": "-- imgui.isSupport(...)",
+        "zh-CN": "-- imgui.isSupport(...)"
+      }
+    },
+    "imgui.isValidHandle": {
+      "signature": {
+        "en": "imgui.isValidHandle(...)",
+        "zh-CN": "imgui.isValidHandle(...)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "...: any."
+        ],
+        "zh-CN": [
+          "...：any。"
+        ]
+      },
+      "description": {
+        "en": "判断句柄是否有效 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:39",
+        "zh-CN": "判断句柄是否有效 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:39"
+      },
+      "example": {
+        "en": "-- imgui.isValidHandle(...)",
+        "zh-CN": "-- imgui.isValidHandle(...)"
+      }
+    },
+    "imgui.isWidgetVisible": {
+      "signature": {
+        "en": "imgui.isWidgetVisible(handle)",
+        "zh-CN": "imgui.isWidgetVisible(handle)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "获取控件可见性 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:207",
+        "zh-CN": "获取控件可见性 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:207"
+      },
+      "example": {
+        "en": "-- imgui.isWidgetVisible(...)",
+        "zh-CN": "-- imgui.isWidgetVisible(...)"
+      }
+    },
+    "imgui.removeAllItems": {
+      "signature": {
+        "en": "imgui.removeAllItems(handle)",
+        "zh-CN": "imgui.removeAllItems(handle)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "删除所有条目 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:110",
+        "zh-CN": "删除所有条目 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:110"
+      },
+      "example": {
+        "en": "-- imgui.removeAllItems(...)",
+        "zh-CN": "-- imgui.removeAllItems(...)"
+      }
+    },
+    "imgui.removeItemAt": {
+      "signature": {
+        "en": "imgui.removeItemAt(handle, index)",
+        "zh-CN": "imgui.removeItemAt(handle, index)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "index: number."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "index：number。"
+        ]
+      },
+      "description": {
+        "en": "删除条目 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:104",
+        "zh-CN": "删除条目 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:104"
+      },
+      "example": {
+        "en": "-- imgui.removeItemAt(...)",
+        "zh-CN": "-- imgui.removeItemAt(...)"
+      }
+    },
+    "imgui.removeShape": {
+      "signature": {
+        "en": "imgui.removeShape(handle)",
+        "zh-CN": "imgui.removeShape(handle)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "移除形状 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:199",
+        "zh-CN": "移除形状 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:199"
+      },
+      "example": {
+        "en": "-- imgui.removeShape(...)",
+        "zh-CN": "-- imgui.removeShape(...)"
+      }
+    },
+    "imgui.sameLine": {
+      "signature": {
+        "en": "imgui.sameLine()",
+        "zh-CN": "imgui.sameLine()"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "同行布局 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:236",
+        "zh-CN": "同行布局 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:236"
+      },
+      "example": {
+        "en": "-- imgui.sameLine(...)",
+        "zh-CN": "-- imgui.sameLine(...)"
+      }
+    },
+    "imgui.setBitmapShape": {
+      "signature": {
+        "en": "imgui.setBitmapShape(_, _)",
+        "zh-CN": "imgui.setBitmapShape(_, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: string."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：string。"
+        ]
+      },
+      "description": {
+        "en": "设置位图形状 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:198",
+        "zh-CN": "设置位图形状 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:198"
+      },
+      "example": {
+        "en": "-- imgui.setBitmapShape(...)",
+        "zh-CN": "-- imgui.setBitmapShape(...)"
+      }
+    },
+    "imgui.setChecked": {
+      "signature": {
+        "en": "imgui.setChecked(handle, checked)",
+        "zh-CN": "imgui.setChecked(handle, checked)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "checked: boolean."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "checked：boolean。"
+        ]
+      },
+      "description": {
+        "en": "设置选中状态 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:64",
+        "zh-CN": "设置选中状态 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:64"
+      },
+      "example": {
+        "en": "-- imgui.setChecked(...)",
+        "zh-CN": "-- imgui.setChecked(...)"
+      }
+    },
+    "imgui.setColorTheme": {
+      "signature": {
+        "en": "imgui.setColorTheme(_)",
+        "zh-CN": "imgui.setColorTheme(_)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置颜色主题 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:234",
+        "zh-CN": "设置颜色主题 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:234"
+      },
+      "example": {
+        "en": "-- imgui.setColorTheme(...)",
+        "zh-CN": "-- imgui.setColorTheme(...)"
+      }
+    },
+    "imgui.setImage": {
+      "signature": {
+        "en": "imgui.setImage(handle, path)",
+        "zh-CN": "imgui.setImage(handle, path)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "path: string."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "设置图片路径 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:232",
+        "zh-CN": "设置图片路径 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:232"
+      },
+      "example": {
+        "en": "-- imgui.setImage(...)",
+        "zh-CN": "-- imgui.setImage(...)"
+      }
+    },
+    "imgui.setImageFromBitmap": {
+      "signature": {
+        "en": "imgui.setImageFromBitmap(handle, bitmap)",
+        "zh-CN": "imgui.setImageFromBitmap(handle, bitmap)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "bitmap: string."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "bitmap：string。"
+        ]
+      },
+      "description": {
+        "en": "设置图片位图 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:233",
+        "zh-CN": "设置图片位图 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:233"
+      },
+      "example": {
+        "en": "-- imgui.setImageFromBitmap(...)",
+        "zh-CN": "-- imgui.setImageFromBitmap(...)"
+      }
+    },
+    "imgui.setInputText": {
+      "signature": {
+        "en": "imgui.setInputText(handle, text)",
+        "zh-CN": "imgui.setInputText(handle, text)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "text: string."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "text：string。"
+        ]
+      },
+      "description": {
+        "en": "设置输入文本 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:74",
+        "zh-CN": "设置输入文本 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:74"
+      },
+      "example": {
+        "en": "-- imgui.setInputText(...)",
+        "zh-CN": "-- imgui.setInputText(...)"
+      }
+    },
+    "imgui.setInputType": {
+      "signature": {
+        "en": "imgui.setInputType(_, _)",
+        "zh-CN": "imgui.setInputType(_, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置输入类型 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:75",
+        "zh-CN": "设置输入类型 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:75"
+      },
+      "example": {
+        "en": "-- imgui.setInputType(...)",
+        "zh-CN": "-- imgui.setInputType(...)"
+      }
+    },
+    "imgui.setItemSelected": {
+      "signature": {
+        "en": "imgui.setItemSelected(handle, index)",
+        "zh-CN": "imgui.setItemSelected(handle, index)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "index: number."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "index：number。"
+        ]
+      },
+      "description": {
+        "en": "设置选中条目 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:102",
+        "zh-CN": "设置选中条目 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:102"
+      },
+      "example": {
+        "en": "-- imgui.setItemSelected(...)",
+        "zh-CN": "-- imgui.setItemSelected(...)"
+      }
+    },
+    "imgui.setLayoutBorderVisible": {
+      "signature": {
+        "en": "imgui.setLayoutBorderVisible(_, _)",
+        "zh-CN": "imgui.setLayoutBorderVisible(_, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: boolean."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：boolean。"
+        ]
+      },
+      "description": {
+        "en": "设置布局边框 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:228",
+        "zh-CN": "设置布局边框 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:228"
+      },
+      "example": {
+        "en": "-- imgui.setLayoutBorderVisible(...)",
+        "zh-CN": "-- imgui.setLayoutBorderVisible(...)"
+      }
+    },
+    "imgui.setProgressBarPos": {
+      "signature": {
+        "en": "imgui.setProgressBarPos(handle, progress)",
+        "zh-CN": "imgui.setProgressBarPos(handle, progress)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "progress: number."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "progress：number。"
+        ]
+      },
+      "description": {
+        "en": "设置进度条位置 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:80",
+        "zh-CN": "设置进度条位置 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:80"
+      },
+      "example": {
+        "en": "-- imgui.setProgressBarPos(...)",
+        "zh-CN": "-- imgui.setProgressBarPos(...)"
+      }
+    },
+    "imgui.setShapePosition": {
+      "signature": {
+        "en": "imgui.setShapePosition(handle, x, y)",
+        "zh-CN": "imgui.setShapePosition(handle, x, y)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "x: number.",
+          "y: number."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "x：number。",
+          "y：number。"
+        ]
+      },
+      "description": {
+        "en": "设置形状位置 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:186",
+        "zh-CN": "设置形状位置 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:186"
+      },
+      "example": {
+        "en": "-- imgui.setShapePosition(...)",
+        "zh-CN": "-- imgui.setShapePosition(...)"
+      }
+    },
+    "imgui.setShapeTextBackground": {
+      "signature": {
+        "en": "imgui.setShapeTextBackground(_, _, _)",
+        "zh-CN": "imgui.setShapeTextBackground(_, _, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number.",
+          "_: boolean."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。",
+          "_：boolean。"
+        ]
+      },
+      "description": {
+        "en": "设置形状文本背景 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:195",
+        "zh-CN": "设置形状文本背景 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:195"
+      },
+      "example": {
+        "en": "-- imgui.setShapeTextBackground(...)",
+        "zh-CN": "-- imgui.setShapeTextBackground(...)"
+      }
+    },
+    "imgui.setShapeTextColor": {
+      "signature": {
+        "en": "imgui.setShapeTextColor(_, _)",
+        "zh-CN": "imgui.setShapeTextColor(_, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置形状文本颜色 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:194",
+        "zh-CN": "设置形状文本颜色 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:194"
+      },
+      "example": {
+        "en": "-- imgui.setShapeTextColor(...)",
+        "zh-CN": "-- imgui.setShapeTextColor(...)"
+      }
+    },
+    "imgui.setShapeTextFontScale": {
+      "signature": {
+        "en": "imgui.setShapeTextFontScale(_, _)",
+        "zh-CN": "imgui.setShapeTextFontScale(_, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置形状文本缩放 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:196",
+        "zh-CN": "设置形状文本缩放 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:196"
+      },
+      "example": {
+        "en": "-- imgui.setShapeTextFontScale(...)",
+        "zh-CN": "-- imgui.setShapeTextFontScale(...)"
+      }
+    },
+    "imgui.setShapeTextString": {
+      "signature": {
+        "en": "imgui.setShapeTextString(handle, text)",
+        "zh-CN": "imgui.setShapeTextString(handle, text)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "text: string."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "text：string。"
+        ]
+      },
+      "description": {
+        "en": "设置形状文本 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:193",
+        "zh-CN": "设置形状文本 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:193"
+      },
+      "example": {
+        "en": "-- imgui.setShapeTextString(...)",
+        "zh-CN": "-- imgui.setShapeTextString(...)"
+      }
+    },
+    "imgui.setShapeThickness": {
+      "signature": {
+        "en": "imgui.setShapeThickness(_, _)",
+        "zh-CN": "imgui.setShapeThickness(_, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置形状线宽 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:197",
+        "zh-CN": "设置形状线宽 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:197"
+      },
+      "example": {
+        "en": "-- imgui.setShapeThickness(...)",
+        "zh-CN": "-- imgui.setShapeThickness(...)"
+      }
+    },
+    "imgui.setShapeVisibility": {
+      "signature": {
+        "en": "imgui.setShapeVisibility(handle, visible)",
+        "zh-CN": "imgui.setShapeVisibility(handle, visible)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "visible: boolean."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "visible：boolean。"
+        ]
+      },
+      "description": {
+        "en": "设置形状可见性 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:191",
+        "zh-CN": "设置形状可见性 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:191"
+      },
+      "example": {
+        "en": "-- imgui.setShapeVisibility(...)",
+        "zh-CN": "-- imgui.setShapeVisibility(...)"
+      }
+    },
+    "imgui.setSlider": {
+      "signature": {
+        "en": "imgui.setSlider(handle, value)",
+        "zh-CN": "imgui.setSlider(handle, value)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "value: number."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "value：number。"
+        ]
+      },
+      "description": {
+        "en": "设置滑块值 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:129",
+        "zh-CN": "设置滑块值 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:129"
+      },
+      "example": {
+        "en": "-- imgui.setSlider(...)",
+        "zh-CN": "-- imgui.setSlider(...)"
+      }
+    },
+    "imgui.setStyleColor": {
+      "signature": {
+        "en": "imgui.setStyleColor(_, _)",
+        "zh-CN": "imgui.setStyleColor(_, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置样式颜色 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:235",
+        "zh-CN": "设置样式颜色 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:235"
+      },
+      "example": {
+        "en": "-- imgui.setStyleColor(...)",
+        "zh-CN": "-- imgui.setStyleColor(...)"
+      }
+    },
+    "imgui.setTableHeaderItem": {
+      "signature": {
+        "en": "imgui.setTableHeaderItem(_, _, _)",
+        "zh-CN": "imgui.setTableHeaderItem(_, _, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number.",
+          "_: string."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。",
+          "_：string。"
+        ]
+      },
+      "description": {
+        "en": "设置表头 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:133",
+        "zh-CN": "设置表头 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:133"
+      },
+      "example": {
+        "en": "-- imgui.setTableHeaderItem(...)",
+        "zh-CN": "-- imgui.setTableHeaderItem(...)"
+      }
+    },
+    "imgui.setTableItemText": {
+      "signature": {
+        "en": "imgui.setTableItemText(handle, row, column, text)",
+        "zh-CN": "imgui.setTableItemText(handle, row, column, text)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "row: number.",
+          "column: number.",
+          "text: string."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "row：number。",
+          "column：number。",
+          "text：string。"
+        ]
+      },
+      "description": {
+        "en": "设置表格单元格 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:139",
+        "zh-CN": "设置表格单元格 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:139"
+      },
+      "example": {
+        "en": "-- imgui.setTableItemText(...)",
+        "zh-CN": "-- imgui.setTableItemText(...)"
+      }
+    },
+    "imgui.setWidgetColor": {
+      "signature": {
+        "en": "imgui.setWidgetColor(_, _)",
+        "zh-CN": "imgui.setWidgetColor(_, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置控件颜色 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:205",
+        "zh-CN": "设置控件颜色 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:205"
+      },
+      "example": {
+        "en": "-- imgui.setWidgetColor(...)",
+        "zh-CN": "-- imgui.setWidgetColor(...)"
+      }
+    },
+    "imgui.setWidgetSize": {
+      "signature": {
+        "en": "imgui.setWidgetSize(_, _, _)",
+        "zh-CN": "imgui.setWidgetSize(_, _, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置控件尺寸 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:203",
+        "zh-CN": "设置控件尺寸 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:203"
+      },
+      "example": {
+        "en": "-- imgui.setWidgetSize(...)",
+        "zh-CN": "-- imgui.setWidgetSize(...)"
+      }
+    },
+    "imgui.setWidgetStyle": {
+      "signature": {
+        "en": "imgui.setWidgetStyle(_, _, _)",
+        "zh-CN": "imgui.setWidgetStyle(_, _, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置控件样式 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:204",
+        "zh-CN": "设置控件样式 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:204"
+      },
+      "example": {
+        "en": "-- imgui.setWidgetStyle(...)",
+        "zh-CN": "-- imgui.setWidgetStyle(...)"
+      }
+    },
+    "imgui.setWidgetText": {
+      "signature": {
+        "en": "imgui.setWidgetText(handle, text)",
+        "zh-CN": "imgui.setWidgetText(handle, text)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "text: string."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "text：string。"
+        ]
+      },
+      "description": {
+        "en": "设置控件文本 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:49",
+        "zh-CN": "设置控件文本 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:49"
+      },
+      "example": {
+        "en": "-- imgui.setWidgetText(...)",
+        "zh-CN": "-- imgui.setWidgetText(...)"
+      }
+    },
+    "imgui.setWidgetVisible": {
+      "signature": {
+        "en": "imgui.setWidgetVisible(handle, visible)",
+        "zh-CN": "imgui.setWidgetVisible(handle, visible)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "visible: boolean."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "visible：boolean。"
+        ]
+      },
+      "description": {
+        "en": "设置控件可见性 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:206",
+        "zh-CN": "设置控件可见性 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:206"
+      },
+      "example": {
+        "en": "-- imgui.setWidgetVisible(...)",
+        "zh-CN": "-- imgui.setWidgetVisible(...)"
+      }
+    },
+    "imgui.setWindowFlags": {
+      "signature": {
+        "en": "imgui.setWindowFlags(_, _)",
+        "zh-CN": "imgui.setWindowFlags(_, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置窗口标记 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:222",
+        "zh-CN": "设置窗口标记 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:222"
+      },
+      "example": {
+        "en": "-- imgui.setWindowFlags(...)",
+        "zh-CN": "-- imgui.setWindowFlags(...)"
+      }
+    },
+    "imgui.setWindowPos": {
+      "signature": {
+        "en": "imgui.setWindowPos(handle, x, y)",
+        "zh-CN": "imgui.setWindowPos(handle, x, y)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string.",
+          "x: number.",
+          "y: number."
+        ],
+        "zh-CN": [
+          "handle：string。",
+          "x：number。",
+          "y：number。"
+        ]
+      },
+      "description": {
+        "en": "设置窗口位置 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:212",
+        "zh-CN": "设置窗口位置 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:212"
+      },
+      "example": {
+        "en": "-- imgui.setWindowPos(...)",
+        "zh-CN": "-- imgui.setWindowPos(...)"
+      }
+    },
+    "imgui.setWindowSize": {
+      "signature": {
+        "en": "imgui.setWindowSize(_, _, _)",
+        "zh-CN": "imgui.setWindowSize(_, _, _)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "设置窗口尺寸 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:221",
+        "zh-CN": "设置窗口尺寸 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:221"
+      },
+      "example": {
+        "en": "-- imgui.setWindowSize(...)",
+        "zh-CN": "-- imgui.setWindowSize(...)"
+      }
+    },
+    "imgui.show": {
+      "signature": {
+        "en": "imgui.show()",
+        "zh-CN": "imgui.show()"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "显示 UI Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:237",
+        "zh-CN": "显示 UI 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:237"
+      },
+      "example": {
+        "en": "-- imgui.show(...)",
+        "zh-CN": "-- imgui.show(...)"
+      }
+    },
+    "imgui.showWindow": {
+      "signature": {
+        "en": "imgui.showWindow(handle)",
+        "zh-CN": "imgui.showWindow(handle)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "handle: string."
+        ],
+        "zh-CN": [
+          "handle：string。"
+        ]
+      },
+      "description": {
+        "en": "显示窗口 Source: lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:211",
+        "zh-CN": "显示窗口 来源：lua_engine/model/lrappsoft/imgui/imgui_vm_inject.go:211"
+      },
+      "example": {
+        "en": "-- imgui.showWindow(...)",
+        "zh-CN": "-- imgui.showWindow(...)"
+      }
+    },
+    "jsonLib.decode": {
+      "signature": {
+        "en": "jsonLib.decode(value)",
+        "zh-CN": "jsonLib.decode(value)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "value: string."
+        ],
+        "zh-CN": [
+          "value：string。"
+        ]
+      },
+      "description": {
+        "en": "将 JSON 字符串解析为 Lua 值 Source: lua_engine/model/lrappsoft/json/json_vm_inject.go:26",
+        "zh-CN": "将 JSON 字符串解析为 Lua 值 来源：lua_engine/model/lrappsoft/json/json_vm_inject.go:26"
+      },
+      "example": {
+        "en": "-- jsonLib.decode(...)",
+        "zh-CN": "-- jsonLib.decode(...)"
+      }
+    },
+    "jsonLib.encode": {
+      "signature": {
+        "en": "jsonLib.encode(value)",
+        "zh-CN": "jsonLib.encode(value)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "value: any."
+        ],
+        "zh-CN": [
+          "value：any。"
+        ]
+      },
+      "description": {
+        "en": "将 Lua 值序列化为 JSON 字符串 Source: lua_engine/model/lrappsoft/json/json_vm_inject.go:19",
+        "zh-CN": "将 Lua 值序列化为 JSON 字符串 来源：lua_engine/model/lrappsoft/json/json_vm_inject.go:19"
+      },
+      "example": {
+        "en": "-- jsonLib.encode(...)",
+        "zh-CN": "-- jsonLib.encode(...)"
+      }
+    },
+    "lfs.attributes": {
+      "signature": {
+        "en": "lfs.attributes(path)",
+        "zh-CN": "lfs.attributes(path)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "读取文件属性 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:36",
+        "zh-CN": "读取文件属性 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:36"
+      },
+      "example": {
+        "en": "-- lfs.attributes(...)",
+        "zh-CN": "-- lfs.attributes(...)"
+      }
+    },
+    "lfs.chdir": {
+      "signature": {
+        "en": "lfs.chdir(dir)",
+        "zh-CN": "lfs.chdir(dir)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "dir: string."
+        ],
+        "zh-CN": [
+          "dir：string。"
+        ]
+      },
+      "description": {
+        "en": "切换当前工作目录 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:22",
+        "zh-CN": "切换当前工作目录 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:22"
+      },
+      "example": {
+        "en": "-- lfs.chdir(...)",
+        "zh-CN": "-- lfs.chdir(...)"
+      }
+    },
+    "lfs.currentdir": {
+      "signature": {
+        "en": "lfs.currentdir()",
+        "zh-CN": "lfs.currentdir()"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "返回当前工作目录 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:21",
+        "zh-CN": "返回当前工作目录 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:21"
+      },
+      "example": {
+        "en": "-- lfs.currentdir(...)",
+        "zh-CN": "-- lfs.currentdir(...)"
+      }
+    },
+    "lfs.dir": {
+      "signature": {
+        "en": "lfs.dir(path)",
+        "zh-CN": "lfs.dir(path)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "读取目录条目 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:38",
+        "zh-CN": "读取目录条目 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:38"
+      },
+      "example": {
+        "en": "-- lfs.dir(...)",
+        "zh-CN": "-- lfs.dir(...)"
+      }
+    },
+    "lfs.link": {
+      "signature": {
+        "en": "lfs.link(oldName, newName)",
+        "zh-CN": "lfs.link(oldName, newName)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "oldName: string.",
+          "newName: string."
+        ],
+        "zh-CN": [
+          "oldName：string。",
+          "newName：string。"
+        ]
+      },
+      "description": {
+        "en": "创建硬链接 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:49",
+        "zh-CN": "创建硬链接 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:49"
+      },
+      "example": {
+        "en": "-- lfs.link(...)",
+        "zh-CN": "-- lfs.link(...)"
+      }
+    },
+    "lfs.lock_dir": {
+      "signature": {
+        "en": "lfs.lock_dir(path)",
+        "zh-CN": "lfs.lock_dir(path)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "创建目录锁文件 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:55",
+        "zh-CN": "创建目录锁文件 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:55"
+      },
+      "example": {
+        "en": "-- lfs.lock_dir(...)",
+        "zh-CN": "-- lfs.lock_dir(...)"
+      }
+    },
+    "lfs.mkdir": {
+      "signature": {
+        "en": "lfs.mkdir(path)",
+        "zh-CN": "lfs.mkdir(path)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "创建目录 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:23",
+        "zh-CN": "创建目录 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:23"
+      },
+      "example": {
+        "en": "-- lfs.mkdir(...)",
+        "zh-CN": "-- lfs.mkdir(...)"
+      }
+    },
+    "lfs.rmdir": {
+      "signature": {
+        "en": "lfs.rmdir(name)",
+        "zh-CN": "lfs.rmdir(name)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "name: string."
+        ],
+        "zh-CN": [
+          "name：string。"
+        ]
+      },
+      "description": {
+        "en": "删除目录 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:26",
+        "zh-CN": "删除目录 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:26"
+      },
+      "example": {
+        "en": "-- lfs.rmdir(...)",
+        "zh-CN": "-- lfs.rmdir(...)"
+      }
+    },
+    "lfs.symlink": {
+      "signature": {
+        "en": "lfs.symlink(oldName, newName)",
+        "zh-CN": "lfs.symlink(oldName, newName)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "oldName: string.",
+          "newName: string."
+        ],
+        "zh-CN": [
+          "oldName：string。",
+          "newName：string。"
+        ]
+      },
+      "description": {
+        "en": "创建符号链接 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:52",
+        "zh-CN": "创建符号链接 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:52"
+      },
+      "example": {
+        "en": "-- lfs.symlink(...)",
+        "zh-CN": "-- lfs.symlink(...)"
+      }
+    },
+    "lfs.symlinkattributes": {
+      "signature": {
+        "en": "lfs.symlinkattributes(path)",
+        "zh-CN": "lfs.symlinkattributes(path)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "读取符号链接属性 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:37",
+        "zh-CN": "读取符号链接属性 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:37"
+      },
+      "example": {
+        "en": "-- lfs.symlinkattributes(...)",
+        "zh-CN": "-- lfs.symlinkattributes(...)"
+      }
+    },
+    "lfs.touch": {
+      "signature": {
+        "en": "lfs.touch(path)",
+        "zh-CN": "lfs.touch(path)"
+      },
+      "returns": {
+        "en": "returns: none.",
+        "zh-CN": "返回：无。"
+      },
+      "params": {
+        "en": [
+          "path: string."
+        ],
+        "zh-CN": [
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "更新文件时间 Source: lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:27",
+        "zh-CN": "更新文件时间 来源：lua_engine/model/lrappsoft/lfs/lfs_vm_inject.go:27"
+      },
+      "example": {
+        "en": "-- lfs.touch(...)",
+        "zh-CN": "-- lfs.touch(...)"
+      }
+    },
+    "math.tointeger": {
+      "signature": {
+        "en": "math.tointeger(value)",
+        "zh-CN": "math.tointeger(value)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "value: any."
+        ],
+        "zh-CN": [
+          "value：any。"
+        ]
+      },
+      "description": {
+        "en": "将值转换为整数 Source: lua_engine/model/lrappsoft/math/math_vm_inject.go:20",
+        "zh-CN": "将值转换为整数 来源：lua_engine/model/lrappsoft/math/math_vm_inject.go:20"
+      },
+      "example": {
+        "en": "-- math.tointeger(...)",
+        "zh-CN": "-- math.tointeger(...)"
+      }
+    },
+    "math.type": {
+      "signature": {
+        "en": "math.type(value)",
+        "zh-CN": "math.type(value)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "value: any."
+        ],
+        "zh-CN": [
+          "value：any。"
+        ]
+      },
+      "description": {
+        "en": "获取数字类型 Source: lua_engine/model/lrappsoft/math/math_vm_inject.go:38",
+        "zh-CN": "获取数字类型 来源：lua_engine/model/lrappsoft/math/math_vm_inject.go:38"
+      },
+      "example": {
+        "en": "-- math.type(...)",
+        "zh-CN": "-- math.type(...)"
+      }
+    },
+    "math.ult": {
+      "signature": {
+        "en": "math.ult(left, right)",
+        "zh-CN": "math.ult(left, right)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "left: number.",
+          "right: number."
+        ],
+        "zh-CN": [
+          "left：number。",
+          "right：number。"
+        ]
+      },
+      "description": {
+        "en": "无符号比较两个整数 Source: lua_engine/model/lrappsoft/math/math_vm_inject.go:51",
+        "zh-CN": "无符号比较两个整数 来源：lua_engine/model/lrappsoft/math/math_vm_inject.go:51"
+      },
+      "example": {
+        "en": "-- math.ult(...)",
+        "zh-CN": "-- math.ult(...)"
+      }
+    },
+    "network.downloadFile": {
+      "signature": {
+        "en": "network.downloadFile(url, path)",
+        "zh-CN": "network.downloadFile(url, path)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "url: string.",
+          "path: string."
+        ],
+        "zh-CN": [
+          "url：string。",
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "下载文件 Source: lua_engine/model/lrappsoft/network/network_vm_inject.go:39",
+        "zh-CN": "下载文件 来源：lua_engine/model/lrappsoft/network/network_vm_inject.go:39"
+      },
+      "example": {
+        "en": "-- network.downloadFile(...)",
+        "zh-CN": "-- network.downloadFile(...)"
+      }
+    },
+    "network.httpDownload": {
+      "signature": {
+        "en": "network.httpDownload(url, path)",
+        "zh-CN": "network.httpDownload(url, path)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "url: string.",
+          "path: string."
+        ],
+        "zh-CN": [
+          "url：string。",
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "下载文件 Source: lua_engine/model/lrappsoft/network/network_vm_inject.go:42",
+        "zh-CN": "下载文件 来源：lua_engine/model/lrappsoft/network/network_vm_inject.go:42"
+      },
+      "example": {
+        "en": "-- network.httpDownload(...)",
+        "zh-CN": "-- network.httpDownload(...)"
+      }
+    },
+    "network.httpGet": {
+      "signature": {
+        "en": "network.httpGet(url, ...)",
+        "zh-CN": "network.httpGet(url, ...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "url: string.",
+          "...: ...number."
+        ],
+        "zh-CN": [
+          "url：string。",
+          "...：...number。"
+        ]
+      },
+      "description": {
+        "en": "发送 HTTP GET 请求 Source: lua_engine/model/lrappsoft/network/network_vm_inject.go:26",
+        "zh-CN": "发送 HTTP GET 请求 来源：lua_engine/model/lrappsoft/network/network_vm_inject.go:26"
+      },
+      "example": {
+        "en": "-- network.httpGet(...)",
+        "zh-CN": "-- network.httpGet(...)"
+      }
+    },
+    "network.httpPost": {
+      "signature": {
+        "en": "network.httpPost(url, body, ...)",
+        "zh-CN": "network.httpPost(url, body, ...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "url: string.",
+          "body: string.",
+          "...: ...number."
+        ],
+        "zh-CN": [
+          "url：string。",
+          "body：string。",
+          "...：...number。"
+        ]
+      },
+      "description": {
+        "en": "发送 HTTP POST 请求 Source: lua_engine/model/lrappsoft/network/network_vm_inject.go:29",
+        "zh-CN": "发送 HTTP POST 请求 来源：lua_engine/model/lrappsoft/network/network_vm_inject.go:29"
+      },
+      "example": {
+        "en": "-- network.httpPost(...)",
+        "zh-CN": "-- network.httpPost(...)"
+      }
+    },
+    "network.httpPostData": {
+      "signature": {
+        "en": "network.httpPostData(url, body, contentType)",
+        "zh-CN": "network.httpPostData(url, body, contentType)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "url: string.",
+          "body: string.",
+          "contentType: string."
+        ],
+        "zh-CN": [
+          "url：string。",
+          "body：string。",
+          "contentType：string。"
+        ]
+      },
+      "description": {
+        "en": "发送带 Content-Type 的 HTTP POST 请求 Source: lua_engine/model/lrappsoft/network/network_vm_inject.go:32",
+        "zh-CN": "发送带 Content-Type 的 HTTP POST 请求 来源：lua_engine/model/lrappsoft/network/network_vm_inject.go:32"
+      },
+      "example": {
+        "en": "-- network.httpPostData(...)",
+        "zh-CN": "-- network.httpPostData(...)"
+      }
+    },
+    "network.httpUpload": {
+      "signature": {
+        "en": "network.httpUpload(url, fieldName, path, headers)",
+        "zh-CN": "network.httpUpload(url, fieldName, path, headers)"
+      },
+      "returns": {
+        "en": "returns: string, number.",
+        "zh-CN": "返回：string, number。"
+      },
+      "params": {
+        "en": [
+          "url: string.",
+          "fieldName: string.",
+          "path: string.",
+          "headers: table."
+        ],
+        "zh-CN": [
+          "url：string。",
+          "fieldName：string。",
+          "path：string。",
+          "headers：table。"
+        ]
+      },
+      "description": {
+        "en": "上传文件并返回响应体与状态码 Source: lua_engine/model/lrappsoft/network/network_vm_inject.go:49",
+        "zh-CN": "上传文件并返回响应体与状态码 来源：lua_engine/model/lrappsoft/network/network_vm_inject.go:49"
+      },
+      "example": {
+        "en": "-- network.httpUpload(...)",
+        "zh-CN": "-- network.httpUpload(...)"
+      }
+    },
+    "network.uploadFile": {
+      "signature": {
+        "en": "network.uploadFile(url, path)",
+        "zh-CN": "network.uploadFile(url, path)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "url: string.",
+          "path: string."
+        ],
+        "zh-CN": [
+          "url：string。",
+          "path：string。"
+        ]
+      },
+      "description": {
+        "en": "上传文件 Source: lua_engine/model/lrappsoft/network/network_vm_inject.go:45",
+        "zh-CN": "上传文件 来源：lua_engine/model/lrappsoft/network/network_vm_inject.go:45"
+      },
+      "example": {
+        "en": "-- network.uploadFile(...)",
+        "zh-CN": "-- network.uploadFile(...)"
+      }
+    },
+    "ssl.https.request": {
+      "signature": {
+        "en": "ssl.https.request(...)",
+        "zh-CN": "ssl.https.request(...)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "...: any."
+        ],
+        "zh-CN": [
+          "...：any。"
+        ]
+      },
+      "description": {
+        "en": "发送 HTTPS 请求 Source: lua_engine/model/lrappsoft/http/http_vm_inject.go:27",
+        "zh-CN": "发送 HTTPS 请求 来源：lua_engine/model/lrappsoft/http/http_vm_inject.go:27"
+      },
+      "example": {
+        "en": "-- ssl.https.request(...)",
+        "zh-CN": "-- ssl.https.request(...)"
+      }
+    },
+    "string.splitStr": {
+      "signature": {
+        "en": "string.splitStr(source, separator)",
+        "zh-CN": "string.splitStr(source, separator)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "source: string.",
+          "separator: string."
+        ],
+        "zh-CN": [
+          "source：string。",
+          "separator：string。"
+        ]
+      },
+      "description": {
+        "en": "按分隔符切分字符串 Source: lua_engine/model/lrappsoft/string_module/string_vm_inject.go:20",
+        "zh-CN": "按分隔符切分字符串 来源：lua_engine/model/lrappsoft/string_module/string_vm_inject.go:20"
+      },
+      "example": {
+        "en": "-- string.splitStr(...)",
+        "zh-CN": "-- string.splitStr(...)"
+      }
+    },
+    "time.getNetWorkTime": {
+      "signature": {
+        "en": "time.getNetWorkTime()",
+        "zh-CN": "time.getNetWorkTime()"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "返回当前时间字符串 Source: lua_engine/model/lrappsoft/time/time_vm_inject.go:25",
+        "zh-CN": "返回当前时间字符串 来源：lua_engine/model/lrappsoft/time/time_vm_inject.go:25"
+      },
+      "example": {
+        "en": "-- time.getNetWorkTime(...)",
+        "zh-CN": "-- time.getNetWorkTime(...)"
+      }
+    },
+    "time.systemTime": {
+      "signature": {
+        "en": "time.systemTime()",
+        "zh-CN": "time.systemTime()"
+      },
+      "returns": {
+        "en": "returns: number.",
+        "zh-CN": "返回：number。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "返回系统当前时间戳（毫秒） Source: lua_engine/model/lrappsoft/time/time_vm_inject.go:22",
+        "zh-CN": "返回系统当前时间戳（毫秒） 来源：lua_engine/model/lrappsoft/time/time_vm_inject.go:22"
+      },
+      "example": {
+        "en": "-- time.systemTime(...)",
+        "zh-CN": "-- time.systemTime(...)"
+      }
+    },
+    "time.tickCount": {
+      "signature": {
+        "en": "time.tickCount()",
+        "zh-CN": "time.tickCount()"
+      },
+      "returns": {
+        "en": "returns: number.",
+        "zh-CN": "返回：number。"
+      },
+      "params": {
+        "en": [
+          "No parameters."
+        ],
+        "zh-CN": [
+          "无参数。"
+        ]
+      },
+      "description": {
+        "en": "返回模块注册以来的运行时长（毫秒） Source: lua_engine/model/lrappsoft/time/time_vm_inject.go:28",
+        "zh-CN": "返回模块注册以来的运行时长（毫秒） 来源：lua_engine/model/lrappsoft/time/time_vm_inject.go:28"
+      },
+      "example": {
+        "en": "-- time.tickCount(...)",
+        "zh-CN": "-- time.tickCount(...)"
+      }
+    },
+    "ui.addButton": {
+      "signature": {
+        "en": "ui.addButton(_, _, _, _)",
+        "zh-CN": "ui.addButton(_, _, _, _)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number.",
+          "_: number.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。",
+          "_：number。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "添加按钮 Source: lua_engine/model/lrappsoft/dynamicui/dynamicui_vm_inject.go:20",
+        "zh-CN": "添加按钮 来源：lua_engine/model/lrappsoft/dynamicui/dynamicui_vm_inject.go:20"
+      },
+      "example": {
+        "en": "-- ui.addButton(...)",
+        "zh-CN": "-- ui.addButton(...)"
+      }
+    },
+    "ui.getTableViewRowData": {
+      "signature": {
+        "en": "ui.getTableViewRowData(_, _)",
+        "zh-CN": "ui.getTableViewRowData(_, _)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "_: string.",
+          "_: number."
+        ],
+        "zh-CN": [
+          "_：string。",
+          "_：number。"
+        ]
+      },
+      "description": {
+        "en": "获取表格行数据 Source: lua_engine/model/lrappsoft/dynamicui/dynamicui_vm_inject.go:21",
+        "zh-CN": "获取表格行数据 来源：lua_engine/model/lrappsoft/dynamicui/dynamicui_vm_inject.go:21"
+      },
+      "example": {
+        "en": "-- ui.getTableViewRowData(...)",
+        "zh-CN": "-- ui.getTableViewRowData(...)"
+      }
+    },
+    "ui.getTableViewSelectIndex": {
+      "signature": {
+        "en": "ui.getTableViewSelectIndex(_)",
+        "zh-CN": "ui.getTableViewSelectIndex(_)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "_: string."
+        ],
+        "zh-CN": [
+          "_：string。"
+        ]
+      },
+      "description": {
+        "en": "获取表格选中索引 Source: lua_engine/model/lrappsoft/dynamicui/dynamicui_vm_inject.go:22",
+        "zh-CN": "获取表格选中索引 来源：lua_engine/model/lrappsoft/dynamicui/dynamicui_vm_inject.go:22"
+      },
+      "example": {
+        "en": "-- ui.getTableViewSelectIndex(...)",
+        "zh-CN": "-- ui.getTableViewSelectIndex(...)"
+      }
+    },
+    "ui.newLayout": {
+      "signature": {
+        "en": "ui.newLayout(_)",
+        "zh-CN": "ui.newLayout(_)"
+      },
+      "returns": {
+        "en": "returns: boolean.",
+        "zh-CN": "返回：boolean。"
+      },
+      "params": {
+        "en": [
+          "_: string."
+        ],
+        "zh-CN": [
+          "_：string。"
+        ]
+      },
+      "description": {
+        "en": "创建布局 Source: lua_engine/model/lrappsoft/dynamicui/dynamicui_vm_inject.go:19",
+        "zh-CN": "创建布局 来源：lua_engine/model/lrappsoft/dynamicui/dynamicui_vm_inject.go:19"
+      },
+      "example": {
+        "en": "-- ui.newLayout(...)",
+        "zh-CN": "-- ui.newLayout(...)"
+      }
+    },
+    "utf8.inStr": {
+      "signature": {
+        "en": "utf8.inStr(start, source, pattern)",
+        "zh-CN": "utf8.inStr(start, source, pattern)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "start: number.",
+          "source: string.",
+          "pattern: string."
+        ],
+        "zh-CN": [
+          "start：number。",
+          "source：string。",
+          "pattern：string。"
+        ]
+      },
+      "description": {
+        "en": "从指定位置正向查找子串 Source: lua_engine/model/lrappsoft/string_module/string_vm_inject.go:74",
+        "zh-CN": "从指定位置正向查找子串 来源：lua_engine/model/lrappsoft/string_module/string_vm_inject.go:74"
+      },
+      "example": {
+        "en": "-- utf8.inStr(...)",
+        "zh-CN": "-- utf8.inStr(...)"
+      }
+    },
+    "utf8.inStrRev": {
+      "signature": {
+        "en": "utf8.inStrRev(source, pattern, start)",
+        "zh-CN": "utf8.inStrRev(source, pattern, start)"
+      },
+      "returns": {
+        "en": "returns: any.",
+        "zh-CN": "返回：any。"
+      },
+      "params": {
+        "en": [
+          "source: string.",
+          "pattern: string.",
+          "start: number."
+        ],
+        "zh-CN": [
+          "source：string。",
+          "pattern：string。",
+          "start：number。"
+        ]
+      },
+      "description": {
+        "en": "从指定位置反向查找子串 Source: lua_engine/model/lrappsoft/string_module/string_vm_inject.go:87",
+        "zh-CN": "从指定位置反向查找子串 来源：lua_engine/model/lrappsoft/string_module/string_vm_inject.go:87"
+      },
+      "example": {
+        "en": "-- utf8.inStrRev(...)",
+        "zh-CN": "-- utf8.inStrRev(...)"
+      }
+    },
+    "utf8.left": {
+      "signature": {
+        "en": "utf8.left(source, count)",
+        "zh-CN": "utf8.left(source, count)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "source: string.",
+          "count: number."
+        ],
+        "zh-CN": [
+          "source：string。",
+          "count：number。"
+        ]
+      },
+      "description": {
+        "en": "返回左侧指定字符数 Source: lua_engine/model/lrappsoft/string_module/string_vm_inject.go:26",
+        "zh-CN": "返回左侧指定字符数 来源：lua_engine/model/lrappsoft/string_module/string_vm_inject.go:26"
+      },
+      "example": {
+        "en": "-- utf8.left(...)",
+        "zh-CN": "-- utf8.left(...)"
+      }
+    },
+    "utf8.length": {
+      "signature": {
+        "en": "utf8.length(source)",
+        "zh-CN": "utf8.length(source)"
+      },
+      "returns": {
+        "en": "returns: number.",
+        "zh-CN": "返回：number。"
+      },
+      "params": {
+        "en": [
+          "source: string."
+        ],
+        "zh-CN": [
+          "source：string。"
+        ]
+      },
+      "description": {
+        "en": "返回 UTF-8 字符数 Source: lua_engine/model/lrappsoft/string_module/string_vm_inject.go:23",
+        "zh-CN": "返回 UTF-8 字符数 来源：lua_engine/model/lrappsoft/string_module/string_vm_inject.go:23"
+      },
+      "example": {
+        "en": "-- utf8.length(...)",
+        "zh-CN": "-- utf8.length(...)"
+      }
+    },
+    "utf8.mid": {
+      "signature": {
+        "en": "utf8.mid(source, start, length)",
+        "zh-CN": "utf8.mid(source, start, length)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "source: string.",
+          "start: number.",
+          "length: number."
+        ],
+        "zh-CN": [
+          "source：string。",
+          "start：number。",
+          "length：number。"
+        ]
+      },
+      "description": {
+        "en": "返回中间指定字符段 Source: lua_engine/model/lrappsoft/string_module/string_vm_inject.go:46",
+        "zh-CN": "返回中间指定字符段 来源：lua_engine/model/lrappsoft/string_module/string_vm_inject.go:46"
+      },
+      "example": {
+        "en": "-- utf8.mid(...)",
+        "zh-CN": "-- utf8.mid(...)"
+      }
+    },
+    "utf8.right": {
+      "signature": {
+        "en": "utf8.right(source, count)",
+        "zh-CN": "utf8.right(source, count)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "source: string.",
+          "count: number."
+        ],
+        "zh-CN": [
+          "source：string。",
+          "count：number。"
+        ]
+      },
+      "description": {
+        "en": "返回右侧指定字符数 Source: lua_engine/model/lrappsoft/string_module/string_vm_inject.go:36",
+        "zh-CN": "返回右侧指定字符数 来源：lua_engine/model/lrappsoft/string_module/string_vm_inject.go:36"
+      },
+      "example": {
+        "en": "-- utf8.right(...)",
+        "zh-CN": "-- utf8.right(...)"
+      }
+    },
+    "utf8.strCut": {
+      "signature": {
+        "en": "utf8.strCut(source, start, length)",
+        "zh-CN": "utf8.strCut(source, start, length)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "source: string.",
+          "start: number.",
+          "length: number."
+        ],
+        "zh-CN": [
+          "source：string。",
+          "start：number。",
+          "length：number。"
+        ]
+      },
+      "description": {
+        "en": "删除指定字符段 Source: lua_engine/model/lrappsoft/string_module/string_vm_inject.go:60",
+        "zh-CN": "删除指定字符段 来源：lua_engine/model/lrappsoft/string_module/string_vm_inject.go:60"
+      },
+      "example": {
+        "en": "-- utf8.strCut(...)",
+        "zh-CN": "-- utf8.strCut(...)"
+      }
+    },
+    "utf8.strReverse": {
+      "signature": {
+        "en": "utf8.strReverse(source)",
+        "zh-CN": "utf8.strReverse(source)"
+      },
+      "returns": {
+        "en": "returns: string.",
+        "zh-CN": "返回：string。"
+      },
+      "params": {
+        "en": [
+          "source: string."
+        ],
+        "zh-CN": [
+          "source：string。"
+        ]
+      },
+      "description": {
+        "en": "反转 UTF-8 字符串 Source: lua_engine/model/lrappsoft/string_module/string_vm_inject.go:100",
+        "zh-CN": "反转 UTF-8 字符串 来源：lua_engine/model/lrappsoft/string_module/string_vm_inject.go:100"
+      },
+      "example": {
+        "en": "-- utf8.strReverse(...)",
+        "zh-CN": "-- utf8.strReverse(...)"
+      }
+    }
+  }
+}

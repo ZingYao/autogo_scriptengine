@@ -2,6 +2,7 @@
   - [简介](README.md)
   - [更新日志](changelog.md)
   - [示例工程](examples/README.md)
+  - [GLua Builtin Docs](glua_builtin_docs/README.md)
   - [AutoGo iOS 导出方法 TODO](autogo_ios_exported_methods_todo.md)
 
 - JavaScript 引擎

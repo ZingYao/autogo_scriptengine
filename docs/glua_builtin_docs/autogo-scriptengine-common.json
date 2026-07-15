@@ -1,0 +1,239 @@
+{
+  "_schema": "glua builtin function docs. Generated from AutoGo ScriptEngine static registrations.",
+  "functions": {
+    "__autogo_debug_hit": {
+      "signature": {
+        "en": "__autogo_debug_hit(...)",
+        "zh-CN": "__autogo_debug_hit(...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "...: ...userdata."
+        ],
+        "zh-CN": [
+          "...：...userdata。"
+        ]
+      },
+      "description": {
+        "en": "Lua 引擎核心全局函数。 Source: lua_engine/debugger/debugger.go:64",
+        "zh-CN": "Lua 引擎核心全局函数。 来源：lua_engine/debugger/debugger.go:64"
+      },
+      "example": {
+        "en": "__autogo_debug_hit(...)",
+        "zh-CN": "__autogo_debug_hit(...)"
+      }
+    },
+    "console.error": {
+      "signature": {
+        "en": "console.error(...)",
+        "zh-CN": "console.error(...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "...: ...userdata."
+        ],
+        "zh-CN": [
+          "...：...userdata。"
+        ]
+      },
+      "description": {
+        "en": "Lua 引擎核心 table 方法。 Source: lua_engine/lua_engine.go:733",
+        "zh-CN": "Lua 引擎核心 table 方法。 来源：lua_engine/lua_engine.go:733"
+      },
+      "example": {
+        "en": "-- console.error(...)",
+        "zh-CN": "-- console.error(...)"
+      }
+    },
+    "console.log": {
+      "signature": {
+        "en": "console.log(...)",
+        "zh-CN": "console.log(...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "...: ...userdata."
+        ],
+        "zh-CN": [
+          "...：...userdata。"
+        ]
+      },
+      "description": {
+        "en": "Lua 引擎核心 table 方法。 Source: lua_engine/lua_engine.go:733",
+        "zh-CN": "Lua 引擎核心 table 方法。 来源：lua_engine/lua_engine.go:733"
+      },
+      "example": {
+        "en": "-- console.log(...)",
+        "zh-CN": "-- console.log(...)"
+      }
+    },
+    "listMethods": {
+      "signature": {
+        "en": "listMethods(...)",
+        "zh-CN": "listMethods(...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "...: ...userdata."
+        ],
+        "zh-CN": [
+          "...：...userdata。"
+        ]
+      },
+      "description": {
+        "en": "Lua 引擎核心全局函数。 Source: lua_engine/lua_engine.go:706",
+        "zh-CN": "Lua 引擎核心全局函数。 来源：lua_engine/lua_engine.go:706"
+      },
+      "example": {
+        "en": "listMethods(...)",
+        "zh-CN": "listMethods(...)"
+      }
+    },
+    "overrideMethod": {
+      "signature": {
+        "en": "overrideMethod(...)",
+        "zh-CN": "overrideMethod(...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "...: ...userdata."
+        ],
+        "zh-CN": [
+          "...：...userdata。"
+        ]
+      },
+      "description": {
+        "en": "Lua 引擎核心全局函数。 Source: lua_engine/lua_engine.go:726",
+        "zh-CN": "Lua 引擎核心全局函数。 来源：lua_engine/lua_engine.go:726"
+      },
+      "example": {
+        "en": "overrideMethod(...)",
+        "zh-CN": "overrideMethod(...)"
+      }
+    },
+    "registerMethod": {
+      "signature": {
+        "en": "registerMethod(...)",
+        "zh-CN": "registerMethod(...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "...: ...userdata."
+        ],
+        "zh-CN": [
+          "...：...userdata。"
+        ]
+      },
+      "description": {
+        "en": "Lua 引擎核心全局函数。 Source: lua_engine/lua_engine.go:693",
+        "zh-CN": "Lua 引擎核心全局函数。 来源：lua_engine/lua_engine.go:693"
+      },
+      "example": {
+        "en": "registerMethod(...)",
+        "zh-CN": "registerMethod(...)"
+      }
+    },
+    "restoreMethod": {
+      "signature": {
+        "en": "restoreMethod(...)",
+        "zh-CN": "restoreMethod(...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "...: ...userdata."
+        ],
+        "zh-CN": [
+          "...：...userdata。"
+        ]
+      },
+      "description": {
+        "en": "Lua 引擎核心全局函数。 Source: lua_engine/lua_engine.go:729",
+        "zh-CN": "Lua 引擎核心全局函数。 来源：lua_engine/lua_engine.go:729"
+      },
+      "example": {
+        "en": "restoreMethod(...)",
+        "zh-CN": "restoreMethod(...)"
+      }
+    },
+    "sleep": {
+      "signature": {
+        "en": "sleep(...)",
+        "zh-CN": "sleep(...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "...: ...userdata."
+        ],
+        "zh-CN": [
+          "...：...userdata。"
+        ]
+      },
+      "description": {
+        "en": "Lua 引擎核心全局函数。 Source: lua_engine/lua_engine.go:718",
+        "zh-CN": "Lua 引擎核心全局函数。 来源：lua_engine/lua_engine.go:718"
+      },
+      "example": {
+        "en": "sleep(...)",
+        "zh-CN": "sleep(...)"
+      }
+    },
+    "unregisterMethod": {
+      "signature": {
+        "en": "unregisterMethod(...)",
+        "zh-CN": "unregisterMethod(...)"
+      },
+      "returns": {
+        "en": "returns: table.",
+        "zh-CN": "返回：table。"
+      },
+      "params": {
+        "en": [
+          "...: ...userdata."
+        ],
+        "zh-CN": [
+          "...：...userdata。"
+        ]
+      },
+      "description": {
+        "en": "Lua 引擎核心全局函数。 Source: lua_engine/lua_engine.go:700",
+        "zh-CN": "Lua 引擎核心全局函数。 来源：lua_engine/lua_engine.go:700"
+      },
+      "example": {
+        "en": "unregisterMethod(...)",
+        "zh-CN": "unregisterMethod(...)"
+      }
+    }
+  }
+}

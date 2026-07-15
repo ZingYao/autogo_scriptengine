@@ -382,14 +382,8 @@ func main() {
     // 注册所有 autogo 风格模块
     engine.RegisterModule(all_models.AllModules...)
 
-    // 执行工具脚本（以便主脚本可以引用）
-    err := engine.ExecuteFile("scripts/utils.lua")
-    if err != nil {
-        log.Fatalf("Failed to execute utils.lua: %v", err)
-    }
-
     // 执行主脚本
-    err = engine.ExecuteFile("scripts/main.lua")
+    err := engine.ExecuteFile("scripts/main.lua")
     if err != nil {
         log.Fatalf("Failed to execute main.lua: %v", err)
     }
@@ -509,7 +503,57 @@ func main() {
 }
 ```
 
-## 11. 示例代码 GitHub 地址
+## 11. GLua Builtin Docs
+
+当前 Lua 引擎依赖 `github.com/ZingYao/go-lua-vm v1.1.0`，可以把本仓库生成的 builtin docs JSON 导入 `gluals`、VS Code 或 JetBrains，以获得 AutoGo/Lua 扩展方法补全、签名提示和中文悬浮文档。
+
+生成文件位于：
+
+- `docs/glua_builtin_docs/autogo-scriptengine-common.json`：Lua 引擎公共全局函数和核心 table。
+- `docs/glua_builtin_docs/autogo-scriptengine-android.json`：Android autogo 风格模块。
+- `docs/glua_builtin_docs/autogo-scriptengine-ios.json`：iOS autogo 风格模块。
+- `docs/glua_builtin_docs/autogo-scriptengine-lrappsoft.json`：lrappsoft 兼容模块。
+
+Android 项目推荐组合：
+
+```json
+{
+  "glua.builtinDocs": [
+    "docs/glua_builtin_docs/autogo-scriptengine-common.json",
+    "docs/glua_builtin_docs/autogo-scriptengine-android.json",
+    "docs/glua_builtin_docs/autogo-scriptengine-lrappsoft.json"
+  ]
+}
+```
+
+iOS 项目将 Android 文件替换为 iOS 文件：
+
+```json
+{
+  "glua.builtinDocs": [
+    "docs/glua_builtin_docs/autogo-scriptengine-common.json",
+    "docs/glua_builtin_docs/autogo-scriptengine-ios.json"
+  ]
+}
+```
+
+命令行使用 `gluals` 时可以重复传入 `--gluals-builtin-docs`：
+
+```bash
+gluals \
+  --gluals-builtin-docs docs/glua_builtin_docs/autogo-scriptengine-common.json \
+  --gluals-builtin-docs docs/glua_builtin_docs/autogo-scriptengine-android.json
+```
+
+JetBrains 插件在 `Builtin docs JSON files` 中逐行添加上述 JSON 路径。修改 JSON 后需要重启语言服务或重新加载 IDE 窗口。
+
+重新生成：
+
+```bash
+go run ./tools/glua_builtin_docs
+```
+
+## 12. 示例代码 GitHub 地址
 
 Lua 引擎的示例代码可以在以下 GitHub 地址找到：
 
