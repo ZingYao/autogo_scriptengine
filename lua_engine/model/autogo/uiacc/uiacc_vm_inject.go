@@ -132,6 +132,12 @@ func wrapUiacc(selector *autogouiacc.Uiacc) map[string]interface{} {
 			}
 			return wrapUiacc(selector.TextContains(value))
 		},
+		"descContains": func(value string) map[string]interface{} {
+			if selector == nil {
+				return wrapUiacc(nil)
+			}
+			return wrapUiacc(selector.DescContains(value))
+		},
 		"desc": func(value string) map[string]interface{} {
 			if selector == nil {
 				return wrapUiacc(nil)
@@ -156,6 +162,32 @@ func wrapUiacc(selector *autogouiacc.Uiacc) map[string]interface{} {
 			}
 			return wrapUiacc(selector.PackageName(value))
 		},
+		"clickable": func(value bool) map[string]interface{} {
+			if selector == nil {
+				return wrapUiacc(nil)
+			}
+			return wrapUiacc(selector.Clickable(value))
+		},
+		"scrollable": func(value bool) map[string]interface{} {
+			if selector == nil {
+				return wrapUiacc(nil)
+			}
+			return wrapUiacc(selector.Scrollable(value))
+		},
+		"editable": func(value bool) map[string]interface{} {
+			if selector == nil {
+				return wrapUiacc(nil)
+			}
+			return wrapUiacc(selector.Editable(value))
+		},
+		// visible 将可见性条件暴露给 GLua 选择器，用于过滤页面切换后仍残留在无障碍节点缓存中的旧页面节点。
+		"visible": func(value bool) map[string]interface{} {
+			// 选择器为空分支：保持链式调用语义并返回不可命中的空选择器包装。
+			if selector == nil {
+				return wrapUiacc(nil)
+			}
+			return wrapUiacc(selector.Visible(value))
+		},
 		"click": func(text ...string) bool {
 			if selector == nil {
 				return false
@@ -166,17 +198,28 @@ func wrapUiacc(selector *autogouiacc.Uiacc) map[string]interface{} {
 			}
 			return selector.Click(value)
 		},
-		"waitFor": func(timeout int) map[string]interface{} {
+		"waitFor": func(timeout int) interface{} {
 			if selector == nil {
 				return wrapUiObject(nil)
 			}
 			return wrapUiObject(selector.WaitFor(timeout))
 		},
-		"findOnce": func() map[string]interface{} {
+		"findOnce": func() interface{} {
 			if selector == nil {
 				return wrapUiObject(nil)
 			}
 			return wrapUiObject(selector.FindOnce())
+		},
+		"find": func() []interface{} {
+			if selector == nil {
+				return nil
+			}
+			objects := selector.Find()
+			results := make([]interface{}, 0, len(objects))
+			for _, object := range objects {
+				results = append(results, wrapUiObject(object))
+			}
+			return results
 		},
 		"release": func() {
 			if selector != nil {
@@ -186,23 +229,55 @@ func wrapUiacc(selector *autogouiacc.Uiacc) map[string]interface{} {
 	}
 }
 
-func wrapUiObject(object *autogouiacc.UiObject) map[string]interface{} {
+func wrapUiObject(object *autogouiacc.UiObject) interface{} {
+	if object == nil {
+		return nil
+	}
 	return map[string]interface{}{
 		"click": func() bool {
-			return object != nil && object.Click()
+			return object.Click()
 		},
 		"clickCenter": func() bool {
-			return object != nil && object.ClickCenter()
+			return object.ClickCenter()
 		},
 		"setText": func(text string) bool {
-			return object != nil && object.SetText(text)
+			return object.SetText(text)
 		},
 		"getText": func() string {
-			if object == nil {
-				return ""
-			}
 			return object.GetText()
 		},
+		"getDesc":      object.GetDesc,
+		"getId":        object.GetId,
+		"getClassName": object.GetClassName,
+		"getBounds": func() map[string]int {
+			bounds := object.GetBounds()
+			return map[string]int{
+				"left": bounds.Left, "right": bounds.Right,
+				"top": bounds.Top, "bottom": bounds.Bottom,
+				"centerX": bounds.CenterX, "centerY": bounds.CenterY,
+				"width": bounds.Width, "height": bounds.Height,
+			}
+		},
+		"getParent": func() interface{} {
+			return wrapUiObject(object.GetParent())
+		},
+		"getChild": func(index int) interface{} {
+			return wrapUiObject(object.GetChild(index))
+		},
+		"getChildren": func() []interface{} {
+			children := object.GetChildren()
+			results := make([]interface{}, 0, len(children))
+			for _, child := range children {
+				results = append(results, wrapUiObject(child))
+			}
+			return results
+		},
+		"getChildCount":  object.GetChildCount,
+		"getClickable":   object.GetClickable,
+		"getSelected":    object.GetSelected,
+		"getScrollable":  object.GetScrollable,
+		"scrollForward":  object.ScrollForward,
+		"scrollBackward": object.ScrollBackward,
 	}
 }
 
