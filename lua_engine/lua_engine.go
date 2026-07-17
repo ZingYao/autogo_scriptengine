@@ -71,6 +71,7 @@ func (e *LuaEngine) init() {
 	options.AllowEnvironment = true
 	options.VirtualFilesystem = e.config.FileSystem
 	options.PreferHostFilesystem = e.config.FileSystem == nil
+	options.DebugObserver = e.config.DebugObserver
 	e.vmState = glua.NewStateWithOptions(options)
 	if err := glua.OpenLibs(e.vmState); err != nil {
 		fmt.Printf("[ERROR] open go-lua-vm libs failed: %v\n", err)
@@ -497,13 +498,83 @@ func (e *LuaEngine) ExecuteFileWithMode(path string, mode ExecuteMode) error {
 	// 异步执行
 	if mode == ExecuteModeAsync {
 		go func() {
-			e.ExecuteStringWithMode(content, ExecuteModeSync, searchPaths...)
+			e.executeNamedStringLoop(content, "@"+path, searchPaths...)
 		}()
 		return nil
 	}
 
 	// 同步执行
-	return e.ExecuteStringWithMode(content, ExecuteModeSync, searchPaths...)
+	return e.executeNamedStringLoop(content, "@"+path, searchPaths...)
+}
+
+// executeNamedStringLoop 使用稳定源码名称执行文件内容，并沿用脚本退出策略。
+// script 是已读取的源码，chunkName 必须使用 @文件路径，以便 DAP 与 IDE 断点匹配。
+func (e *LuaEngine) executeNamedStringLoop(script string, chunkName string, searchPaths ...string) error {
+	// 文件执行循环与字符串执行保持相同的退出、重启和错误语义，仅保留真实 chunk source。
+	for {
+		err := e.executeNamedStringOnce(script, chunkName, searchPaths...)
+		if err != nil {
+			// 脚本异常时停止引擎并将原始错误交给宿主输出。
+			fmt.Printf("脚本异常退出: %v\n", err)
+			e.Stop()
+			return err
+		}
+		if e.skipExitAction {
+			// os.exit(-1) 明确要求跳过所有退出动作。
+			e.Stop()
+			return nil
+		}
+		switch e.config.OnExit {
+		case ExitActionNone:
+			// 默认文件入口只执行一次。
+			e.Stop()
+			return nil
+		case ExitActionRestart:
+			// 重启策略复用同一源码名称，后续断点仍能映射到原文件。
+			fmt.Println("脚本正常退出，正在重新启动...")
+			time.Sleep(time.Second)
+		case ExitActionCustom:
+			// 自定义退出动作完成后关闭当前引擎。
+			if e.config.CustomExitAction != nil {
+				e.config.CustomExitAction()
+			}
+			e.Stop()
+			return nil
+		}
+	}
+}
+
+// executeNamedStringOnce 编译并执行带真实文件来源的单个 Lua chunk。
+func (e *LuaEngine) executeNamedStringOnce(script string, chunkName string, searchPaths ...string) error {
+	// Lua VM 由引擎互斥保护，避免并行运行破坏 State 栈和调试快照。
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	if e.vmState == nil {
+		// 已停止或未初始化的引擎不能执行文件。
+		return fmt.Errorf("Lua engine not initialized")
+	}
+	if len(searchPaths) > 0 {
+		// require 搜索路径必须在编译入口执行前准备好。
+		e.addSearchPaths(searchPaths...)
+	}
+	err := e.handleLuaVMError(glua.ProtectedCall(e.vmState, func(callState *glua.State) error {
+		// LoadString 的 chunkName 会原样写入 Proto.Source，DAP 据此命中文件断点。
+		if loadErr := glua.LoadString(callState, script, chunkName); loadErr != nil {
+			return loadErr
+		}
+		closure, popErr := callState.Pop()
+		if popErr != nil {
+			// 编译成功却无法取得 closure 表示 VM 栈状态异常。
+			return popErr
+		}
+		_, callErr := glua.Call(callState, closure)
+		return callErr
+	}))
+	if err != nil && e.debugger != nil {
+		// 兼容旧调试器错误通知，同时使用真实文件名替代 <string>。
+		e.debugger.NotifyError(strings.TrimPrefix(chunkName, "@"), err)
+	}
+	return err
 }
 
 // executeFileOnce 执行一次 Lua 文件
@@ -626,6 +697,7 @@ func (e *LuaEngine) Restart() error {
 	options.AllowEnvironment = true
 	options.VirtualFilesystem = e.config.FileSystem
 	options.PreferHostFilesystem = e.config.FileSystem == nil
+	options.DebugObserver = e.config.DebugObserver
 	e.vmState = glua.NewStateWithOptions(options)
 	if err := glua.OpenLibs(e.vmState); err != nil {
 		return fmt.Errorf("open go-lua-vm libs: %w", err)
@@ -735,8 +807,20 @@ func (e *LuaEngine) registerCoreFunctionsForVM() {
 			e.printVMConsole("", args)
 			return nil, nil
 		},
+		"info": func(args ...gruntime.Value) ([]gruntime.Value, error) {
+			e.printVMConsole("[Info] ", args)
+			return nil, nil
+		},
+		"debug": func(args ...gruntime.Value) ([]gruntime.Value, error) {
+			e.printVMConsole("[Debug] ", args)
+			return nil, nil
+		},
+		"warn": func(args ...gruntime.Value) ([]gruntime.Value, error) {
+			e.printVMConsole("[Warn] ", args)
+			return nil, nil
+		},
 		"error": func(args ...gruntime.Value) ([]gruntime.Value, error) {
-			e.printVMConsole("[ERROR] ", args)
+			e.printVMConsole("[Error] ", args)
 			return nil, nil
 		},
 	})

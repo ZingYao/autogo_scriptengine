@@ -2,6 +2,7 @@ package yolo
 
 import (
 	"image"
+	"reflect"
 
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
@@ -25,11 +26,22 @@ func (m *YoloModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("yolo.detectFromImage", "检测图片中的对象", func(y *autogoyolo.Yolo, img *image.NRGBA) []autogoyolo.Result {
 		return y.DetectFromImage(img)
 	}, true)
-	engine.RegisterMethod("yolo.setImage", "设置下次 Detect 使用的原始图像", (*autogoyolo.Yolo).SetImage, true)
+	engine.RegisterMethod("yolo.setImage", "设置下次 Detect 使用的原始图像", setImage, true)
 	engine.RegisterMethod("yolo.detectFromBase64", "检测 Base64 图片中的对象", (*autogoyolo.Yolo).DetectFromBase64, true)
 	engine.RegisterMethod("yolo.detectFromPath", "检测文件图片中的对象", (*autogoyolo.Yolo).DetectFromPath, true)
 	engine.RegisterMethod("yolo.close", "关闭 YOLO 实例", (*autogoyolo.Yolo).Close, true)
 	return nil
+}
+
+// setImage 通过反射兼容未静态导出 SetImage 的旧版 AutoGo SDK。
+func setImage(yoloInstance *autogoyolo.Yolo, sourceImage *image.NRGBA) bool {
+	// 运行时存在 SetImage 时调用真实实现，否则明确返回 false 表示当前 SDK 不支持。
+	method := reflect.ValueOf(yoloInstance).MethodByName("SetImage")
+	if !method.IsValid() {
+		return false
+	}
+	method.Call([]reflect.Value{reflect.ValueOf(sourceImage)})
+	return true
 }
 
 func GetModule() model.Module { return &YoloModule{} }

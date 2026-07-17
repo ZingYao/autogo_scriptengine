@@ -2,6 +2,9 @@ package images
 
 import (
 	"image"
+	"io"
+	"net/http"
+	"time"
 
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
@@ -46,7 +49,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		return autogoimages.FindMultiColorsAll(x1, y1, x2, y2, colors, sim, dir, optionalInt(0, displayID...))
 	}, true)
 	engine.RegisterMethod("images.readFromPath", "从路径读取图片", autogoimages.ReadFromPath, true)
-	engine.RegisterMethod("images.readFromUrl", "从 URL 读取图片", autogoimages.ReadFromUrl, true)
+	engine.RegisterMethod("images.readFromUrl", "从 URL 读取图片", readFromURL, true)
 	engine.RegisterMethod("images.readFromBase64", "从 Base64 读取图片", autogoimages.ReadFromBase64, true)
 	engine.RegisterMethod("images.readFromBytes", "从字节数组读取图片", autogoimages.ReadFromBytes, true)
 	engine.RegisterMethod("images.save", "保存图片", autogoimages.Save, true)
@@ -61,6 +64,28 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("images.applyAdaptiveThreshold", "应用自适应阈值", autogoimages.ApplyAdaptiveThreshold, true)
 	engine.RegisterMethod("images.applyBinarization", "二值化", autogoimages.ApplyBinarization, true)
 	return nil
+}
+
+// readFromURL 使用稳定的 ReadFromBytes API 兼容未导出 ReadFromUrl 的旧版 AutoGo SDK。
+func readFromURL(rawURL string) *image.NRGBA {
+	// 使用短超时和响应体上限，避免脚本请求长期占用移动端资源。
+	client := &http.Client{Timeout: 5 * time.Second}
+	response, err := client.Get(rawURL)
+	if err != nil {
+		// 网络连接失败时沿用 AutoGo 图片 API 的 nil 失败语义。
+		return nil
+	}
+	defer response.Body.Close()
+	if response.StatusCode < http.StatusOK || response.StatusCode >= http.StatusMultipleChoices {
+		// 非成功响应不应交给图片解码器处理。
+		return nil
+	}
+	content, err := io.ReadAll(io.LimitReader(response.Body, 32<<20))
+	if err != nil {
+		// 响应读取失败时返回 nil，避免向 Lua 暴露不完整图片。
+		return nil
+	}
+	return autogoimages.ReadFromBytes(content)
 }
 
 func GetModule() model.Module { return &ImagesModule{} }

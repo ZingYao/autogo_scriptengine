@@ -660,6 +660,21 @@ func TestLuaEngineGoLuaVMRegistersLrConsoleModule(t *testing.T) {
 	}
 }
 
+func TestLuaEngineGoLuaVMRegistersCoreConsoleLevels(t *testing.T) {
+	engine := NewLuaEngine(nil)
+	defer engine.Close()
+
+	if err := engine.ExecuteString(`
+		console.log("log")
+		console.info("info")
+		console.debug("debug")
+		console.warn("warn")
+		console.error("error")
+	`); err != nil {
+		t.Fatalf("ExecuteString() core console levels error = %v", err)
+	}
+}
+
 func TestLuaEngineGoLuaVMRegistersLrNetworkModule(t *testing.T) {
 	engine := NewLuaEngine(nil)
 	defer engine.Close()

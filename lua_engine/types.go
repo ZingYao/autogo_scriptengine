@@ -11,6 +11,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/lua_engine/model"
 
 	glua "github.com/ZingYao/go-lua-vm/lua"
+	gruntime "github.com/ZingYao/go-lua-vm/runtime"
 )
 
 // EngineState 引擎状态
@@ -55,16 +56,17 @@ const (
 
 // EngineConfig 引擎配置选项
 type EngineConfig struct {
-	WhiteList        []string         // 白名单：只加载这些模块，空列表 = 加载所有
-	BlackList        []string         // 黑名单：跳过这些模块，空列表 = 不跳过任何
-	FailFast         bool             // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
-	SearchPaths      []string         // 模块搜索路径，用于 require 查找模块
-	FileSystem       fs.FS            // 虚拟文件系统（embed.FS），用于从嵌入文件中加载模块
-	OnExit           ExitAction       // 脚本退出后的动作，默认为 ExitActionNone
-	CustomExitAction func()           // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
-	ExecuteMode      ExecuteMode      // 执行模式，默认为同步执行
-	RequirePaths     []string         // 自定义 require 路径
-	Debug            *debugger.Config // Lua VM 级调试配置，nil 表示关闭调试能力
+	WhiteList        []string               // 白名单：只加载这些模块，空列表 = 加载所有
+	BlackList        []string               // 黑名单：跳过这些模块，空列表 = 不跳过任何
+	FailFast         bool                   // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
+	SearchPaths      []string               // 模块搜索路径，用于 require 查找模块
+	FileSystem       fs.FS                  // 虚拟文件系统（embed.FS），用于从嵌入文件中加载模块
+	OnExit           ExitAction             // 脚本退出后的动作，默认为 ExitActionNone
+	CustomExitAction func()                 // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
+	ExecuteMode      ExecuteMode            // 执行模式，默认为同步执行
+	RequirePaths     []string               // 自定义 require 路径
+	Debug            *debugger.Config       // Lua VM 级调试配置，nil 表示关闭调试能力
+	DebugObserver    gruntime.DebugObserver // go-lua-vm 指令级调试观察器，用于完整 DAP 断点、栈帧和变量写回
 }
 
 // LuaEngine Lua 引擎
