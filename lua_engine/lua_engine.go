@@ -69,6 +69,7 @@ func (e *LuaEngine) init() {
 	options := glua.DefaultOptions()
 	options.AllowHostFilesystem = true
 	options.AllowEnvironment = true
+	options.AllowProcess = e.config.AllowProcess
 	options.VirtualFilesystem = e.config.FileSystem
 	options.PreferHostFilesystem = e.config.FileSystem == nil
 	options.DebugObserver = e.config.DebugObserver
@@ -695,6 +696,7 @@ func (e *LuaEngine) Restart() error {
 	options := glua.DefaultOptions()
 	options.AllowHostFilesystem = true
 	options.AllowEnvironment = true
+	options.AllowProcess = e.config.AllowProcess
 	options.VirtualFilesystem = e.config.FileSystem
 	options.PreferHostFilesystem = e.config.FileSystem == nil
 	options.DebugObserver = e.config.DebugObserver

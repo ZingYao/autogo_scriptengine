@@ -65,6 +65,7 @@ type EngineConfig struct {
 	CustomExitAction func()                 // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
 	ExecuteMode      ExecuteMode            // 执行模式，默认为同步执行
 	RequirePaths     []string               // 自定义 require 路径
+	AllowProcess     bool                   // 是否允许 io.popen 与 os.execute 启动宿主进程，默认关闭
 	Debug            *debugger.Config       // Lua VM 级调试配置，nil 表示关闭调试能力
 	DebugObserver    gruntime.DebugObserver // go-lua-vm 指令级调试观察器，用于完整 DAP 断点、栈帧和变量写回
 }

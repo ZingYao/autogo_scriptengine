@@ -17,7 +17,7 @@ require (
 )
 
 require (
-	github.com/ZingYao/go-lua-vm v1.1.1-0.20260714022012-f9557d51fc43
+	github.com/ZingYao/go-lua-vm v1.1.2-0.20260718041816-182449775165
 	github.com/dlclark/regexp2 v1.11.4 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.4+incompatible // indirect
 	github.com/google/pprof v0.0.0-20240727154555-813a5fbdbec8 // indirect

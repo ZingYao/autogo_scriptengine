@@ -47,6 +47,27 @@ func TestLuaEngineExecuteStringWithGoLuaVM(t *testing.T) {
 	}
 }
 
+// TestLuaEngineAllowProcess 验证宿主显式授权后 io.popen 可以启动并读取子进程输出。
+func TestLuaEngineAllowProcess(t *testing.T) {
+	// 仅此引擎实例开启宿主进程能力，默认配置仍保持关闭。
+	config := DefaultConfig()
+	config.AllowProcess = true
+	engine := NewLuaEngine(&config)
+	defer engine.Close()
+
+	// 使用 printf 避免依赖额外命令，并验证 io.popen 返回的管道内容。
+	err := engine.ExecuteString(`
+		local pipe = assert(io.popen("printf autogo-process-enabled"))
+		local output = pipe:read("*a")
+		assert(pipe:close())
+		assert(output == "autogo-process-enabled", output)
+	`)
+	if err != nil {
+		// 授权后的进程访问失败必须暴露具体错误，避免 IDE 宿主静默降级。
+		t.Fatalf("ExecuteString(io.popen) error = %v", err)
+	}
+}
+
 func TestLuaEngineExecuteStringWithGoLuaVMAsyncMode(t *testing.T) {
 	engine := NewLuaEngine(nil)
 	defer engine.Close()

@@ -2,8 +2,8 @@ github.com/Dasongzi1366/AutoGo v0.0.0-20250701130936-d7d8087a0f89 h1:ca+JGP/75E/
 github.com/Dasongzi1366/AutoGo v0.0.0-20250701130936-d7d8087a0f89/go.mod h1:kM/YORPrCFmyO50YbnQRPaUQ3Dw7HIxIoSGRiaAX/Rk=
 github.com/Masterminds/semver/v3 v3.2.1 h1:RN9w6+7QoMeJVGyfmbcgs28Br8cvmnucEXnY0rYXWg0=
 github.com/Masterminds/semver/v3 v3.2.1/go.mod h1:qvl/7zhW3nngYb5+80sSMF+FG2BjYrf8m9wsX0PNOMQ=
-github.com/ZingYao/go-lua-vm v1.1.1-0.20260714022012-f9557d51fc43 h1:IEUluMwmULhqHcAiR6JwFPhXAVRYKPu7WwZAj8wFaHY=
-github.com/ZingYao/go-lua-vm v1.1.1-0.20260714022012-f9557d51fc43/go.mod h1:szyI6rc1RvtI3age3h7v/3jqetxIO7PcrTIBuJYalD4=
+github.com/ZingYao/go-lua-vm v1.1.2-0.20260718041816-182449775165 h1:E/BalY0KWc2KQpQUWOPpWMR/UjjzcGM3qr6wYgm6G1E=
+github.com/ZingYao/go-lua-vm v1.1.2-0.20260718041816-182449775165/go.mod h1:szyI6rc1RvtI3age3h7v/3jqetxIO7PcrTIBuJYalD4=
 github.com/dlclark/regexp2 v1.11.4 h1:rPYF9/LECdNymJufQKmri9gV604RvvABwgOA8un7yAo=
 github.com/dlclark/regexp2 v1.11.4/go.mod h1:DHkYz0B9wPfa6wondMfaivmHpzrQ3v9q8cnmRbL6yW8=
 github.com/dop251/goja v0.0.0-20260311135729-065cd970411c h1:OcLmPfx1T1RmZVHHFwWMPaZDdRf0DBMZOFMVWJa7Pdk=
