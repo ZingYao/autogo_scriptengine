@@ -23,7 +23,7 @@
 
 ## AutoGo Debugger
 
-AutoGo Debugger v1.0.0 已集成到 VSCode 和 JetBrains 插件中。当前 Debugger 只支持 Lua/GLua 代码的 DAP 断点调试；JavaScript 代码支持运行、部署和日志查看，暂不支持断点调试。
+AutoGo Debugger v1.0.0 已集成到 VSCode 和 JetBrains 插件中。当前 Debugger 只支持 Lua/GLua 代码的 DAP 断点调试；JavaScript Debugger 完全不支持。
 
 ### 推荐入口
 

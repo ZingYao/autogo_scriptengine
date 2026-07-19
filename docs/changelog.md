@@ -5,7 +5,7 @@
 ### Debugger 文档
 
 - 更新 AutoGo Debugger v1.0.0 使用说明，明确 VSCode 和 JetBrains 插件已内置 debugger 工具。
-- 明确当前仅支持 Lua/GLua DAP 断点调试，JavaScript 仅支持运行、部署和日志查看。
+- 明确当前仅支持 Lua/GLua DAP 断点调试，JavaScript Debugger 完全不支持。
 - 补充 VSCode 与 JetBrains 的脱敏截图指引，避免暴露本地路径、设备序列号等个人信息。
 - 移除旧版终端工具使用路径描述，避免和当前 IDE Lua Debugger 定位混淆。
 
