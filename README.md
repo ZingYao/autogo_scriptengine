@@ -18,7 +18,7 @@
 - **风格包支持**：提供 autogo 和 lrappsoft 两种风格包
 - **懒人脚本兼容**：lrappsoft 风格包兼容大部分懒人脚本的 Lua 方法
 - **文档生成**：可自动生成 API 文档
-- **IDE 调试支持**：VSCode 和 JetBrains 插件已集成 AutoGo Debugger，当前支持 Lua/GLua DAP 断点调试
+- **IDE 调试支持**：VSCode 和 JetBrains 插件已集成 AutoGo Debugger，支持 Lua/GLua/JavaScript DAP 断点调试
 
 ## 安装
 
@@ -65,7 +65,7 @@ python3 scripts/convert_to_html.py
 - [Lua 引擎完整文档](./docs/lua_engine/README.md) - 包含所有 API、配置选项和高级用法
 - [Lua Android autogo 概述](./docs/lua_engine/model/autogo/README.md) - Android 模块注册方式与模块 API 导航
 - [Lua iOS autogo 概述](./docs/lua_engine/model/autogo_ios/README.md) - iOS 模块清单、注册方式和参数返回值映射
-- [AutoGo Debugger](./docs/debugger/README.md) - VSCode/JetBrains 中的 Lua/GLua 断点调试说明
+- [AutoGo Debugger](./docs/debugger/README.md) - VSCode/JetBrains 中的 Lua/GLua/JavaScript 断点调试说明
 
 #### Lua Android 模块文档
 

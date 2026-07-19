@@ -129,5 +129,5 @@
     - [virtualscreen](lua_engine/model/lrappsoft/virtualscreen/README.md)
 
 - 调试工具
-  - [Lua/GLua Debugger](debugger/README.md)
+  - [AutoGo Debugger](debugger/README.md)
   - [Lua Debug 支持规划](lua_debugger_support_plan.md)

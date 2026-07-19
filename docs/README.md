@@ -19,11 +19,11 @@
 - **风格包支持**：提供 autogo 和 lrappsoft 两种风格包
 - **懒人脚本兼容**：lrappsoft 风格包兼容大部分懒人脚本的 Lua 方法
 - **文档生成**：可自动生成 API 文档
-- **IDE 调试支持**：VSCode 和 JetBrains 插件已集成 AutoGo Debugger，当前支持 Lua/GLua DAP 断点调试
+- **IDE 调试支持**：VSCode 和 JetBrains 插件已集成 AutoGo Debugger，支持 Lua/GLua/JavaScript DAP 断点调试
 
 ## AutoGo Debugger
 
-AutoGo Debugger v1.0.0 已集成到 VSCode 和 JetBrains 插件中。当前 Debugger 只支持 Lua/GLua 代码的 DAP 断点调试；JavaScript Debugger 完全不支持。
+AutoGo Debugger v1.0.0 已集成到 VSCode 和 JetBrains 插件中。当前 Debugger 支持 Lua/GLua 与 JavaScript 代码的 DAP 断点调试；JavaScript 侧基于 AutoGo 维护的 goja fork 提供调试能力。
 
 ### 推荐入口
 
@@ -32,11 +32,11 @@ AutoGo Debugger v1.0.0 已集成到 VSCode 和 JetBrains 插件中。当前 Debu
 
 ### IDE 能力
 
-- VSCode：通过 AutoGo Activity Bar 运行或调试当前 `.lua` / `.glua` 文件。
-- JetBrains：通过 AutoGo 菜单、工具栏或运行配置调试当前 `.lua` / `.glua` 文件。
+- VSCode：通过 AutoGo Activity Bar 运行或调试当前 `.lua` / `.glua` / `.js` 文件。
+- JetBrains：通过 AutoGo 菜单、工具栏或运行配置调试当前 `.lua` / `.glua` / `.js` 文件。
 - 两端都使用 IDE 原生 Debug UI 展示断点、调用栈、变量和日志。
 
-普通脚本开发使用 IDE 插件入口；Debugger 文档只描述 Lua/GLua DAP 调试能力。
+普通脚本开发使用 IDE 插件入口；Debugger 文档描述 Lua/GLua 与 JavaScript DAP 调试能力。
 
 ## 安装
 

@@ -4,8 +4,9 @@
 
 ### Debugger 文档
 
+- 接入 AutoGo goja fork 的 JavaScript DAP 调试能力，补充 VSCode 与 JetBrains 的 JS 调试说明。
 - 更新 AutoGo Debugger v1.0.0 使用说明，明确 VSCode 和 JetBrains 插件已内置 debugger 工具。
-- 明确当前仅支持 Lua/GLua DAP 断点调试，JavaScript Debugger 完全不支持。
+- 明确当前支持 Lua/GLua/JavaScript DAP 断点调试。
 - 补充 VSCode 与 JetBrains 的脱敏截图指引，避免暴露本地路径、设备序列号等个人信息。
 - 移除旧版终端工具使用路径描述，避免和当前 IDE Lua Debugger 定位混淆。
 
