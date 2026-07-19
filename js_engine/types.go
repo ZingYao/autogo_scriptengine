@@ -30,14 +30,15 @@ const (
 
 // EngineConfig 引擎配置选项
 type EngineConfig struct {
-	WhiteList        []string    // 白名单：只加载这些模块，空列表 = 加载所有
-	BlackList        []string    // 黑名单：跳过这些模块，空列表 = 不跳过任何
-	FailFast         bool        // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
-	FileSystem       fs.FS       // 文件系统，用于 require 功能
-	OnExit           ExitAction  // 脚本退出后的动作，默认为 ExitActionNone
-	CustomExitAction func()      // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
-	ExecuteMode      ExecuteMode // 执行模式，默认为同步执行
-	RequirePaths     []string    // 自定义 require 路径
+	WhiteList        []string      // 白名单：只加载这些模块，空列表 = 加载所有
+	BlackList        []string      // 黑名单：跳过这些模块，空列表 = 不跳过任何
+	FailFast         bool          // 是否在模块加载失败时立即失败，false = 跳过失败模块继续
+	FileSystem       fs.FS         // 文件系统，用于 require 功能
+	OnExit           ExitAction    // 脚本退出后的动作，默认为 ExitActionNone
+	CustomExitAction func()        // 自定义退出动作函数，当 OnExit = ExitActionCustom 时调用
+	ExecuteMode      ExecuteMode   // 执行模式，默认为同步执行
+	RequirePaths     []string      // 自定义 require 路径
+	Debugger         goja.Debugger // JavaScript 调试器，nil 表示关闭调试
 }
 
 // JSEngine JavaScript 引擎

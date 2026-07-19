@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/dlclark/regexp2/v2 v2.2.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.27 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
@@ -18,8 +19,9 @@ require (
 
 require (
 	github.com/ZingYao/go-lua-vm v1.1.2-0.20260718041816-182449775165
-	github.com/dlclark/regexp2 v1.11.4 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.4+incompatible // indirect
 	github.com/google/pprof v0.0.0-20240727154555-813a5fbdbec8 // indirect
 	golang.org/x/text v0.16.0 // indirect
 )
+
+replace github.com/dop251/goja => github.com/ZingYao/goja v0.0.1-autogo.1

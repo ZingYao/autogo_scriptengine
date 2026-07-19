@@ -87,6 +87,9 @@ func (e *JSEngine) init() {
 	defer e.mu.Unlock()
 
 	e.vm = goja.New()
+	if e.config.Debugger != nil {
+		e.vm.SetDebugger(e.config.Debugger)
+	}
 	e.state = StateStopped
 	e.ctx, e.cancel = context.WithCancel(context.Background())
 	e.pauseChan = make(chan struct{})
@@ -110,6 +113,7 @@ func (e *JSEngine) registerNodeJS() {
 
 	// 注册 require 模块
 	requireModule.Register()
+	e.registerImportModule()
 
 	// 注册 console 模块
 	consoleObj := e.vm.NewObject()
@@ -122,6 +126,38 @@ func (e *JSEngine) registerNodeJS() {
 	// 注册 process 模块
 	processObj := e.vm.NewObject()
 	e.vm.Set("process", processObj)
+}
+
+// SetDebugger 设置 JavaScript 调试器，运行中的 Runtime 会立即生效。
+func (e *JSEngine) SetDebugger(debugger goja.Debugger) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	e.config.Debugger = debugger
+	if e.vm != nil {
+		e.vm.SetDebugger(debugger)
+	}
+}
+
+// registerImportModule 注册 Promise 风格的 importModule，复用当前引擎的 require 解析和缓存语义。
+func (e *JSEngine) registerImportModule() {
+	e.vm.Set("importModule", func(specifier string) *goja.Promise {
+		promise, resolve, reject := e.vm.NewPromise()
+		requireValue := e.vm.Get("require")
+		requireFunc, ok := goja.AssertFunction(requireValue)
+		if !ok {
+			reject(fmt.Errorf("require is not available"))
+			return promise
+		}
+
+		value, err := requireFunc(goja.Undefined(), e.vm.ToValue(specifier))
+		if err != nil {
+			reject(err)
+			return promise
+		}
+		resolve(value)
+		return promise
+	})
 }
 
 // Start 启动引擎
