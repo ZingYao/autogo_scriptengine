@@ -24,4 +24,4 @@ require (
 	golang.org/x/text v0.16.0 // indirect
 )
 
-replace github.com/dop251/goja => github.com/ZingYao/goja v0.0.1-autogo.1
+replace github.com/dop251/goja => github.com/ZingYao/goja v0.0.1-autogo.2
