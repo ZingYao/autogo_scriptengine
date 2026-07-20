@@ -1,8 +1,10 @@
 package images
 
 import (
+	"fmt"
 	"image"
-	"strconv"
+	"io"
+	"net/http"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
@@ -33,24 +35,12 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 	imagesObj.Set("pixel", func(call goja.FunctionCall) goja.Value {
 		x := int(call.Argument(0).ToInteger())
 		y := int(call.Argument(1).ToInteger())
-		displayId := 0
-		if len(call.Arguments) >= 3 {
-			displayId = int(call.Argument(2).ToInteger())
-		}
-		result := images.Pixel(x, y, displayId)
+		result := images.Pixel(x, y)
 		return vm.ToValue(result)
 	})
 
 	imagesObj.Set("setCallback", func(call goja.FunctionCall) goja.Value {
-		fn, ok := goja.AssertFunction(call.Argument(0))
-		if !ok {
-			images.SetCallback(nil)
-			return goja.Undefined()
-		}
-		images.SetCallback(func(img *image.NRGBA, displayId int) {
-			_, _ = fn(nil, vm.ToValue(img), vm.ToValue(displayId))
-		})
-		return goja.Undefined()
+		panic(vm.NewGoError(fmt.Errorf("images.setCallback is not available in current AutoGo images API")))
 	})
 
 	imagesObj.Set("captureScreen", func(call goja.FunctionCall) goja.Value {
@@ -58,11 +48,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		y1 := int(call.Argument(1).ToInteger())
 		x2 := int(call.Argument(2).ToInteger())
 		y2 := int(call.Argument(3).ToInteger())
-		displayId := 0
-		if len(call.Arguments) >= 5 {
-			displayId = int(call.Argument(4).ToInteger())
-		}
-		result := images.CaptureScreen(x1, y1, x2, y2, displayId)
+		result := images.CaptureScreen(x1, y1, x2, y2)
 		if result != nil {
 			return vm.ToValue(result)
 		}
@@ -74,11 +60,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		y := int(call.Argument(1).ToInteger())
 		colorStr := call.Argument(2).String()
 		sim := float32(call.Argument(3).ToFloat())
-		displayId := 0
-		if len(call.Arguments) >= 5 {
-			displayId = int(call.Argument(4).ToInteger())
-		}
-		result := images.CmpColor(x, y, colorStr, sim, displayId)
+		result := images.CmpColor(x, y, colorStr, sim)
 		return vm.ToValue(result)
 	})
 
@@ -90,11 +72,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		colorStr := call.Argument(4).String()
 		sim := float32(call.Argument(5).ToFloat())
 		dir := int(call.Argument(6).ToInteger())
-		displayId := 0
-		if len(call.Arguments) >= 8 {
-			displayId = int(call.Argument(7).ToInteger())
-		}
-		x, y := images.FindColor(x1, y1, x2, y2, colorStr, sim, dir, displayId)
+		x, y := images.FindColor(x1, y1, x2, y2, colorStr, sim, dir)
 		result := vm.NewObject()
 		result.Set("x", x)
 		result.Set("y", y)
@@ -108,22 +86,14 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		y2 := int(call.Argument(3).ToInteger())
 		colorStr := call.Argument(4).String()
 		sim := float32(call.Argument(5).ToFloat())
-		displayId := 0
-		if len(call.Arguments) >= 7 {
-			displayId = int(call.Argument(6).ToInteger())
-		}
-		result := images.GetColorCountInRegion(x1, y1, x2, y2, colorStr, sim, displayId)
+		result := images.GetColorCountInRegion(x1, y1, x2, y2, colorStr, sim)
 		return vm.ToValue(result)
 	})
 
 	imagesObj.Set("detectsMultiColors", func(call goja.FunctionCall) goja.Value {
 		colors := call.Argument(0).String()
 		sim := float32(call.Argument(1).ToFloat())
-		displayId := 0
-		if len(call.Arguments) >= 3 {
-			displayId = int(call.Argument(2).ToInteger())
-		}
-		result := images.DetectsMultiColors(colors, sim, displayId)
+		result := images.DetectsMultiColors(colors, sim)
 		return vm.ToValue(result)
 	})
 
@@ -135,11 +105,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		colors := call.Argument(4).String()
 		sim := float32(call.Argument(5).ToFloat())
 		dir := int(call.Argument(6).ToInteger())
-		displayId := 0
-		if len(call.Arguments) >= 8 {
-			displayId = int(call.Argument(7).ToInteger())
-		}
-		x, y := images.FindMultiColors(x1, y1, x2, y2, colors, sim, dir, displayId)
+		x, y := images.FindMultiColors(x1, y1, x2, y2, colors, sim, dir)
 		result := vm.NewObject()
 		result.Set("x", x)
 		result.Set("y", y)
@@ -147,26 +113,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 	})
 
 	imagesObj.Set("findMultiColorsAll", func(call goja.FunctionCall) goja.Value {
-		x1 := int(call.Argument(0).ToInteger())
-		y1 := int(call.Argument(1).ToInteger())
-		x2 := int(call.Argument(2).ToInteger())
-		y2 := int(call.Argument(3).ToInteger())
-		colors := call.Argument(4).String()
-		sim := float32(call.Argument(5).ToFloat())
-		dir := int(call.Argument(6).ToInteger())
-		displayId := 0
-		if len(call.Arguments) >= 8 {
-			displayId = int(call.Argument(7).ToInteger())
-		}
-		points := images.FindMultiColorsAll(x1, y1, x2, y2, colors, sim, dir, displayId)
-		arr := vm.NewArray()
-		for i, point := range points {
-			obj := vm.NewObject()
-			obj.Set("x", point.X)
-			obj.Set("y", point.Y)
-			arr.Set(strconv.Itoa(i), obj)
-		}
-		return arr
+		panic(vm.NewGoError(fmt.Errorf("images.findMultiColorsAll is not available in current AutoGo images API")))
 	})
 
 	imagesObj.Set("readFromPath", func(call goja.FunctionCall) goja.Value {
@@ -180,7 +127,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 
 	imagesObj.Set("readFromUrl", func(call goja.FunctionCall) goja.Value {
 		url := call.Argument(0).String()
-		result := images.ReadFromUrl(url)
+		result := readFromURL(url)
 		if result != nil {
 			return vm.ToValue(result)
 		}
@@ -378,7 +325,6 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		return goja.Null()
 	})
 
-	engine.RegisterMethod("images.setCallback", "设置回调函数", images.SetCallback, true)
 	engine.RegisterMethod("images.captureScreen", "截取屏幕", images.CaptureScreen, true)
 	engine.RegisterMethod("images.pixel", "获取指定坐标的像素颜色", images.Pixel, true)
 	engine.RegisterMethod("images.cmpColor", "比较颜色", images.CmpColor, true)
@@ -386,9 +332,8 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("images.getColorCountInRegion", "获取区域内指定颜色的数量", images.GetColorCountInRegion, true)
 	engine.RegisterMethod("images.detectsMultiColors", "检测多点颜色", images.DetectsMultiColors, true)
 	engine.RegisterMethod("images.findMultiColors", "查找多点颜色", images.FindMultiColors, true)
-	engine.RegisterMethod("images.findMultiColorsAll", "查找所有多点颜色", images.FindMultiColorsAll, true)
 	engine.RegisterMethod("images.readFromPath", "从路径读取图片", images.ReadFromPath, true)
-	engine.RegisterMethod("images.readFromUrl", "从URL读取图片", images.ReadFromUrl, true)
+	engine.RegisterMethod("images.readFromUrl", "从URL读取图片", readFromURL, true)
 	engine.RegisterMethod("images.readFromBase64", "从Base64读取图片", images.ReadFromBase64, true)
 	engine.RegisterMethod("images.readFromBytes", "从字节数组读取图片", images.ReadFromBytes, true)
 	engine.RegisterMethod("images.save", "保存图片", images.Save, true)
@@ -404,4 +349,20 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 	engine.RegisterMethod("images.applyBinarization", "二值化", images.ApplyBinarization, true)
 
 	return nil
+}
+
+func readFromURL(url string) *image.NRGBA {
+	response, err := http.Get(url)
+	if err != nil {
+		return nil
+	}
+	defer response.Body.Close()
+	if response.StatusCode < http.StatusOK || response.StatusCode >= http.StatusMultipleChoices {
+		return nil
+	}
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil
+	}
+	return images.ReadFromBytes(body)
 }
