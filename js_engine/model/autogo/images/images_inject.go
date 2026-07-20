@@ -5,6 +5,7 @@ import (
 	"image"
 	"io"
 	"net/http"
+	"reflect"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
@@ -35,7 +36,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 	imagesObj.Set("pixel", func(call goja.FunctionCall) goja.Value {
 		x := int(call.Argument(0).ToInteger())
 		y := int(call.Argument(1).ToInteger())
-		result := images.Pixel(x, y)
+		result := callImageString(images.Pixel, x, y, displayID(call, 2))
 		return vm.ToValue(result)
 	})
 
@@ -48,7 +49,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		y1 := int(call.Argument(1).ToInteger())
 		x2 := int(call.Argument(2).ToInteger())
 		y2 := int(call.Argument(3).ToInteger())
-		result := images.CaptureScreen(x1, y1, x2, y2)
+		result := callImageNRGBA(images.CaptureScreen, x1, y1, x2, y2, displayID(call, 4))
 		if result != nil {
 			return vm.ToValue(result)
 		}
@@ -60,7 +61,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		y := int(call.Argument(1).ToInteger())
 		colorStr := call.Argument(2).String()
 		sim := float32(call.Argument(3).ToFloat())
-		result := images.CmpColor(x, y, colorStr, sim)
+		result := callImageBool(images.CmpColor, x, y, colorStr, sim, displayID(call, 4))
 		return vm.ToValue(result)
 	})
 
@@ -72,7 +73,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		colorStr := call.Argument(4).String()
 		sim := float32(call.Argument(5).ToFloat())
 		dir := int(call.Argument(6).ToInteger())
-		x, y := images.FindColor(x1, y1, x2, y2, colorStr, sim, dir)
+		x, y := callImagePoint(images.FindColor, x1, y1, x2, y2, colorStr, sim, dir, displayID(call, 7))
 		result := vm.NewObject()
 		result.Set("x", x)
 		result.Set("y", y)
@@ -86,14 +87,14 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		y2 := int(call.Argument(3).ToInteger())
 		colorStr := call.Argument(4).String()
 		sim := float32(call.Argument(5).ToFloat())
-		result := images.GetColorCountInRegion(x1, y1, x2, y2, colorStr, sim)
+		result := callImageInt(images.GetColorCountInRegion, x1, y1, x2, y2, colorStr, sim, displayID(call, 6))
 		return vm.ToValue(result)
 	})
 
 	imagesObj.Set("detectsMultiColors", func(call goja.FunctionCall) goja.Value {
 		colors := call.Argument(0).String()
 		sim := float32(call.Argument(1).ToFloat())
-		result := images.DetectsMultiColors(colors, sim)
+		result := callImageBool(images.DetectsMultiColors, colors, sim, displayID(call, 2))
 		return vm.ToValue(result)
 	})
 
@@ -105,7 +106,7 @@ func (m *ImagesModule) Register(engine model.Engine) error {
 		colors := call.Argument(4).String()
 		sim := float32(call.Argument(5).ToFloat())
 		dir := int(call.Argument(6).ToInteger())
-		x, y := images.FindMultiColors(x1, y1, x2, y2, colors, sim, dir)
+		x, y := callImagePoint(images.FindMultiColors, x1, y1, x2, y2, colors, sim, dir, displayID(call, 7))
 		result := vm.NewObject()
 		result.Set("x", x)
 		result.Set("y", y)
@@ -365,4 +366,62 @@ func readFromURL(url string) *image.NRGBA {
 		return nil
 	}
 	return images.ReadFromBytes(body)
+}
+
+func callImageString(fn any, args ...any) string {
+	values := callReflect(fn, args...)
+	if len(values) == 0 {
+		return ""
+	}
+	return values[0].String()
+}
+
+func callImageBool(fn any, args ...any) bool {
+	values := callReflect(fn, args...)
+	return len(values) > 0 && values[0].Bool()
+}
+
+func callImageInt(fn any, args ...any) int {
+	values := callReflect(fn, args...)
+	if len(values) == 0 {
+		return 0
+	}
+	return int(values[0].Int())
+}
+
+func callImagePoint(fn any, args ...any) (int, int) {
+	values := callReflect(fn, args...)
+	if len(values) < 2 {
+		return -1, -1
+	}
+	return int(values[0].Int()), int(values[1].Int())
+}
+
+func callImageNRGBA(fn any, args ...any) *image.NRGBA {
+	values := callReflect(fn, args...)
+	if len(values) == 0 || values[0].IsNil() {
+		return nil
+	}
+	img, _ := values[0].Interface().(*image.NRGBA)
+	return img
+}
+
+func callReflect(fn any, args ...any) []reflect.Value {
+	value := reflect.ValueOf(fn)
+	count := value.Type().NumIn()
+	if count > len(args) {
+		count = len(args)
+	}
+	values := make([]reflect.Value, 0, count)
+	for i := 0; i < count; i++ {
+		values = append(values, reflect.ValueOf(args[i]))
+	}
+	return value.Call(values)
+}
+
+func displayID(call goja.FunctionCall, index int) int {
+	if len(call.Arguments) > index {
+		return int(call.Argument(index).ToInteger())
+	}
+	return 0
 }
