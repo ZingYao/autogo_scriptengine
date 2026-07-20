@@ -1,6 +1,6 @@
 package model
 
-import "github.com/dop251/goja"
+import "github.com/ZingYao/goja"
 
 // Module 模块接口，所有注入模块都需要实现此接口
 type Module interface {

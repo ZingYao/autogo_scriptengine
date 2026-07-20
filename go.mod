@@ -6,7 +6,7 @@ toolchain go1.26.4
 
 require (
 	github.com/Dasongzi1366/AutoGo v0.0.0-20250701130936-d7d8087a0f89
-	github.com/dop251/goja v0.0.0-20260311135729-065cd970411c
+	github.com/ZingYao/goja v0.0.2-autogo.1
 	github.com/gorilla/websocket v1.5.3
 )
 
@@ -23,5 +23,3 @@ require (
 	github.com/google/pprof v0.0.0-20240727154555-813a5fbdbec8 // indirect
 	golang.org/x/text v0.16.0 // indirect
 )
-
-replace github.com/dop251/goja => github.com/ZingYao/goja v0.0.1-autogo.2

@@ -4,7 +4,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/storages"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // StoragesModule storages 模块

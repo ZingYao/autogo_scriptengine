@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // VdisplayModule 在远程 AutoGo 缺少 vdisplay 包时保留同名入口并返回明确错误。

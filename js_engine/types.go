@@ -8,7 +8,7 @@ import (
 	"sync"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // ExitAction 脚本退出后的动作类型

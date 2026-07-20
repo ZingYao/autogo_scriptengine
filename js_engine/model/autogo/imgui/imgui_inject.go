@@ -8,7 +8,7 @@ import (
 
 	"github.com/Dasongzi1366/AutoGo/imgui"
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // parseColorString 解析颜色字符串，支持 #RRGGBB、#RRGGBBAA、RRGGBB、RRGGBBAA 格式

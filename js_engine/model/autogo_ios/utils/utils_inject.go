@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // UtilsModule 在远程 AutoGo/utils 为 Android CGO 包时提供 iOS 安全实现。

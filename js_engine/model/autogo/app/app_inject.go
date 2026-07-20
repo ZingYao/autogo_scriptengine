@@ -4,7 +4,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/app"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // AppModule app 模块

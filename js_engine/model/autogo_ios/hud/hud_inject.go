@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // HUDModule 在远程 AutoGo 缺少 hud 包时保留 iOS 同名入口并返回明确错误。

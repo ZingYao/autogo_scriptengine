@@ -13,7 +13,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model/require"
 
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // EngineState 引擎状态

@@ -6,7 +6,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	autogoyolo "github.com/Dasongzi1366/AutoGo/yolo"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 type YoloModule struct{}

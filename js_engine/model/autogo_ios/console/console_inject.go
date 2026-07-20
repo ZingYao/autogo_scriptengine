@@ -4,7 +4,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	autogoconsole "github.com/Dasongzi1366/AutoGo/console"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // ConsoleModule iOS console 模块。

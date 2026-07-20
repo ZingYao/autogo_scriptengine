@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // UtilsModule 在非 Android CGO 环境下提供纯 Go 可验证实现。

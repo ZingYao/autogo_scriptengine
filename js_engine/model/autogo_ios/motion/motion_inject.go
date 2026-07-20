@@ -4,7 +4,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	autogomotion "github.com/Dasongzi1366/AutoGo/motion"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // MotionModule iOS motion 模块。

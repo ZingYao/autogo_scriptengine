@@ -4,7 +4,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	autogosystem "github.com/Dasongzi1366/AutoGo/system"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // SystemModule iOS system 模块。

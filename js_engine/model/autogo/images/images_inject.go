@@ -7,7 +7,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/images"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // ImagesModule images 模块

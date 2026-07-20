@@ -6,7 +6,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 type recordingDebugger struct {

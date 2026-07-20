@@ -6,7 +6,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	autogohttps "github.com/Dasongzi1366/AutoGo/https"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // HttpsModule iOS https 模块。

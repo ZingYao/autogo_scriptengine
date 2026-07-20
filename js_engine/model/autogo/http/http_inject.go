@@ -4,7 +4,7 @@ import (
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
 
 	"github.com/Dasongzi1366/AutoGo/https"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // HttpModule https 模块

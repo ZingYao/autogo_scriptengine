@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 )
 
 // RequireModule 处理 CommonJS 的 require 功能

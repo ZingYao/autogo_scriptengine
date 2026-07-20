@@ -4,8 +4,8 @@ github.com/Masterminds/semver/v3 v3.5.0 h1:kQceYJfbupGfZOKZQg0kou0DgAKhzDg2NZPAw
 github.com/Masterminds/semver/v3 v3.5.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
 github.com/ZingYao/go-lua-vm v1.1.2-0.20260718041816-182449775165 h1:E/BalY0KWc2KQpQUWOPpWMR/UjjzcGM3qr6wYgm6G1E=
 github.com/ZingYao/go-lua-vm v1.1.2-0.20260718041816-182449775165/go.mod h1:szyI6rc1RvtI3age3h7v/3jqetxIO7PcrTIBuJYalD4=
-github.com/ZingYao/goja v0.0.1-autogo.2 h1:P9qtc+uRihMqIIrSYkL4X6t1F1z5WO8X1KByt/aJix4=
-github.com/ZingYao/goja v0.0.1-autogo.2/go.mod h1:Sc+QOu1WruvaaeT/cxFez/pXHpI9ZDjg/E8QNfSVveI=
+github.com/ZingYao/goja v0.0.2-autogo.1 h1:AOCRdRb8mubJlC5FhXF5cBUmUNUmsn4tdFJYg5hBr18=
+github.com/ZingYao/goja v0.0.2-autogo.1/go.mod h1:kELOEeeSodml4CsR0HEa/CXWU96Smtw17SYILxzmHm0=
 github.com/dlclark/regexp2/v2 v2.2.1 h1:mf4KkFUj0gJuarK8P+LgiS+Lit7m9N1yAwEfPbee7R0=
 github.com/dlclark/regexp2/v2 v2.2.1/go.mod h1:avUrQvPaLz2DrFNHJF0taWAFFX2C1GMSSoeiqFjcBmU=
 github.com/go-sourcemap/sourcemap v2.1.4+incompatible h1:a+iTbH5auLKxaNwQFg0B+TCYl6lbukKPc7b5x0n1s6Q=

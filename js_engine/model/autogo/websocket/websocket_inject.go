@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/ZingYao/autogo_scriptengine/js_engine/model"
-	"github.com/dop251/goja"
+	"github.com/ZingYao/goja"
 	"github.com/gorilla/websocket"
 )
 
